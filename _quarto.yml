@@ -3,8 +3,25 @@ project:
 
 book:
   title: "Metody walidacji modeli statystycznych"
-  author: "Jane Doe"
-  date: "1/28/2023"
+  reader-mode: true
+  language: setup/polski.yml
+  page-footer:
+    left: |
+      Metody walidacji modeli statystycznych, Dariusz Majerek
+    right: |
+      Książka została napisana w <a href="https://quarto.org/">Quarto</a>
+  cover-image: images/logo2.png
+  favicon: cover.png
+  repo-url: https://github.com/dax44/ModelsValidation/
+  repo-actions: [issue]
+  downloads: [pdf, epub]
+  search: true
+  author: 
+  - name: Dariusz Majerek
+    affiliation: Politechnika Lubelska
+  date: last-modified
+  sidebar: 
+    logo: images/logo.png
   chapters:
     - index.qmd
     - intro.qmd
@@ -12,12 +29,21 @@ book:
     - references.qmd
 
 bibliography: references.bib
+reference-location: margin
 
 format:
   html:
-    theme: cosmo
-  pdf:
-    documentclass: scrreprt
+    lang: pl
+    theme:
+      light: [pulse, mycss.scss]
+      dark: [slate, mycss.scss]
+    code-link: true
+    code-fold: true
+
+execute: 
+  warning: false
 
 editor: visual
+comments:
+  hypothesis: true
 
