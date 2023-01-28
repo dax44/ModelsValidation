@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Metody walidacji modeli statystycznych - 1&nbsp; Introduction</title>
+<title>Metody walidacji modeli statystycznych - 1&nbsp; Ekosystem</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,13 +68,13 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -131,7 +131,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -152,11 +152,11 @@ ul.task-list li input[type="checkbox"] {
         
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></h1>
 </div>
 
 
@@ -171,8 +171,33 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This is a book created from markdown and executable code.</p>
-<p>See <span class="citation" data-cites="knuth84">(<a href="references.html#ref-knuth84" role="doc-biblioref"><strong>knuth84?</strong></a>)</span> for additional discussion of literate programming.</p>
+<div class="page-columns page-full"><p>Książka zawiera szereg przykładów ilustrujących zasadę działania poszczególnych technik walidacji modeli. Ponieważ od wielu lat używam języka R do budowania modeli uczenia maszynowego, to również w tej książce znajdą się implementacje metod ewaluacji modeli wykonane w R. Spośród trzech dominujących ekosystemów w języku R do budowania modeli uczenia maszynowego, czyli <code>caret</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>,<code>mlr3</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> i <code>tidymodels</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> postanowiłem postawić na ten ostatn i. Stanowi on przeniesienie filozofii “tidy data” realizowanej w pakiecie <code>tidyverse</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> na modele ML. <code>tidymodels</code> jest meta-pakietem zawierającym w sob ie:</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;biblioteka napisana przez Maxa Kuhna, która niestety nie dostaje już wsparcia - <a href="https://topepo.github.io/caret/" class="uri">https://topepo.github.io/caret/</a></p></li><li id="fn2"><p><sup>2</sup>&nbsp;jedna biblioteka z całego ekosystemu przygotowanego głównie przez niemieckich programistów Lars Kotthoff, Raphael Sonabend, Michel Lang, Bernd Bischl. Jej największą zaletą jest fakt, iż wszelkie operacje na danych są dokonywane w formacie <code>data.table</code> uznawanym za najszybszy - <a href="https://mlr3book.mlr-org.com" class="uri">https://mlr3book.mlr-org.com</a></p></li><li id="fn3"><p><sup>3</sup>&nbsp;<a href="https://www.tidymodels.org" class="uri">https://www.tidymodels.org</a></p></li><li id="fn4"><p><sup>4</sup>&nbsp;pakiet został stworzony przez Julie Silge i Maxa Kuhna, a ich motto podane podczas prezentacji biblioteki brzmiało <em>Whenever possible, the software should be able to protect users from committing mistakes. Software should make it easy for users to do the right thing</em></p></li></div></div>
+<p><img src="images/Zrzut ekranu 2023-01-28 o 21.09.19.png" class="img-fluid"></p>
+<ul>
+<li><code>broom</code> - przekształcanie obiektów statystycznych w tibble;</li>
+<li><code>dials</code> - narzędzia do tuningowania parametrów modelu;</li>
+<li><code>dplyr</code> - narzędzia do manipulacji danymi;</li>
+<li><code>ggplot2</code> - narzędzia do wizualizacji;</li>
+<li><code>infer</code> - narzędzia do wnioskowania statystycznego;</li>
+<li><code>modeldata</code> - pakiet przykładowych danych do budowania modeli;</li>
+<li><code>parsnip</code> - narzędzia do tworzenia i manipulowania funkcjami powszechnie używanymi podczas modelowania;</li>
+<li><code>purrr</code> - zestaw narzędzi do programowania funkcyjnego;</li>
+<li><code>recipes</code> - narzędzie do tworzenia modeli;</li>
+<li><code>rsample</code> - narzędzie do resamplingu;</li>
+<li><code>tibble</code> - narzędzie do operacji na ramkach danych;</li>
+<li><code>tidyr</code> - narzędzie do oczyszczania o transformacji danych;</li>
+<li><code>tune</code> - narzędzie do tuningu hiperparametrów modelu;</li>
+<li><code>workflows</code> - narzędzia do zarządzania procesem uczenia modeli;</li>
+<li><code>workflowsets</code> - narzędzie do tworzenia zestawów <code>workflow</code>;</li>
+<li><code>yardstick</code> - narzędzia do oceny dopasowania modelu.</li>
+</ul>
+<p>Oprócz wspomnianych pakietów w ramach <code>tidymodels</code> występują także: <code>applicable</code>, <code>baguette</code>, <code>butcher</code>, <code>discrim</code>, <code>embed</code>, <code>hardhat</code>, <code>corrr</code>, <code>rules</code>, <code>text recipes</code>, <code>tidypredict</code>, <code>modeldb</code> i <code>tidyposterior</code>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="https://tenor.com/view/shocked-po-kung-fu-panda-gif-4255877.gif" class="img-fluid"></p>
+</div></div><p>Wybór padł na <code>tidymodels</code> ponieważ filozofia tworzenia i walidacji modeli przypominająca pieczenie ciasta bardzo mi przypadła do gustu.</p>
+<p><img src="images/Zrzut ekranu 2023-01-28 o 21.17.14.png" class="img-fluid"></p>
+
 
 
 

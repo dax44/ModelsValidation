@@ -131,7 +131,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -199,19 +199,15 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="wprowadzenie" class="level1 unnumbered">
 <p><img src="images/logo2.png" title="Metody walidacji modeli statystycznych" class="quarto-cover-image img-fluid"></p><h1 class="unnumbered">Wprowadzenie</h1>
-<p>Niniejsza książka została przygotowana z myślą o studentach kierunków <em>Inżynierii i Analizy Danych</em> oraz <em>Matematyka</em>. Ma ona posłużyć w nauce szeroko rozumianej walidacji modeli statystycznych. Pojęcie zostanie dosyć szeroko potraktowane, ponieważ w książce nawiązuję do metod próbkowania (ang. <em>resampling</em>), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli. Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie czynniki (predyktory) i w jaki sposób wpływają na taką a nie inną predykcję.</p>
-<p>W statystyce walidacja modelu jest zadaniem polegającym na ocenie, czy wybrany model statystyczny jest odpowiedni, czy nie. Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie rozumieją rzeczywistej istotności swojego modelu. Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw zdolność generalizacji. Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjściowej nie tylko dla obserwacji ze zbioru uczącego, ale również z testowego, bez znaczącej straty jakości wspomnianej predykcji. Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/overfit1.jpg" class="img-fluid figure-img" width="400"></p>
-</figure>
-</div>
-<p>Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym. Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu. Na przykład, jeśli badacz pracuje z bardzo ograniczonym zestawem danych, ale ma silne założenia wstępne dotyczące danych, może rozważyć walidację dopasowania swojego modelu poprzez zastosowanie metod bayesowskich i testowanie dopasowania modelu przy użyciu różnych rozkładów wstępnych. Jeśli jednak badacz ma dużo danych i testuje wiele zagnieżdżonych modeli, warunki te mogą sprzyjać walidacji krzyżowej i ewentualnie testowi “leave one out”. Są to dwa abstrakcyjne przykłady i każda rzeczywista walidacja modelu będzie musiała rozważyć znacznie więcej zawiłości niż tu opisano, ale przykład ten ilustruje, że metody walidacji modelu zawsze będą miały charakter poszlakowy. Ogólnie rzecz biorąc, modele mogą być walidowane przy użyciu istniejących danych lub przy użyciu nowych danych, a obie metody są omówione w kolejnych rozdziałach.</p>
+<p>Niniejsza książka została przygotowana z myślą o studentach kierunków <em>Inżynierii i Analizy Danych</em> oraz <em>Matematyka</em>. Ma ona posłużyć w nauce szeroko rozumianej walidacji modeli statystycznych. Pojęcie zostanie dosyć szeroko potraktowane, dlatego w książce nawiązuję do metod próbkowania (ang. <em>resampling</em>), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli. Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie poszczególne czynniki (predyktory) i w jaki sposób wpływają na predykcję.</p>
+<p>W statystyce walidacja modelu jest zadaniem polegającym na ocenie, czy wybrany model statystyczny jest odpowiedni, czy nie. Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie poznają rzeczywistej wartości swojego modelu. Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw. zdolność generalizacji. Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjściowej nie tylko dla obserwacji ze zbioru uczącego, ale również z testowego, bez znaczącej straty jakości wspomnianej predykcji. Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami. Nadrzędnym celem walidacji modelu jest chęć poprawienia jego właściwości.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/overfit2.jpeg" class="img-fluid figure-img"></p>
 </figure>
 </div>
+<p>Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym. Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu. Na przykład, jeśli badacz pracuje z bardzo ograniczonym zestawem danych, ale ma silne założenia wstępne dotyczące danych, może rozważyć walidację dopasowania swojego modelu poprzez zastosowanie metod bayesowskich i testowanie dopasowania modelu przy użyciu różnych rozkładów wstępnych. Jeśli jednak badacz ma dużo danych i testuje wiele zagnieżdżonych modeli, warunki te mogą sprzyjać walidacji krzyżowej i ewentualnie testowi “leave one out”. Są to dwa abstrakcyjne przykłady i każda rzeczywista walidacja modelu będzie musiała rozważyć znacznie więcej zawiłości niż tu opisano, ale przykład ten ilustruje, że metody walidacji modelu zawsze będą miały charakter poszlakowy. Ogólnie rzecz biorąc, modele mogą być walidowane przy użyciu istniejących danych lub przy użyciu nowych danych, a obie metody są omówione w kolejnych rozdziałach.</p>
+<p>Niezbędnym narzędziem w ocenie jakości dopasowania modeli będą metryki, czy inne narzędzia stosowane w ocenie poprawności modelu jak wykresy diagnostyczne, czy macierze klasyfikacji (ang. <em>confusion matrix</em>). W zależności od realizowanego zadania inne metryki mogą być wykorzystywane. I tak w zadaniach klasyfikacyjnych, w zależności od liczby klas zmiennej wyjściowej, będziemy stosowali inne miary do oceny modelu. Również w modelach regresyjnych istnieje cała gama miar pomagających ocenić dopasowanie. Jeszcze inne miary służą do ewaluacji metod nienadzorowanego uczenia maszynowego. Istnieje bowiem wiele technik określenia stopnia jednorodności powstałych skupień, a jednocześnie odpowiedzi napytanie czy wybrana została właściwa liczba grup.</p>
 
 
 </section>
@@ -470,7 +466,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./intro.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

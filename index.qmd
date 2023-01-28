@@ -2,16 +2,18 @@
 
 Niniejsza książka została przygotowana z myślą o studentach kierunków *Inżynierii i Analizy Danych* oraz *Matematyka*.
 Ma ona posłużyć w nauce szeroko rozumianej walidacji modeli statystycznych.
-Pojęcie zostanie dosyć szeroko potraktowane, ponieważ w książce nawiązuję do metod próbkowania (ang. *resampling*), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli.
-Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie czynniki (predyktory) i w jaki sposób wpływają na taką a nie inną predykcję.
+Pojęcie zostanie dosyć szeroko potraktowane, dlatego w książce nawiązuję do metod próbkowania (ang. *resampling*), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli.
+Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie poszczególne czynniki (predyktory) i w jaki sposób wpływają na predykcję.
 
 W statystyce walidacja modelu jest zadaniem polegającym na ocenie, czy wybrany model statystyczny jest odpowiedni, czy nie.
-Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie rozumieją rzeczywistej istotności swojego modelu.
-Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw zdolność generalizacji.
+Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie poznają rzeczywistej wartości swojego modelu.
+Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw.
+zdolność generalizacji.
 Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjściowej nie tylko dla obserwacji ze zbioru uczącego, ale również z testowego, bez znaczącej straty jakości wspomnianej predykcji.
 Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami.
+Nadrzędnym celem walidacji modelu jest chęć poprawienia jego właściwości.
 
-![](images/overfit1.jpg){fig-align="center" width="400"}
+![](images/overfit2.jpeg){fig-align="center"}
 
 Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym.
 Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu.
@@ -20,4 +22,9 @@ Jeśli jednak badacz ma dużo danych i testuje wiele zagnieżdżonych modeli, wa
 Są to dwa abstrakcyjne przykłady i każda rzeczywista walidacja modelu będzie musiała rozważyć znacznie więcej zawiłości niż tu opisano, ale przykład ten ilustruje, że metody walidacji modelu zawsze będą miały charakter poszlakowy.
 Ogólnie rzecz biorąc, modele mogą być walidowane przy użyciu istniejących danych lub przy użyciu nowych danych, a obie metody są omówione w kolejnych rozdziałach.
 
-![](images/overfit2.jpeg){fig-align="center"}
+Niezbędnym narzędziem w ocenie jakości dopasowania modeli będą metryki, czy inne narzędzia stosowane w ocenie poprawności modelu jak wykresy diagnostyczne, czy macierze klasyfikacji (ang. *confusion matrix*).
+W zależności od realizowanego zadania inne metryki mogą być wykorzystywane.
+I tak w zadaniach klasyfikacyjnych, w zależności od liczby klas zmiennej wyjściowej, będziemy stosowali inne miary do oceny modelu.
+Również w modelach regresyjnych istnieje cała gama miar pomagających ocenić dopasowanie.
+Jeszcze inne miary służą do ewaluacji metod nienadzorowanego uczenia maszynowego.
+Istnieje bowiem wiele technik określenia stopnia jednorodności powstałych skupień, a jednocześnie odpowiedzi napytanie czy wybrana została właściwa liczba grup.
