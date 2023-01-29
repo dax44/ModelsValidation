@@ -1,6 +1,6 @@
 project:
   type: book
-
+  output-dir: docs
 book:
   title: "Metody walidacji modeli statystycznych"
   reader-mode: true
