@@ -25,7 +25,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - summary.qmd
+    - modeling.qmd
     - references.qmd
 
 bibliography: references.bib
