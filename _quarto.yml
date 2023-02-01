@@ -21,11 +21,15 @@ book:
     affiliation: Politechnika Lubelska
   date: last-modified
   sidebar: 
+    tools: 
+      - icon: twitter
+        href: https://twitter.com
     logo: images/logo.png
   chapters:
     - index.qmd
     - intro.qmd
     - modeling.qmd
+    - infer.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -35,7 +39,7 @@ format:
   html:
     lang: pl
     theme:
-      light: [pulse, mycss.scss]
+      light: [journal, mycss.scss]
       dark: [slate, mycss.scss]
     code-link: true
     code-fold: true

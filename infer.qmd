@@ -1,0 +1,142 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+bibliography: references.bib
+---
+
+# Modele inferencyjne
+
+Jak to zostało wspomniane w poprzednim rozdziale modele inferencyjne służą do wyciągania wniosków na podstawie modelu.
+W większości przypadków dotyczy to przedziałów ufności pewnych charakterystyk, czy weryfikacji hipotez.
+Pod pojęciem modeli inferencyjnych będziemy rozumieli wszelkie modele stosowane w procedurze wnioskowania.
+
+W tym rozdziale zostanie przedstawiona procedura weryfikacyjna mająca na celu ocenę jakości przedstawionych rozwiązań w klasycznym podejściu do przedziałów ufności i weryfikacji hipotez.
+Największa trudnością w szacowaniu parametrów rozkładu za pomocą przedziałów ufności oraz w weryfikacji hipotez jest konieczność spełnienia założeń stosowalności tych metod.
+Bardzo często badacz nie posiada wystarczającej wiedzy o konsekwencji naruszenia tych założeń, a czasem nawet o ich istnieniu.
+Nawet wówczas, gdy badacz jest świadom konieczności spełnienia założeń w estymacji przedziałowej i weryfikacji hipotez, wymagania te mogą się okazać trudne do wypełnienia.
+W wielu przypadkach podczas weryfikacji hipotez za pomocą testu t-Studenta, weryfikując hipotezę o normalności rozkładu badanej cechy pojawiają się pewne wątpliwości.
+Po pierwsze, czy wybrany test mogę stosować do weryfikacji hipotezy o normalności w przypadku tak mało licznej próby lub tak licznej próby.
+Wiemy bowiem, że często stosowany test Shapiro-Wilka do weryfikacji hipotezy o zgodności populacji z rozkładem normalnym, może zbyt często odrzucać hipotezę o zgodności z rozkładem jeśli test jest wykonywany na dużej próbie[^infer-1].
+Z drugiej strony dla prób o małej liczności test w większości nie odrzuca hipotezy o normalności, a to dlatego, że nie sposób jej odrzucić np.
+na podstawie 5 obserwacji.
+Podniesiony problem normalności rozkładu badanej cechy nie jest jedynym z jakim badacz może się spotkać chcąc spełnić wszystkie założenia modelu[^infer-2]
+. Założenia o równości wariancji badanej cechy pomiędzy grupami, czy brak nadmiarowości[^infer-3], to kolejne przykłady problemów z jakimi może spotkać się badac
+z.
+
+[^infer-1]: moc tego testu rośnie bardzo szybko wraz ze wzrostem liczebności próby
+
+[^infer-2]: mam na myśli zarówno modele przedziałów ufności, jaki i modele statystyczne do testowania hipotez
+
+[^infer-3]: w przypadku badania efektu za pomocą modelu liniowego
+
+Konieczność spełnienia wymienionych w stosowanej metodzie wnioskowania założeń jest konieczna, ponieważ w przeciwnym przypadku nie możemy być pewni czy wyniki zastosowanej metody są trafne[^infer-4].
+Konsekwencją niespełnienia warunków początkowych metody, nie możemy być pewni czy rozkład statystyki testowej jest taki jak głosi metoda.
+I choć istnieją prace, które wyraźnie wskazują na odporność pewnych metod statystycznych na niespełnienie założeń, to nie zwalniają nas z weryfikacji tychże założeń, ponieważ w przypadku niektórych z nich nie znamy konsekwencji ich naruszenia.
+
+[^infer-4]: czy wniosek wyciągnięty na podstawie modelu jest właściwy
+
+W przypadku wspomnianych wyżej wątpliwości co do stosowalności poszczególnych metod weryfikacyjnych należy poszukać rozwiązań, które uprawdopodobnią wyniki uzyskane metodami klasycznymi.
+Powszechnie polecane w takiej sytuacji są rozwiązania opierające się na próbkowaniu (ang. *resampling*), wśród których najbardziej znane, to bootstrap i metody permutacyjne.
+
+Niezależnie od stawianej hipotezy, badacz zadaje sobie ten sam rodzaj pytania podczas wnioskowania statystycznego: czy efekt/różnica w obserwowanych danych jest rzeczywista, czy wynika z przypadku?
+Aby odpowiedzieć na to pytanie, analityk zakłada, że efekt w obserwowanych danych był spowodowany przypadkiem i nazywa to założenie hipotezą zerową[^infer-5].
+Analityk następnie oblicza statystykę testową z danych, która opisuje obserwowany efekt.
+Może użyć tej statystyki testowej do obliczenia wartości $p$ poprzez zestawienie jej z rozkładem wynikającym z hipotezy zerowej.
+Jeśli to prawdopodobieństwo jest poniżej jakiegoś wcześniej zdefiniowanego poziomu istotności $\alpha$, to analityk powinien odrzucić hipotezę zerową.
+
+[^infer-5]: W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że "coś się dzieje"
+
+Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu.
+Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę `infer` [@infer] ekosystemu `tidymodels` [@tidymodels].
+
+::: {#exm-1}
+W tym przykładzie przetestujemy hipotezę o równości średniej z wartością teoretyczną.
+Dane weźmiemy ze zbioru `gss` biblioteki `infer` zawierającego podzbiór wyników spisu powszechnego przeprowadzonego w 1972 r.
+w USA.
+
+```{r}
+library(tidymodels)
+glimpse(gss)
+```
+
+Przetestujmy hipotezę, że średnia wieku wynosi 40 lat.
+Zacznijmy od sprawdzenia jak wygląda rozkład badanej cechy.
+
+```{r}
+#| label: fig-hist1
+#| fig-cap: Histogram wieku
+
+gss |> 
+  ggplot(aes(age))+
+  geom_histogram(color = "white", bins = 15)
+```
+
+Można mieć pewne wątpliwości co do normalności rozkładu, ponieważ zarysowuje się delikatna asymetria prawostronna.
+Nie będziemy jednak weryfikować hipotezy o normalności, tylko przeprowadzimy klasyczny test, nie mając pewności czy może on być stosowany w tej sytuacji.
+
+```{r}
+t.test(gss$age, mu = 40)
+```
+
+Wynik testu nie daje podstaw do odrzucenia hipotezy o tym, że przeciętny wiek w badanej populacji wynosi 40 lat.
+Przeprowadzimy teraz wnioskowanie w oparciu o techniki bootstrap i permutacyjną.
+
+```{r}
+null_mean <- gss |> 
+  specify(response = age) |> # określenie zmiennej
+  hypothesise(null = "point", mu = 40) |> # ustalienie hipotezy
+  generate(1000, type = "bootstrap") |> # generujemy dane
+  calculate(stat = "mean")
+null_mean
+
+sample_mean <- gss |> 
+  specify(response = age) |> 
+  calculate(stat = "mean")
+sample_mean
+```
+
+Teraz możemy przyjrzeć się rozkładowi średnich w próbach bootstrapowych.
+
+```{r}
+#| label: fig-hist3
+#| fig-cap: Histogram średnich bootstrapowych wraz z 95% przedziałem ufności dla średniej
+ci <- null_mean |> 
+  get_confidence_interval(point_estimate = sample_mean,
+                          level = .95,
+                          type = "se")
+
+null_mean |> 
+  visualise() + 
+  shade_ci(endpoints = ci)
+```
+
+Koncentracja wokół wartości 40 może przemawiać za przyjęciem hipotezy $H_0$.
+Ponadto wygląda na to, że otrzymany przedział ufności zawiera teoretyczną średnią wieku 40, co jest kolejny argumentem za przyjęciem hipotezy zerowej.
+Na koniec wyliczymy $p$ dla testu bootstrapowego.
+
+```{r}
+null_mean |> 
+  get_p_value(obs_stat = sample_mean, direction = "two.sided")
+```
+
+Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.
+
+```{r}
+#| label: fig-hist4
+#| fig-cap: Histogram średnich bootstrapowych z zacienonym obszarem ilustrującym na ile ekstremalna jest średnia naszej próby w stosunku do średniej wynikającej z hipotezy zerowej
+
+null_mean |> 
+  visualise()+
+  shade_p_value(obs_stat = sample_mean, direction = "two-sided")
+```
+:::
+
+::: callout-tip
+W przypadku weryfikacji hipotez dotyczących jednej zmiennej wyniki testu bootstrapowego i permutacyjnego są identyczne, ponieważ te dwa rodzaje próbkowania są w tym przypadku identyczne.
+:::
+
+::: {#exm-2}
+Tym razem przetestujemy nico bardziej ambitną hipotezę.
+Będzie to hipoteza o równości median
+:::
