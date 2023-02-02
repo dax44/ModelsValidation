@@ -244,12 +244,17 @@ div.csl-indent {
 <div class="page-columns page-full"><p>W tym rozdziale zostanie przedstawiona procedura weryfikacyjna mająca na celu ocenę jakości przedstawionych rozwiązań w klasycznym podejściu do przedziałów ufności i weryfikacji hipotez. Największa trudnością w szacowaniu parametrów rozkładu za pomocą przedziałów ufności oraz w weryfikacji hipotez jest konieczność spełnienia założeń stosowalności tych metod. Bardzo często badacz nie posiada wystarczającej wiedzy o konsekwencji naruszenia tych założeń, a czasem nawet o ich istnieniu. Nawet wówczas, gdy badacz jest świadom konieczności spełnienia założeń w estymacji przedziałowej i weryfikacji hipotez, wymagania te mogą się okazać trudne do wypełnienia. W wielu przypadkach podczas weryfikacji hipotez za pomocą testu t-Studenta, weryfikując hipotezę o normalności rozkładu badanej cechy pojawiają się pewne wątpliwości. Po pierwsze, czy wybrany test mogę stosować do weryfikacji hipotezy o normalności w przypadku tak mało licznej próby lub tak licznej próby. Wiemy bowiem, że często stosowany test Shapiro-Wilka do weryfikacji hipotezy o zgodności populacji z rozkładem normalnym, może zbyt często odrzucać hipotezę o zgodności z rozkładem jeśli test jest wykonywany na dużej próbie<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Z drugiej strony dla prób o małej liczności test w większości nie odrzuca hipotezy o normalności, a to dlatego, że nie sposób jej odrzucić np. na podstawie 5 obserwacji. Podniesiony problem normalności rozkładu badanej cechy nie jest jedynym z jakim badacz może się spotkać chcąc spełnić wszystkie założenia modelu<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> . Założenia o równości wariancji badanej cechy pomiędzy grupami, czy brak nadmiarowości<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, to kolejne przykłady problemów z jakimi może spotkać się badac z.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;moc tego testu rośnie bardzo szybko wraz ze wzrostem liczebności próby</p></li><li id="fn2"><p><sup>2</sup>&nbsp;mam na myśli zarówno modele przedziałów ufności, jaki i modele statystyczne do testowania hipotez</p></li><li id="fn3"><p><sup>3</sup>&nbsp;w przypadku badania efektu za pomocą modelu liniowego</p></li></div></div>
 <div class="page-columns page-full"><p>Konieczność spełnienia wymienionych w stosowanej metodzie wnioskowania założeń jest konieczna, ponieważ w przeciwnym przypadku nie możemy być pewni czy wyniki zastosowanej metody są trafne<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Konsekwencją niespełnienia warunków początkowych metody, nie możemy być pewni czy rozkład statystyki testowej jest taki jak głosi metoda. I choć istnieją prace, które wyraźnie wskazują na odporność pewnych metod statystycznych na niespełnienie założeń, to nie zwalniają nas z weryfikacji tychże założeń, ponieważ w przypadku niektórych z nich nie znamy konsekwencji ich naruszenia.</p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;czy wniosek wyciągnięty na podstawie modelu jest właściwy</p></li></div></div>
 <p>W przypadku wspomnianych wyżej wątpliwości co do stosowalności poszczególnych metod weryfikacyjnych należy poszukać rozwiązań, które uprawdopodobnią wyniki uzyskane metodami klasycznymi. Powszechnie polecane w takiej sytuacji są rozwiązania opierające się na próbkowaniu (ang. <em>resampling</em>), wśród których najbardziej znane, to bootstrap i metody permutacyjne.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-2 o 18.47.10.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 <div class="page-columns page-full"><p>Niezależnie od stawianej hipotezy, badacz zadaje sobie ten sam rodzaj pytania podczas wnioskowania statystycznego: czy efekt/różnica w obserwowanych danych jest rzeczywista, czy wynika z przypadku? Aby odpowiedzieć na to pytanie, analityk zakłada, że efekt w obserwowanych danych był spowodowany przypadkiem i nazywa to założenie hipotezą zerową<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Analityk następnie oblicza statystykę testową z danych, która opisuje obserwowany efekt. Może użyć tej statystyki testowej do obliczenia wartości <span class="math inline">\(p\)</span> poprzez zestawienie jej z rozkładem wynikającym z hipotezy zerowej. Jeśli to prawdopodobieństwo jest poniżej jakiegoś wcześniej zdefiniowanego poziomu istotności <span class="math inline">\(\alpha\)</span>, to analityk powinien odrzucić hipotezę zerową.</p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że “coś się dzieje”</p></li></div></div>
 <p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="references.html#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="references.html#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 3.1 </strong></span>W tym przykładzie przetestujemy hipotezę o równości średniej z wartością teoretyczną. Dane weźmiemy ze zbioru <code>gss</code> biblioteki <code>infer</code> zawierającego podzbiór wyników spisu powszechnego przeprowadzonego w 1972 r. w USA.</p>
 <div class="cell">
 <details><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">nord</span><span class="op">)</span> <span class="co"># palettes</span></span>
 <span><span class="fu">glimpse</span><span class="op">(</span><span class="va">gss</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>Rows: 500
@@ -311,16 +316,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  40.4
- 2         2  41.3
- 3         3  39.8
- 4         4  40.1
- 5         5  40.1
- 6         6  40.2
- 7         7  40.4
- 8         8  40.6
- 9         9  39.8
-10        10  40.0
+ 1         1  40.3
+ 2         2  39.9
+ 3         3  40.5
+ 4         4  40.0
+ 5         5  39.3
+ 6         6  39.9
+ 7         7  38.8
+ 8         8  39.6
+ 9         9  40.0
+10        10  39.3
 # … with 990 more rows</code></pre>
 </div>
 <details><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -361,7 +366,7 @@ Null Hypothesis: point
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1   0.652</code></pre>
+1   0.634</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>
@@ -391,8 +396,227 @@ Wskazówka
 <p>W przypadku weryfikacji hipotez dotyczących jednej zmiennej wyniki testu bootstrapowego i permutacyjnego są identyczne, ponieważ te dwa rodzaje próbkowania są w tym przypadku identyczne.</p>
 </div>
 </div>
-<div id="exm-2" class="theorem example">
-<p><span class="theorem-title"><strong>Przykład 3.2 </strong></span>Tym razem przetestujemy nico bardziej ambitną hipotezę. Będzie to hipoteza o równości median</p>
+<div id="exm-2" class="theorem example page-columns page-full">
+<p><span class="theorem-title"><strong>Przykład 3.2 </strong></span>Tym razem przetestujemy nico bardziej ambitną hipotezę. Będzie to hipoteza o równości median. Dane zostaną wygenerowane z rozkładów asymetrycznych, a w tych przypadkach porównywanie median ma więcej sensu niż średnich.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">rchisq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">rchisq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span><span class="op">+</span><span class="fl">10</span></span>
+<span></span>
+<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">x1</span>,<span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>gr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">x</span>, fill <span class="op">=</span> <span class="va">gr</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_density</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/nord/man/scale_fill_nord.html">scale_fill_nord</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"victory_bonds"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-medians" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-medians-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.4: Porównanie rozkładów obu prób</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="page-columns page-full"><p>Jak widać na <a href="#fig-medians">Rysunek&nbsp;<span>3.4</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;tylko w przypadku jednakowych kształtów rozkładów test ten weryfikuje równość median</p></li></div></div>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">sample_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sample_diff</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Response: x (numeric)
+Explanatory: gr (factor)
+# A tibble: 1 × 1
+   stat
+  &lt;dbl&gt;
+1 -6.83</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span>reps <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"bootstrap"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Oceńmy rozkład różnic z prób bootstrapowych. Jeśli hipoteza zerowa jest prawdziwa to rozkład różnicy median powinien oscylować wokół zera.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_confidence_interval</span><span class="op">(</span>level <span class="op">=</span> <span class="fl">.95</span>, type <span class="op">=</span> <span class="st">"percentile"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">shade_ci</span><span class="op">(</span>endpoints <span class="op">=</span> <span class="va">ci</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>             linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-median2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-median2-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.5: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Widać wyraźnie, że rozkład różnic pomiędzy medianami nie oscyluje wokół zera, co może świadczyć o konieczności odrzucenia hipotezy zerowej.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="fl">0</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1       0</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">x1</span>,<span class="va">x2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum exact test
+
+data:  x1 and x2
+W = 32, p-value = 2.453e-05
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Wartość <span class="math inline">\(p\)</span> mniejsza od <span class="math inline">\(\alpha\)</span> każe odrzucić hipotezę zerową na korzyść alternatywnej, czyli mediany nie są równe.</p>
+<p>Teraz przeprowadzimy test permutacyjny.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">null_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span>reps <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"permute"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_ci</span><span class="op">(</span>level <span class="op">=</span> <span class="fl">.95</span>, </span>
+<span>         type <span class="op">=</span> <span class="st">"percentile"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">shade_ci</span><span class="op">(</span>endpoints <span class="op">=</span> <span class="va">ci</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">sample_diff</span><span class="op">$</span><span class="va">stat</span>,</span>
+<span>             linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-median3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-median3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="page-columns page-full"><p>Jak widać z <a href="#fig-median3">Rysunek&nbsp;<span>3.6</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;co odzwierciedla warunek z hipotezy zerowej</p></li></div></div>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_diff</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_diff</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1       0</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-median4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-median4-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exm-3" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 3.3 </strong></span>W tym przykładzie zbadamy niezależność cech <code>partyid</code> i <code>class</code> ze zbioru <code>gss</code>, które oznaczają odpowiednio sprzyjanie danej partii politycznej i subiektywną identyfikację klasy społeczno-ekonomicznej.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://indrajeetpatil.github.io/ggstatsplot/">ggstatsplot</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html">ggbarstats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gss</span>,</span>
+<span>           x <span class="op">=</span> <span class="va">class</span>,</span>
+<span>           y <span class="op">=</span> <span class="va">partyid</span>, </span>
+<span>           label <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>           proportion.test <span class="op">=</span> <span class="cn">F</span>, </span>
+<span>           bf.message <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-chisq" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-chisq-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.8: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu <span class="math inline">\(\chi^2\)</span> niezależności</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Powyższy test każe odrzucić hipotezę o niezależności cech, a ponieważ nie wymaga on spełnienia założeń (poza niezależnością obserwacji w próbie), to można uznać wynik ten za wiarygodny. Jedyny czynnik jaki mógłby wpłynąć na wynik testu <span class="math inline">\(\chi^2\)</span> to liczebności w tabeli kontyngencji poniżej 5. Dlatego tym bardziej warto przeprowadzić testowanie tej hipotezy za pomocą próbkowania.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="co"># obliczamy statystykę testową dla próby</span></span>
+<span><span class="va">sample_stat</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">partyid</span>, <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">partyid</span><span class="op">~</span><span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># generujemy próby zgodne z hipotezą zerową za pomocą próbkowania</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">partyid</span>, <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">specify</span><span class="op">(</span>formula <span class="op">=</span> <span class="va">partyid</span> <span class="op">~</span> <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span><span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"permute"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># porównujemy rozkład wynikający z hipotezy zerowej z</span></span>
+<span><span class="co"># z wartością statystyki obliczoną z próby</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># obliczamy p-value</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1   0.002</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chisq2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-chisq2-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.9: Porównanie rozkładu statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Widzimy, że test każe odrzucić hipotezę o niezależności cech, podobnie jak test teoretyczny. Pakiet <code>infer</code> daje nam możliwość generowania rozkładu teoretycznego zgodnego z hipotezą zerową nieco inaczej niż na podstawie resamplingu.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_chisq_theory</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">partyid</span><span class="op">~</span><span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">assume</span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"Chisq"</span>, df <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_chisq_theory</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, </span>
+<span>                direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="va">sample_stat</span><span class="op">$</span><span class="va">stat</span>, df <span class="op">=</span> <span class="fl">9</span>, lower.tail <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   X-squared 
+0.0001314536 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chisq3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="infer_files/figure-html/fig-chisq3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;3.10: Porównanie rozkładu teoretycznego statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Oczywiście wynik otrzymany metodą teoretyczną pokrywa się dokładnie z wynikiem klasycznego testu <span class="math inline">\(\chi^2\)</span>.</p>
 </div>
 
 
