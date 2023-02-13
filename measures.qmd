@@ -1,0 +1,376 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Przegląd miar dopasowania modelu
+
+> *Wszystkie modele są błędne, ale niektóre są przydatne* - George E.P. Box
+
+Ocenę jakości dopasowania modelu można dokonywać na różne sposoby:
+
+-   porównując przewidywaną klasę lub wartość na podstawie modelu z obserwowaną prawdziwą klasą lub wartością;
+-   korzystając z ilustracji graficznej przedstawiając np. na osi odciętych wartości przewidywane na podstawie modelu, a na osi rzędnych wartości obserwowane w danych[^measures-1]; choć można się też spotkać z innymi wykresami, jak np. krzywe *ROC*, czy *Precision-Recall*;
+-   przedstawić klasyfikację w postaci macierzy błędnych klasyfikacji (ang. *confusion matrix*);
+-   najczęściej można się jednak spotkać z podejściem wykorzystującym różnego rodzaju miarami dopasowania modelu.
+
+[^measures-1]: dotyczy to modeli regresyjnych
+
+W tym rozdziale przedstawimy najpowszechniej stosowane miary dopasowania modelu w podziale na modele regresyjne i klasyfikacyjne.
+Przy czym w rodzinie modeli klasyfikacyjnych można wyszczególnić podklasę modeli, dla których zmienna wynikowa jest binarna.
+Modele ze zmienną wynikową binarną stanowią oddzielną klasę w kontekście dopasowania, ponieważ stosuje się wówczas inne miary dopasowania.
+Co prawda miary te można zastosować również w przypadku zmiennej wynikowej o większej liczbie kategorii[^measures-2], ale wymaga to wówczas przyjęcia dodatkowych umów w jaki sposób je stosować, a sposoby te nie są jednoznaczne.
+
+[^measures-2]: czyli większej niż dwie
+
+::: column-margin
+![](https://thumbs.gfycat.com/AdorableElegantGreatargus-max-1mb.gif)
+:::
+
+## Miary dopasowania modeli regresyjnych
+
+Przegląd zaczniemy od najlepiej znanych miar, a skończymy na rzadziej stosowanych, jak funkcja straty Hubera.
+
+### $R^2$
+
+Miara stosowana najczęściej do oceny dopasowania modeli liniowych, a definiowana jako:
+
+$$
+R^2=1-\frac{\sum_i(y_i-\hat{y}_i)^2}{\sum_i(y_i-\bar{y})^2},
+$$ {#eq-r2trad}
+
+gdzie $\hat{y}_i$ jest $i$-tą wartością przewidywaną na podstawie modelu, $\bar{y}$ jest średnią zmiennej wynikowej, a $y_i$ jest $i$-tą wartością obserwowaną.
+Już na kursie modeli liniowych dowiedzieliśmy się o wadach tak zdefiniowanej miary.
+Wśród nich należy wymienić przede wszystkim fakt, iż dołączając do modelu zmienne, których zdolność predykcyjna jest nieistotna[^measures-3], to i tak rośnie $R^2$
+
+[^measures-3]: czyli nie mają znaczenia w przewidywaniu wartości wynikowej
+
+W przypadku modeli liniowych wprowadzaliśmy korektę eliminującą tą wadę, jednak w przypadku modeli predykcyjnych skorygowana miara $R^2_{adj}$ nie wystarcza.
+W sytuacji gdy modele mają bardzo słabą moc predykcyjną, czyli są np.
+drzewem regresyjnym bez żadnej reguły podziału[^measures-4], wówczas można otrzymać ujemne wartości obu miar.
+Zaleca się zatem wprowadzenie miary, która pozbawiona jest tej wady, a jednocześnie ma tą sama interpretację.
+Definiuję się ją następująco:
+
+[^measures-4]: drzewo składa się tylko z korzenia
+
+$$
+\tilde{R}^2=[\operatorname{Cor}(Y, \hat{Y})]^2.
+$$ {#eq-r2cor}
+
+Miara zdefiniowana w ([-@eq-r2cor]) zapewnia nam wartości w przedziale (0,1), a klasyczna miara ([-@eq-r2trad]) nie[@kvalsethCautionaryNoteR21985].
+Tradycyjna jest zdefiniowana w bibliotece `yardstick`[^measures-5] pod nazwą `rsq_trad`, natomiast miara oparta na korelacji jako `rsq`. Oczywiście interpretacja jest następująca, że jeśli wartość $\tilde{R}^2$ jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.
+
+[^measures-5]: będącej częścią ekosystemu `tidymodels`
+
+### RMSE
+
+Inną powszechnie stosowaną miarą do oceny dopasowania modeli regresyjnych jest pierwiastek błędu średnio-kwadratowego (ang. *Root Mean Square Error*), zdefiniowany następująco:
+
+$$
+RMSE = \sqrt{\frac{\sum_{i=1}^n(y_i-\hat{y}_i)^2}{n}},
+$$ {#eq-rmse}
+
+gdzie $n$ oznacza liczebność zbioru danych na jakim dokonywana jest ocena dopasowania.
+Im mniejsza jest wartość błędu RMSE tym lepiej dopasowany jest model.
+Niestety wadą tej miary jest brak odporności na wartości odstające.
+Błąd w tym przypadku jest mierzony w tych samych jednostkach co mierzona wielkość wynikowa $Y$.
+Do wywołania jej używamy funkcji `rmse`.
+
+### MSE
+
+Ściśle powiązaną miarą dopasowania modelu z RMSE jest błąd średnio-kwadratowy (ang. *Mean Square Error*).
+Oczywiście jest on definiowany jako kwadrat RMSE.
+Interpretacja jest podobna jak w przypadku RMSE.
+W tym przypadku błąd jest mierzony w jednostkach do kwadratu i również jak w przypadku RMSE miara ta jest wrażliwa na wartości odstające.
+Wywołujemy ją funkcją `mse`.
+
+::: column-margin
+![](https://media.tenor.com/qsthhHhdjsQAAAAd/error-windows.gif)
+:::
+
+### MAE
+
+Chcąc uniknąć (choćby w części) wrażliwości na wartości odstające stosuje się miarę średniego absolutnego błędu (ang. *Mean Absolut Error*).
+Definiujemy go następująco:
+
+$$
+MAE=\frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{n}.
+$$ {#eq-mae}
+
+Ponieważ wartości błędów $y_i-\hat{y}_i$ nie są podnoszone do kwadratu, to miara ta jest mniej wrażliwa na punkty odstające.
+Interpretacja jej jest podobna jak MSE i RMSE.
+Do wywołania jej używamy funkcji `mae`.
+Błąd w tym przypadku jest również mierzony w tych samych jednostkach co $Y$.
+
+Wymienione miary błędów są nieunormowane, a dopasowania modeli możemy dokonywać jedynie porównując wynik błędu z wartościami $Y$, lub też przez porównanie miar dla różnych modeli.
+
+### MAPE
+
+Średni bezwzględny błąd procentowy (ang. *Mean Absolute Percentage Error*) jest przykładem miary błędu wyrażanego w procentach.
+Definiuje się go następująco:
+
+$$
+MAPE=\frac{1}{n}\sum_{i=1}^n\left|\frac{y_i-\hat{y}_i}{y_i}\right|\cdot 100\%.
+$$ {#eq-mape}
+
+Interpretujemy ten błąd podobnie jak poprzednie pomimo, że jest wyrażony w procentach.
+Do wywołania go w pakiecie `yardstick` używamy funkcji `mape`.
+
+### MASE
+
+Średni bezwzględny błąd skalowany (ang. *Mean Absolute Scaled Error*) jest miarą dokładności prognoz.
+Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako "ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach."[@hyndmanAnotherLookMeasures2006] Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych.[@fransesNoteMeanAbsolute2016] Definiujemy go następująco
+
+$$
+MASE = \frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{\sum_{i=1}^n\vert y_i-\bar{y}_i\vert}.
+$$ {#eq-mase}
+
+Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej[@hyndmanAnotherLookMeasures2006; @EvaluatingForecastAccuracy] Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów.
+Wywołujemy go funkcją `mase`.
+
+### MPE
+
+Średni błąd procentowy (ang. *Mean Percentage Error*) jest miarą błędu względnego definiowaną nastepująco
+
+$$
+MPE = \frac{1}{n}\sum_{i=1}^n\frac{y_i-\hat{y}_i}{y_i}.
+$$ {#eq-mpe}
+
+Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować.
+W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach.
+Wadą tej miary jest to, że jest ona nieokreślona zawsze, gdy pojedyncza wartość rzeczywista wynosi zero.
+Wywołujemy ją za pomocą `mpe`.
+
+### MSD
+
+Średnia znakowa różnic (ang. *Mean Signed Deviation*), znana również jako średnie odchylenie znakowe i średni błąd znakowy, jest statystyką próbkową, która podsumowuje, jak dobrze szacunki $\hat{Y}$ pasują do wielkości obserwowanych $Y$.
+Definiujemy ją następująco:
+
+$$
+MSD = \frac{1}{n}\sum_{i=1}^n(\hat{y}_i-y_i).
+$$ {#eq-msd}
+
+Interpretacja podobnie jak w przypadku innych błędów i mniej wynosi miara tym lepiej dopasowany model.
+Wywołujemy go funkcją `msd`.
+
+Istnieje cały szereg miar specjalistycznych rzadziej stosowanych w zagadnieniach regresyjnych.
+Wśród nich należy wymienić
+
+### Funkcja straty Hubera
+
+Funkcja straty Hubera (ang. *Huber loss*) jest nieco bardziej odporną na punkty odstające niż RMSE miarą błędu.
+Definiujemy ją następująco:
+
+$$
+L_{\delta}(y, \hat{y})= \begin{cases}
+  \frac12 (y_i-\hat{y}_i)^2, &\text{ jeśli }\vert y_i-\hat{y}_i\vert\leq\delta\\
+  \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta, &\text{ w przeciwnym przypadku}.
+\end{cases}
+$$ {#eq-huber} W implementacji `yardstick` $\delta=1$ natomiast wyliczanie funkcji straty następuje przez uśrednienie po wszystkih obserwacjach.
+Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegaja od obserwowanych wartości.
+Wywołujemy ją przez funkcję `huber_loss`.
+
+### Funkcja straty Pseudo-Hubera
+
+Funkcja straty Pseudo-Hubera (ang. *Pseudo-Huber loss*) może być stosowana jako gładkie przybliżenie funkcji straty Hubera.
+Łączy ona najlepsze właściwości straty kwadratowej[^measures-6] i straty bezwzględnej[^measures-7], będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych
+. Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr $\delta$. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni
+. Definiujemy ją następująco
+:
+
+[^measures-6]: inaczej w normie L2
+
+[^measures-7]: w normie L1
+
+$$
+L_{\delta}(y-\hat{y})=\delta^2\left(\sqrt{1+((y-\hat{y})/\delta)^2}-1\right).
+$$ {#eq-huber2} Wywołujemy ją za pomocą funkcji `huber_loss_pseudo`.
+
+### Logarytm funkcji straty dla rozkładu Poissona
+
+Logarytm funkcji straty dla rozkładu Poissona (ang. *Mean log-loss for Poisson data*) definiowany jest w następujący sposób:
+
+$$
+\mathcal{L}=\frac1n\sum_{i=11}^n(\hat{y}_i-y_i\cdot \ln(\hat{y}_i)).
+$$
+
+Wywołujemy go funkcją `poisson_log_los`.
+
+### SMAPE
+
+Symetryczny średni bezwzględny błąd procentowy (ang. *Symmetric Mean Absolute Percentage Error*) jest miarą dokładności opartą na błędach procentowych (lub względnych).
+Definiujemy ją następująco:
+
+$$
+SMAPE = \frac1n\sum_{i=1}^n\frac{\vert y_i-\hat{y}_i\vert}{(|y_i|+|\hat{y}_i|)/2}\cdot100\%.
+$$ {#eq-smape}
+
+Wywołujemy go funkcją `smape`.
+
+### RPD
+
+Stosunek wydajności do odchylenia standardowego (ang. *Ratio of Performance to Deviation*) definiujemy jako
+
+$$
+RPD = \frac{SD}{RMSE},
+$$ {#eq-rpd}
+
+gdzie $SD$ oczywiście oznacza odchylenie standardowe zmiennej zależnej.
+Tym razem interpretujemy go w ten sposób, że im wyższa jest wartość RPD tym lepiej dopasowany model.
+Wywołujemy za pomocą `rpd`.
+
+W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu.
+Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model.
+Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku skośnych zbiorów danych.
+Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez @bellon-maurelCriticalReviewChemometric2010 w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.
+
+### RPIQ
+
+Stosunek wartości do rozstępu międzykwartylowego (ang. *Ratio of Performance to Inter-Quartile*) definiujemy następująco:
+
+$$
+RPIQ = \frac{IQ}{RMSE},
+$$ {#eq-rpiq}
+
+gdzie $IQ$ oznacza rozstęp kwartylowy zmiennej zależnej.
+Wywołujemy go przez funkcję `rpiq.`
+
+### CCC
+
+Korelacyjny współczynnik zgodności (ang. *Concordance Correlation Coefficient*) mierzy zgodność pomiędzy wartościami predykcji i obserwowanymi.
+Definiujemy go w następujący sposób:
+
+$$
+CCC = \frac{2\rho\sigma_y\sigma_{\hat{y}}}{\sigma^2_{y}+\sigma^2_{\hat{y}}+(\mu_y-\mu_{\hat{y}})^2},
+$$
+
+gdzie $\mu_y,\mu_{\hat{y}}$ oznaczają średnią wartości obserwowanych i przewidywanych odpowiednio, $\sigma_{y},\sigma_{\hat{y}}$ stanowią natomiast odchylenia standardowe tych wielkości.
+$\rho$ jest współczynnikiem korelacji pomiędzy $Y$ i $\hat{Y}$.
+Wywołanie w R to funkcja `ccc`.
+
+### Podsumowanie miar dla modeli regresyjnych
+
+Wśród miar dopasowania modelu można wyróżnić, te które mierzą zgodność pomiędzy wartościami obserwowanymi a przewidywanymi, wyrażone często pewnego rodzaju korelacjami (lub ich kwadratami), a interpretujemy je w ten sposób, że im wyższe wartości tych współczynników tym bardziej zgodne są predykcje z obserwacjami.
+Drugą duża grupę miar stanowią błędy (bezwzględne i względne), które mierzą w różny sposób różnice pomiędzy wartościami obserwowanymi i przewidywanymi.
+Jedne są bardziej odporne wartości odstające inne mniej, a wszystkie interpretujemy tak, że jeśli ich wartość jest mniejsza tym lepiej jest dopasowany model.
+
+::: {#exm-1}
+Dla zilustrowania działania wspomnianych miar przeanalizujemy przykład modelu regresyjnego.
+Dla przykładu rozwiążemy zadanie przewidywania wytrzymałości betonu na podstawie jego parametrów.
+Do tego celu użyjemy danych ze zbioru `concrete` pakietu `modeldata`.[@yehAnalysisStrengthConcrete2006]
+
+```{r}
+library(tidymodels)
+
+# charakterystyka danych
+glimpse(concrete)
+
+# modelowania dokonamy bez szczególnego uwzględnienia charakteru zmiennych,
+# tuningowania i innych czynności, które będą nam towarzyszyć w normalnej
+# budowie modelu
+
+# podział danych na uczące i testowe
+set.seed(44)
+split <- initial_split(data = concrete,
+                       prop = 0.7)
+train_data <- training(split)
+test_data <- testing(split)
+
+# określenie modeli, wybrałem kNN
+knn5 <-
+  nearest_neighbor(neighbors = 5) |> 
+  set_engine('kknn') %>%
+  set_mode('regression')
+
+knn25 <-
+  nearest_neighbor(neighbors = 25) |> 
+  set_engine('kknn') %>%
+  set_mode('regression')
+
+# uczymy modele
+fit5 <- knn5 |> 
+  fit(compressive_strength~., data = train_data)
+
+fit25 <- knn25 |> 
+  fit(compressive_strength~., data = train_data)
+
+# obliczamy predykcję dla obu modeli na obu zbiorach
+pred_train5 <- predict(fit5, train_data)
+pred_train25 <- predict(fit25, train_data)
+pred_test5 <- predict(fit5, test_data)
+pred_test25 <- predict(fit25, test_data)
+```
+
+```{r}
+#| label: fig-por1
+#| fig-cap: Graficzne porównanie obu modeli na obu zbiorach
+
+bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
+          pred5 = c(pred_train5$.pred, pred_test5$.pred),
+          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
+  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
+  pivot_longer(cols = c(pred5, pred25),
+               names_to = "model",
+               values_to = "pred") |> 
+  mutate(model = case_when(
+    model == "pred5" ~ "knn5",
+    model == "pred25" ~ "knn25"
+  )) |> 
+  ggplot(aes(x = obs, y = pred))+
+  geom_point(alpha = 0.1)+
+  geom_abline(intercept = 0, 
+              slope = 1)+
+  facet_grid(sample~model)+
+  coord_obs_pred()
+```
+
+```{r}
+# podsumowanie za pomocą miary R2
+bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
+          pred5 = c(pred_train5$.pred, pred_test5$.pred),
+          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
+  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
+  pivot_longer(cols = c(pred5, pred25),
+               names_to = "model",
+               values_to = "pred") |> 
+  group_by(model, sample) |> 
+  rsq(truth = obs, estimate = pred) |> 
+  arrange(model)
+
+# można też podsumować od razu kilkoma miarami
+# będa miary domyślne dla modelu regresyjnego
+bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
+          pred5 = c(pred_train5$.pred, pred_test5$.pred),
+          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
+  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
+  pivot_longer(cols = c(pred5, pred25),
+               names_to = "model",
+               values_to = "pred") |> 
+  group_by(model, sample) |> 
+  metrics(truth = obs, estimate = pred) |> 
+  arrange(model, .metric)
+
+# możemy zmienić parametry niektórych miar
+huber_loss2 <- metric_tweak("huber_loss2", huber_loss, delta = 2)
+
+# można również wybrać jakie miary zostana użyte
+selected_metrics <- metric_set(ccc, rpd, mape, huber_loss2)
+
+
+bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
+          pred5 = c(pred_train5$.pred, pred_test5$.pred),
+          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
+  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
+  pivot_longer(cols = c(pred5, pred25),
+               names_to = "model",
+               values_to = "pred") |> 
+  group_by(model, sample) |> 
+  selected_metrics(truth = obs, estimate = pred) |> 
+  arrange(model, sample)
+```
+:::
+
+W przypadku gdybyśmy chcieli zdefiniować własną miarę, to oczywiście jest taka możliwość[^measures-8] polecam stronę pakietu `yardstick` - <https://www.tidymodels.org/learn/develop/metrics/>.
+
+[^measures-8]: choć liczba już istniejących jest imponująca

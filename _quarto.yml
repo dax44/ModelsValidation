@@ -30,6 +30,7 @@ book:
     - intro.qmd
     - modeling.qmd
     - infer.qmd
+    - measures.qmd
     - references.qmd
 
 bibliography: references.bib
