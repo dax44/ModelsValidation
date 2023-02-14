@@ -374,3 +374,276 @@ bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strengt
 W przypadku gdybyśmy chcieli zdefiniować własną miarę, to oczywiście jest taka możliwość[^measures-8] polecam stronę pakietu `yardstick` - <https://www.tidymodels.org/learn/develop/metrics/>.
 
 [^measures-8]: choć liczba już istniejących jest imponująca
+
+## Miary dopasowania modeli klasyfikacyjnych
+
+Jak to zostało wspomniane wcześniej w modelach klasyfikacyjnych można podzielić miary dopasowania na te, które dotyczą modeli z binarną zmienną wynikową i ze zmienna wielostanową.
+Miary można też podzielić na te, które zależą od prawdopodobieństwa poszczególnych stanów i te, które zależą tylko od klasyfikacji wynikowej.
+
+Do wyliczenia miar probabilistycznych konieczne jest wyliczenie predykcji z prawdopodobieństwami poszczególnych stanów.
+Aby uzyskać taki efekt wystarczy w predykcji modelu użyć parametru `type = "prob"`.
+W przykładzie podsumowującym miary będzie to zilustrowane.
+
+Na to, aby przybliżyć miary dopasowania opartych o prawdopodobieństwa stanów, konieczne jest wprowadzenie pojęcia macierzy klasyfikacji (ang. *confusion matrix*).
+Można je stosować zarówno do klasyfikacji dwustanowej, jak i wielostanowej.
+Użyjemy przykładu binarnego aby zilustrować szczegóły tej macierzy.
+
+```{r}
+#| label: fig-confmat
+#| fig-cap: Przykładowa macierz klasyfikacji
+# import danych do przykładu
+data(two_class_example)
+
+# kilka pierwszych wierszy wyników predykcji
+head(two_class_example)
+
+# confusion matrix
+two_class_example |> 
+  conf_mat(truth, predicted) |> 
+  autoplot(type = "heatmap")
+```
+
+Aby przedstawić poszczególne miary na podstawie macierzy klasyfikacji wystarczy przywołać ilustrację z [Wikipedii](https://en.wikipedia.org/wiki/Confusion_matrix), która w genialny sposób podsumowuje większość miar.
+
+![Macierz klasyfikacji](images/Zrzut%20ekranu%202023-02-14%20o%2017.21.10.png){#fig-confmat2 fig-align="center"}
+
+Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
+
+-   *accuacy* - informuje o odsetku poprawnie zaklasyfikowanych obserwacji.
+    Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę.
+    Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał *accuracy* na poziomie 95%.
+
+-   *kappa -* miara podobna miarą do *accuracy* i jest bardzo przydatna, gdy jedna lub więcej klas dominuje.
+    Definiujemy ją następująco $\kappa = \frac{p_o-p_e}{1-p_e}$, gdzie $p_o,p_e$ są odpowiednio zgodnością obserwowaną i oczekiwaną.
+    Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.
+
+-   *precision* - oznaczana też czasem jako PPV (ang. *Positive Predictive Value*) oznacza stosunek poprawnie zaklasyfikowanych wartości *true positive* (TP) do wszystkich przewidywanych wartości pozytywnych (ang. *positive predictive*).
+
+-   *recall -* nazywany także *sensitivity* lub *True Positive Rate* (TPR), który stanowi stosunek *true positive* do wszystkich przypadków *positive*.
+
+-   *specificity* - nazywane również *True Negative Rate* (TNR), wyraża się stosunkiem pozycji *true negative* do wszystkich obserwacji *negative*.
+
+-   *negative predictive value* (NPV) - oznaczane czasem też jako *false omission rate* jest liczone jako stosunek *false negative* do wszystkich przewidywanych *negative* (PN).
+
+-   $F_1$ - jest miarą zdefiniowaną jako $\frac{2PPV*TPR}{PPV+TPR}$.
+
+-   MCC - *Mathews Correlation Coeficient -* jest zdefiniowany jako $\sqrt{TPR*TNR*PPV*NPV}-\sqrt{FNR*FPR*NPV*FDR}$.
+
+-   *bakanced accuracy* - liczona jako średnia *sensitivity* i *specificity*.
+
+-   *detection prevalence* - zdefiniowana jako stosunek poprawnie przewidywanych obserwacji do liczby wszystkich przewidywanych wartości.
+
+-   *J index* - metryka Youden'a definiowana jako *sensitivity + specificity -1*, często jest wykorzystywana do określenia poziomu odcięcia prawdopodobieństwa zdarzenia wyróżnionego (ang. *threshold*).
+
+-   koszt niepoprawnej klasyfikacji - czasami niektóre błędy klasyfikacji są mniej kosztowne z punktu widzenie badacza, a inne bardziej.
+    Wówczas można przypisać koszty błędnych klasyfikacji do poszczególnych klas, nakładając kary za błędne przypisane do innej klasy i w ten sposób zapobiegać takim sytuacjom.
+
+-   średnia logarytmu funkcji straty - określana w literaturze jako *binary cross-entropy* dla przypadku zmiennej wynikowej dwustanowej i *multilevel cross-entropy* albo *categorical cross-entropy* w przypadku wielostanowej klasyfikacji.
+    Definiuje się ją następująco:
+
+    $$
+        \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
+    $$ {#eq-crossentropy} gdzie $y_i$ jest indykatorem klasy wyróżnionej dla $i$-tej obserwacji, a $\hat{y}_i$ prawdopodobieństwem wyróżnionego stanu $i$-tej obserwacji.
+
+Należy pamiętać, że większość wspomnianych miar opiera się na wartościach z macierzy klasyfikacji.
+Przy czym aby obserwacje zaklasyfikować do jednej z klas należy przyjąć pewien punkt odcięcia (*threshold*) prawdopodobieństwa, od którego przewidywana wartość będzie przyjmowała stan "1".
+Domyślnie w wielu modelach ten punkt jest ustalony na poziomie 0,5.
+Nie jest on jednak optymalny ze względu na jakość klasyfikacji.
+Zmieniając ten próg otrzymamy różne wartości *specificity, sensitivity, precision, recall,* itd.
+Istnieją kryteria doboru progu odcięcia, np.
+oparte na wartości Youdena, F1, średniej geometrycznej itp.
+W przykładzie prezentowanym poniżej pokażemy zastosowanie dwóch z tych technik.
+Bez względu na przyjęty poziom odcięcia istnieją również miary i wykresy, które pozwalają zilustrować jakość modelu.
+Należą do nich:
+
+-   wykresy:
+    -   ROC - *Receiver Operating Characteristic -* krzywa, która przedstawia kompromis pomiędzy *sensitivity i specificity* dla różnych poziomów odcięcia.
+
+    -   PRC - *Precision-Recall Curve* - krzywa, która pokazuje kompromis pomiędzy *precision i recall.*
+
+    -   Krzywa wzrostu (ang. *Gain Curve*) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.
+
+    -   Krzywa wyniesienia (ang. *Lift Curve*) - jest stosunkiem liczby pozytywnych obserwacji w $i$-tym decylu na podstawie modelu do oczekiwanej liczby pozytywnych obserwacji należących do $i$-tego decyla na podstawie modelu losowego.
+-   miary:
+    -   AUC - *Area Under ROC Curve* - mierzy pole pod krzywą ROC.
+
+    -   PRAUC - *Area Under Precision-Racall Curve* - mierzy pole pod krzywą P-R.
+
+    -   Pole pod krzywą wzrosu.
+
+    -   Pole pod krzywą wyniesienia.
+
+::: {#exm-2}
+Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej.
+Dane pochodzą ze zbioru `attrition` pakietu `modeldata`.
+Naszym zadaniem będzie zbudować modeli przewidujący odejścia z pracy.
+
+```{r}
+str(attrition)
+
+# podział zbioru na uczący i testowy
+set.seed(44)
+split <- initial_split(attrition, prop = 0.7, strata = "Attrition")
+train_data <- training(split)
+test_data <- testing(split)
+
+# określam model
+lr_mod <- logistic_reg() |> 
+  set_engine("glm") |> 
+  set_mode("classification")
+
+# uczę model
+lr_fit <- lr_mod |> 
+  fit(Attrition ~ ., data = train_data)
+
+# podsumowanie modelu
+lr_fit |> 
+  tidy() 
+
+```
+
+Teraz korzystając z różnych miar podsumujemy dopasowanie modelu.
+
+```{r}
+# predykcja z modelu przyjmując threshold = 0.5
+pred_class <- predict(lr_fit, new_data = test_data)
+
+# predkcja (prawdopodobieństwa klas)
+pred_prob <- predict(lr_fit, new_data = test_data, type = "prob")
+
+# ale można też tak
+pred <- augment(lr_fit, test_data) |> 
+  select(Attrition, .pred_class, .pred_No, .pred_Yes)
+
+# macierz klasyfikacji
+cm <- pred |> 
+  conf_mat(truth = Attrition, estimate = .pred_class)
+cm
+
+summary(cm)
+```
+
+Możemy też narysować krzywe, które nam pokażą, czy dla innych wartości progu model też dobrze przewiduje klasy wynikowe.
+
+```{r}
+#ROC
+pred |> 
+  roc_curve(truth = Attrition, .pred_Yes, event_level = "second") |> 
+  autoplot()
+
+#PRC
+pred |> 
+  pr_curve(truth = Attrition, .pred_Yes, event_level = "second") |> 
+  autoplot()
+
+#AUC
+pred |> 
+  roc_auc(truth = Attrition, .pred_Yes, event_level = "second") 
+
+#PRAUC
+pred |> 
+  pr_auc(truth = Attrition, .pred_Yes, event_level = "second") 
+```
+
+Wybór optymalnego progu odcięcia.
+
+```{r}
+library(probably)
+
+# ustalam zakres threshold
+thresholds <- seq(0.01,1, by = 0.01)
+
+# poszukuje najlepszego progu ze względu kryterium Youden'a
+pred |>
+  threshold_perf(Attrition, .pred_Yes, thresholds, event_level = "second") |>
+  pivot_wider(names_from = .metric, values_from = .estimate) |>
+  arrange(-j_index)
+
+# predykjca dla optymalnego progu
+pred.optim <- pred |> 
+  mutate(class = as.factor(ifelse(.pred_Yes > 0.19, "Yes", "No")))
+
+# macierz klasyfikacji
+cm2 <- pred.optim |> 
+  conf_mat(truth = Attrition, estimate = class)
+cm2
+summary(cm2)
+```
+:::
+
+### Miary dopasowania dla modeli ze zmienną wynikową wieloklasową
+
+Wspomniane zostało, że miary dedykowane dla modeli binarnych można również wykorzystać do modeli ze zmienną zależną wielostanową.
+Oczywiście wówczas trzeba użyć pewnego rodzaju uśredniania.
+Implementacje wieloklasowe wykorzystują mikro, makro i makro-ważone uśrednianie, a niektóre metryki mają swoje własne wyspecjalizowane implementacje wieloklasowe.
+
+#### Makro uśrednianie
+
+Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych.
+Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki.
+Jako przykład, rozważmy *precision*.
+W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden do jednego.
+Kolumny *truth* i *estimate* są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie *precision* jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest "wyróżnioną" kolumną.
+Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji.
+Wyniki są następnie uśredniane.
+
+Formuła dla $k$ klas wynikowych prezentuje się następująco:
+
+$$
+Pr_{macro} = \frac{Pr_1+Pr_2+\ldots+Pr_k}{k},
+$$ {#eq-macro}
+
+gdzie $Pr_i$ oznacza *precision* dla $i$-tej klasy.
+
+#### Makro-ważone uśrednianie
+
+Makro-ważone uśrednianie jest co do zasady podobne do metody makro uśredniania, z tą jednak zmianą, że wagi poszczególnych czynników w średniej zależą od liczności tych klas, co sprawia, że miara ta jest bardziej optymalna w przypadku wyraźnych dysproporcji zmiennej wynikowej.
+Formalnie obliczamy to wg reguły:
+
+$$
+Pr_{weighted-macro}=Pr_1\frac{\#Obs_1}{n}+Pr_2\frac{\#Obs_2}{n}+\ldots+Pr_k\frac{\#Obs_k}{n},
+$$ {#eq-weightedmacro}
+
+gdzie $\#Obs_i$ oznacza liczbę obserwacji w grupie $i$-tej, a $n$ jest liczebnością całego zbioru.
+
+#### Mikro uśrednianie
+
+Mikro uśrednianie traktuje cały zestaw danych jako jeden wynik zbiorczy i oblicza jedną metrykę zamiast $k$ metryk, które są uśredniane.
+Dla *precision* działa to poprzez obliczenie wszystkich *true positive* wyników dla każdej klasy i użycie tego jako licznika, a następnie obliczenie wszystkich *true positive* i *false positive* wyników dla każdej klasy i użycie tego jako mianownika.
+
+$$
+Pr_{micro} = \frac{TP_1+TP_2+\ldots TP_k}{(TP_1+TP_2+\ldots TP_k)+(FP_1+FP_2+\ldots FP_k)}.
+$$ {#eq-micro}
+
+W tym przypadku, zamiast klas o równej wadze, mamy obserwacje z równą wagą.
+Dzięki temu klasy z największą liczbą obserwacji mają największy wpływ na wynik.
+
+::: {#exm-3}
+Przykład użycia miar dopasowania modelu dla zmiennych wynikowych wieloklasowych.
+
+```{r}
+# predykcja wykonana dla sprawdzianu krzyżowego
+# bedzie nas interesować tylko wynik pierwszego folda
+head(hpc_cv)
+
+# macierz klasyfikacji
+cm <- hpc_cv |> 
+  conf_mat(truth = obs, estimate = pred)
+cm
+
+# poniższe miary są makro uśrednione
+summary(cm)
+
+# poniższe miary są makro uśrednione
+summary(cm, estimator = "micro")
+
+# ROC
+hpc_cv |> 
+  roc_curve(truth = obs, VF:L) |> 
+  autoplot()
+
+# AUC
+hpc_cv |> 
+  roc_auc(truth = obs, VF:L)
+```
+:::

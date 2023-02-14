@@ -250,6 +250,12 @@ div.csl-indent {
   <li><a href="#podsumowanie-miar-dla-modeli-regresyjnych" id="toc-podsumowanie-miar-dla-modeli-regresyjnych" class="nav-link" data-scroll-target="#podsumowanie-miar-dla-modeli-regresyjnych"><span class="toc-section-number">4.1.16</span>  Podsumowanie miar dla modeli regresyjnych</a></li>
   </ul>
 </li>
+  <li>
+<a href="#miary-dopasowania-modeli-klasyfikacyjnych" id="toc-miary-dopasowania-modeli-klasyfikacyjnych" class="nav-link" data-scroll-target="#miary-dopasowania-modeli-klasyfikacyjnych"><span class="toc-section-number">4.2</span>  Miary dopasowania modeli klasyfikacyjnych</a>
+  <ul class="collapse">
+<li><a href="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85" id="toc-miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową" class="nav-link" data-scroll-target="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85"><span class="toc-section-number">4.2.1</span>  Miary dopasowania dla modeli ze zmienną wynikową wieloklasową</a></li>
+  </ul>
+</li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -576,6 +582,407 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 </div>
 </div>
 <div class="page-columns page-full"><p>W przypadku gdybyśmy chcieli zdefiniować własną miarę, to oczywiście jest taka możliwość<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> polecam stronę pakietu <code>yardstick</code> - <a href="https://www.tidymodels.org/learn/develop/metrics/" class="uri">https://www.tidymodels.org/learn/develop/metrics/</a>.</p><div class="no-row-height column-margin column-container"><li id="fn8"><p><sup>8</sup>&nbsp;choć liczba już istniejących jest imponująca</p></li></div></div>
+</section></section><section id="miary-dopasowania-modeli-klasyfikacyjnych" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="miary-dopasowania-modeli-klasyfikacyjnych">
+<span class="header-section-number">4.2</span> Miary dopasowania modeli klasyfikacyjnych</h2>
+<p>Jak to zostało wspomniane wcześniej w modelach klasyfikacyjnych można podzielić miary dopasowania na te, które dotyczą modeli z binarną zmienną wynikową i ze zmienna wielostanową. Miary można też podzielić na te, które zależą od prawdopodobieństwa poszczególnych stanów i te, które zależą tylko od klasyfikacji wynikowej.</p>
+<p>Do wyliczenia miar probabilistycznych konieczne jest wyliczenie predykcji z prawdopodobieństwami poszczególnych stanów. Aby uzyskać taki efekt wystarczy w predykcji modelu użyć parametru <code>type = "prob"</code>. W przykładzie podsumowującym miary będzie to zilustrowane.</p>
+<p>Na to, aby przybliżyć miary dopasowania opartych o prawdopodobieństwa stanów, konieczne jest wprowadzenie pojęcia macierzy klasyfikacji (ang. <em>confusion matrix</em>). Można je stosować zarówno do klasyfikacji dwustanowej, jak i wielostanowej. Użyjemy przykładu binarnego aby zilustrować szczegóły tej macierzy.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># import danych do przykładu</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">two_class_example</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># kilka pierwszych wierszy wyników predykcji</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">two_class_example</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   truth      Class1       Class2 predicted
+1 Class2 0.003589243 0.9964107574    Class2
+2 Class1 0.678621054 0.3213789460    Class1
+3 Class2 0.110893522 0.8891064779    Class2
+4 Class1 0.735161703 0.2648382969    Class1
+5 Class2 0.016239960 0.9837600397    Class2
+6 Class1 0.999275071 0.0007249286    Class1</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># confusion matrix</span></span>
+<span><span class="va">two_class_example</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">conf_mat</span><span class="op">(</span><span class="va">truth</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">autoplot</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-confmat" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="measures_files/figure-html/fig-confmat-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;4.2: Przykładowa macierz klasyfikacji</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Aby przedstawić poszczególne miary na podstawie macierzy klasyfikacji wystarczy przywołać ilustrację z <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Wikipedii</a>, która w genialny sposób podsumowuje większość miar.</p>
+<div id="fig-confmat2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;4.3: Macierz klasyfikacji</figcaption><p></p>
+</figure>
+</div>
+<p>Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:</p>
+<ul>
+<li><p><em>accuacy</em> - informuje o odsetku poprawnie zaklasyfikowanych obserwacji. Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę. Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał <em>accuracy</em> na poziomie 95%.</p></li>
+<li><p><em>kappa -</em> miara podobna miarą do <em>accuracy</em> i jest bardzo przydatna, gdy jedna lub więcej klas dominuje. Definiujemy ją następująco <span class="math inline">\(\kappa = \frac{p_o-p_e}{1-p_e}\)</span>, gdzie <span class="math inline">\(p_o,p_e\)</span> są odpowiednio zgodnością obserwowaną i oczekiwaną. Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.</p></li>
+<li><p><em>precision</em> - oznaczana też czasem jako PPV (ang. <em>Positive Predictive Value</em>) oznacza stosunek poprawnie zaklasyfikowanych wartości <em>true positive</em> (TP) do wszystkich przewidywanych wartości pozytywnych (ang. <em>positive predictive</em>).</p></li>
+<li><p><em>recall -</em> nazywany także <em>sensitivity</em> lub <em>True Positive Rate</em> (TPR), który stanowi stosunek <em>true positive</em> do wszystkich przypadków <em>positive</em>.</p></li>
+<li><p><em>specificity</em> - nazywane również <em>True Negative Rate</em> (TNR), wyraża się stosunkiem pozycji <em>true negative</em> do wszystkich obserwacji <em>negative</em>.</p></li>
+<li><p><em>negative predictive value</em> (NPV) - oznaczane czasem też jako <em>false omission rate</em> jest liczone jako stosunek <em>false negative</em> do wszystkich przewidywanych <em>negative</em> (PN).</p></li>
+<li><p><span class="math inline">\(F_1\)</span> - jest miarą zdefiniowaną jako <span class="math inline">\(\frac{2PPV*TPR}{PPV+TPR}\)</span>.</p></li>
+<li><p>MCC - <em>Mathews Correlation Coeficient -</em> jest zdefiniowany jako <span class="math inline">\(\sqrt{TPR*TNR*PPV*NPV}-\sqrt{FNR*FPR*NPV*FDR}\)</span>.</p></li>
+<li><p><em>bakanced accuracy</em> - liczona jako średnia <em>sensitivity</em> i <em>specificity</em>.</p></li>
+<li><p><em>detection prevalence</em> - zdefiniowana jako stosunek poprawnie przewidywanych obserwacji do liczby wszystkich przewidywanych wartości.</p></li>
+<li><p><em>J index</em> - metryka Youden’a definiowana jako <em>sensitivity + specificity -1</em>, często jest wykorzystywana do określenia poziomu odcięcia prawdopodobieństwa zdarzenia wyróżnionego (ang. <em>threshold</em>).</p></li>
+<li><p>koszt niepoprawnej klasyfikacji - czasami niektóre błędy klasyfikacji są mniej kosztowne z punktu widzenie badacza, a inne bardziej. Wówczas można przypisać koszty błędnych klasyfikacji do poszczególnych klas, nakładając kary za błędne przypisane do innej klasy i w ten sposób zapobiegać takim sytuacjom.</p></li>
+<li>
+<p>średnia logarytmu funkcji straty - określana w literaturze jako <em>binary cross-entropy</em> dla przypadku zmiennej wynikowej dwustanowej i <em>multilevel cross-entropy</em> albo <em>categorical cross-entropy</em> w przypadku wielostanowej klasyfikacji. Definiuje się ją następująco:</p>
+<p><span id="eq-crossentropy"><span class="math display">\[
+    \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
+\tag{4.14}\]</span></span> gdzie <span class="math inline">\(y_i\)</span> jest indykatorem klasy wyróżnionej dla <span class="math inline">\(i\)</span>-tej obserwacji, a <span class="math inline">\(\hat{y}_i\)</span> prawdopodobieństwem wyróżnionego stanu <span class="math inline">\(i\)</span>-tej obserwacji.</p>
+</li>
+</ul>
+<p>Należy pamiętać, że większość wspomnianych miar opiera się na wartościach z macierzy klasyfikacji. Przy czym aby obserwacje zaklasyfikować do jednej z klas należy przyjąć pewien punkt odcięcia (<em>threshold</em>) prawdopodobieństwa, od którego przewidywana wartość będzie przyjmowała stan “1”. Domyślnie w wielu modelach ten punkt jest ustalony na poziomie 0,5. Nie jest on jednak optymalny ze względu na jakość klasyfikacji. Zmieniając ten próg otrzymamy różne wartości <em>specificity, sensitivity, precision, recall,</em> itd. Istnieją kryteria doboru progu odcięcia, np. oparte na wartości Youdena, F1, średniej geometrycznej itp. W przykładzie prezentowanym poniżej pokażemy zastosowanie dwóch z tych technik. Bez względu na przyjęty poziom odcięcia istnieją również miary i wykresy, które pozwalają zilustrować jakość modelu. Należą do nich:</p>
+<ul>
+<li>wykresy:
+<ul>
+<li><p>ROC - <em>Receiver Operating Characteristic -</em> krzywa, która przedstawia kompromis pomiędzy <em>sensitivity i specificity</em> dla różnych poziomów odcięcia.</p></li>
+<li><p>PRC - <em>Precision-Recall Curve</em> - krzywa, która pokazuje kompromis pomiędzy <em>precision i recall.</em></p></li>
+<li><p>Krzywa wzrostu (ang. <em>Gain Curve</em>) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.</p></li>
+<li><p>Krzywa wyniesienia (ang. <em>Lift Curve</em>) - jest stosunkiem liczby pozytywnych obserwacji w <span class="math inline">\(i\)</span>-tym decylu na podstawie modelu do oczekiwanej liczby pozytywnych obserwacji należących do <span class="math inline">\(i\)</span>-tego decyla na podstawie modelu losowego.</p></li>
+</ul>
+</li>
+<li>miary:
+<ul>
+<li><p>AUC - <em>Area Under ROC Curve</em> - mierzy pole pod krzywą ROC.</p></li>
+<li><p>PRAUC - <em>Area Under Precision-Racall Curve</em> - mierzy pole pod krzywą P-R.</p></li>
+<li><p>Pole pod krzywą wzrosu.</p></li>
+<li><p>Pole pod krzywą wyniesienia.</p></li>
+</ul>
+</li>
+</ul>
+<div id="exm-2" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 4.2 </strong></span>Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej. Dane pochodzą ze zbioru <code>attrition</code> pakietu <code>modeldata</code>. Naszym zadaniem będzie zbudować modeli przewidujący odejścia z pracy.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">attrition</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   1470 obs. of  31 variables:
+ $ Age                     : int  41 49 37 33 27 32 59 30 38 36 ...
+ $ Attrition               : Factor w/ 2 levels "No","Yes": 2 1 2 1 1 1 1 1 1 1 ...
+ $ BusinessTravel          : Factor w/ 3 levels "Non-Travel","Travel_Frequently",..: 3 2 3 2 3 2 3 3 2 3 ...
+ $ DailyRate               : int  1102 279 1373 1392 591 1005 1324 1358 216 1299 ...
+ $ Department              : Factor w/ 3 levels "Human_Resources",..: 3 2 2 2 2 2 2 2 2 2 ...
+ $ DistanceFromHome        : int  1 8 2 3 2 2 3 24 23 27 ...
+ $ Education               : Ord.factor w/ 5 levels "Below_College"&lt;..: 2 1 2 4 1 2 3 1 3 3 ...
+ $ EducationField          : Factor w/ 6 levels "Human_Resources",..: 2 2 5 2 4 2 4 2 2 4 ...
+ $ EnvironmentSatisfaction : Ord.factor w/ 4 levels "Low"&lt;"Medium"&lt;..: 2 3 4 4 1 4 3 4 4 3 ...
+ $ Gender                  : Factor w/ 2 levels "Female","Male": 1 2 2 1 2 2 1 2 2 2 ...
+ $ HourlyRate              : int  94 61 92 56 40 79 81 67 44 94 ...
+ $ JobInvolvement          : Ord.factor w/ 4 levels "Low"&lt;"Medium"&lt;..: 3 2 2 3 3 3 4 3 2 3 ...
+ $ JobLevel                : int  2 2 1 1 1 1 1 1 3 2 ...
+ $ JobRole                 : Factor w/ 9 levels "Healthcare_Representative",..: 8 7 3 7 3 3 3 3 5 1 ...
+ $ JobSatisfaction         : Ord.factor w/ 4 levels "Low"&lt;"Medium"&lt;..: 4 2 3 3 2 4 1 3 3 3 ...
+ $ MaritalStatus           : Factor w/ 3 levels "Divorced","Married",..: 3 2 3 2 2 3 2 1 3 2 ...
+ $ MonthlyIncome           : int  5993 5130 2090 2909 3468 3068 2670 2693 9526 5237 ...
+ $ MonthlyRate             : int  19479 24907 2396 23159 16632 11864 9964 13335 8787 16577 ...
+ $ NumCompaniesWorked      : int  8 1 6 1 9 0 4 1 0 6 ...
+ $ OverTime                : Factor w/ 2 levels "No","Yes": 2 1 2 2 1 1 2 1 1 1 ...
+ $ PercentSalaryHike       : int  11 23 15 11 12 13 20 22 21 13 ...
+ $ PerformanceRating       : Ord.factor w/ 4 levels "Low"&lt;"Good"&lt;"Excellent"&lt;..: 3 4 3 3 3 3 4 4 4 3 ...
+ $ RelationshipSatisfaction: Ord.factor w/ 4 levels "Low"&lt;"Medium"&lt;..: 1 4 2 3 4 3 1 2 2 2 ...
+ $ StockOptionLevel        : int  0 1 0 0 1 0 3 1 0 2 ...
+ $ TotalWorkingYears       : int  8 10 7 8 6 8 12 1 10 17 ...
+ $ TrainingTimesLastYear   : int  0 3 3 3 3 2 3 2 2 3 ...
+ $ WorkLifeBalance         : Ord.factor w/ 4 levels "Bad"&lt;"Good"&lt;"Better"&lt;..: 1 3 3 3 3 2 2 3 3 2 ...
+ $ YearsAtCompany          : int  6 10 0 8 2 7 1 1 9 7 ...
+ $ YearsInCurrentRole      : int  4 7 0 7 2 7 0 0 7 7 ...
+ $ YearsSinceLastPromotion : int  0 1 0 3 2 3 0 0 1 7 ...
+ $ YearsWithCurrManager    : int  5 7 0 0 2 6 0 0 8 7 ...</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podział zbioru na uczący i testowy</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">attrition</span>, prop <span class="op">=</span> <span class="fl">0.7</span>, strata <span class="op">=</span> <span class="st">"Attrition"</span><span class="op">)</span></span>
+<span><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
+<span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># określam model</span></span>
+<span><span class="va">lr_mod</span> <span class="op">&lt;-</span> <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># uczę model</span></span>
+<span><span class="va">lr_fit</span> <span class="op">&lt;-</span> <span class="va">lr_mod</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Attrition</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># podsumowanie modelu</span></span>
+<span><span class="va">lr_fit</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 58 × 5
+   term                             estimate   std.error statistic   p.value
+   &lt;chr&gt;                               &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)                     -3.41     1261.       -0.00270  0.998    
+ 2 Age                             -0.0375      0.0179   -2.09     0.0364   
+ 3 BusinessTravelTravel_Frequently  2.14        0.546     3.92     0.0000875
+ 4 BusinessTravelTravel_Rarely      1.31        0.505     2.60     0.00942  
+ 5 DailyRate                       -0.000213    0.000279 -0.766    0.444    
+ 6 DepartmentResearch_Development   0.783    1261.        0.000621 1.00     
+ 7 DepartmentSales                 13.7      1115.        0.0123   0.990    
+ 8 DistanceFromHome                 0.0452      0.0137    3.30     0.000964 
+ 9 Education.L                      0.353       0.435     0.811    0.417    
+10 Education.Q                      0.170       0.372     0.458    0.647    
+# … with 48 more rows</code></pre>
+</div>
+</div>
+<p>Teraz korzystając z różnych miar podsumujemy dopasowanie modelu.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja z modelu przyjmując threshold = 0.5</span></span>
+<span><span class="va">pred_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lr_fit</span>, new_data <span class="op">=</span> <span class="va">test_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># predkcja (prawdopodobieństwa klas)</span></span>
+<span><span class="va">pred_prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lr_fit</span>, new_data <span class="op">=</span> <span class="va">test_data</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ale można też tak</span></span>
+<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu">augment</span><span class="op">(</span><span class="va">lr_fit</span>, <span class="va">test_data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_class</span>, <span class="va">.pred_No</span>, <span class="va">.pred_Yes</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># macierz klasyfikacji</span></span>
+<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">.pred_class</span><span class="op">)</span></span>
+<span><span class="va">cm</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction  No Yes
+       No  352  39
+       Yes  18  33</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             binary         0.871
+ 2 kap                  binary         0.464
+ 3 sens                 binary         0.951
+ 4 spec                 binary         0.458
+ 5 ppv                  binary         0.900
+ 6 npv                  binary         0.647
+ 7 mcc                  binary         0.474
+ 8 j_index              binary         0.410
+ 9 bal_accuracy         binary         0.705
+10 detection_prevalence binary         0.885
+11 precision            binary         0.900
+12 recall               binary         0.951
+13 f_meas               binary         0.925</code></pre>
+</div>
+</div>
+<p>Możemy też narysować krzywe, które nam pokażą, czy dla innych wartości progu model też dobrze przewiduje klasy wynikowe.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#ROC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="measures_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#PRC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">pr_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="measures_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#AUC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.808</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#PRAUC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">pr_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 pr_auc  binary         0.569</code></pre>
+</div>
+</div>
+<p>Wybór optymalnego progu odcięcia.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably/">probably</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ustalam zakres threshold</span></span>
+<span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># poszukuje najlepszego progu ze względu kryterium Youden'a</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://probably.tidymodels.org/reference/threshold_perf.html">threshold_perf</a></span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, <span class="va">thresholds</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">.metric</span>, values_from <span class="op">=</span> <span class="va">.estimate</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="op">-</span><span class="va">j_index</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 100 × 6
+   .threshold .estimator  sens  spec j_index distance
+        &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+ 1       0.19 binary     0.722 0.838   0.560    0.103
+ 2       0.17 binary     0.736 0.816   0.552    0.103
+ 3       0.18 binary     0.722 0.824   0.547    0.108
+ 4       0.16 binary     0.736 0.808   0.544    0.106
+ 5       0.2  binary     0.694 0.846   0.540    0.117
+ 6       0.22 binary     0.681 0.857   0.537    0.123
+ 7       0.15 binary     0.736 0.797   0.533    0.111
+ 8       0.21 binary     0.681 0.851   0.532    0.124
+ 9       0.12 binary     0.75  0.773   0.523    0.114
+10       0.26 binary     0.639 0.884   0.523    0.144
+# … with 90 more rows</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykjca dla optymalnego progu</span></span>
+<span><span class="va">pred.optim</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://generics.r-lib.org/reference/coercion-factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">.pred_Yes</span> <span class="op">&gt;</span> <span class="fl">0.19</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># macierz klasyfikacji</span></span>
+<span><span class="va">cm2</span> <span class="op">&lt;-</span> <span class="va">pred.optim</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">class</span><span class="op">)</span></span>
+<span><span class="va">cm2</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction  No Yes
+       No  310  20
+       Yes  60  52</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             binary         0.819
+ 2 kap                  binary         0.458
+ 3 sens                 binary         0.838
+ 4 spec                 binary         0.722
+ 5 ppv                  binary         0.939
+ 6 npv                  binary         0.464
+ 7 mcc                  binary         0.475
+ 8 j_index              binary         0.560
+ 9 bal_accuracy         binary         0.780
+10 detection_prevalence binary         0.747
+11 precision            binary         0.939
+12 recall               binary         0.838
+13 f_meas               binary         0.886</code></pre>
+</div>
+</div>
+</div>
+<section id="miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową">
+<span class="header-section-number">4.2.1</span> Miary dopasowania dla modeli ze zmienną wynikową wieloklasową</h3>
+<p>Wspomniane zostało, że miary dedykowane dla modeli binarnych można również wykorzystać do modeli ze zmienną zależną wielostanową. Oczywiście wówczas trzeba użyć pewnego rodzaju uśredniania. Implementacje wieloklasowe wykorzystują mikro, makro i makro-ważone uśrednianie, a niektóre metryki mają swoje własne wyspecjalizowane implementacje wieloklasowe.</p>
+<section id="makro-uśrednianie" class="level4" data-number="4.2.1.1"><h4 data-number="4.2.1.1" class="anchored" data-anchor-id="makro-uśrednianie">
+<span class="header-section-number">4.2.1.1</span> Makro uśrednianie</h4>
+<p>Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych. Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki. Jako przykład, rozważmy <em>precision</em>. W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden do jednego. Kolumny <em>truth</em> i <em>estimate</em> są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie <em>precision</em> jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest “wyróżnioną” kolumną. Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji. Wyniki są następnie uśredniane.</p>
+<p>Formuła dla <span class="math inline">\(k\)</span> klas wynikowych prezentuje się następująco:</p>
+<p><span id="eq-macro"><span class="math display">\[
+Pr_{macro} = \frac{Pr_1+Pr_2+\ldots+Pr_k}{k},
+\tag{4.15}\]</span></span></p>
+<p>gdzie <span class="math inline">\(Pr_i\)</span> oznacza <em>precision</em> dla <span class="math inline">\(i\)</span>-tej klasy.</p>
+</section><section id="makro-ważone-uśrednianie" class="level4" data-number="4.2.1.2"><h4 data-number="4.2.1.2" class="anchored" data-anchor-id="makro-ważone-uśrednianie">
+<span class="header-section-number">4.2.1.2</span> Makro-ważone uśrednianie</h4>
+<p>Makro-ważone uśrednianie jest co do zasady podobne do metody makro uśredniania, z tą jednak zmianą, że wagi poszczególnych czynników w średniej zależą od liczności tych klas, co sprawia, że miara ta jest bardziej optymalna w przypadku wyraźnych dysproporcji zmiennej wynikowej. Formalnie obliczamy to wg reguły:</p>
+<p><span id="eq-weightedmacro"><span class="math display">\[
+Pr_{weighted-macro}=Pr_1\frac{\#Obs_1}{n}+Pr_2\frac{\#Obs_2}{n}+\ldots+Pr_k\frac{\#Obs_k}{n},
+\tag{4.16}\]</span></span></p>
+<p>gdzie <span class="math inline">\(\#Obs_i\)</span> oznacza liczbę obserwacji w grupie <span class="math inline">\(i\)</span>-tej, a <span class="math inline">\(n\)</span> jest liczebnością całego zbioru.</p>
+</section><section id="mikro-uśrednianie" class="level4" data-number="4.2.1.3"><h4 data-number="4.2.1.3" class="anchored" data-anchor-id="mikro-uśrednianie">
+<span class="header-section-number">4.2.1.3</span> Mikro uśrednianie</h4>
+<p>Mikro uśrednianie traktuje cały zestaw danych jako jeden wynik zbiorczy i oblicza jedną metrykę zamiast <span class="math inline">\(k\)</span> metryk, które są uśredniane. Dla <em>precision</em> działa to poprzez obliczenie wszystkich <em>true positive</em> wyników dla każdej klasy i użycie tego jako licznika, a następnie obliczenie wszystkich <em>true positive</em> i <em>false positive</em> wyników dla każdej klasy i użycie tego jako mianownika.</p>
+<p><span id="eq-micro"><span class="math display">\[
+Pr_{micro} = \frac{TP_1+TP_2+\ldots TP_k}{(TP_1+TP_2+\ldots TP_k)+(FP_1+FP_2+\ldots FP_k)}.
+\tag{4.17}\]</span></span></p>
+<p>W tym przypadku, zamiast klas o równej wadze, mamy obserwacje z równą wagą. Dzięki temu klasy z największą liczbą obserwacji mają największy wpływ na wynik.</p>
+<div id="exm-3" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 4.3 </strong></span>Przykład użycia miar dopasowania modelu dla zmiennych wynikowych wieloklasowych.</p>
+<div class="cell">
+<details><summary>Kod</summary><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja wykonana dla sprawdzianu krzyżowego</span></span>
+<span><span class="co"># bedzie nas interesować tylko wynik pierwszego folda</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">hpc_cv</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>  obs pred        VF          F           M            L Resample
+1  VF   VF 0.9136340 0.07786694 0.008479147 1.991225e-05   Fold01
+2  VF   VF 0.9380672 0.05710623 0.004816447 1.011557e-05   Fold01
+3  VF   VF 0.9473710 0.04946767 0.003156287 4.999849e-06   Fold01
+4  VF   VF 0.9289077 0.06528949 0.005787179 1.564496e-05   Fold01
+5  VF   VF 0.9418764 0.05430830 0.003808013 7.294581e-06   Fold01
+6  VF   VF 0.9510978 0.04618223 0.002716177 3.841455e-06   Fold01</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># macierz klasyfikacji</span></span>
+<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span></span>
+<span><span class="va">cm</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction   VF    F    M    L
+        VF 1620  371   64    9
+        F   141  647  219   60
+        M     6   24   79   28
+        L     2   36   50  111</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             multiclass     0.709
+ 2 kap                  multiclass     0.508
+ 3 sens                 macro          0.560
+ 4 spec                 macro          0.879
+ 5 ppv                  macro          0.631
+ 6 npv                  macro          0.896
+ 7 mcc                  multiclass     0.515
+ 8 j_index              macro          0.440
+ 9 bal_accuracy         macro          0.720
+10 detection_prevalence macro          0.25 
+11 precision            macro          0.631
+12 recall               macro          0.560
+13 f_meas               macro          0.570</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span>, estimator <span class="op">=</span> <span class="st">"micro"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             multiclass     0.709
+ 2 kap                  multiclass     0.508
+ 3 sens                 micro          0.709
+ 4 spec                 micro          0.903
+ 5 ppv                  micro          0.709
+ 6 npv                  micro          0.903
+ 7 mcc                  multiclass     0.515
+ 8 j_index              micro          0.612
+ 9 bal_accuracy         micro          0.806
+10 detection_prevalence micro          0.25 
+11 precision            micro          0.709
+12 recall               micro          0.709
+13 f_meas               micro          0.709</code></pre>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ROC</span></span>
+<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="measures_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<details><summary>Kod</summary><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># AUC</span></span>
+<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc hand_till      0.829</code></pre>
+</div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -598,7 +1005,7 @@ Kvalseth, Tarald O. 1985. <span>„Cautionary <span>Note</span> about <span>R2</
 Yeh, I.-Cheng. 2006. <span>„Analysis of <span>Strength</span> of <span>Concrete Using Design</span> of <span>Experiments</span> and <span>Neural Networks</span>”</span>. <em>Journal of Materials in Civil Engineering</em> 18 (4): 597–604. <a href="https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)">https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)</a>.
 </div>
 </div>
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
