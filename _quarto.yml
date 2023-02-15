@@ -14,7 +14,6 @@ book:
   favicon: cover.png
   repo-url: https://github.com/dax44/ModelsValidation/
   repo-actions: [issue]
-  downloads: [pdf, epub]
   search: true
   author: 
   - name: Dariusz Majerek
@@ -24,7 +23,6 @@ book:
     tools: 
       - icon: twitter
         href: https://twitter.com
-    logo: images/logo.png
   chapters:
     - index.qmd
     - intro.qmd
@@ -39,6 +37,11 @@ reference-location: margin
 
 format:
   html:
+    grid:
+      sidebar-width: 300px
+      body-width: 1400px
+      margin-width: 300px
+      gutter-width: 1.5rem
     lang: pl
     theme:
       light: [journal, mycss.scss]
