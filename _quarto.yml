@@ -30,6 +30,7 @@ book:
     - infer.qmd
     - measures.qmd
     - resampling.qmd
+    - tidymodels.qmd
     - references.qmd
 
 bibliography: references.bib

@@ -1,0 +1,226 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Praca z `tidymodels`
+
+Filozofia jaką przyjęli twórcy pakietu `tidymodels`, wraz z wszystkimi pakietami towarzyszącymi, miała na celu ujednolicenie procesu modelowania, bez względu na to jaki aktualnie model jest uczony.
+Jest to odpowiedź na powszechnie pojawiające się problemy z modelowaniem w R, gdzie praktycznie każdy model ma swoją charakterystyczną formę wywołania, predykcji czy podsumowania.
+Co więcej, zdarza się nierzadko, że ten sam rodzaj modelu, np.
+regresja liniowa, może być budowany z wykorzystaniem różnych "silników": `stats`, `glm`, `glmnet` , `rstanarm`.
+W każdym z nich model będzie budowany nieco inaczej.
+Dodatkowo niektóre z wymienionych pakietów wymagają podczas uczenia ustalenia pewnych parametrów, jak rodzina rozkładów, parametr regularyzacji itp., co więcej w różnych pakietach mogą mieć inne nazwy.
+
+::: {.column-margin}
+![](images/tw1.png){fig-align="center"}
+:::
+
+
+Z pewnością powoduje to dodatkową komplikację podczas budowy modelu nie mającą bezpośredniego związku z modelowaniem.
+Podobnych przykładów różnic pomiędzy modelami można mnożyć.
+Nie tylko parametry modelu, czy funkcje wywoławcze się różnią, czasami format w jakim dane muszą być aplikowane do modelu - jako formuła czy jako para $(X,y)$ - czy nawet sposób predykcji mogą się znacząco różnić pomiędzy modelami.
+To wszystko sprawiło, że autorzy pakiety `tidymodels` dokonali pewnego rodzaju standaryzacji modeli.
+Sprawiło, to że badacz już nie musi się zastanawiać nad różnym nazewnictwem tego samego parametru w różnych modelach tego samego typu, czy jak przeprowadzić predykcję aby w wyniku otrzymać prawdopodobieństwa poszczególnych klas.
+W tym rozdziale postaramy się przybliżyć ten sposób unifikacji w budowie modelu uczenia maszynowego.
+
+## Budowa modelu
+
+Oddzielny pakiet przeznaczony do budowy modeli zawarty w ekosystemie `tidymodels` o nazwie `parsnip` pozwala w uniwersalny sposób budować i dopasowywać modele.
+Wracając do przykładu modelu liniowego postaramy się pokazać wszystkie zalety tego podejścia.
+Choć regresje liniową możemy zbudować z wykorzystaniem 11 różnych pakietów, to my się ograniczymy tylko do `stats`, `glmnet` i `rstanarm.`
+
+```{r}
+#| eval: false
+
+# w wersji klasycznej należałoby je budować następująco
+mod_stat <- lm(formula, data = ...)
+mod_glmnet <- glmnet(x = matrix, y = vector, family = "gaussian", ...)
+mod_stan <- stan_glm(formula, data, family = "gaussian", ...)
+```
+
+Już na poziomie definiowana modeli widzimy różnice w definicjach, np.
+glmnet potrzebuje danych w formacie $(X,y)$.
+W przypadku `tidymodels` podejście do określania modelu ma być bardziej zunifikowane:
+
+1.  Określ typ modelu na podstawie jego struktury matematycznej (np. regresja liniowa, las losowy, KNN, itp.).
+2.  Określenie silnika do dopasowania modelu. Najczęściej odzwierciedla to pakiet, który powinien być użyty, jak `stan`[^tidymodels-1] lub `glmnet`. Są to modele same w sobie, a `parsnip` zapewnia spójne interfejsy, używając ich jako silników do modelowania.
+3.  Jeśli jest to wymagane, zadeklaruj tryb pracy modelu[^tidymodels-2]. Tryb odzwierciedla typ przewidywanego wyniku. Dla wyników liczbowych trybem jest regresja; dla wyników jakościowych jest to klasyfikacja. Jeśli algorytm modelu może realizować tylko jeden typ wyniku, takim jak regresja liniowa, tryb jest już ustawiony.
+
+[^tidymodels-1]: jest to bibliotek języka C++
+
+[^tidymodels-2]: klasyfikacja czy regresja
+
+```{r}
+library(tidymodels)
+
+# to samo z wykorzystaniem parsnip
+linear_reg() %>% set_engine("lm")
+linear_reg() %>% set_engine("glmnet")
+linear_reg() %>% set_engine("stan")
+```
+
+Po ustaleniu modeli można je podać uczeniu, za pomocą funkcji `fit` w przypadku gdy określaliśmy zależność formułą lub `fit_xy` gdy zmienne niezależne i zależna były określone oddzielnie.
+Drugi przypadek ma miejsce gdy w procedurze przygotowania danych mamy je w postaci $(X,y)$.
+Nie mniej jednak pakiet `parsnip` pozwala na użycie `fit` nawet gdy oryginalna funkcja wymagała podania zmiennych niezależnych i zależnej.
+Ponadto funkcja `translate` pozwala na przetłumaczenie modelu `parsnip` na język danego pakietu.
+
+```{r}
+linear_reg() %>% set_engine("lm") |> translate()
+linear_reg(penalty = 1) %>% set_engine("glmnet") |> translate()
+linear_reg() %>% set_engine("stan") |> translate()
+```
+
+Wykorzystując dane `ames` dopasujemy cenę (`Sale_Price`) na podstawie długości i szerokości geograficznej domu.
+
+```{r}
+set.seed(44)
+ames <- ames %>% mutate(Sale_Price = log10(Sale_Price))
+ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
+ames_train <- training(ames_split)
+ames_test  <-  testing(ames_split)
+
+lm_model <- 
+  linear_reg() %>% 
+  set_engine("lm")
+
+lm_form_fit <- 
+  lm_model %>% 
+  fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
+
+lm_xy_fit <- 
+  lm_model %>% 
+  fit_xy(
+    x = ames_train %>% select(Longitude, Latitude),
+    y = ames_train %>% pull(Sale_Price)
+  )
+
+lm_form_fit
+
+lm_xy_fit
+
+```
+
+Kolejną zaletą pakietu `parsnip` jest unifikacja nazw parametrów modeli.
+Dla przykładu gdybyśmy chcieli dopasować trzy różne modele lasów losowych, korzystając z pakietów `ranger`, `randomForest` i `sparklyr`, musielibyśmy określać parametry modelu używając za każdym razem innych nazw.
+
+![Różne sposoby określania parametrów modelu](images/Zrzut%20ekranu%202023-02-17%20o%2020.13.06.png){#fig-pars1 fig-align="center"}
+
+W przypadku budowy w `parsnip` nazwy parametrów zostały zunifikowane:
+
+-   `mtry` - liczba wybranych predyktorów;
+-   `trees` - liczba drzew;
+-   `min_n` - minimalna liczba obserwacji aby dokonać podziału.
+
+Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który nie koniecznie musi się znać na różnicach pomiędzy pakietami.
+
+Dla wspomnianego przykładu lasów losowych, model można zdefiniować następująco.
+
+```{r}
+rand_forest(trees = 1000, min_n = 5) %>% 
+  set_engine("ranger") %>% 
+  set_mode("regression") %>% 
+  translate() # translate nie musi być używane, w tym przypadku było
+# użyte aby pokazać jak parsnip zamienił z unikalnej funkcji 
+# rand_forest na model ranger
+```
+
+Główne parametry modelu są przekazywane przez główną funkcję (w przykładzie była to `rand_forest`), ale pozostałe parametry, charakterystyczne dla danego silnika można przekazać przez argumenty silnika.
+
+```{r}
+rand_forest(trees = 1000, min_n = 5) %>% 
+  set_engine("ranger", verbose = TRUE) %>% 
+  set_mode("regression") # parametr verbose = T przekazany został oddzielnie
+```
+
+{{< tweet FGazzelloni 1428406504911216646 >}}
+
+
+## Użycie modelu
+
+Po utworzeniu i dopasowaniu modelu możemy wykorzystać wyniki na wiele sposobów; możemy chcieć narysować, podsumować lub w inny sposób zbadać model wyjściowy.
+W obiekcie modelu `parsnip` przechowywanych jest kilka wielkości, w tym dopasowany model.
+Można go znaleźć w elemencie o nazwie `fit`, który może być zwrócony za pomocą funkcji `extract_fit_engine`.
+
+```{r}
+lm_form_fit %>% extract_fit_engine()
+lm_form_fit %>% extract_fit_engine() %>% vcov()
+```
+
+::: callout-caution
+Nigdy nie przekazuj elementu `fit` modelu `parsnip` do funkcji `predict(lm_form_fit)`, tzn.
+nie używaj `predict(lm_form_fit$fit)`.
+Jeśli dane zostały wstępnie przetworzone w jakikolwiek sposób, zostaną wygenerowane nieprawidłowe predykcje (czasami bez błędów).
+Funkcja predykcji modelu bazowego nie ma pojęcia czy jakiekolwiek przekształcenia zostały dokonane na danych przed uruchomieniem modelu.
+:::
+
+Kolejną zaletę unifikacji `parsnip` możemy dostrzec przeglądając podsumowanie modeli.
+Nie zawsze wyniki modelu są przedstawiane w jednakowy sposób.
+Czasami różnice są niewielkie, gdy w jednym podsumowaniu zobaczymy `p-value` a w innym `Pr(>|t|)` ale czasem mogą być większe.
+I o ile nie da się zunifikować wszystkich podsumować modeli, ponieważ zawierają różne elementy, to w pakiecie `parsnip` korzysta się z funkcji `tidy` pakietu `broom` do podsumowania modelu.
+
+```{r}
+tidy(lm_form_fit)
+```
+
+Oczywiście nie wszystkie modele da się w ten sposób podsumować.
+
+## Predykcja z modelu
+
+::: column-margin
+![](https://i.kym-cdn.com/photos/images/original/002/028/868/312.jpg)
+:::
+
+Predykcja z modelu jest kolejnym elementem, w którym unifikacja daje o sobie znać:
+
+1.  wyniki zawsze są w formacie `tibble`;
+2.  nazwy kolumn są zawsze przewidywalne;
+3.  w `tibble` wynikowej wierszy jest zawsze tyle samo co w zbiorze, na którym predykcja była przeprowadzona;
+4.  kolejność wierszy jest ta sama co w oryginalnym zbiorze.
+
+```{r}
+ames_test_small <- ames_test %>% slice(1:5)
+predict(lm_form_fit, new_data = ames_test_small)
+```
+
+To sprawia, że łatwiej można korzystać z wyników predykcji, ponieważ zawsze jesteśmy pewni jaki układ ramki danych predykcji się pojawi.
+
+```{r}
+ames_test_small %>% 
+  select(Sale_Price) %>% 
+  bind_cols(predict(lm_form_fit, ames_test_small)) %>% 
+  # Add 95% prediction intervals to the results:
+  bind_cols(predict(lm_form_fit, ames_test_small, type = "pred_int")) 
+```
+
+![Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji](images/Zrzut%20ekranu%202023-02-17%20o%2020.41.43.png){fig-align="center" width="400"}
+
+```{r}
+tree_model <- 
+  decision_tree(min_n = 2) %>% 
+  set_engine("rpart") %>% 
+  set_mode("regression")
+
+tree_fit <- 
+  tree_model %>% 
+  fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
+
+ames_test_small %>% 
+  select(Sale_Price) %>% 
+  bind_cols(predict(tree_fit, ames_test_small))
+```
+
+## Rozszerzenia
+
+Sam pakiet `parsnip` zawiera interfejsy do wielu modeli.
+Jednakże, dla ułatwienia instalacji i konserwacji pakietu, istnieją inne pakiety `tidymodels`, które posiadają definicje modeli nie zawartych w `parsnip`.
+Np.
+pakiet `discrim` posiada definicje modeli klasyfikacyjnych zwanych metodami analizy dyskryminacyjnej (takich jak liniowa lub kwadratowa analiza dyskryminacyjna).
+Lista wszystkich modeli, które mogą być używane z `parsnip` znajduje się na stronie <https://www.tidymodels.org/find/>.
+
+Przydatnym narzędziem w budowaniu modeli z wykorzystaniem pakietu `tidymodels` jest dodatek programu Rstudio[^tidymodels-3].
+
+[^tidymodels-3]: addin instalowany razem z pakietem `parsnip`
+
+![Przykład działania parsnip_addin()](images/video1.mp4){fig-align="center"}

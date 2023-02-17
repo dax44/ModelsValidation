@@ -5,7 +5,7 @@ editor_options:
 bibliography: references.bib
 ---
 
-# Metody próbkowania
+# Zarządzanie danymi
 
 Istnieje kilka etapów tworzenia użytecznego modelu, w tym estymacja parametrów, wybór i tuning modelu oraz ocena wydajności.
 Na starcie nowego projektu zazwyczaj istnieje skończona pula danych dostępna dla wszystkich tych zadań, o której możemy myśleć jako o dostępnym budżecie danych.
