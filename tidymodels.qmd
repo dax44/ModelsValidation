@@ -13,10 +13,9 @@ regresja liniowa, może być budowany z wykorzystaniem różnych "silników": `s
 W każdym z nich model będzie budowany nieco inaczej.
 Dodatkowo niektóre z wymienionych pakietów wymagają podczas uczenia ustalenia pewnych parametrów, jak rodzina rozkładów, parametr regularyzacji itp., co więcej w różnych pakietach mogą mieć inne nazwy.
 
-::: {.column-margin}
+::: column-margin
 ![](images/tw1.png){fig-align="center"}
 :::
-
 
 Z pewnością powoduje to dodatkową komplikację podczas budowy modelu nie mającą bezpośredniego związku z modelowaniem.
 Podobnych przykładów różnic pomiędzy modelami można mnożyć.
@@ -136,7 +135,6 @@ rand_forest(trees = 1000, min_n = 5) %>%
 
 {{< tweet FGazzelloni 1428406504911216646 >}}
 
-
 ## Użycie modelu
 
 Po utworzeniu i dopasowaniu modelu możemy wykorzystać wyniki na wiele sposobów; możemy chcieć narysować, podsumować lub w inny sposób zbadać model wyjściowy.
@@ -211,7 +209,7 @@ ames_test_small %>%
   bind_cols(predict(tree_fit, ames_test_small))
 ```
 
-## Rozszerzenia
+### Rozszerzenia
 
 Sam pakiet `parsnip` zawiera interfejsy do wielu modeli.
 Jednakże, dla ułatwienia instalacji i konserwacji pakietu, istnieją inne pakiety `tidymodels`, które posiadają definicje modeli nie zawartych w `parsnip`.
@@ -224,3 +222,165 @@ Przydatnym narzędziem w budowaniu modeli z wykorzystaniem pakietu `tidymodels` 
 [^tidymodels-3]: addin instalowany razem z pakietem `parsnip`
 
 ![Przykład działania parsnip_addin()](images/video1.mp4){fig-align="center"}
+
+## Przepływy w modelowaniu
+
+Do tej pory o modelowaniu myśleliśmy w uproszczony sposób, ponieważ zakładaliśmy pewną strukturę modelu, dobieraliśmy silnik i uczyliśmy model na zbiorze treningowym.
+W "prawdziwych" zadaniach z zakresu uczenia maszynowego, proces ten jest znacznie bardziej złożony.
+W fazie, którą się powszechnie nazywa przygotowaniem danych (ang. *pre-processing*), dokonuje się transformacji, agregacji i imputacji danych w celu wykształcenia predyktorów o większej mocy predykcyjnej.
+W tej fazie dochodzi również do selekcji cech (ang. *feature engineering*), która ma na celu odfiltrowanie nieużytecznych cech zbioru danych.
+
+Kolejna faza budowania poprawnego modelu to jego optymalizacja (ang. *tuning*).
+Często bowiem budowane modele zawierają hiperparametry, których nie oszacujemy podczas uczenia modelu, dlatego należy je skalibrować na podstawie innych metod[^tidymodels-4].
+
+[^tidymodels-4]: szerzej o tej części będziemy mówić w dalszej części tej książki
+
+Również w końcowej fazie uczenia modelu tzw.
+*post-processing*-u dokonuje się jego modyfikacji, np.
+dobierając optymalny poziom odcięcia dla regresji logistycznej.
+
+To wszystko powoduje, że procedura modelowania składa się z kilku elementów.
+Do ich połączenia w ekosystemie `tidymodels` używa się przepływów (ang. *workflow*).
+Pakiet `workflow` zawiera szereg funkcji pozwalających skutecznie obsługiwać potoki `workflow`[^tidymodels-5].
+
+[^tidymodels-5]: tak nazywa się funkcja do tworzenia potoku
+
+Pomimo złożoności procedury modelowania można się dalej zastawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie.
+Postaramy się na przykładzie pokazać zasadności stosowania przepływów.
+
+Weźmy, dajmy na to, że predyktory w zbiorze danych są wysoce skorelowane.
+Wiem, że zjawisko współliniowości może przeszkodzić w modelowaniu zjawiska, np.
+za pomocą modelu liniowego, ponieważ znacznie rosną wówczas błędy standardowe estymacji.
+Jednym ze sposobów radzenia sobie z tym problemem jest zrzutowanie danych na nową przestrzeń mniej wymiarową za pomocą PCA.
+I gdyby PCA była metodą deterministyczną, czyli nie towarzyszyła jej żadna niepewność[^tidymodels-6], to tę procedurę *preprocessingu* użyli byśmy do zbioru uczącego w procesie uczenia modelu, a w predykcji do zbioru testowego, bez konsekwencji w postaci niedokładnego oszacowania wartości wynikowych.
+Jednak PCA wiąże się z niepewnością, dlatego procedura ta powinna być włączona do przepływu, czyli być immanentną częścią procesu modelowania.
+
+[^tidymodels-6]: jak np.
+    logarytmowanie zmiennej
+
+Choć `workflow` pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie `workflow` do prostego ucznia modelu bez tych elementów.
+
+```{r}
+# określenie modelu
+lm_model <- 
+  linear_reg() |> 
+  set_engine("lm")
+
+# zebranie elementów w workflow
+lm_wflow <- 
+  workflow() |> 
+  add_model(lm_model) |> 
+  add_formula(Sale_Price ~ Longitude + Latitude)
+
+# workflow
+lm_wflow
+
+# uczenie modelu
+lm_fit <- fit(lm_wflow, ames_train)
+lm_fit
+
+# predykcja
+predict(lm_fit, ames_test %>% slice(1:3))
+```
+
+Pomimo tego, że model został zebrany w jedną całość (przepływ), to cały czas możemy modyfikować jego elementy.
+Przykładowo ujmijmy jeden z predyktorów.
+
+```{r}
+lm_fit %>% update_formula(Sale_Price ~ Longitude)
+```
+
+Jeszcze inny przykład modyfikacji przepływu pokazuje przeformatowanie zależności opisywanej modelem.
+
+```{r}
+lm_wflow <- 
+  lm_wflow %>% 
+  remove_formula() %>% 
+  add_variables(outcome = Sale_Price, predictors = c(Longitude, Latitude))
+
+lm_wflow
+
+fit(lm_wflow, ames_train)
+```
+
+Genialną właściwością przepływów jest to, że gdy uczymy model wymagający zamiany zmiennych typu faktor na indykatory (ang. *dummy variables*), to przepływ to zrobi za nas.
+Przykładowo gdy uczymy model `boost_tree` z silnikiem `xgboost` to przepływ zamieni faktory na indykatory, a gdy uczymy z silnikiem `C5.0` to już nie, ponieważ ten pakiet tego nie wymaga.
+Są jednak sytuacje, w których niewielka interwencja w `workflow` jest potrzebna.
+Np.
+jeśli uczymy model z efektami losowymi.
+
+```{r}
+library(lme4)
+library(nlme)
+lmer(distance ~ Sex + (age | Subject), data = Orthodont)
+
+# tej formuły nie możemy bezpośrednio przekazać do workflow
+# za pomocą add_formula
+library(multilevelmod)
+
+multilevel_spec <- linear_reg() %>% set_engine("lmer")
+
+multilevel_workflow <- 
+  workflow() %>% 
+  # Pass the data along as-is: 
+  add_variables(outcome = distance, predictors = c(Sex, age, Subject)) %>% 
+  add_model(multilevel_spec, 
+            # This formula is given to the model
+            formula = distance ~ Sex + (age | Subject))
+
+multilevel_fit <- fit(multilevel_workflow, data = Orthodont)
+multilevel_fit
+```
+
+Kolejną zaletą pakietu `workflowset` jest możliwość jednoczesnego uczenia wielu wariantów modeli.
+
+```{r}
+# określamy potencjalne formuły modeli
+location <- list(
+  longitude = Sale_Price ~ Longitude,
+  latitude = Sale_Price ~ Latitude,
+  coords = Sale_Price ~ Longitude + Latitude,
+  neighborhood = Sale_Price ~ Neighborhood
+)
+
+
+library(workflowsets)
+
+# zestaw przepływów do uczenia
+location_models <- workflow_set(preproc = location, models = list(lm = lm_model))
+location_models
+
+# pierwszy przepływ
+location_models$info[[1]]
+
+# wyciągamy informacje o przepływie trzecim
+extract_workflow(location_models, id = "coords_lm")
+
+# uczymy modele
+location_models <-
+   location_models %>%
+   mutate(fit = map(info, ~ fit(.x$workflow[[1]], ames_train)))
+
+# wyniki uczenia wszystkich modeli
+location_models
+
+# wynik uczenia modelu 1
+location_models$fit[[1]]
+```
+
+Jeszcze jedną wygodną funkcja do oceny ostatecznego modelu jest funkcja `last_fit`, której używamy do ostatecznego modelu.
+Wywołanie jej powoduje uczenie modelu na zbiorze uczącym i predykcje na zbiorze testowym.
+
+```{r}
+# ostatnie dopasowanie
+final_lm_res <- last_fit(lm_wflow, ames_split)
+
+# wynik dopasowania
+final_lm_res
+
+# podsumowanie modelu
+collect_metrics(final_lm_res)
+
+# predykjca na pierwszych pięciu obserwacjach
+collect_predictions(final_lm_res) %>% slice(1:5)
+```
