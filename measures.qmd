@@ -647,3 +647,50 @@ hpc_cv |>
   roc_auc(truth = obs, VF:L)
 ```
 :::
+
+## Uwagi końcowe
+
+Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu.
+Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty.
+To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na $R^2$ będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz @fig-por).
+
+![Porównanie jakości modeli z wykorzystaniem różnych miar](images/Zrzut%20ekranu%202023-02-20%20o%2017.08.24.png){#fig-por fig-align="center"}
+
+Model zoptymalizowany pod kątem RMSE ma większą zmienność, ale ma stosunkowo jednolitą dokładność w całym zakresie wyników.
+Prawy panel pokazuje, że istnieje silniejsza korelacja między wartościami obserwowanymi i przewidywanymi, ale model ten słabo radzi sobie w przewidywaniu skrajnych wartości.
+Na marginesie można dodać, że jeśli model miałby być stosowany do predykcji (co zdarza się bardzo często w modelach ML), to miara RMSE jest lepsza, natomiast gdy interesują nas poszczególne efekty modelu regresji, wówczas $R^2$ jest częściej stosowaną miarą oceny dopasowania modelu.
+
+Podobny przykład można przytoczyć również dla modeli klasyfikacyjnych.
+
+Ocena skuteczności danego modelu zależy od tego, do czego będzie on wykorzystywany.
+Model inferencyjny jest używany przede wszystkim do zrozumienia związków i zazwyczaj kładzie nacisk na wybór (i ważność) rozkładów probabilistycznych i innych cech generatywnych, które definiują model.
+Dla modelu używanego głównie do przewidywania, w przeciwieństwie do tego, siła predykcyjna ma podstawowe znaczenie, a inne obawy dotyczące podstawowych właściwości statystycznych mogą być mniej ważne.
+Siła predykcyjna jest zwykle określana przez to, jak blisko nasze przewidywania zbliżają się do obserwowanych danych, tj.
+wierność przewidywań modelu do rzeczywistych wyników.
+W tym rozdziale skupiono się na funkcjach, które można wykorzystać do pomiaru siły predykcji.
+Jednakże naszą radą dla osób opracowujących modele inferencyjne jest stosowanie tych technik nawet wtedy, gdy model nie będzie używany z głównym celem przewidywania.
+
+Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu.
+Na przykład, rozważ dane dotyczące choroby Alzheimera z @Craig-Schapiro2011, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych.
+W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony).
+Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E.
+Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu.
+Wiadomym jest, że apolipoproteina E ma związek z demencją [@Kim2009].
+
+Powierzchowne, ale nierzadkie podejście do tej analizy polegałoby na dopasowaniu dużego modelu z głównymi efektami i interakcjami, a następnie zastosowaniu testów statystycznych w celu znalezienia minimalnego zestawu efektów modelu, które są statystycznie istotne na jakimś wcześniej zdefiniowanym poziomie.
+Jeśli użyto pełnego modelu z trzema czynnikami i ich dwu- i trójstronnymi interakcjami, wstępnym etapem byłoby przetestowanie interakcji przy użyciu sekwencyjnych testów ilorazu prawdopodobieństwa [@hosmer2000].
+Przejdźmy przez takie podejście dla przykładowych danych dotyczących choroby Alzheimera:
+
+-   Porównując model ze wszystkimi interakcjami dwukierunkowymi z modelem z dodatkową interakcją trójkierunkową, testy ilorazu wiarygodności dają wartość $p$ równą 0,888. Oznacza to, że nie ma dowodów na to, że cztery dodatkowe terminy modelu związane z interakcją trójkierunkową wyjaśniają wystarczająco dużo zmienności w danych, aby zachować je w modelu.
+-   Następnie, dwukierunkowe interakcje są podobnie oceniane w stosunku do modelu bez interakcji. Wartość $p$ wynosi tutaj 0,0382. Biorąc pod uwagę niewielki rozmiar próbki, byłoby rozsądnie stwierdzić, że istnieją dowody na to, że niektóre z 10 możliwych dwukierunkowych interakcji są ważne dla modelu.
+-   Na tej podstawie wyciągnęlibyśmy pewne wnioski z uzyskanych wyników. Interakcje te byłyby szczególnie ważne do omówienia, ponieważ mogą one zapoczątkować interesujące fizjologiczne lub neurologiczne hipotezy, które należy dalej badać.
+
+Chociaż jest to strategia uproszczona, jest ona powszechna zarówno w praktyce, jak i w literaturze.
+Jest to szczególnie częste, jeśli praktykujący ma ograniczone formalne wykształcenie w zakresie analizy danych.
+
+Jedną z brakujących informacji w tym podejściu jest to, jak blisko model ten pasuje do rzeczywistych danych.
+Stosując metody resamplingu, omówione w rozdziale 10, możemy oszacować dokładność tego modelu na około 73,4%.
+Dokładność jest często słabą miarą wydajności modelu; używamy jej tutaj, ponieważ jest powszechnie rozumiana.
+Jeśli model ma 73,4% dokładności w stosunku do danych, to czy powinniśmy zaufać wnioskom, które produkuje?
+Moglibyśmy tak myśleć, dopóki nie zdamy sobie sprawy, że wskaźnik bazowy nieupośledzonych pacjentów w danych wynosi 72,7%.
+Oznacza to, że pomimo naszej analizy statystycznej, model dwuczynnikowy okazuje się być tylko o 0,8% lepszy od prostej heurystyki, która zawsze przewiduje, że pacjenci nie są upośledzeni, niezależnie od obserwowanych danych.

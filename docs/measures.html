@@ -251,6 +251,7 @@ div.csl-indent {
 <li><a href="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85" id="toc-miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową" class="nav-link" data-scroll-target="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85"><span class="toc-section-number">4.2.1</span>  Miary dopasowania dla modeli ze zmienną wynikową wieloklasową</a></li>
   </ul>
 </li>
+  <li><a href="#uwagi-ko%C5%84cowe" id="toc-uwagi-końcowe" class="nav-link" data-scroll-target="#uwagi-ko%C5%84cowe"><span class="toc-section-number">4.3</span>  Uwagi końcowe</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -978,6 +979,26 @@ Prediction   VF    F    M    L
 </div>
 </div>
 </div>
+</section></section></section><section id="uwagi-końcowe" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="uwagi-końcowe">
+<span class="header-section-number">4.3</span> Uwagi końcowe</h2>
+<p>Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na <span class="math inline">\(R^2\)</span> będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz <a href="#fig-por">Rysunek&nbsp;<span>4.4</span></a>).</p>
+<div id="fig-por" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar</figcaption><p></p>
+</figure>
+</div>
+<p>Model zoptymalizowany pod kątem RMSE ma większą zmienność, ale ma stosunkowo jednolitą dokładność w całym zakresie wyników. Prawy panel pokazuje, że istnieje silniejsza korelacja między wartościami obserwowanymi i przewidywanymi, ale model ten słabo radzi sobie w przewidywaniu skrajnych wartości. Na marginesie można dodać, że jeśli model miałby być stosowany do predykcji (co zdarza się bardzo często w modelach ML), to miara RMSE jest lepsza, natomiast gdy interesują nas poszczególne efekty modelu regresji, wówczas <span class="math inline">\(R^2\)</span> jest częściej stosowaną miarą oceny dopasowania modelu.</p>
+<p>Podobny przykład można przytoczyć również dla modeli klasyfikacyjnych.</p>
+<p>Ocena skuteczności danego modelu zależy od tego, do czego będzie on wykorzystywany. Model inferencyjny jest używany przede wszystkim do zrozumienia związków i zazwyczaj kładzie nacisk na wybór (i ważność) rozkładów probabilistycznych i innych cech generatywnych, które definiują model. Dla modelu używanego głównie do przewidywania, w przeciwieństwie do tego, siła predykcyjna ma podstawowe znaczenie, a inne obawy dotyczące podstawowych właściwości statystycznych mogą być mniej ważne. Siła predykcyjna jest zwykle określana przez to, jak blisko nasze przewidywania zbliżają się do obserwowanych danych, tj. wierność przewidywań modelu do rzeczywistych wyników. W tym rozdziale skupiono się na funkcjach, które można wykorzystać do pomiaru siły predykcji. Jednakże naszą radą dla osób opracowujących modele inferencyjne jest stosowanie tych technik nawet wtedy, gdy model nie będzie używany z głównym celem przewidywania.</p>
+<p>Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu. Na przykład, rozważ dane dotyczące choroby Alzheimera z <span class="citation" data-cites="Craig-Schapiro2011">Craig-Schapiro i in. (<a href="references.html#ref-Craig-Schapiro2011" role="doc-biblioref">2011</a>)</span>, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych. W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony). Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E. Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu. Wiadomym jest, że apolipoproteina E ma związek z demencją <span class="citation" data-cites="Kim2009">(<a href="references.html#ref-Kim2009" role="doc-biblioref">Kim, Basak, i Holtzman 2009</a>)</span>.</p>
+<p>Powierzchowne, ale nierzadkie podejście do tej analizy polegałoby na dopasowaniu dużego modelu z głównymi efektami i interakcjami, a następnie zastosowaniu testów statystycznych w celu znalezienia minimalnego zestawu efektów modelu, które są statystycznie istotne na jakimś wcześniej zdefiniowanym poziomie. Jeśli użyto pełnego modelu z trzema czynnikami i ich dwu- i trójstronnymi interakcjami, wstępnym etapem byłoby przetestowanie interakcji przy użyciu sekwencyjnych testów ilorazu prawdopodobieństwa <span class="citation" data-cites="hosmer2000">(<a href="references.html#ref-hosmer2000" role="doc-biblioref">Hosmer i Lemeshow 2000</a>)</span>. Przejdźmy przez takie podejście dla przykładowych danych dotyczących choroby Alzheimera:</p>
+<ul>
+<li>Porównując model ze wszystkimi interakcjami dwukierunkowymi z modelem z dodatkową interakcją trójkierunkową, testy ilorazu wiarygodności dają wartość <span class="math inline">\(p\)</span> równą 0,888. Oznacza to, że nie ma dowodów na to, że cztery dodatkowe terminy modelu związane z interakcją trójkierunkową wyjaśniają wystarczająco dużo zmienności w danych, aby zachować je w modelu.</li>
+<li>Następnie, dwukierunkowe interakcje są podobnie oceniane w stosunku do modelu bez interakcji. Wartość <span class="math inline">\(p\)</span> wynosi tutaj 0,0382. Biorąc pod uwagę niewielki rozmiar próbki, byłoby rozsądnie stwierdzić, że istnieją dowody na to, że niektóre z 10 możliwych dwukierunkowych interakcji są ważne dla modelu.</li>
+<li>Na tej podstawie wyciągnęlibyśmy pewne wnioski z uzyskanych wyników. Interakcje te byłyby szczególnie ważne do omówienia, ponieważ mogą one zapoczątkować interesujące fizjologiczne lub neurologiczne hipotezy, które należy dalej badać.</li>
+</ul>
+<p>Chociaż jest to strategia uproszczona, jest ona powszechna zarówno w praktyce, jak i w literaturze. Jest to szczególnie częste, jeśli praktykujący ma ograniczone formalne wykształcenie w zakresie analizy danych.</p>
+<p>Jedną z brakujących informacji w tym podejściu jest to, jak blisko model ten pasuje do rzeczywistych danych. Stosując metody resamplingu, omówione w rozdziale 10, możemy oszacować dokładność tego modelu na około 73,4%. Dokładność jest często słabą miarą wydajności modelu; używamy jej tutaj, ponieważ jest powszechnie rozumiana. Jeśli model ma 73,4% dokładności w stosunku do danych, to czy powinniśmy zaufać wnioskom, które produkuje? Moglibyśmy tak myśleć, dopóki nie zdamy sobie sprawy, że wskaźnik bazowy nieupośledzonych pacjentów w danych wynosi 72,7%. Oznacza to, że pomimo naszej analizy statystycznej, model dwuczynnikowy okazuje się być tylko o 0,8% lepszy od prostej heurystyki, która zawsze przewiduje, że pacjenci nie są upośledzeni, niezależnie od obserwowanych danych.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -987,11 +1008,20 @@ Prediction   VF    F    M    L
 <div id="ref-bellon-maurelCriticalReviewChemometric2010" class="csl-entry" role="doc-biblioentry">
 Bellon-Maurel, Véronique, Elvira Fernandez-Ahumada, Bernard Palagos, Jean-Michel Roger, i Alex McBratney. 2010. <span>„Critical Review of Chemometric Indicators Commonly Used for Assessing the Quality of the Prediction of Soil Attributes by <span>NIR</span> Spectroscopy”</span>. <em>TrAC Trends in Analytical Chemistry</em> 29 (9): 1073–81. <a href="https://doi.org/10.1016/j.trac.2010.05.006">https://doi.org/10.1016/j.trac.2010.05.006</a>.
 </div>
+<div id="ref-Craig-Schapiro2011" class="csl-entry" role="doc-biblioentry">
+Craig-Schapiro, Rebecca, Max Kuhn, Chengjie Xiong, Eve H. Pickering, Jingxia Liu, Thomas P. Misko, Richard J. Perrin, i in. 2011. <span>„Multiplexed Immunoassay Panel Identifies Novel CSF Biomarkers for Alzheimer’s Disease Diagnosis and Prognosis”</span>. Zredagowane przez Ashley I. Bush. <em>PLoS ONE</em> 6 (4): e18850. <a href="https://doi.org/10.1371/journal.pone.0018850">https://doi.org/10.1371/journal.pone.0018850</a>.
+</div>
 <div id="ref-fransesNoteMeanAbsolute2016" class="csl-entry" role="doc-biblioentry">
 Franses, Philip Hans. 2016. <span>„A Note on the <span>Mean Absolute Scaled Error</span>”</span>. <em>International Journal of Forecasting</em> 32 (1): 20–22. <a href="https://doi.org/10.1016/j.ijforecast.2015.03.008">https://doi.org/10.1016/j.ijforecast.2015.03.008</a>.
 </div>
+<div id="ref-hosmer2000" class="csl-entry" role="doc-biblioentry">
+Hosmer, David W., i Stanley Lemeshow. 2000. <em>Applied Logistic Regression</em>. John Wiley &amp; Sons, Inc. <a href="https://doi.org/10.1002/0471722146">https://doi.org/10.1002/0471722146</a>.
+</div>
 <div id="ref-hyndmanAnotherLookMeasures2006" class="csl-entry" role="doc-biblioentry">
 Hyndman, Rob J., i Anne B. Koehler. 2006. <span>„Another Look at Measures of Forecast Accuracy”</span>. <em>International Journal of Forecasting</em> 22 (4): 679–88. <a href="https://doi.org/10.1016/j.ijforecast.2006.03.001">https://doi.org/10.1016/j.ijforecast.2006.03.001</a>.
+</div>
+<div id="ref-Kim2009" class="csl-entry" role="doc-biblioentry">
+Kim, Jungsu, Jacob M. Basak, i David M. Holtzman. 2009. <span>„The Role of Apolipoprotein E in Alzheimer’s Disease”</span>. <em>Neuron</em> 63 (3): 287–303. <a href="https://doi.org/10.1016/j.neuron.2009.06.026">https://doi.org/10.1016/j.neuron.2009.06.026</a>.
 </div>
 <div id="ref-kvalsethCautionaryNoteR21985" class="csl-entry" role="doc-biblioentry">
 Kvalseth, Tarald O. 1985. <span>„Cautionary <span>Note</span> about <span>R2</span>”</span>. <em>The American Statistician</em> 39 (4): 279–85. <a href="https://doi.org/10.2307/2683704">https://doi.org/10.2307/2683704</a>.
@@ -1000,7 +1030,7 @@ Kvalseth, Tarald O. 1985. <span>„Cautionary <span>Note</span> about <span>R2</
 Yeh, I.-Cheng. 2006. <span>„Analysis of <span>Strength</span> of <span>Concrete Using Design</span> of <span>Experiments</span> and <span>Neural Networks</span>”</span>. <em>Journal of Materials in Civil Engineering</em> 18 (4): 597–604. <a href="https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)">https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)</a>.
 </div>
 </div>
-</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
