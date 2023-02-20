@@ -1,0 +1,298 @@
+---
+output: html_document
+code-fold: show
+editor_options: 
+  chunk_output_type: console
+---
+
+# Metody próbkowania
+
+W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych `ames`, na którym dokonywaliśmy już modelowania (regresja liniowa)[^resampling2-1].
+Oprócz modelu liniowego zbudujemy również las losowy, który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.
+
+[^resampling2-1]: z przykładu w poprzednim rozdziale
+
+::: {#exm-1}
+```{r}
+library(tidymodels)
+
+set.seed(44)
+ames <- ames %>% mutate(Sale_Price = log10(Sale_Price))
+ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
+ames_train <- training(ames_split)
+ames_test  <-  testing(ames_split)
+
+lm_model <- 
+  linear_reg() %>% 
+  set_engine("lm")
+
+ames_rec <- 
+  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
+           Latitude + Longitude, data = ames_train) %>%
+  step_log(Gr_Liv_Area, base = 10) %>% 
+  step_other(Neighborhood, threshold = 0.01, id = "my_id") %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
+  step_ns(Latitude, Longitude, deg_free = 20)
+
+lm_wflow <- 
+  workflow() %>% 
+  add_model(lm_model) %>% 
+  add_recipe(ames_rec)
+
+lm_fit <- fit(lm_wflow, ames_train)
+
+rf_model <- 
+  rand_forest(trees = 1000) |> 
+  set_engine("ranger") |> 
+  set_mode("regression")
+
+rf_wflow <- 
+  workflow() |> 
+  add_formula(
+    Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
+      Latitude + Longitude) |> 
+  add_model(rf_model) 
+
+rf_fit <- rf_wflow |> fit(data = ames_train)
+```
+
+Ponieważ kilkukrotnie będziemy wywoływać podsumowanie modeli za pomocą metryk, to stworzymy funkcję, którą będziemy mogli stosować wielokrotnie.
+
+```{r}
+estimate_perf <- function(model, dat) {
+  # Capture the names of the `model` and `dat` objects
+  cl <- match.call()
+  obj_name <- as.character(cl$model)
+  data_name <- as.character(cl$dat)
+  data_name <- gsub("ames_", "", data_name)
+  
+  # Estimate these metrics:
+  reg_metrics <- metric_set(rmse, rsq)
+  
+  model |>
+    predict(dat) |>
+    bind_cols(dat |> select(Sale_Price)) |>
+    reg_metrics(Sale_Price, .pred) |>
+    select(-.estimator) |>
+    mutate(object = obj_name, data = data_name)
+}
+```
+
+Aby porównać modele zostaną obliczone miary RMSE i $R^2$ dla obu modeli na zbiorze uczącym.
+
+```{r}
+estimate_perf(rf_fit, ames_train)
+estimate_perf(lm_fit, ames_train)
+```
+
+Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym przypadku.
+W taką pułapkę łapie się większość osób stawiających pierwsze kroki w ML.
+Ale już porównując te modele na próbie testowej widzimy, że różnice pomiędzy modelami się zacierają.
+
+```{r}
+estimate_perf(rf_fit, ames_test)
+estimate_perf(lm_fit, ames_test)
+```
+
+Skąd takie różnice?
+
+Wiele modeli predykcyjnych jest w stanie uczyć się złożonych zależności.
+W statystyce są one powszechnie określane jako *low bias models*.
+Wiele modeli uczenia maszynowego typu *black-box* ma niski poziom błędu systematycznego, co oznacza, że mogą one odtwarzać złożone relacje.
+Inne modele (takie jak regresja liniowa/logistyczna, analiza dyskryminacyjna i inne) nie są tak elastyczne i są uważane za modele o wysokim współczynniku błędu (ang. *high bias models*).
+
+W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej może czasami spowodować, że model prawie zapamiętuje dane ze zbioru treningowego.
+Jako oczywisty przykład, można rozważyć model 1-najbliższego sąsiada.
+Zawsze będzie zapewniał doskonałe przewidywania dla zestawu treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych zestawów danych.
+Modele losowego lasu są podobne; predykcja na zbiorze uczącym zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.
+
+Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.
+:::
+
+Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić fałszywie optymistyczne dopasowanie.
+A skoro zbiór testowy nie powinien być używany natychmiast, a repredykacja zbioru treningowego jest złym pomysłem, to co należy zrobić?
+Rozwiązaniem są metody ponownego próbkowania (ang. *resampling*), takie jak walidacja krzyżowa lub zestawy walidacyjne.
+
+Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny.
+Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie.
+Schemat na @fig-resamp1 ilustruje, jak generalnie działają metody resamplingu.
+
+![Przykład podziału zbioru danych z wykorzystaniem resamplingu](images/Zrzut%20ekranu%202023-02-20%20o%2019.54.34.png){#fig-resamp1 fig-align="center" width="500"}
+
+Resampling jest przeprowadzany tylko na zbiorze treningowym.
+Zbiór testowy nie bierze w nim udziału.
+Dla każdej iteracji ponownego próbkowania dane są dzielone na dwie podpróbki, na których:
+
+-   Model jest dopasowywany za pomocą zbioru analitycznego (ang. *analysis set*).
+-   Model jest oceniany za pomocą zbioru do oceny (ang. *assessment set*).
+
+Te dwie podpróbki są w pewnym sensie analogiczne do zestawów treningowych i testowych.
+Używany przez nas język analizy i oceny pozwala uniknąć pomyłek związanych z początkowym podziałem danych.
+Te zbiory danych wzajemnie się wykluczają.
+Schemat podziału stosowany do tworzenia zbiorów analizy i oceny jest zazwyczaj cechą definiującą metodę.
+
+Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania.
+Oznacza to, że 20 oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im zbiory oceny dają 20 zbiorów statystyk wydajności.
+Ostateczne oszacowanie wydajności dla modelu jest średnią z 20 powtórzeń statystyki.
+Średnia ta ma bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na zbiorze uczącym.
+
+## Walidacja krzyżowa
+
+Walidacja krzyżowa (ang. *cross-validation*) jest dobrze ugruntowaną metodą próbkowania.
+Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa.
+Dane są losowo dzielone na $V$ zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami).
+Dla ilustracji, $V = 3$ jest pokazane na rysunku rys dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
+Liczba wewnątrz symboli to numer próbki.
+
+![3-krotny sprawdzian krzyżowy](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.18.png){#fig-cross1 fig-align="center" width="400"}
+
+Kolor symboli na @fig-cross1 reprezentuje ich losowo przypisane foldy.
+
+W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na @fig-cross2.
+Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu.
+Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.
+
+![Zastosowanie foldów w uczeniu i ocenie dopasowania modeli](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.30.png){#fig-cross2 fig-align="center" width="500"}
+
+Gdy $V = 3$, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór oceny stanowi odrębną 1/3.
+Końcowa estymacja resamplingu wydajności uśrednia każdą z $V$ replik.
+
+Użycie $V = 3$ jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować wiarygodne szacunki.
+W praktyce wartości $V$ to najczęściej 5 lub 10; raczej preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.
+
+Jakie są skutki zmiany $V$?
+Większe wartości powodują, że szacunki z próbkowania mają mały błąd/obciążenie, ale znaczną wariancję.
+Mniejsze wartości $V$ mają duży błąd, ale niską wariancję.
+Preferujemy 10-krotne, ponieważ szum jest zmniejszony przez replikacje, ale obciążenie już nie.
+
+```{r}
+set.seed(1001)
+ames_folds <- vfold_cv(ames_train, v = 10)
+ames_folds
+lobstr::obj_size(ames_folds)
+lobstr::obj_size(ames_train)
+```
+
+Kolumna o nazwie *splits* zawiera informacje o tym, jak podzielone zostaną dane (podobnie jak obiekt używany do tworzenia początkowej partycji trening/test).
+Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest na tyle inteligentny, że nie tworzy kopii danych w pamięci.
+Metoda print wewnątrz tybla pokazuje częstość występowania każdego z nich: \[2107/235\] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.
+
+## Sprawdzian krzyżowy z powtórzeniami
+
+Najważniejszą odmianą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa z powtórzeniami.
+W zależności od rozmiaru danych i innych cech, ocena modelu uzyskana w wyniku $V$-krotnej walidacji krzyżowej może być nadmiernie zaszumiona.
+Podobnie jak w przypadku wielu problemów statystycznych, jednym ze sposobów zmniejszenia szumu jest zebranie większej ilości danych.
+W przypadku walidacji krzyżowej oznacza to uśrednienie więcej niż $V$ statystyk.
+
+Aby stworzyć $R$ powtórzeń $V$-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany $R$ razy, aby wygenerować $R$ zbiorów złożonych z $V$ podzbiorów.
+Zamiast uśredniania $V$ statystyk, $V\times R$ wartości daje ostateczną estymację resamplingu.
+Ze względu na Centralne Twierdzenie Graniczne, statystyki zbiorcze z każdego modelu mają tendencję do rozkładu normalnego, tak długo jak mamy dużo danych w stosunku do $V\times R$.
+Rozważmy dane `ames`.
+Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 właściwości.
+Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako $\sigma$.
+Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi $\sigma/\sqrt{10}$.
+Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do $\sigma/\sqrt{10R}$.
+Dla 10-krotnej walidacji krzyżowej z $R$ powtórzeniami, wykres na rysunku 10.4 pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.
+
+![Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych](images/Zrzut%20ekranu%202023-02-20%20o%2021.09.46.png){#fig-cross3 fig-align="center" width="600"}
+
+Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd standardowy estymacji, chyba że bazowa wartość $\sigma$ jest duża, wówczas faktycznie warto zwiększać liczbę replikacji.
+
+```{r}
+vfold_cv(ames_train, v = 10, repeats = 5)
+```
+
+## Leave-One-Out
+
+Jedną z odmian walidacji krzyżowej jest walidacja krzyżowa typu *Leave-One-Out* (LOO).
+Jeśli mamy $n$ próbek zbioru treningowego, $n$ modeli jest dopasowywanych przy użyciu $n - 1$ wierszy zbioru treningowego.
+Każdy model przewiduje pojedynczy wykluczony punkt danych.
+Na koniec próbkowania $n$ prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania
+
+Metody LOO są niedoskonałe w porównaniu z prawie każdą inną metodą.
+Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych.
+Chociaż pakiet `rsample` zawiera funkcję `loo_cv()`, obiekty te nie są mocno zintegrowane z pakietami `tidymodels`.
+
+## Walidacja metodą Monte-Carlo
+
+Innym wariantem $V$-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. *Monte-Carlo Cross-Validation* - MCCV) [@xu2001].
+Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny.
+Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo.
+Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.
+
+```{r}
+mc_cv(ames_train, prop = 9/10, times = 20)
+```
+
+## Zbiór walidacyjny
+
+We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego.
+Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz @fig-val1).
+Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np.
+w procesie optymalizacji hiperparametrów modelu.
+
+![Podział zbiorów na uczący, testowy i walidacyjny](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.37.png){#fig-val1 fig-align="center" width="400"}
+
+Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz @fig-val2).
+
+![Podział na trzy zbiory](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.11.png){#fig-val2 fig-align="center" width="400"}
+
+Zbiory walidacyjne są często wykorzystywane, gdy pierwotna pula danych jest bardzo duża.
+W tym przypadku, pojedyncza duża część może być odpowiednia do scharakteryzowania dopasowania modelu bez konieczności wykonywania wielu iteracji próbkowania.
+
+```{r}
+set.seed(1002)
+val_set <- validation_split(ames_train, prop = 3/4)
+val_set
+```
+
+## Bootstrapping
+
+*Bootstrap* został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane [@davison1997].
+Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.
+
+Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co zbiór treningowy, ale jest losowana ze zwracaniem.
+Oznacza to, że niektóre obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru analitycznego.
+Każdy punkt danych ma 63,2% szans na włączenie do zbioru uczącego przynajmniej raz.
+Zestaw oceny zawiera wszystkie próbki zestawu treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8% zestawu treningowego).
+Podczas bootstrappingu zestaw oceny jest często nazywany próbką poza workiem (ang. *Out-Of-Bag)*.
+
+Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na @fig-boot1
+
+![Trzy próby bootstrapowe](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.08.png){#fig-boot1 fig-align="center" width="500"}
+
+```{r}
+bootstraps(ames_train, times = 5)
+```
+
+Próbki bootstrapowe dają oszacowania dopasowania, które mają bardzo niską wariancję (w przeciwieństwie do walidacji krzyżowej), ale jest pesymistyczna w ocenie obciążenia.
+Oznacza to, że jeśli prawdziwa dokładność modelu wynosi 90%, bootstrap będzie miał tendencję do oszacowania wartości mniejszej niż 90%.
+Wielkość błędu systematycznego nie może być określona empirycznie z wystarczającą dokładnością.
+Dodatkowo, wielkość błędu systematycznego zmienia się w zależności od skali w jakiej mierzone jest dopasowanie.
+Na przykład obciążenie będzie prawdopodobnie inne, gdy dokładność wynosi 90% w porównaniu z 70%.
+
+Bootstrap jest również wykorzystywany wewnątrz wielu modeli.
+Na przykład, wspomniany wcześniej model lasu losowego zawierał 1000 indywidualnych drzew decyzyjnych.
+Każde drzewo było produktem innej próbki bootstrapowej zbioru treningowego.
+
+## Kroczące próbkowanie źródła
+
+Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w szeregach czasowych.
+Technika, która losowo próbkuje wartości ze zbioru treningowego, nie pozwoli na oszacowanie tych wzorców.
+
+Kroczące próbkowanie źródła (ang. *rolling forecast origin resampling*) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, szacując model z danymi historycznymi i oceniając go z najnowszymi danymi [@hyndman].
+Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen.
+Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii.
+Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.
+
+![Próbkowanie kroczące ze źródła](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.23.png){#fig-rolling fig-align="center" width="500"}
+
+Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy.
+W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden.
+W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na @fig-rolling.
+
+Istnieją dwie różne konfiguracje tej metody:
+
+-   Zestaw analiz może narastać narastająco (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych.
+-   Próbki nie muszą być zwiększane o jeden. Na przykład, w przypadku dużych zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast dnia.

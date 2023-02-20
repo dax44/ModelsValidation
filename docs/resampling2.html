@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.203">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Metody walidacji modeli statystycznych - 7&nbsp; Metody próbkowania</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./tidymodels.html" rel="prev">
+<link href="./cover.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Brak wyników",
+    "search-matching-documents-text": "dopasowane dokumenty",
+    "search-copy-link-title": "Kopiuj link do wyszukiwania",
+    "search-hide-matches-text": "Ukryj dodatkowe dopasowania",
+    "search-more-match-text": "więcej dopasowań w tym dokumencie",
+    "search-more-matches-text": "więcej dopasowań w tym dokumencie",
+    "search-clear-button-title": "Wyczyść",
+    "search-detached-cancel-button-title": "Anuluj",
+    "search-submit-button-title": "Zatwierdź"
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./resampling2.html">&lt;span class='chapter-number'&gt;7&lt;/span&gt;&nbsp; &lt;span class='chapter-title'&gt;Metody próbkowania&lt;/span&gt;</a></li></ol></nav>
+      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      </a>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Metody walidacji modeli statystycznych</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Wprowadzenie</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infer.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./measures.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
+   
+  <ul>
+<li><a href="#walidacja-krzy%C5%BCowa" id="toc-walidacja-krzyżowa" class="nav-link active" data-scroll-target="#walidacja-krzy%C5%BCowa"><span class="toc-section-number">7.1</span>  Walidacja krzyżowa</a></li>
+  <li><a href="#sprawdzian-krzy%C5%BCowy-z-powt%C3%B3rzeniami" id="toc-sprawdzian-krzyżowy-z-powtórzeniami" class="nav-link" data-scroll-target="#sprawdzian-krzy%C5%BCowy-z-powt%C3%B3rzeniami"><span class="toc-section-number">7.2</span>  Sprawdzian krzyżowy z powtórzeniami</a></li>
+  <li><a href="#leave-one-out" id="toc-leave-one-out" class="nav-link" data-scroll-target="#leave-one-out"><span class="toc-section-number">7.3</span>  Leave-One-Out</a></li>
+  <li><a href="#walidacja-metod%C4%85-monte-carlo" id="toc-walidacja-metodą-monte-carlo" class="nav-link" data-scroll-target="#walidacja-metod%C4%85-monte-carlo"><span class="toc-section-number">7.4</span>  Walidacja metodą Monte-Carlo</a></li>
+  <li><a href="#zbi%C3%B3r-walidacyjny" id="toc-zbiór-walidacyjny" class="nav-link" data-scroll-target="#zbi%C3%B3r-walidacyjny"><span class="toc-section-number">7.5</span>  Zbiór walidacyjny</a></li>
+  <li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping"><span class="toc-section-number">7.6</span>  Bootstrapping</a></li>
+  <li><a href="#krocz%C4%85ce-pr%C3%B3bkowanie-%C5%BAr%C3%B3d%C5%82a" id="toc-kroczące-próbkowanie-źródła" class="nav-link" data-scroll-target="#krocz%C4%85ce-pr%C3%B3bkowanie-%C5%BAr%C3%B3d%C5%82a"><span class="toc-section-number">7.7</span>  Kroczące próbkowanie źródła</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><div class="page-columns page-full"><p>W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych <code>ames</code>, na którym dokonywaliśmy już modelowania (regresja liniowa)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Oprócz modelu liniowego zbudujemy również las losowy, który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;z przykładu w poprzednim rozdziale</p></li></div></div>
+<div id="exm-1" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 7.1 </strong></span>&nbsp;</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
+<span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
+<span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span>, id <span class="op">=</span> <span class="st">"my_id"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, <span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu">fit</span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">add_formula</span><span class="op">(</span></span>
+<span>    <span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
+<span>      <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">rf_model</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">rf_fit</span> <span class="op">&lt;-</span> <span class="va">rf_wflow</span> <span class="op">|&gt;</span> <span class="fu">fit</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Ponieważ kilkukrotnie będziemy wywoływać podsumowanie modeli za pomocą metryk, to stworzymy funkcję, którą będziemy mogli stosować wielokrotnie.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">estimate_perf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Capture the names of the `model` and `dat` objects</span></span>
+<span>  <span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.call.html">match.call</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">obj_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">cl</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
+<span>  <span class="va">data_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">cl</span><span class="op">$</span><span class="va">dat</span><span class="op">)</span></span>
+<span>  <span class="va">data_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"ames_"</span>, <span class="st">""</span>, <span class="va">data_name</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Estimate these metrics:</span></span>
+<span>  <span class="va">reg_metrics</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">rmse</span>, <span class="va">rsq</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">model</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">bind_cols</span><span class="op">(</span><span class="va">dat</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">reg_metrics</span><span class="op">(</span><span class="va">Sale_Price</span>, <span class="va">.pred</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">.estimator</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>object <span class="op">=</span> <span class="va">obj_name</span>, data <span class="op">=</span> <span class="va">data_name</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Aby porównać modele zostaną obliczone miary RMSE i <span class="math inline">\(R^2\)</span> dla obu modeli na zbiorze uczącym.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">estimate_perf</span><span class="op">(</span><span class="va">rf_fit</span>, <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimate object data 
+  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;
+1 rmse       0.0363 rf_fit train
+2 rsq        0.961  rf_fit train</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">estimate_perf</span><span class="op">(</span><span class="va">lm_fit</span>, <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimate object data 
+  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;
+1 rmse       0.0749 lm_fit train
+2 rsq        0.822  lm_fit train</code></pre>
+</div>
+</div>
+<p>Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym przypadku. W taką pułapkę łapie się większość osób stawiających pierwsze kroki w ML. Ale już porównując te modele na próbie testowej widzimy, że różnice pomiędzy modelami się zacierają.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">estimate_perf</span><span class="op">(</span><span class="va">rf_fit</span>, <span class="va">ames_test</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimate object data 
+  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;
+1 rmse       0.0702 rf_fit test 
+2 rsq        0.838  rf_fit test </code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">estimate_perf</span><span class="op">(</span><span class="va">lm_fit</span>, <span class="va">ames_test</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimate object data 
+  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;
+1 rmse       0.0760 lm_fit test 
+2 rsq        0.808  lm_fit test </code></pre>
+</div>
+</div>
+<p>Skąd takie różnice?</p>
+<p>Wiele modeli predykcyjnych jest w stanie uczyć się złożonych zależności. W statystyce są one powszechnie określane jako <em>low bias models</em>. Wiele modeli uczenia maszynowego typu <em>black-box</em> ma niski poziom błędu systematycznego, co oznacza, że mogą one odtwarzać złożone relacje. Inne modele (takie jak regresja liniowa/logistyczna, analiza dyskryminacyjna i inne) nie są tak elastyczne i są uważane za modele o wysokim współczynniku błędu (ang. <em>high bias models</em>).</p>
+<p>W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej może czasami spowodować, że model prawie zapamiętuje dane ze zbioru treningowego. Jako oczywisty przykład, można rozważyć model 1-najbliższego sąsiada. Zawsze będzie zapewniał doskonałe przewidywania dla zestawu treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych zestawów danych. Modele losowego lasu są podobne; predykcja na zbiorze uczącym zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.</p>
+<p>Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.</p>
+</div>
+<p>Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić fałszywie optymistyczne dopasowanie. A skoro zbiór testowy nie powinien być używany natychmiast, a repredykacja zbioru treningowego jest złym pomysłem, to co należy zrobić? Rozwiązaniem są metody ponownego próbkowania (ang. <em>resampling</em>), takie jak walidacja krzyżowa lub zestawy walidacyjne.</p>
+<p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1">Rysunek&nbsp;<span>7.1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
+<div id="fig-resamp1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid figure-img" width="500"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu</figcaption><p></p>
+</figure>
+</div>
+<p>Resampling jest przeprowadzany tylko na zbiorze treningowym. Zbiór testowy nie bierze w nim udziału. Dla każdej iteracji ponownego próbkowania dane są dzielone na dwie podpróbki, na których:</p>
+<ul>
+<li>Model jest dopasowywany za pomocą zbioru analitycznego (ang. <em>analysis set</em>).</li>
+<li>Model jest oceniany za pomocą zbioru do oceny (ang. <em>assessment set</em>).</li>
+</ul>
+<p>Te dwie podpróbki są w pewnym sensie analogiczne do zestawów treningowych i testowych. Używany przez nas język analizy i oceny pozwala uniknąć pomyłek związanych z początkowym podziałem danych. Te zbiory danych wzajemnie się wykluczają. Schemat podziału stosowany do tworzenia zbiorów analizy i oceny jest zazwyczaj cechą definiującą metodę.</p>
+<p>Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania. Oznacza to, że 20 oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im zbiory oceny dają 20 zbiorów statystyk wydajności. Ostateczne oszacowanie wydajności dla modelu jest średnią z 20 powtórzeń statystyki. Średnia ta ma bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na zbiorze uczącym.</p>
+<section id="walidacja-krzyżowa" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="walidacja-krzyżowa">
+<span class="header-section-number">7.1</span> Walidacja krzyżowa</h2>
+<p>Walidacja krzyżowa (ang. <em>cross-validation</em>) jest dobrze ugruntowaną metodą próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa. Dane są losowo dzielone na <span class="math inline">\(V\)</span> zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami). Dla ilustracji, <span class="math inline">\(V = 3\)</span> jest pokazane na rysunku rys dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów. Liczba wewnątrz symboli to numer próbki.</p>
+<div id="fig-cross1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="img-fluid figure-img" width="400"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.2: 3-krotny sprawdzian krzyżowy</figcaption><p></p>
+</figure>
+</div>
+<p>Kolor symboli na <a href="#fig-cross1">Rysunek&nbsp;<span>7.2</span></a> reprezentuje ich losowo przypisane foldy.</p>
+<p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2">Rysunek&nbsp;<span>7.3</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
+<div id="fig-cross2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="img-fluid figure-img" width="500"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli</figcaption><p></p>
+</figure>
+</div>
+<p>Gdy <span class="math inline">\(V = 3\)</span>, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór oceny stanowi odrębną 1/3. Końcowa estymacja resamplingu wydajności uśrednia każdą z <span class="math inline">\(V\)</span> replik.</p>
+<p>Użycie <span class="math inline">\(V = 3\)</span> jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować wiarygodne szacunki. W praktyce wartości <span class="math inline">\(V\)</span> to najczęściej 5 lub 10; raczej preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.</p>
+<p>Jakie są skutki zmiany <span class="math inline">\(V\)</span>? Większe wartości powodują, że szacunki z próbkowania mają mały błąd/obciążenie, ale znaczną wariancję. Mniejsze wartości <span class="math inline">\(V\)</span> mają duży błąd, ale niską wariancję. Preferujemy 10-krotne, ponieważ szum jest zmniejszony przez replikacje, ale obciążenie już nie.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
+<span><span class="va">ames_folds</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">ames_train</span>, v <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">ames_folds</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>#  10-fold cross-validation 
+# A tibble: 10 × 2
+   splits             id    
+   &lt;list&gt;             &lt;chr&gt; 
+ 1 &lt;split [2107/235]&gt; Fold01
+ 2 &lt;split [2107/235]&gt; Fold02
+ 3 &lt;split [2108/234]&gt; Fold03
+ 4 &lt;split [2108/234]&gt; Fold04
+ 5 &lt;split [2108/234]&gt; Fold05
+ 6 &lt;split [2108/234]&gt; Fold06
+ 7 &lt;split [2108/234]&gt; Fold07
+ 8 &lt;split [2108/234]&gt; Fold08
+ 9 &lt;split [2108/234]&gt; Fold09
+10 &lt;split [2108/234]&gt; Fold10</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">lobstr</span><span class="fu">::</span><span class="fu"><a href="https://lobstr.r-lib.org/reference/obj_size.html">obj_size</a></span><span class="op">(</span><span class="va">ames_folds</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>944.36 kB</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">lobstr</span><span class="fu">::</span><span class="fu"><a href="https://lobstr.r-lib.org/reference/obj_size.html">obj_size</a></span><span class="op">(</span><span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>849.83 kB</code></pre>
+</div>
+</div>
+<p>Kolumna o nazwie <em>splits</em> zawiera informacje o tym, jak podzielone zostaną dane (podobnie jak obiekt używany do tworzenia początkowej partycji trening/test). Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest na tyle inteligentny, że nie tworzy kopii danych w pamięci. Metoda print wewnątrz tybla pokazuje częstość występowania każdego z nich: [2107/235] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.</p>
+</section><section id="sprawdzian-krzyżowy-z-powtórzeniami" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="sprawdzian-krzyżowy-z-powtórzeniami">
+<span class="header-section-number">7.2</span> Sprawdzian krzyżowy z powtórzeniami</h2>
+<p>Najważniejszą odmianą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa z powtórzeniami. W zależności od rozmiaru danych i innych cech, ocena modelu uzyskana w wyniku <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej może być nadmiernie zaszumiona. Podobnie jak w przypadku wielu problemów statystycznych, jednym ze sposobów zmniejszenia szumu jest zebranie większej ilości danych. W przypadku walidacji krzyżowej oznacza to uśrednienie więcej niż <span class="math inline">\(V\)</span> statystyk.</p>
+<p>Aby stworzyć <span class="math inline">\(R\)</span> powtórzeń <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany <span class="math inline">\(R\)</span> razy, aby wygenerować <span class="math inline">\(R\)</span> zbiorów złożonych z <span class="math inline">\(V\)</span> podzbiorów. Zamiast uśredniania <span class="math inline">\(V\)</span> statystyk, <span class="math inline">\(V\times R\)</span> wartości daje ostateczną estymację resamplingu. Ze względu na Centralne Twierdzenie Graniczne, statystyki zbiorcze z każdego modelu mają tendencję do rozkładu normalnego, tak długo jak mamy dużo danych w stosunku do <span class="math inline">\(V\times R\)</span>. Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 właściwości. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na rysunku 10.4 pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
+<div id="fig-cross3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="img-fluid figure-img" width="600"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych</figcaption><p></p>
+</figure>
+</div>
+<p>Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd standardowy estymacji, chyba że bazowa wartość <span class="math inline">\(\sigma\)</span> jest duża, wówczas faktycznie warto zwiększać liczbę replikacji.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">vfold_cv</span><span class="op">(</span><span class="va">ames_train</span>, v <span class="op">=</span> <span class="fl">10</span>, repeats <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>#  10-fold cross-validation repeated 5 times 
+# A tibble: 50 × 3
+   splits             id      id2   
+   &lt;list&gt;             &lt;chr&gt;   &lt;chr&gt; 
+ 1 &lt;split [2107/235]&gt; Repeat1 Fold01
+ 2 &lt;split [2107/235]&gt; Repeat1 Fold02
+ 3 &lt;split [2108/234]&gt; Repeat1 Fold03
+ 4 &lt;split [2108/234]&gt; Repeat1 Fold04
+ 5 &lt;split [2108/234]&gt; Repeat1 Fold05
+ 6 &lt;split [2108/234]&gt; Repeat1 Fold06
+ 7 &lt;split [2108/234]&gt; Repeat1 Fold07
+ 8 &lt;split [2108/234]&gt; Repeat1 Fold08
+ 9 &lt;split [2108/234]&gt; Repeat1 Fold09
+10 &lt;split [2108/234]&gt; Repeat1 Fold10
+# … with 40 more rows</code></pre>
+</div>
+</div>
+</section><section id="leave-one-out" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="leave-one-out">
+<span class="header-section-number">7.3</span> Leave-One-Out</h2>
+<p>Jedną z odmian walidacji krzyżowej jest walidacja krzyżowa typu <em>Leave-One-Out</em> (LOO). Jeśli mamy <span class="math inline">\(n\)</span> próbek zbioru treningowego, <span class="math inline">\(n\)</span> modeli jest dopasowywanych przy użyciu <span class="math inline">\(n - 1\)</span> wierszy zbioru treningowego. Każdy model przewiduje pojedynczy wykluczony punkt danych. Na koniec próbkowania <span class="math inline">\(n\)</span> prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania</p>
+<p>Metody LOO są niedoskonałe w porównaniu z prawie każdą inną metodą. Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet <code>rsample</code> zawiera funkcję <code>loo_cv()</code>, obiekty te nie są mocno zintegrowane z pakietami <code>tidymodels</code>.</p>
+</section><section id="walidacja-metodą-monte-carlo" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="walidacja-metodą-monte-carlo">
+<span class="header-section-number">7.4</span> Walidacja metodą Monte-Carlo</h2>
+<p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="references.html#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">mc_cv</span><span class="op">(</span><span class="va">ames_train</span>, prop <span class="op">=</span> <span class="fl">9</span><span class="op">/</span><span class="fl">10</span>, times <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Monte Carlo cross-validation (0.9/0.1) with 20 resamples  
+# A tibble: 20 × 2
+   splits             id        
+   &lt;list&gt;             &lt;chr&gt;     
+ 1 &lt;split [2107/235]&gt; Resample01
+ 2 &lt;split [2107/235]&gt; Resample02
+ 3 &lt;split [2107/235]&gt; Resample03
+ 4 &lt;split [2107/235]&gt; Resample04
+ 5 &lt;split [2107/235]&gt; Resample05
+ 6 &lt;split [2107/235]&gt; Resample06
+ 7 &lt;split [2107/235]&gt; Resample07
+ 8 &lt;split [2107/235]&gt; Resample08
+ 9 &lt;split [2107/235]&gt; Resample09
+10 &lt;split [2107/235]&gt; Resample10
+11 &lt;split [2107/235]&gt; Resample11
+12 &lt;split [2107/235]&gt; Resample12
+13 &lt;split [2107/235]&gt; Resample13
+14 &lt;split [2107/235]&gt; Resample14
+15 &lt;split [2107/235]&gt; Resample15
+16 &lt;split [2107/235]&gt; Resample16
+17 &lt;split [2107/235]&gt; Resample17
+18 &lt;split [2107/235]&gt; Resample18
+19 &lt;split [2107/235]&gt; Resample19
+20 &lt;split [2107/235]&gt; Resample20</code></pre>
+</div>
+</div>
+</section><section id="zbiór-walidacyjny" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="zbiór-walidacyjny">
+<span class="header-section-number">7.5</span> Zbiór walidacyjny</h2>
+<p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1">Rysunek&nbsp;<span>7.5</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
+<div id="fig-val1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="img-fluid figure-img" width="400"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny</figcaption><p></p>
+</figure>
+</div>
+<p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2">Rysunek&nbsp;<span>7.6</span></a>).</p>
+<div id="fig-val2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="img-fluid figure-img" width="400"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.6: Podział na trzy zbiory</figcaption><p></p>
+</figure>
+</div>
+<p>Zbiory walidacyjne są często wykorzystywane, gdy pierwotna pula danych jest bardzo duża. W tym przypadku, pojedyncza duża część może być odpowiednia do scharakteryzowania dopasowania modelu bez konieczności wykonywania wielu iteracji próbkowania.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1002</span><span class="op">)</span></span>
+<span><span class="va">val_set</span> <span class="op">&lt;-</span> <span class="fu">validation_split</span><span class="op">(</span><span class="va">ames_train</span>, prop <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">val_set</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Validation Set Split (0.75/0.25)  
+# A tibble: 1 × 2
+  splits             id        
+  &lt;list&gt;             &lt;chr&gt;     
+1 &lt;split [1756/586]&gt; validation</code></pre>
+</div>
+</div>
+</section><section id="bootstrapping" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="bootstrapping">
+<span class="header-section-number">7.6</span> Bootstrapping</h2>
+<p><em>Bootstrap</em> został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane <span class="citation" data-cites="davison1997">(<a href="references.html#ref-davison1997" role="doc-biblioref">Davison i Hinkley 1997</a>)</span>. Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.</p>
+<p>Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co zbiór treningowy, ale jest losowana ze zwracaniem. Oznacza to, że niektóre obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru analitycznego. Każdy punkt danych ma 63,2% szans na włączenie do zbioru uczącego przynajmniej raz. Zestaw oceny zawiera wszystkie próbki zestawu treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8% zestawu treningowego). Podczas bootstrappingu zestaw oceny jest często nazywany próbką poza workiem (ang. <em>Out-Of-Bag)</em>.</p>
+<p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1">Rysunek&nbsp;<span>7.7</span></a></p>
+<div id="fig-boot1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="img-fluid figure-img" width="500"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.7: Trzy próby bootstrapowe</figcaption><p></p>
+</figure>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bootstraps</span><span class="op">(</span><span class="va">ames_train</span>, times <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Bootstrap sampling 
+# A tibble: 5 × 2
+  splits             id        
+  &lt;list&gt;             &lt;chr&gt;     
+1 &lt;split [2342/858]&gt; Bootstrap1
+2 &lt;split [2342/855]&gt; Bootstrap2
+3 &lt;split [2342/852]&gt; Bootstrap3
+4 &lt;split [2342/851]&gt; Bootstrap4
+5 &lt;split [2342/867]&gt; Bootstrap5</code></pre>
+</div>
+</div>
+<p>Próbki bootstrapowe dają oszacowania dopasowania, które mają bardzo niską wariancję (w przeciwieństwie do walidacji krzyżowej), ale jest pesymistyczna w ocenie obciążenia. Oznacza to, że jeśli prawdziwa dokładność modelu wynosi 90%, bootstrap będzie miał tendencję do oszacowania wartości mniejszej niż 90%. Wielkość błędu systematycznego nie może być określona empirycznie z wystarczającą dokładnością. Dodatkowo, wielkość błędu systematycznego zmienia się w zależności od skali w jakiej mierzone jest dopasowanie. Na przykład obciążenie będzie prawdopodobnie inne, gdy dokładność wynosi 90% w porównaniu z 70%.</p>
+<p>Bootstrap jest również wykorzystywany wewnątrz wielu modeli. Na przykład, wspomniany wcześniej model lasu losowego zawierał 1000 indywidualnych drzew decyzyjnych. Każde drzewo było produktem innej próbki bootstrapowej zbioru treningowego.</p>
+</section><section id="kroczące-próbkowanie-źródła" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="kroczące-próbkowanie-źródła">
+<span class="header-section-number">7.7</span> Kroczące próbkowanie źródła</h2>
+<p>Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w szeregach czasowych. Technika, która losowo próbkuje wartości ze zbioru treningowego, nie pozwoli na oszacowanie tych wzorców.</p>
+<p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, szacując model z danymi historycznymi i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="references.html#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
+<div id="fig-rolling" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="img-fluid figure-img" width="500"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.8: Próbkowanie kroczące ze źródła</figcaption><p></p>
+</figure>
+</div>
+<p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling">Rysunek&nbsp;<span>7.8</span></a>.</p>
+<p>Istnieją dwie różne konfiguracje tej metody:</p>
+<ul>
+<li>Zestaw analiz może narastać narastająco (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych.</li>
+<li>Próbki nie muszą być zwiększane o jeden. Na przykład, w przypadku dużych zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast dnia.</li>
+</ul>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-davison1997" class="csl-entry" role="doc-biblioentry">
+Davison, A. C., i D. V. Hinkley. 1997. <span>„Bootstrap Methods and their Application”</span>, październik. <a href="https://doi.org/10.1017/cbo9780511802843">https://doi.org/10.1017/cbo9780511802843</a>.
+</div>
+<div id="ref-hyndman" class="csl-entry" role="doc-biblioentry">
+Hyndman, Robin John, i George Athanasopoulos. 2018. <em>Forecasting: Principles and Practice</em>. 2nd wyd. Australia: OTexts.
+</div>
+<div id="ref-xu2001" class="csl-entry" role="doc-biblioentry">
+Xu, Qing-Song, i Yi-Zeng Liang. 2001. <span>„Monte Carlo Cross Validation”</span>. <em>Chemometrics and Intelligent Laboratory Systems</em> 56 (1): 1–11. <a href="https://doi.org/10.1016/s0169-7439(00)00122-2">https://doi.org/10.1016/s0169-7439(00)00122-2</a>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Skopiowano!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Skopiowano!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./tidymodels.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Metody walidacji modeli statystycznych, Dariusz Majerek</div>   
+    <div class="nav-footer-right">Książka została napisana w <a href="https://quarto.org/">Quarto</a></div>
+  </div>
+</footer>
+
+
+</body></html>
