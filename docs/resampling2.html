@@ -236,6 +236,9 @@ div.csl-indent {
   <li><a href="#zbi%C3%B3r-walidacyjny" id="toc-zbiór-walidacyjny" class="nav-link" data-scroll-target="#zbi%C3%B3r-walidacyjny"><span class="toc-section-number">7.5</span>  Zbiór walidacyjny</a></li>
   <li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping"><span class="toc-section-number">7.6</span>  Bootstrapping</a></li>
   <li><a href="#krocz%C4%85ce-pr%C3%B3bkowanie-%C5%BAr%C3%B3d%C5%82a" id="toc-kroczące-próbkowanie-źródła" class="nav-link" data-scroll-target="#krocz%C4%85ce-pr%C3%B3bkowanie-%C5%BAr%C3%B3d%C5%82a"><span class="toc-section-number">7.7</span>  Kroczące próbkowanie źródła</a></li>
+  <li><a href="#oszacowanie-dopasowania-z-wykorzystaniem-resamplingu" id="toc-oszacowanie-dopasowania-z-wykorzystaniem-resamplingu" class="nav-link" data-scroll-target="#oszacowanie-dopasowania-z-wykorzystaniem-resamplingu"><span class="toc-section-number">7.8</span>  Oszacowanie dopasowania z wykorzystaniem resamplingu</a></li>
+  <li><a href="#przetwarzanie-r%C3%B3wnoleg%C5%82e" id="toc-przetwarzanie-równoległe" class="nav-link" data-scroll-target="#przetwarzanie-r%C3%B3wnoleg%C5%82e"><span class="toc-section-number">7.9</span>  Przetwarzanie równoległe</a></li>
+  <li><a href="#przechowywanie-wynik%C3%B3w-resamplingu" id="toc-przechowywanie-wyników-resamplingu" class="nav-link" data-scroll-target="#przechowywanie-wynik%C3%B3w-resamplingu"><span class="toc-section-number">7.10</span>  Przechowywanie wyników resamplingu</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -256,33 +259,34 @@ div.csl-indent {
   
 
 </header><div class="page-columns page-full"><p>W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych <code>ames</code>, na którym dokonywaliśmy już modelowania (regresja liniowa)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Oprócz modelu liniowego zbudujemy również las losowy, który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;z przykładu w poprzednim rozdziale</p></li></div></div>
-<div id="exm-1" class="theorem example">
+<div id="exm-1" class="theorem example page-columns page-full">
 <p><span class="theorem-title"><strong>Przykład 7.1 </strong></span>&nbsp;</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
-<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span><span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
 <span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_model</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
 <span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span>, id <span class="op">=</span> <span class="st">"my_id"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span>, id <span class="op">=</span> <span class="st">"my_id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, <span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu">fit</span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span>
@@ -343,7 +347,10 @@ div.csl-indent {
 </div>
 </div>
 <p>Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym przypadku. W taką pułapkę łapie się większość osób stawiających pierwsze kroki w ML. Ale już porównując te modele na próbie testowej widzimy, że różnice pomiędzy modelami się zacierają.</p>
-<div class="cell">
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="images/chap_46.png" class="img-fluid" width="400"></p>
+</div></div><div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">estimate_perf</span><span class="op">(</span><span class="va">rf_fit</span>, <span class="va">ames_test</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
@@ -366,7 +373,13 @@ div.csl-indent {
 <p>W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej może czasami spowodować, że model prawie zapamiętuje dane ze zbioru treningowego. Jako oczywisty przykład, można rozważyć model 1-najbliższego sąsiada. Zawsze będzie zapewniał doskonałe przewidywania dla zestawu treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych zestawów danych. Modele losowego lasu są podobne; predykcja na zbiorze uczącym zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.</p>
 <p>Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.</p>
 </div>
-<p>Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić fałszywie optymistyczne dopasowanie. A skoro zbiór testowy nie powinien być używany natychmiast, a repredykacja zbioru treningowego jest złym pomysłem, to co należy zrobić? Rozwiązaniem są metody ponownego próbkowania (ang. <em>resampling</em>), takie jak walidacja krzyżowa lub zestawy walidacyjne.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/chap_38.png" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+</div></div><p>Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić fałszywie optymistyczne dopasowanie. A skoro zbiór testowy nie powinien być używany natychmiast, a repredykacja zbioru treningowego jest złym pomysłem, to co należy zrobić? Rozwiązaniem są metody ponownego próbkowania (ang. <em>resampling</em>), takie jak walidacja krzyżowa lub zestawy walidacyjne.</p>
 <p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1">Rysunek&nbsp;<span>7.1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
 <div id="fig-resamp1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid figure-img" width="500"></p>
@@ -380,7 +393,13 @@ div.csl-indent {
 </ul>
 <p>Te dwie podpróbki są w pewnym sensie analogiczne do zestawów treningowych i testowych. Używany przez nas język analizy i oceny pozwala uniknąć pomyłek związanych z początkowym podziałem danych. Te zbiory danych wzajemnie się wykluczają. Schemat podziału stosowany do tworzenia zbiorów analizy i oceny jest zazwyczaj cechą definiującą metodę.</p>
 <p>Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania. Oznacza to, że 20 oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im zbiory oceny dają 20 zbiorów statystyk wydajności. Ostateczne oszacowanie wydajności dla modelu jest średnią z 20 powtórzeń statystyki. Średnia ta ma bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na zbiorze uczącym.</p>
-<section id="walidacja-krzyżowa" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="walidacja-krzyżowa">
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://i.pinimg.com/564x/5d/40/fe/5d40febb383da04ada236afede0ab996.jpg" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+</div></div><section id="walidacja-krzyżowa" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="walidacja-krzyżowa">
 <span class="header-section-number">7.1</span> Walidacja krzyżowa</h2>
 <p>Walidacja krzyżowa (ang. <em>cross-validation</em>) jest dobrze ugruntowaną metodą próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa. Dane są losowo dzielone na <span class="math inline">\(V\)</span> zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami). Dla ilustracji, <span class="math inline">\(V = 3\)</span> jest pokazane na rysunku rys dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów. Liczba wewnątrz symboli to numer próbki.</p>
 <div id="fig-cross1" class="quarto-figure quarto-figure-center anchored">
@@ -396,7 +415,13 @@ div.csl-indent {
 </figure>
 </div>
 <p>Gdy <span class="math inline">\(V = 3\)</span>, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór oceny stanowi odrębną 1/3. Końcowa estymacja resamplingu wydajności uśrednia każdą z <span class="math inline">\(V\)</span> replik.</p>
-<p>Użycie <span class="math inline">\(V = 3\)</span> jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować wiarygodne szacunki. W praktyce wartości <span class="math inline">\(V\)</span> to najczęściej 5 lub 10; raczej preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/chap_11.png" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+</div></div><p>Użycie <span class="math inline">\(V = 3\)</span> jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować wiarygodne szacunki. W praktyce wartości <span class="math inline">\(V\)</span> to najczęściej 5 lub 10; raczej preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.</p>
 <p>Jakie są skutki zmiany <span class="math inline">\(V\)</span>? Większe wartości powodują, że szacunki z próbkowania mają mały błąd/obciążenie, ale znaczną wariancję. Mniejsze wartości <span class="math inline">\(V\)</span> mają duży błąd, ale niską wariancję. Preferujemy 10-krotne, ponieważ szum jest zmniejszony przez replikacje, ale obciążenie już nie.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
@@ -428,10 +453,16 @@ div.csl-indent {
 </div>
 </div>
 <p>Kolumna o nazwie <em>splits</em> zawiera informacje o tym, jak podzielone zostaną dane (podobnie jak obiekt używany do tworzenia początkowej partycji trening/test). Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest na tyle inteligentny, że nie tworzy kopii danych w pamięci. Metoda print wewnątrz tybla pokazuje częstość występowania każdego z nich: [2107/235] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.</p>
-</section><section id="sprawdzian-krzyżowy-z-powtórzeniami" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="sprawdzian-krzyżowy-z-powtórzeniami">
+</section><section id="sprawdzian-krzyżowy-z-powtórzeniami" class="level2 page-columns page-full" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="sprawdzian-krzyżowy-z-powtórzeniami">
 <span class="header-section-number">7.2</span> Sprawdzian krzyżowy z powtórzeniami</h2>
 <p>Najważniejszą odmianą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa z powtórzeniami. W zależności od rozmiaru danych i innych cech, ocena modelu uzyskana w wyniku <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej może być nadmiernie zaszumiona. Podobnie jak w przypadku wielu problemów statystycznych, jednym ze sposobów zmniejszenia szumu jest zebranie większej ilości danych. W przypadku walidacji krzyżowej oznacza to uśrednienie więcej niż <span class="math inline">\(V\)</span> statystyk.</p>
-<p>Aby stworzyć <span class="math inline">\(R\)</span> powtórzeń <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany <span class="math inline">\(R\)</span> razy, aby wygenerować <span class="math inline">\(R\)</span> zbiorów złożonych z <span class="math inline">\(V\)</span> podzbiorów. Zamiast uśredniania <span class="math inline">\(V\)</span> statystyk, <span class="math inline">\(V\times R\)</span> wartości daje ostateczną estymację resamplingu. Ze względu na Centralne Twierdzenie Graniczne, statystyki zbiorcze z każdego modelu mają tendencję do rozkładu normalnego, tak długo jak mamy dużo danych w stosunku do <span class="math inline">\(V\times R\)</span>. Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 właściwości. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na rysunku 10.4 pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/chap_20.png" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+</div></div><p>Aby stworzyć <span class="math inline">\(R\)</span> powtórzeń <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany <span class="math inline">\(R\)</span> razy, aby wygenerować <span class="math inline">\(R\)</span> zbiorów złożonych z <span class="math inline">\(V\)</span> podzbiorów. Zamiast uśredniania <span class="math inline">\(V\)</span> statystyk, <span class="math inline">\(V\times R\)</span> wartości daje ostateczną estymację resamplingu. Ze względu na Centralne Twierdzenie Graniczne, statystyki zbiorcze z każdego modelu mają tendencję do rozkładu normalnego, tak długo jak mamy dużo danych w stosunku do <span class="math inline">\(V\times R\)</span>. Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 właściwości. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na rysunku 10.4 pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
 <div id="fig-cross3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="img-fluid figure-img" width="600"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych</figcaption><p></p>
@@ -458,10 +489,16 @@ div.csl-indent {
 # … with 40 more rows</code></pre>
 </div>
 </div>
-</section><section id="leave-one-out" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="leave-one-out">
+</section><section id="leave-one-out" class="level2 page-columns page-full" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="leave-one-out">
 <span class="header-section-number">7.3</span> Leave-One-Out</h2>
 <p>Jedną z odmian walidacji krzyżowej jest walidacja krzyżowa typu <em>Leave-One-Out</em> (LOO). Jeśli mamy <span class="math inline">\(n\)</span> próbek zbioru treningowego, <span class="math inline">\(n\)</span> modeli jest dopasowywanych przy użyciu <span class="math inline">\(n - 1\)</span> wierszy zbioru treningowego. Każdy model przewiduje pojedynczy wykluczony punkt danych. Na koniec próbkowania <span class="math inline">\(n\)</span> prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania</p>
-<p>Metody LOO są niedoskonałe w porównaniu z prawie każdą inną metodą. Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet <code>rsample</code> zawiera funkcję <code>loo_cv()</code>, obiekty te nie są mocno zintegrowane z pakietami <code>tidymodels</code>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/chap_41.png" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div>
+</div></div><p>Metody LOO są niedoskonałe w porównaniu z prawie każdą inną metodą. Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet <code>rsample</code> zawiera funkcję <code>loo_cv()</code>, obiekty te nie są mocno zintegrowane z pakietami <code>tidymodels</code>.</p>
 </section><section id="walidacja-metodą-monte-carlo" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="walidacja-metodą-monte-carlo">
 <span class="header-section-number">7.4</span> Walidacja metodą Monte-Carlo</h2>
 <p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="references.html#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
@@ -561,7 +598,330 @@ div.csl-indent {
 <ul>
 <li>Zestaw analiz może narastać narastająco (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych.</li>
 <li>Próbki nie muszą być zwiększane o jeden. Na przykład, w przypadku dużych zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast dnia.</li>
-</ul>
+</ul></section><section id="oszacowanie-dopasowania-z-wykorzystaniem-resamplingu" class="level2 page-columns page-full" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="oszacowanie-dopasowania-z-wykorzystaniem-resamplingu">
+<span class="header-section-number">7.8</span> Oszacowanie dopasowania z wykorzystaniem resamplingu</h2>
+<p>Każda z metod resamplingu omówionych w tym rozdziale może być wykorzystana do oceny procesu modelowania (w tym przetwarzania wstępnego, dopasowania modelu itp.). Metody te są skuteczne, ponieważ do trenowania modelu i oceny modelu wykorzystywane są różne grupy danych. Przebiega on w następujący sposób:</p>
+<ol type="1">
+<li>Podczas resamplingu zbiór analityczny jest używany do wstępnego przetwarzania danych a następnie przetworzonych danych używa do dopasowania modelu.</li>
+<li>Statystyki przetwarzania wstępnego opracowane przez zbiór analiz są stosowane do zbioru oceny. Prognozy ze zbioru oceny wskazują wydajność modelu na nowych danych.</li>
+</ol>
+<p>Ta sekwencja powtarza się dla każdej próby. Jeśli istnieje <span class="math inline">\(B\)</span> prób, wówczas mamy <span class="math inline">\(B\)</span> powtórzeń każdej z metryk dopasowania. Ostateczna ocena jest średnią tych <span class="math inline">\(B\)</span> statystyk. Jeśli <span class="math inline">\(B = 1\)</span>, jak w przypadku zbioru walidacyjnego, pojedyncze statystyki reprezentują ogólne dopasowanie.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="https://media4.giphy.com/media/IfFN6NwhaUl3CI4mgG/giphy.gif?cid=ecf05e479vdinrjf0nel53vw654p1yc1bgr3ey8fkbw1o74t&amp;rid=giphy.gif&amp;ct=g" class="img-fluid"></p>
+</div></div><div class="cell" data-hash="resampling2_cache/html/unnamed-chunk-10_5531145ba5c63cef20102531b78ce24e">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ustawiamy kontrolę resamplingu w ten sposbów aby zapisać predykcje i </span></span>
+<span><span class="co"># nauczony przepływ - domyślnie nie są zapisywane</span></span>
+<span><span class="va">keep_pred</span> <span class="op">&lt;-</span> <span class="fu">control_resamples</span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>, save_workflow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1003</span><span class="op">)</span></span>
+<span><span class="va">rf_res</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">rf_wflow</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">fit_resamples</span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">ames_folds</span>, control <span class="op">=</span> <span class="va">keep_pred</span><span class="op">)</span></span>
+<span><span class="va">rf_res</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# 10-fold cross-validation 
+# A tibble: 10 × 5
+   splits             id     .metrics         .notes           .predictions
+   &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;           &lt;list&gt;      
+ 1 &lt;split [2107/235]&gt; Fold01 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 2 &lt;split [2107/235]&gt; Fold02 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 3 &lt;split [2108/234]&gt; Fold03 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 4 &lt;split [2108/234]&gt; Fold04 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 5 &lt;split [2108/234]&gt; Fold05 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 6 &lt;split [2108/234]&gt; Fold06 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 7 &lt;split [2108/234]&gt; Fold07 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 8 &lt;split [2108/234]&gt; Fold08 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+ 9 &lt;split [2108/234]&gt; Fold09 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    
+10 &lt;split [2108/234]&gt; Fold10 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble&gt;    </code></pre>
+</div>
+</div>
+<p>Chociaż te kolumny listy mogą wyglądać zniechęcająco, można je łatwo przekonfigurować za pomocą <code>tidymodels</code>. Na przykład, aby zwrócić metryki wydajności w bardziej użytecznym formacie:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">rf_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  .metric .estimator   mean     n std_err .config             
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 rmse    standard   0.0719    10 0.00322 Preprocessor1_Model1
+2 rsq     standard   0.839     10 0.00776 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>Aby uzyskać metryki dla każdej próby, należy użyć opcji <code>summarize = FALSE</code>. Natomiast aby uzyskać predykcje z poszczególnych foldów użyjemy:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">assess_res</span> <span class="op">&lt;-</span> <span class="fu">collect_predictions</span><span class="op">(</span><span class="va">rf_res</span><span class="op">)</span></span>
+<span><span class="va">assess_res</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,342 × 5
+   id     .pred  .row Sale_Price .config             
+   &lt;chr&gt;  &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt; &lt;chr&gt;               
+ 1 Fold01  5.10    10       5.09 Preprocessor1_Model1
+ 2 Fold01  5.06    27       5.08 Preprocessor1_Model1
+ 3 Fold01  5.11    47       5.10 Preprocessor1_Model1
+ 4 Fold01  5.04    52       5.11 Preprocessor1_Model1
+ 5 Fold01  5.14    59       5    Preprocessor1_Model1
+ 6 Fold01  4.99    63       4.90 Preprocessor1_Model1
+ 7 Fold01  5.10    65       5.11 Preprocessor1_Model1
+ 8 Fold01  4.90    66       4.77 Preprocessor1_Model1
+ 9 Fold01  5.15    67       5.10 Preprocessor1_Model1
+10 Fold01  5.03    68       5.10 Preprocessor1_Model1
+# … with 2,332 more rows</code></pre>
+</div>
+</div>
+<p>Kolumna <code>.row</code> jest liczbą całkowitą, która odpowiada numerowi wiersza oryginalnego zestawu treningowego, tak aby te wyniki mogły być odpowiednio połączone z oryginalnymi danymi.</p>
+<div class="callout callout-style-default callout-tip callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wskazówka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dla niektórych metod resamplingu, takich jak bootstrap lub walidacja krzyżowa z powtórzeniami, otrzymamy wiele predykcji na wiersz oryginalnego zestawu treningowego. Aby uzyskać jedną statystykę (średnią z predykcji) użyj <code>collect_predictions(object, summarize = TRUE)</code>.</p>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">assess_res</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sale_Price</span>, y <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_abline</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">coord_obs_pred</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Predicted"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-pred-obs" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="resampling2_files/figure-html/fig-pred-obs-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>W zbiorze treningowym znajdują się dwa domy o niskiej zaobserwowanej cenie sprzedaży, których cena jest znacznie zawyżona przez model. Które to domy? Dowiedzmy się tego z wyniku <code>assess_res</code>:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">over_predicted</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">assess_res</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>residual <span class="op">=</span> <span class="va">Sale_Price</span> <span class="op">-</span> <span class="va">.pred</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">residual</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">over_predicted</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  id     .pred  .row Sale_Price .config              residual
+  &lt;chr&gt;  &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt; &lt;chr&gt;                   &lt;dbl&gt;
+1 Fold03  4.95    30       4.11 Preprocessor1_Model1   -0.844
+2 Fold05  4.92   316       4.12 Preprocessor1_Model1   -0.807</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_train</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">slice</span><span class="op">(</span><span class="va">over_predicted</span><span class="op">$</span><span class="va">.row</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, <span class="va">Neighborhood</span>, <span class="va">Year_Built</span>, <span class="va">Bedroom_AbvGr</span>, <span class="va">Full_Bath</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  Gr_Liv_Area Neighborhood           Year_Built Bedroom_AbvGr Full_Bath
+        &lt;int&gt; &lt;fct&gt;                       &lt;int&gt;         &lt;int&gt;     &lt;int&gt;
+1         832 Old_Town                     1923             2         1
+2         733 Iowa_DOT_and_Rail_Road       1952             2         1</code></pre>
+</div>
+</div>
+<p>Identyfikacja takich przykładów ze szczególnie słabym dopasowaniem może pomóc nam śledzić i badać, dlaczego te konkretne przewidywania są tak słabe.</p>
+<p>Jeśli chcielibyśmy użyć zbioru walidacyjnego do oceny modelu, użyjemy:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">val_res</span> <span class="op">&lt;-</span> <span class="va">rf_wflow</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">fit_resamples</span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">val_set</span><span class="op">)</span></span>
+<span><span class="va">val_res</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Validation Set Split (0.75/0.25)  
+# A tibble: 1 × 4
+  splits             id         .metrics         .notes          
+  &lt;list&gt;             &lt;chr&gt;      &lt;list&gt;           &lt;list&gt;          
+1 &lt;split [1756/586]&gt; validation &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt;</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">val_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  .metric .estimator   mean     n std_err .config             
+  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 rmse    standard   0.0752     1      NA Preprocessor1_Model1
+2 rsq     standard   0.827      1      NA Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>Jak widać wyniki te są zbliżone do otrzymanych z wykorzystaniem próby testowej.</p>
+</section><section id="przetwarzanie-równoległe" class="level2 page-columns page-full" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="przetwarzanie-równoległe">
+<span class="header-section-number">7.9</span> Przetwarzanie równoległe</h2>
+<p>Modele utworzone podczas ponownego próbkowania są niezależne od siebie. Obliczenia tego typu są czasami nazywane żenująco równoległymi (ang. <em>embarrassingly parallel</em>); każdy model mógłby być dopasowany jednocześnie bez problemów <span class="citation" data-cites="schmidberger2009">(<a href="references.html#ref-schmidberger2009" role="doc-biblioref">Schmidberger i in. 2009</a>)</span>. Pakiet <code>tune</code> używa pakietu <code>foreach</code> do przeprowadzenia obliczeń równoległych. Obliczenia te mogą być podzielone pomiędzy procesory na tym samym komputerze lub na różnych komputerach, w zależności od wybranej technologii.</p>
+<p>Liczbę dostępnych rdzeni można wykryć za pomocą:</p>
+<div class="cell" data-evel="false">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Liczba fizycznych rdzeni</span></span>
+<span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># liczba logicznych rdzeni  </span></span>
+<span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+</div>
+<div class="page-columns page-full"><p>Różnica między tymi dwoma wartościami jest związana z procesorem komputera. Na przykład większość procesorów Intela wykorzystuje hyperthreading<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, który tworzy dwa wirtualne rdzenie dla każdego fizycznego rdzenia. Dodatkowe zasoby mogą poprawić wydajność, jednak rzadko można je stosować na wszystkich rdzeniach fizycznych, ponieważ pewne zasoby są potrzebne do obsługi hyperthreadingu.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;wielowątkowość współbierzna</p></li></div></div>
+<p>W przypadku <code>fit_resamples()</code> i innych funkcji w pakiecie <code>tune</code>, przetwarzanie równoległe występuje, gdy użytkownik zarejestruje pakiet równoległego przetwarzania. Owe pakiety definiują sposób wykonywania przetwarzania równoległego. W systemach operacyjnych Unix i macOS jedną z metod podziału obliczeń jest rozgałęzienie wątków. Aby to umożliwić, załaduj pakiet <code>doMC</code> i zarejestruj liczbę równoległych rdzeni dla <code>foreach</code>:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tylko w Unix i macOS</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">doMC</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/doMC/man/registerDoMC.html">registerDoMC</a></span><span class="op">(</span>cores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To daje instrukcje dla <code>fit_resamples()</code>, aby uruchomić 1/4 obliczeń na każdym z czterech rdzeni. Aby zresetować obliczenia do przetwarzania sekwencyjnego:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/foreach/man/registerDoSEQ.html">registerDoSEQ</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Alternatywnie, inne podejście do paralelizacji obliczeń wykorzystuje gniazda sieciowe. Pakiet <code>doParallel</code> umożliwia tę metodę (możliwą do wykorzystania przez wszystkie systemy operacyjne):</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel">doParallel</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html">makePSOCKcluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># fit_resamples()...</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html">stopCluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Jeszcze innym pakietem R, który ułatwia przetwarzanie równoległe, jest pakiet <code>future</code>. Podobnie jak <code>foreach</code>, zapewnia on wykonywanie równoległych obliczeń na wybranej liczbie rdzeni. Pakiet ten jest używany w połączeniu z <code>foreach</code> poprzez pakiet <code>doFuture</code>.</p>
+<p>Przetwarzanie równoległe z pakietem <code>tune</code> ma tendencję do zapewnienia liniowego przyspieszenia dla pierwszych kilku rdzeni. Oznacza to, że przy dwóch rdzeniach obliczenia są dwukrotnie szybsze. W zależności od typu danych i modelu, wzrost prędkości spada, tak że po włączeniu czterech czy pięciu rdzeni prędkość nie wzrośnie 4- czy 5-krotnie. Użycie większej liczby rdzeni nadal będzie skracać czas potrzebny do wykonania zadania; po prostu ich efektywność spada wraz z włączeniem dodatkowych rdzeni.</p>
+<p>Zakończmy ostatnią uwagą na temat obliczeń równoległych. Dla każdej z tych technologii, wymagania dotyczące pamięci wzrastają z każdym dodatkowym rdzeniem. Na przykład, jeśli bieżący zestaw danych zajmuje 2 GB pamięci i używane są trzy rdzenie, całkowite zapotrzebowanie na pamięć wyniesie 8 GB (2 dla każdego procesu roboczego plus oryginał). Użycie zbyt wielu rdzeni może spowodować znaczne spowolnienie obliczeń (i komputera).</p>
+</section><section id="przechowywanie-wyników-resamplingu" class="level2" data-number="7.10"><h2 data-number="7.10" class="anchored" data-anchor-id="przechowywanie-wyników-resamplingu">
+<span class="header-section-number">7.10</span> Przechowywanie wyników resamplingu</h2>
+<p>Modele utworzone podczas próbkowania nie są zapisywane. Modele te są trenowane w celu oceny dopasowania i zazwyczaj nie potrzebujemy ich po obliczeniu miar dopasowania. Jeśli określone podejście do modelowania okaże się najlepszą opcją dla naszego zestawu danych, wtedy najlepszym wyborem jest ponowne dopasowanie modelu do całego zestawu uczącego, aby parametry modelu mogły być oszacowane przy użyciu większej ilości danych.</p>
+<p>Podczas gdy te modele utworzone podczas resamplingu nie są zachowywane, istnieje metoda na zapisanie ich lub części składników. Opcja <code>extract</code> funkcji <code>control_resamples()</code> określa funkcję, która przyjmuje pojedynczy argument; my użyjemy <code>x</code>. Gdy zostanie wykonana, <code>x</code> przekazuje w wyniku dopasowany obiekt przepływu, niezależnie od tego, czy przekazałeś <code>fit_resamples()</code> z przepływem. Przypomnijmy, że pakiet <code>workflows</code> posiada funkcje, które mogą wyciągać różne składniki obiektów (np. model, recepturę itp.).</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
+<span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, <span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_wflow</span> <span class="op">&lt;-</span>  </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span><span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="va">lm_wflow</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wyciągnijmy przepis</span></span>
+<span><span class="fu">extract_recipe</span><span class="op">(</span><span class="va">lm_fit</span>, estimated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          6
+
+Training data contained 2342 data points and no missing data.
+
+Operations:
+
+Collapsing factor levels for Neighborhood [trained]
+Dummy variables from Neighborhood, Bldg_Type [trained]
+Interactions with Gr_Liv_Area:(Bldg_Type_TwoFmCon + Bldg_Type_Duplex... [trained]
+Natural splines on Latitude, Longitude [trained]</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># wyciągnijmy model</span></span>
+<span><span class="va">get_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">extract_fit_parsnip</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># tak działa na pojedynczym modelu</span></span>
+<span><span class="fu">get_model</span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 72 × 5
+   term                             estimate  std.error statistic   p.value
+   &lt;chr&gt;                               &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)                      1.25     0.305          4.09  4.42e-  5
+ 2 Gr_Liv_Area                      0.000163 0.00000433    37.6   5.23e-241
+ 3 Year_Built                       0.00191  0.000143      13.4   2.23e- 39
+ 4 Neighborhood_College_Creek       0.0131   0.0343         0.382 7.03e-  1
+ 5 Neighborhood_Old_Town           -0.0559   0.0129        -4.35  1.44e-  5
+ 6 Neighborhood_Edwards            -0.0799   0.0282        -2.84  4.60e-  3
+ 7 Neighborhood_Somerset            0.0777   0.0198         3.93  8.68e-  5
+ 8 Neighborhood_Northridge_Heights  0.156    0.0287         5.43  6.24e-  8
+ 9 Neighborhood_Gilbert             0.0322   0.0226         1.43  1.54e-  1
+10 Neighborhood_Sawyer             -0.0911   0.0266        -3.43  6.23e-  4
+# … with 62 more rows</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># a tak na wyniku resamplingu</span></span>
+<span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_resamples</span><span class="op">(</span>extract <span class="op">=</span> <span class="va">get_model</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_res</span> <span class="op">&lt;-</span> <span class="va">lm_wflow</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">fit_resamples</span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">ames_folds</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+<span><span class="va">lm_res</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# 10-fold cross-validation 
+# A tibble: 10 × 5
+   splits             id     .metrics         .notes           .extracts       
+   &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;           &lt;list&gt;          
+ 1 &lt;split [2107/235]&gt; Fold01 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 2 &lt;split [2107/235]&gt; Fold02 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 3 &lt;split [2108/234]&gt; Fold03 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 4 &lt;split [2108/234]&gt; Fold04 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 5 &lt;split [2108/234]&gt; Fold05 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 6 &lt;split [2108/234]&gt; Fold06 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 7 &lt;split [2108/234]&gt; Fold07 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 8 &lt;split [2108/234]&gt; Fold08 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+ 9 &lt;split [2108/234]&gt; Fold09 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;
+10 &lt;split [2108/234]&gt; Fold10 &lt;tibble [2 × 4]&gt; &lt;tibble [0 × 3]&gt; &lt;tibble [1 × 2]&gt;</code></pre>
+</div>
+</div>
+<p>Teraz z każdego folda możemy wyciągnąć szczegóły modelu.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+# A tibble: 72 × 5
+   term                             estimate  std.error statistic   p.value
+   &lt;chr&gt;                               &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)                      1.32     0.319          4.13  3.72e-  5
+ 2 Gr_Liv_Area                      0.000169 0.00000465    36.3   1.38e-222
+ 3 Year_Built                       0.00187  0.000150      12.4   2.85e- 34
+ 4 Neighborhood_College_Creek       0.0187   0.0362         0.517 6.06e-  1
+ 5 Neighborhood_Old_Town           -0.0521   0.0136        -3.84  1.29e-  4
+ 6 Neighborhood_Edwards            -0.0737   0.0297        -2.49  1.30e-  2
+ 7 Neighborhood_Somerset            0.0763   0.0213         3.58  3.56e-  4
+ 8 Neighborhood_Northridge_Heights  0.151    0.0305         4.96  7.77e-  7
+ 9 Neighborhood_Gilbert             0.0287   0.0242         1.19  2.35e-  1
+10 Neighborhood_Sawyer             -0.0861   0.0280        -3.08  2.12e-  3
+# … with 62 more rows</code></pre>
+</div>
+</div>
+<p>Może się to wydawać zawiłą metodą zapisywania wyników modelu. Jednakże, <code>extract</code> jest elastyczna i nie zakłada, że użytkownik będzie zapisywał tylko jedną <code>tibble</code> dla każdej próbki. Na przykład, metoda <code>tidy()</code> może być uruchomiona zarówno na przepisie jak i na modelu. W tym przypadku zwrócona zostanie lista dwóch <code>tibble</code>.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_coef</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span>, <span class="op">~</span> <span class="va">.x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">all_coef</span>, <span class="va">term</span> <span class="op">==</span> <span class="st">"Year_Built"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 5
+   term       estimate std.error statistic  p.value
+   &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+ 1 Year_Built  0.00187  0.000150      12.4 2.85e-34
+ 2 Year_Built  0.00190  0.000153      12.5 2.06e-34
+ 3 Year_Built  0.00191  0.000144      13.2 1.74e-38
+ 4 Year_Built  0.00192  0.000151      12.8 6.61e-36
+ 5 Year_Built  0.00188  0.000151      12.4 2.75e-34
+ 6 Year_Built  0.00210  0.000152      13.8 9.75e-42
+ 7 Year_Built  0.00186  0.000151      12.3 1.23e-33
+ 8 Year_Built  0.00200  0.000154      13.0 4.43e-37
+ 9 Year_Built  0.00191  0.000153      12.5 1.97e-34
+10 Year_Built  0.00188  0.000154      12.2 3.47e-33</code></pre>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -570,6 +930,9 @@ Davison, A. C., i D. V. Hinkley. 1997. <span>„Bootstrap Methods and their Appl
 </div>
 <div id="ref-hyndman" class="csl-entry" role="doc-biblioentry">
 Hyndman, Robin John, i George Athanasopoulos. 2018. <em>Forecasting: Principles and Practice</em>. 2nd wyd. Australia: OTexts.
+</div>
+<div id="ref-schmidberger2009" class="csl-entry" role="doc-biblioentry">
+Schmidberger, Markus, Martin Morgan, Dirk Eddelbuettel, Hao Yu, Luke Tierney, i Ulrich Mansmann. 2009. <span>„State of the Art in Parallel Computing with<span><em>R</em></span>”</span>. <em>Journal of Statistical Software</em> 31 (1). <a href="https://doi.org/10.18637/jss.v031.i01">https://doi.org/10.18637/jss.v031.i01</a>.
 </div>
 <div id="ref-xu2001" class="csl-entry" role="doc-biblioentry">
 Xu, Qing-Song, i Yi-Zeng Liang. 2001. <span>„Monte Carlo Cross Validation”</span>. <em>Chemometrics and Intelligent Laboratory Systems</em> 56 (1): 1–11. <a href="https://doi.org/10.1016/s0169-7439(00)00122-2">https://doi.org/10.1016/s0169-7439(00)00122-2</a>.
