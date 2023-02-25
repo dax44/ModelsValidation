@@ -3,6 +3,152 @@ output: html_document
 code-fold: show
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
 
 # Optymalizacja modeli
+
+Część modeli, jak np.
+regresja liniowa, posiada wszystkie parametry, które da się oszacować na podstawie zbioru uczącego.
+Są też modele, których parametry (przynajmniej część z nich) nie da się oszacować na podstawie próby.
+Przykładem może być model kNN, w którym $k$ jest parametrem, którego wartość nie jest estymowana w czasie uczenia modelu.
+Takich przykładów można mnożyć, przykładowo głębokość drzew czy minimalna wielkość węzła aby dokonać podziału w lesie losowym również są parametremi, których wartości nie da się szacować w procesie uczenia modelu.
+Takie "odmienne" parametry będziemy nazywać hiperparametrami modelu.
+
+Czy to oznacza, że jesteśmy zdani na ich zgadywanie?
+`r emo::ji("see_no_evil")` Na szczęście nie.
+Proces w którym odbywa się poszukiwanie optymalnych parametrów modelu nazywamy optymalizacją modelu (ang. *tuning*).
+Definicję tę można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich parametrów jak szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba iteracji/epok w procesie uczenia.
+Co więcej również w procesie przygotowania danych do modelowania, występują parametry, których wartość należy optymalizować.
+Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego wartość należy dostrajać.
+Nawet w kontekście wspomnianych klasycznych modeli jak np.
+regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.
+
+Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać?
+To zależy od tego co chcemy optymalizować.
+Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania.
+@friedman2001 pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (*accuracy*).
+
+```{r}
+library(tidymodels)
+tidymodels_prefer()
+```
+
+```{r}
+#| cache: true
+set.seed(44)
+split <- initial_split(two_class_dat, prop = 0.8)
+training_set <- training(split)
+testing_set <- testing(split)
+
+llhood <- function(...) {
+  logistic_reg() %>% 
+    set_engine("glm", ...) %>% 
+    fit(Class ~ ., data = training_set) %>% 
+    glance() %>% 
+    select(logLik)
+}
+
+bind_rows(
+  llhood(),
+  llhood(family = binomial(link = "probit")),
+  llhood(family = binomial(link = "cloglog"))
+) %>% 
+  mutate(link = c("logit", "probit", "c-log-log"))  %>% 
+  arrange(desc(logLik))
+```
+
+Biorąc pod uwagę powyższe wyniki model logistyczny okazuje się być najlepszy.
+Porównanie to niestety wyrażone zostało pojedynczą statystyką dla każdego modelu.
+Zatem nie możemy stwierdzić, czy różnice te są istotne statystycznie.
+Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.
+
+```{r}
+#| cache: true
+set.seed(1201)
+rs <- vfold_cv(training_set, repeats = 10)
+
+# Return the individual resampled performance estimates:
+lloss <- function(...) {
+  perf_meas <- metric_set(roc_auc, mn_log_loss)
+    
+  logistic_reg() %>% 
+    set_engine("glm", ...) %>% 
+    fit_resamples(Class ~ A + B, rs, metrics = perf_meas) %>% 
+    collect_metrics(summarize = FALSE) %>%
+    select(id, id2, .metric, .estimate)
+}
+
+resampled_res <- 
+  bind_rows(
+    lloss()                                    %>% mutate(model = "logistic"),
+    lloss(family = binomial(link = "probit"))  %>% mutate(model = "probit"),
+    lloss(family = binomial(link = "cloglog")) %>% mutate(model = "c-log-log")     
+  ) %>%
+  # Convert log-loss to log-likelihood:
+  mutate(.estimate = ifelse(.metric == "mn_log_loss", -.estimate, .estimate)) %>% 
+  group_by(model, .metric) %>% 
+  summarize(
+    mean = mean(.estimate, na.rm = TRUE),
+    std_err = sd(.estimate, na.rm = TRUE) / sum(!is.na(.estimate)), 
+    .groups = "drop"
+  )
+
+resampled_res %>% 
+  filter(.metric == "mn_log_loss") %>% 
+  ggplot(aes(x = mean, y = model)) + 
+  geom_point() + 
+  geom_errorbar(aes(xmin = mean - 1.96 * std_err, xmax = mean + 1.96 * std_err),
+                width = .1) + 
+  labs(y = NULL, x = "log-likelihood")
+```
+
+Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na mniejszym zbiorze danych; wartość uzyskana przez `broom::glance()` jest sumą, podczas gdy `yardstick::mn_log_loss()` jest średnią.
+Wyniki te pokazują, że istnieją znaczne dowody na to, że wybór funkcji łączącej ma znaczenie i że model logistyczny jest lepszy.
+
+A co gdy użyjemy innej miary oceny dopasowania?
+
+![Porównanie pól pod krzywą ROC](images/Zrzut%20ekranu%202023-02-25%20o%2020.27.01.png){#fig-tune2 fig-align="center" width="600"}
+
+Jak widać zastosowanie innej miary powoduje, po pierwsze zmianę kolejności (najlepszy okazał się model c-log-log), a po drugie różnice pomiędzy modelami się zatarły.
+
+::: callout-warning
+To ćwiczenie pokazuje, że różne metryki mogą prowadzić do różnych decyzji dotyczących wyboru wartości parametrów.
+W tym przypadku jedna metryka wydaje się wyraźnie sortować modele, podczas gdy inna nie wykazuje żadnej różnicy.
+:::
+
+@Thomas2020 sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz "gry" metrykami[^tuning-1] należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.
+
+[^tuning-1]: to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania
+
+## Konsekwencje złego oszacowania parametrów
+
+Wiele parametrów dostrajania modyfikuje stopień złożoności modelu.
+Większa złożoność często oznacza większą plastyczność wzorców, które model może naśladować.
+Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność predykcji.
+Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych.
+Overfitting to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.
+
+Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji.
+Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna[^tuning-2].
+Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.
+
+[^tuning-2]: oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową
+
+Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej.
+Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych.
+Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego.
+Jeśli model ocenia siebie na podstawie wartości ROC zbioru treningowego, to preferuje wiele neuronów w warstwie ukrytej, tak aby mógł prawie wyeliminować błędy.
+
+Rozdziały wcześniejsze pokazały, że zwykłe ponowne przewidywanie wartości na zbiorze uczącyn jest złym podejściem do oceny modelu.
+W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym.
+Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na @fig-tune3.
+
+![Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej](images/Zrzut%20ekranu%202023-02-25%20o%2021.01.05.png){#fig-tune3 fig-align="center" width="600"}
+
+Model z pojedynczym neuronem w warstwie ukrytej nie dostosowuje się zbyt elastycznie do danych (ponieważ jest ograniczony do bycia liniowym).
+Model z czterema jednostkami ukrytymi zaczyna wykazywać oznaki przeuczenia z nierealistyczną granicą dla wartości oddalonych od chmury danych.
+Dla 20 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworząc małe wyspy wokół pojedynczych obserwacji, aby zminimalizować współczynnik błędu.
+Wzorce te nie powtarzają się w zbiorze testowym.
+Ostatni panel najlepiej ilustruje, jak dostrajanie parametrów kontrolujących złożoność modelu musi być kontrolowane, aby model był efektywny.
+W przypadku modelu składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego wynosi 0,944, ale wartość dla zbioru testowego to 0,855.
