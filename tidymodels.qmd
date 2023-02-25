@@ -138,7 +138,6 @@ rand_forest(trees = 1000, min_n = 5) %>%
   set_mode("regression") # parametr verbose = T przekazany został oddzielnie
 ```
 
-{{< tweet FGazzelloni 1428406504911216646 >}}
 
 ## Użycie modelu
 

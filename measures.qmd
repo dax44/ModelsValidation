@@ -438,12 +438,22 @@ Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
 -   koszt niepoprawnej klasyfikacji - czasami niektóre błędy klasyfikacji są mniej kosztowne z punktu widzenie badacza, a inne bardziej.
     Wówczas można przypisać koszty błędnych klasyfikacji do poszczególnych klas, nakładając kary za błędne przypisane do innej klasy i w ten sposób zapobiegać takim sytuacjom.
 
--   średnia logarytmu funkcji straty - określana w literaturze jako *binary cross-entropy* dla przypadku zmiennej wynikowej dwustanowej i *multilevel cross-entropy* albo *categorical cross-entropy* w przypadku wielostanowej klasyfikacji.
+-   średnia logarytmu funkcji straty (ang. *log loss*) - określana też w literaturze jako *binary cross-entropy* dla przypadku zmiennej wynikowej dwustanowej i *multilevel cross-entropy* albo *categorical cross-entropy* w przypadku wielostanowej klasyfikacji.
     Definiuje się ją następująco:
 
     $$
         \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
     $$ {#eq-crossentropy} gdzie $y_i$ jest indykatorem klasy wyróżnionej dla $i$-tej obserwacji, a $\hat{y}_i$ prawdopodobieństwem wyróżnionego stanu $i$-tej obserwacji.
+    Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera.
+    Entropia mierzy nieprzewidywalność czegoś.
+    Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy.
+    Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć "dodatkowy szum", który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet.
+    Minimalizując entropię krzyżową, maksymalizujemy dokładność klasyfikatora.
+    Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.
+    W szczególności, jeśli surowe wyjście klasyfikatora jest prawdopodobieństwem zamiast etykiety klasy 0 lub 1, wówczas można użyć log-loss.
+    Prawdopodobieństwo można rozumieć jako miernik zaufania.
+    Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki bład, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5.
+    Log-loss jest "miękką" miarą dokładności, która uwzględnia tę ideę probabilistycznego zaufania.
 
 Należy pamiętać, że większość wspomnianych miar opiera się na wartościach z macierzy klasyfikacji.
 Przy czym aby obserwacje zaklasyfikować do jednej z klas należy przyjąć pewien punkt odcięcia (*threshold*) prawdopodobieństwa, od którego przewidywana wartość będzie przyjmowała stan "1".
@@ -458,14 +468,30 @@ Należą do nich:
 
 -   wykresy:
     -   ROC - *Receiver Operating Characteristic -* krzywa, która przedstawia kompromis pomiędzy *sensitivity i specificity* dla różnych poziomów odcięcia.
+        Ta egzotycznie brzmiąca nazwa wywodzi się z analizy sygnałów radiowych i została spopularyzowana w 1978 roku przez Charlesa Metza w artykule "Basic Principles of ROC Analysis".
+        Krzywa ROC pokazuje czułość klasyfikatora poprzez wykreślenie TPR do FPR.
+        Innymi słowy, pokazuje ona, ile poprawnych pozytywnych klasyfikacji można uzyskać, gdy dopuszcza się coraz więcej fałszywych pozytywów.
+        Idealny klasyfikator, który nie popełnia żadnych błędów, osiągnąłby natychmiast 100% wskaźnik prawdziwych pozytywów, bez żadnych fałszywych pozytywów - w praktyce prawie nigdy się to nie zdarza.
 
-    -   PRC - *Precision-Recall Curve* - krzywa, która pokazuje kompromis pomiędzy *precision i recall.*
+    -   PRC - *Precision-Recall Curve* - krzywa, która pokazuje kompromis pomiędzy *precision i recall.* Precision i recall to tak naprawdę dwie metryki.
+        Jednak często są one używane razem.
+        Precision odpowiada na pytanie: "Z elementów, które klasyfikator przewidział jako istotne ile jest rzeczywiście istotnych?".
+        Natomiast recall odpowiada na pytanie: "Spośród wszystkich elementów, które są naprawdę istotne, ile zostało przewidzianych jako takie przez klasyfikator?".
+        Krzywa PRC to po prostu wykres z wartościami Precision na osi y i Recall na osi x.
+        Innymi słowy, krzywa PRC zawiera TP/(TP+FP) na osi y oraz TP/(TP+FN) na osi x.
 
     -   Krzywa wzrostu (ang. *Gain Curve*) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.
 
     -   Krzywa wyniesienia (ang. *Lift Curve*) - jest stosunkiem liczby pozytywnych obserwacji w $i$-tym decylu na podstawie modelu do oczekiwanej liczby pozytywnych obserwacji należących do $i$-tego decyla na podstawie modelu losowego.
 -   miary:
     -   AUC - *Area Under ROC Curve* - mierzy pole pod krzywą ROC.
+        Krzywa ROC nie jest tylko pojedynczą liczbą; jest to cała krzywa.
+        Dostarcza ona szczegółowych informacji o zachowaniu klasyfikatora, ale trudno jest szybko porównać wiele krzywych ROC ze sobą.
+        W szczególności, jeśli ktoś chciałby zastosować jakiś automatyczny mechanizm tuningowania hiperparametrów, maszyna potrzebowałaby wymiernego wyniku zamiast wykresu, który wymaga wizualnej inspekcji.
+        AUC jest jednym ze sposobów podsumowania krzywej ROC w jedną liczbę, tak aby można było ją łatwo i automatycznie porównać.
+        Dobra krzywa ROC ma dużo miejsca pod sobą (ponieważ prawdziwy wskaźnik pozytywny bardzo szybko wzrasta do 100%).
+        Zła krzywa ROC obejmuje bardzo mały obszar.
+        Tak więc wysokie AUC jest sygnałem dobrego dopasowania modelu.
 
     -   PRAUC - *Area Under Precision-Racall Curve* - mierzy pole pod krzywą P-R.
 

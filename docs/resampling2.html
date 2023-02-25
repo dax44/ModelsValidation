@@ -108,7 +108,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./comparison.html" rel="next">
 <link href="./tidymodels.html" rel="prev">
 <link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -214,6 +214,11 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./resampling2.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -814,26 +819,9 @@ Wskazówka
 <span>  <span class="fu">fit</span><span class="op">(</span>data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># wyciągnijmy przepis</span></span>
-<span><span class="fu">extract_recipe</span><span class="op">(</span><span class="va">lm_fit</span>, estimated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Recipe
-
-Inputs:
-
-      role #variables
-   outcome          1
- predictor          6
-
-Training data contained 2342 data points and no missing data.
-
-Operations:
-
-Collapsing factor levels for Neighborhood [trained]
-Dummy variables from Neighborhood, Bldg_Type [trained]
-Interactions with Gr_Liv_Area:(Bldg_Type_TwoFmCon + Bldg_Type_Duplex... [trained]
-Natural splines on Latitude, Longitude [trained]</code></pre>
-</div>
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># wyciągnijmy model</span></span>
+<span><span class="fu">extract_recipe</span><span class="op">(</span><span class="va">lm_fit</span>, estimated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wyciągnijmy model</span></span>
 <span><span class="va">get_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">extract_fit_parsnip</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span>
@@ -857,7 +845,7 @@ Natural splines on Latitude, Longitude [trained]</code></pre>
 10 Neighborhood_Sawyer             -0.0911   0.0266        -3.43  6.23e-  4
 # … with 62 more rows</code></pre>
 </div>
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># a tak na wyniku resamplingu</span></span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># a tak na wyniku resamplingu</span></span>
 <span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_resamples</span><span class="op">(</span>extract <span class="op">=</span> <span class="va">get_model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lm_res</span> <span class="op">&lt;-</span> <span class="va">lm_wflow</span> <span class="op">|&gt;</span> </span>
@@ -883,7 +871,7 @@ Natural splines on Latitude, Longitude [trained]</code></pre>
 </div>
 <p>Teraz z każdego folda możemy wyciągnąć szczegóły modelu.</p>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 # A tibble: 72 × 5
@@ -904,7 +892,7 @@ Natural splines on Latitude, Longitude [trained]</code></pre>
 </div>
 <p>Może się to wydawać zawiłą metodą zapisywania wyników modelu. Jednakże, <code>extract</code> jest elastyczna i nie zakłada, że użytkownik będzie zapisywał tylko jedną <code>tibble</code> dla każdej próbki. Na przykład, metoda <code>tidy()</code> może być uruchomiona zarówno na przepisie jak i na modelu. W tym przypadku zwrócona zostanie lista dwóch <code>tibble</code>.</p>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_coef</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span>, <span class="op">~</span> <span class="va">.x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">all_coef</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">lm_res</span><span class="op">$</span><span class="va">.extracts</span>, <span class="op">~</span> <span class="va">.x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">all_coef</span>, <span class="va">term</span> <span class="op">==</span> <span class="st">"Year_Built"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 5
@@ -1277,8 +1265,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./comparison.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

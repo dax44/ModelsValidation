@@ -218,6 +218,11 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
@@ -636,25 +641,25 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 <li><p><em>J index</em> - metryka Youden’a definiowana jako <em>sensitivity + specificity -1</em>, często jest wykorzystywana do określenia poziomu odcięcia prawdopodobieństwa zdarzenia wyróżnionego (ang. <em>threshold</em>).</p></li>
 <li><p>koszt niepoprawnej klasyfikacji - czasami niektóre błędy klasyfikacji są mniej kosztowne z punktu widzenie badacza, a inne bardziej. Wówczas można przypisać koszty błędnych klasyfikacji do poszczególnych klas, nakładając kary za błędne przypisane do innej klasy i w ten sposób zapobiegać takim sytuacjom.</p></li>
 <li>
-<p>średnia logarytmu funkcji straty - określana w literaturze jako <em>binary cross-entropy</em> dla przypadku zmiennej wynikowej dwustanowej i <em>multilevel cross-entropy</em> albo <em>categorical cross-entropy</em> w przypadku wielostanowej klasyfikacji. Definiuje się ją następująco:</p>
+<p>średnia logarytmu funkcji straty (ang. <em>log loss</em>) - określana też w literaturze jako <em>binary cross-entropy</em> dla przypadku zmiennej wynikowej dwustanowej i <em>multilevel cross-entropy</em> albo <em>categorical cross-entropy</em> w przypadku wielostanowej klasyfikacji. Definiuje się ją następująco:</p>
 <p><span id="eq-crossentropy"><span class="math display">\[
     \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
-\tag{4.14}\]</span></span> gdzie <span class="math inline">\(y_i\)</span> jest indykatorem klasy wyróżnionej dla <span class="math inline">\(i\)</span>-tej obserwacji, a <span class="math inline">\(\hat{y}_i\)</span> prawdopodobieństwem wyróżnionego stanu <span class="math inline">\(i\)</span>-tej obserwacji.</p>
+\tag{4.14}\]</span></span> gdzie <span class="math inline">\(y_i\)</span> jest indykatorem klasy wyróżnionej dla <span class="math inline">\(i\)</span>-tej obserwacji, a <span class="math inline">\(\hat{y}_i\)</span> prawdopodobieństwem wyróżnionego stanu <span class="math inline">\(i\)</span>-tej obserwacji. Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera. Entropia mierzy nieprzewidywalność czegoś. Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy. Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć “dodatkowy szum”, który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet. Minimalizując entropię krzyżową, maksymalizujemy dokładność klasyfikatora. Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora. W szczególności, jeśli surowe wyjście klasyfikatora jest prawdopodobieństwem zamiast etykiety klasy 0 lub 1, wówczas można użyć log-loss. Prawdopodobieństwo można rozumieć jako miernik zaufania. Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki bład, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5. Log-loss jest “miękką” miarą dokładności, która uwzględnia tę ideę probabilistycznego zaufania.</p>
 </li>
 </ul>
 <p>Należy pamiętać, że większość wspomnianych miar opiera się na wartościach z macierzy klasyfikacji. Przy czym aby obserwacje zaklasyfikować do jednej z klas należy przyjąć pewien punkt odcięcia (<em>threshold</em>) prawdopodobieństwa, od którego przewidywana wartość będzie przyjmowała stan “1”. Domyślnie w wielu modelach ten punkt jest ustalony na poziomie 0,5. Nie jest on jednak optymalny ze względu na jakość klasyfikacji. Zmieniając ten próg otrzymamy różne wartości <em>specificity, sensitivity, precision, recall,</em> itd. Istnieją kryteria doboru progu odcięcia, np. oparte na wartości Youdena, F1, średniej geometrycznej itp. W przykładzie prezentowanym poniżej pokażemy zastosowanie dwóch z tych technik. Bez względu na przyjęty poziom odcięcia istnieją również miary i wykresy, które pozwalają zilustrować jakość modelu. Należą do nich:</p>
 <ul>
 <li>wykresy:
 <ul>
-<li><p>ROC - <em>Receiver Operating Characteristic -</em> krzywa, która przedstawia kompromis pomiędzy <em>sensitivity i specificity</em> dla różnych poziomów odcięcia.</p></li>
-<li><p>PRC - <em>Precision-Recall Curve</em> - krzywa, która pokazuje kompromis pomiędzy <em>precision i recall.</em></p></li>
+<li><p>ROC - <em>Receiver Operating Characteristic -</em> krzywa, która przedstawia kompromis pomiędzy <em>sensitivity i specificity</em> dla różnych poziomów odcięcia. Ta egzotycznie brzmiąca nazwa wywodzi się z analizy sygnałów radiowych i została spopularyzowana w 1978 roku przez Charlesa Metza w artykule “Basic Principles of ROC Analysis”. Krzywa ROC pokazuje czułość klasyfikatora poprzez wykreślenie TPR do FPR. Innymi słowy, pokazuje ona, ile poprawnych pozytywnych klasyfikacji można uzyskać, gdy dopuszcza się coraz więcej fałszywych pozytywów. Idealny klasyfikator, który nie popełnia żadnych błędów, osiągnąłby natychmiast 100% wskaźnik prawdziwych pozytywów, bez żadnych fałszywych pozytywów - w praktyce prawie nigdy się to nie zdarza.</p></li>
+<li><p>PRC - <em>Precision-Recall Curve</em> - krzywa, która pokazuje kompromis pomiędzy <em>precision i recall.</em> Precision i recall to tak naprawdę dwie metryki. Jednak często są one używane razem. Precision odpowiada na pytanie: “Z elementów, które klasyfikator przewidział jako istotne ile jest rzeczywiście istotnych?”. Natomiast recall odpowiada na pytanie: “Spośród wszystkich elementów, które są naprawdę istotne, ile zostało przewidzianych jako takie przez klasyfikator?”. Krzywa PRC to po prostu wykres z wartościami Precision na osi y i Recall na osi x. Innymi słowy, krzywa PRC zawiera TP/(TP+FP) na osi y oraz TP/(TP+FN) na osi x.</p></li>
 <li><p>Krzywa wzrostu (ang. <em>Gain Curve</em>) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.</p></li>
 <li><p>Krzywa wyniesienia (ang. <em>Lift Curve</em>) - jest stosunkiem liczby pozytywnych obserwacji w <span class="math inline">\(i\)</span>-tym decylu na podstawie modelu do oczekiwanej liczby pozytywnych obserwacji należących do <span class="math inline">\(i\)</span>-tego decyla na podstawie modelu losowego.</p></li>
 </ul>
 </li>
 <li>miary:
 <ul>
-<li><p>AUC - <em>Area Under ROC Curve</em> - mierzy pole pod krzywą ROC.</p></li>
+<li><p>AUC - <em>Area Under ROC Curve</em> - mierzy pole pod krzywą ROC. Krzywa ROC nie jest tylko pojedynczą liczbą; jest to cała krzywa. Dostarcza ona szczegółowych informacji o zachowaniu klasyfikatora, ale trudno jest szybko porównać wiele krzywych ROC ze sobą. W szczególności, jeśli ktoś chciałby zastosować jakiś automatyczny mechanizm tuningowania hiperparametrów, maszyna potrzebowałaby wymiernego wyniku zamiast wykresu, który wymaga wizualnej inspekcji. AUC jest jednym ze sposobów podsumowania krzywej ROC w jedną liczbę, tak aby można było ją łatwo i automatycznie porównać. Dobra krzywa ROC ma dużo miejsca pod sobą (ponieważ prawdziwy wskaźnik pozytywny bardzo szybko wzrasta do 100%). Zła krzywa ROC obejmuje bardzo mały obszar. Tak więc wysokie AUC jest sygnałem dobrego dopasowania modelu.</p></li>
 <li><p>PRAUC - <em>Area Under Precision-Racall Curve</em> - mierzy pole pod krzywą P-R.</p></li>
 <li><p>Pole pod krzywą wzrosu.</p></li>
 <li><p>Pole pod krzywą wyniesienia.</p></li>

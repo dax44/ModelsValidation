@@ -32,6 +32,7 @@ book:
     - resampling.qmd
     - tidymodels.qmd
     - resampling2.qmd
+    - comparison.qmd
     - references.qmd
 
 bibliography: references.bib
