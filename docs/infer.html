@@ -233,6 +233,11 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
@@ -336,16 +341,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  39.5
+ 1         1  38.4
  2         2  39.6
- 3         3  39.4
- 4         4  40.1
- 5         5  40.1
- 6         6  39.6
- 7         7  39.9
- 8         8  40.1
- 9         9  40.3
-10        10  39.6
+ 3         3  40.8
+ 4         4  41.0
+ 5         5  38.6
+ 6         6  40.0
+ 7         7  39.1
+ 8         8  40.4
+ 9         9  39.8
+10        10  39.9
 # … with 990 more rows</code></pre>
 </div>
 <details><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -386,7 +391,7 @@ Null Hypothesis: point
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1    0.62</code></pre>
+1   0.704</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>

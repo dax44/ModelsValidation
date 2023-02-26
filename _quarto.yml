@@ -35,6 +35,7 @@ book:
     - comparison.qmd
     - tuning.qmd
     - grid_search.qmd
+    - parallel.qmd
     - references.qmd
 
 bibliography: references.bib
