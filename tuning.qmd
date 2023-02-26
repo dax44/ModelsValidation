@@ -24,6 +24,8 @@ Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego 
 Nawet w kontekście wspomnianych klasycznych modeli jak np.
 regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.
 
+![](https://i.imgflip.com/38dyzf.jpg){.column-margin fig-align="center" width="400"}
+
 Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać?
 To zależy od tego co chcemy optymalizować.
 Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania.
@@ -65,6 +67,9 @@ Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.
 
 ```{r}
 #| cache: true
+#| label: fig-tune1
+#| fig-cap: Przedziały ufności dla funkcji wiarogodności
+#| fig-align: center
 set.seed(1201)
 rs <- vfold_cv(training_set, repeats = 10)
 
@@ -129,6 +134,8 @@ Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność p
 Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych.
 Overfitting to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.
 
+![](https://pbs.twimg.com/media/Ef5yDj2X0AIkHEe?format=jpg&name=large){.column-margin fig-align="center" width="400"}
+
 Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji.
 Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna[^tuning-2].
 Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.
@@ -152,3 +159,191 @@ Dla 20 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworz�
 Wzorce te nie powtarzają się w zbiorze testowym.
 Ostatni panel najlepiej ilustruje, jak dostrajanie parametrów kontrolujących złożoność modelu musi być kontrolowane, aby model był efektywny.
 W przypadku modelu składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego wynosi 0,944, ale wartość dla zbioru testowego to 0,855.
+
+## Dwa podejścia do tuningu
+
+Istnieją dwa sposoby realizacji tuningu modeli:
+
+-   przeszukiwanie siatki - gdy wstępnie określamy zestaw wartości parametrów do oceny. Głównymi problemami związanymi z przeszukiwaniem siatki są sposób wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów siatki wymaganych do pokrycia przestrzeni parametrów może stać się niemożliwa do opanowania. Z jednej strony jest w tym trochę prawdy, ale jest to najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany.
+-   przeszukiwanie iteracyjne lub sekwencyjne - gdy sekwencyjnie odkrywamy nowe kombinacje parametrów na podstawie poprzednich wyników. W niektórych przypadkach do rozpoczęcia procesu optymalizacji wymagany jest wstępny zestaw wyników dla jednej lub więcej kombinacji parametrów.
+
+![Porównanie metod przeszukiwania](images/Zrzut%20ekranu%202023-02-26%20o%2010.17.59.png){#fig-tune4 fig-align="center" width="600"}
+
+Można też stosować rozwiązania hybrydowe, gdzie metoda siatki jest stosowana do wstępnego oszacowania parametrów modelu, a następnie metodami iteracyjnymi korygowane są wspomniane parametry.
+
+W procesie dostrajania modelu, możemy szacować hiperparametry główne oraz specyficzne dla danego silnika metody.
+
+```{r}
+#| eval: false
+
+rand_forest(trees = 2000, min_n = 10) %>%                   # <- main arguments
+  set_engine("ranger", regularization.factor = 0.5)         # <- engine-specific
+```
+
+Aby przekazać informację do przebiegu pracy, że chcemy kalibrować pewne parametry modelu, należy podstawić pod ich wartości funkcję `tune()`.
+
+```{r}
+
+neural_net_spec <- 
+  mlp(hidden_units = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("keras")
+```
+
+Chcąc zobaczyć jak model interpretuje takie podstawienie możemy użyć
+
+```{r}
+extract_parameter_set_dials(neural_net_spec)
+```
+
+Wyniki pokazują wartość `nparam[+]`, co wskazuje, że liczba jednostek ukrytych jest parametrem liczbowym.
+Istnieje opcjonalny argument identyfikacyjny, który kojarzy nazwę z parametrami.
+Może się to przydać, gdy ten sam rodzaj parametrów jest dostrajany w różnych miejscach.
+Na przykład, w przypadku danych dotyczących mieszkania w Ames, przepis zakodował zarówno długość jak i szerokość geograficzną za pomocą funkcji `spline`.
+Jeśli chcemy dostroić dwie funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy `step_ns()` dwukrotnie, raz dla każdego predyktora.
+Aby parametry były identyfikowalne, argument "identyfikator" może przyjąć dowolny ciąg znaków:
+
+```{r}
+set.seed(1001)
+ames <- ames |>mutate(Sale_Price = log10(Sale_Price))
+ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
+ames_train <- training(ames_split)
+ames_test  <-  testing(ames_split)
+
+ames_rec <- 
+  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
+           Latitude + Longitude, data = ames_train)  %>%
+  step_log(Gr_Liv_Area, base = 10) %>% 
+  step_other(Neighborhood, threshold = tune()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
+  step_ns(Longitude, deg_free = tune("longitude df")) %>% 
+  step_ns(Latitude,  deg_free = tune("latitude df"))
+
+recipes_param <- extract_parameter_set_dials(ames_rec)
+recipes_param
+```
+
+Gdy receptura i specyfikacja modelu są połączone za pomocą przepływu pracy, oba zestawy parametrów są wyświetlane.
+
+```{r}
+wflow_param <- 
+  workflow() %>% 
+  add_recipe(ames_rec) %>% 
+  add_model(neural_net_spec) %>% 
+  extract_parameter_set_dials()
+wflow_param
+```
+
+W tym przypadku dodanie splajnów do sieci nieurnowej jest tylko na potrzeby przykładu, ponieważ sama sieć neuronowa jest w stanie zamodelować dowolnie złożone zależności.
+
+Każdy argument parametru dostrajania ma odpowiadającą mu funkcję w pakiecie `dials`.
+W zdecydowanej większości przypadków funkcja ma taką samą nazwę jak argument parametru:
+
+```{r}
+hidden_units()
+threshold()
+```
+
+Parametr `deg_free` jest kontrprzykładem - pojęcie stopni swobody pojawia się w wielu różnych kontekstach.
+Gdy używamy splajnów, istnieje wyspecjalizowana funkcja `dials` o nazwie `spline_degree()`, która jest domyślnie wywoływana dla splajnów:
+
+```{r}
+spline_degree()
+```
+
+Pakiet `dials` posiada również funkcję wygodną do wyodrębnienia konkretnego obiektu parametru:
+
+```{r}
+wflow_param %>% extract_parameter_dials("threshold")
+```
+
+Wewnątrz zestawu parametrów, zakres parametrów może być również aktualizowany:
+
+```{r}
+extract_parameter_set_dials(ames_rec) %>% 
+  update(threshold = threshold(c(0.8, 1.0)))
+```
+
+W niektórych przypadkach łatwo jest mieć rozsądne wartości domyślne dla zakresu możliwych wartości.
+W innych przypadkach zakres parametrów jest zależny od zbioru danych i nie można go założyć.
+Podstawowym parametrem dostrajania parametrów dla modeli lasu losowego jest liczba kolumn predyktorów, które są losowo próbkowane dla każdego podziału drzewa, zwykle oznaczana jako `mtry()`.
+Bez znajomości liczby predyktorów, ten zakres parametrów nie może być wstępnie skonfigurowany i wymaga finalizacji.
+
+```{r}
+rf_spec <- 
+  rand_forest(mtry = tune()) %>% 
+  set_engine("ranger", regularization.factor = tune("regularization")) %>%
+  set_mode("regression")
+
+rf_param <- extract_parameter_set_dials(rf_spec)
+rf_param
+```
+
+Kompletne obiekty parametrów mają `[+]` w podsumowaniu; wartość `[?]` wskazuje, że brakuje przynajmniej jednego końca możliwego zakresu.
+Istnieją dwie metody radzenia sobie z tym problemem.
+Pierwszą jest użycie `update()`, aby dodać zakres na podstawie tego, co wiesz o wymiarach danych:
+
+```{r}
+rf_param %>% 
+  update(mtry = mtry(c(1, 70)))
+```
+
+Jednak to podejście może nie działać, jeśli receptura jest dołączona do przepływu pracy, który używa kroków dodających lub odejmujących kolumny.
+Jeśli te kroki nie są przeznaczone do dostrajania, funkcja `finalize()` może wykonać recepturę raz, aby uzyskać wymiary:
+
+```{r}
+pca_rec <- 
+  recipe(Sale_Price ~ ., data = ames_train) %>% 
+  # Select the square-footage predictors and extract their PCA components:
+  step_normalize(contains("SF")) %>% 
+  # Select the number of components needed to capture 95% of
+  # the variance in the predictors. 
+  step_pca(contains("SF"), threshold = .95)
+  
+updated_param <- 
+  workflow() %>% 
+  add_model(rf_spec) %>% 
+  add_recipe(pca_rec) %>% 
+  extract_parameter_set_dials() %>% 
+  finalize(ames_train)
+updated_param
+
+updated_param %>% extract_parameter_dials("mtry")
+```
+
+Gdy receptura jest przygotowana, funkcja `finalize()` uczy się ustawiać górny zakres `mtry` na 74 predyktory.
+Dodatkowo, wyniki `extract_parameter_set_dials()` będą zawierały parametry specyficzne dla silnika (jeśli takie istnieją).
+Są one odkrywane w taki sam sposób jak główne argumenty i włączane do zestawu parametrów.
+Pakiet `dials` zawiera funkcje parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznych dla silnika:
+
+```{r}
+rf_param
+regularization_factor()
+```
+
+Wreszcie, niektóre parametry dostrajania są związane z transformacjami.
+Dobrym przykładem jest parametr kary związany z wieloma modelami regresji regularyzowanej.
+Ten parametr jest nieujemny i często przedstawia się go w skali logarytmicznej.
+Podstawowy obiekt parametru `dials` wskazuje, że domyślnie używana jest transformacja:
+
+```{r}
+penalty()
+```
+
+Jest to ważna informacja, zwłaszcza przy zmianie zakresu.
+Nowe wartości zakresu muszą być w przekształconych jednostkach:
+
+```{r}
+# correct method to have penalty values between 0.1 and 1.0
+penalty(c(-1, 0)) %>% value_sample(1000) %>% summary()
+
+# incorrect:
+penalty(c(0.1, 1.0)) %>% value_sample(1000) %>% summary()
+```
+
+Skala może być zmieniona w razie potrzeby za pomocą argumentu `trans`.
+
+```{r}
+penalty(trans = NULL, range = 10^c(-10, 0))
+```

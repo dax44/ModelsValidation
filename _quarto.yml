@@ -34,6 +34,7 @@ book:
     - resampling2.qmd
     - comparison.qmd
     - tuning.qmd
+    - grid_search.qmd
     - references.qmd
 
 bibliography: references.bib

@@ -108,7 +108,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./grid_search.html" rel="next">
 <link href="./comparison.html" rel="prev">
 <link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -228,6 +228,11 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
@@ -240,6 +245,7 @@ div.csl-indent {
    
   <ul>
 <li><a href="#konsekwencje-z%C5%82ego-oszacowania-parametr%C3%B3w" id="toc-konsekwencje-złego-oszacowania-parametrów" class="nav-link active" data-scroll-target="#konsekwencje-z%C5%82ego-oszacowania-parametr%C3%B3w"><span class="toc-section-number">9.1</span>  Konsekwencje złego oszacowania parametrów</a></li>
+  <li><a href="#dwa-podej%C5%9Bcia-do-tuningu" id="toc-dwa-podejścia-do-tuningu" class="nav-link" data-scroll-target="#dwa-podej%C5%9Bcia-do-tuningu"><span class="toc-section-number">9.2</span>  Dwa podejścia do tuningu</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -261,7 +267,11 @@ div.csl-indent {
 
 </header><p>Część modeli, jak np. regresja liniowa, posiada wszystkie parametry, które da się oszacować na podstawie zbioru uczącego. Są też modele, których parametry (przynajmniej część z nich) nie da się oszacować na podstawie próby. Przykładem może być model kNN, w którym <span class="math inline">\(k\)</span> jest parametrem, którego wartość nie jest estymowana w czasie uczenia modelu. Takich przykładów można mnożyć, przykładowo głębokość drzew czy minimalna wielkość węzła aby dokonać podziału w lesie losowym również są parametremi, których wartości nie da się szacować w procesie uczenia modelu. Takie “odmienne” parametry będziemy nazywać hiperparametrami modelu.</p>
 <p>Czy to oznacza, że jesteśmy zdani na ich zgadywanie? 🙈 Na szczęście nie. Proces w którym odbywa się poszukiwanie optymalnych parametrów modelu nazywamy optymalizacją modelu (ang. <em>tuning</em>). Definicję tę można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich parametrów jak szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba iteracji/epok w procesie uczenia. Co więcej również w procesie przygotowania danych do modelowania, występują parametry, których wartość należy optymalizować. Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego wartość należy dostrajać. Nawet w kontekście wspomnianych klasycznych modeli jak np. regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.</p>
-<p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://i.imgflip.com/38dyzf.jpg" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -298,7 +308,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Biorąc pod uwagę powyższe wyniki model logistyczny okazuje się być najlepszy. Porównanie to niestety wyrażone zostało pojedynczą statystyką dla każdego modelu. Zatem nie możemy stwierdzić, czy różnice te są istotne statystycznie. Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.</p>
-<div class="cell" data-hash="tuning_cache/html/unnamed-chunk-3_4a25b772987da54105f88816393a4b96">
+<div class="cell" data-layout-align="center" data-hash="tuning_cache/html/fig-tune1_eac6470f935c41f89bb4bf5e07238e9e">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1201</span><span class="op">)</span></span>
 <span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">training_set</span>, repeats <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
@@ -336,14 +346,18 @@ div.csl-indent {
 <span>                width <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="st">"log-likelihood"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="tuning_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div id="fig-tune1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="tuning_files/figure-html/fig-tune1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na mniejszym zbiorze danych; wartość uzyskana przez <code><a href="https://generics.r-lib.org/reference/glance.html">broom::glance()</a></code> jest sumą, podczas gdy <code><a href="https://yardstick.tidymodels.org/reference/mn_log_loss.html">yardstick::mn_log_loss()</a></code> jest średnią. Wyniki te pokazują, że istnieją znaczne dowody na to, że wybór funkcji łączącej ma znaczenie i że model logistyczny jest lepszy.</p>
 <p>A co gdy użyjemy innej miary oceny dopasowania?</p>
 <div id="fig-tune2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.1: Porównanie pól pod krzywą ROC</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.2: Porównanie pól pod krzywą ROC</figcaption><p></p>
 </figure>
 </div>
 <p>Jak widać zastosowanie innej miary powoduje, po pierwsze zmianę kolejności (najlepszy okazał się model c-log-log), a po drugie różnice pomiędzy modelami się zatarły.</p>
@@ -364,15 +378,263 @@ Ostrzeżenie
 <section id="konsekwencje-złego-oszacowania-parametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-oszacowania-parametrów">
 <span class="header-section-number">9.1</span> Konsekwencje złego oszacowania parametrów</h2>
 <p>Wiele parametrów dostrajania modyfikuje stopień złożoności modelu. Większa złożoność często oznacza większą plastyczność wzorców, które model może naśladować. Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność predykcji. Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych. Overfitting to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.</p>
-<div class="page-columns page-full"><p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji. Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></li></div></div>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://pbs.twimg.com/media/Ef5yDj2X0AIkHEe?format=jpg&amp;name=large.png" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><div class="page-columns page-full"><p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji. Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></li></div></div>
 <p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli model ocenia siebie na podstawie wartości ROC zbioru treningowego, to preferuje wiele neuronów w warstwie ukrytej, tak aby mógł prawie wyeliminować błędy.</p>
-<p>Rozdziały wcześniejsze pokazały, że zwykłe ponowne przewidywanie wartości na zbiorze uczącyn jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3">Rysunek&nbsp;<span>9.2</span></a>.</p>
+<p>Rozdziały wcześniejsze pokazały, że zwykłe ponowne przewidywanie wartości na zbiorze uczącyn jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3">Rysunek&nbsp;<span>9.3</span></a>.</p>
 <div id="fig-tune3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.2: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej</figcaption><p></p>
 </figure>
 </div>
 <p>Model z pojedynczym neuronem w warstwie ukrytej nie dostosowuje się zbyt elastycznie do danych (ponieważ jest ograniczony do bycia liniowym). Model z czterema jednostkami ukrytymi zaczyna wykazywać oznaki przeuczenia z nierealistyczną granicą dla wartości oddalonych od chmury danych. Dla 20 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworząc małe wyspy wokół pojedynczych obserwacji, aby zminimalizować współczynnik błędu. Wzorce te nie powtarzają się w zbiorze testowym. Ostatni panel najlepiej ilustruje, jak dostrajanie parametrów kontrolujących złożoność modelu musi być kontrolowane, aby model był efektywny. W przypadku modelu składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego wynosi 0,944, ale wartość dla zbioru testowego to 0,855.</p>
+</section><section id="dwa-podejścia-do-tuningu" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="dwa-podejścia-do-tuningu">
+<span class="header-section-number">9.2</span> Dwa podejścia do tuningu</h2>
+<p>Istnieją dwa sposoby realizacji tuningu modeli:</p>
+<ul>
+<li>przeszukiwanie siatki - gdy wstępnie określamy zestaw wartości parametrów do oceny. Głównymi problemami związanymi z przeszukiwaniem siatki są sposób wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów siatki wymaganych do pokrycia przestrzeni parametrów może stać się niemożliwa do opanowania. Z jednej strony jest w tym trochę prawdy, ale jest to najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany.</li>
+<li>przeszukiwanie iteracyjne lub sekwencyjne - gdy sekwencyjnie odkrywamy nowe kombinacje parametrów na podstawie poprzednich wyników. W niektórych przypadkach do rozpoczęcia procesu optymalizacji wymagany jest wstępny zestaw wyników dla jednej lub więcej kombinacji parametrów.</li>
+</ul>
+<div id="fig-tune4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 10.17.59.png" class="img-fluid figure-img" width="600"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;9.4: Porównanie metod przeszukiwania</figcaption><p></p>
+</figure>
+</div>
+<p>Można też stosować rozwiązania hybrydowe, gdzie metoda siatki jest stosowana do wstępnego oszacowania parametrów modelu, a następnie metodami iteracyjnymi korygowane są wspomniane parametry.</p>
+<p>W procesie dostrajania modelu, możemy szacować hiperparametry główne oraz specyficzne dla danego silnika metody.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">2000</span>, min_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span>                   <span class="co"># &lt;- main arguments</span></span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>         <span class="co"># &lt;- engine-specific</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Aby przekazać informację do przebiegu pracy, że chcemy kalibrować pewne parametry modelu, należy podstawić pod ich wartości funkcję <code>tune()</code>.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">neural_net_spec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"keras"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Chcąc zobaczyć jak model interpretuje takie podstawienie możemy użyć</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 1 parameters for tuning
+
+   identifier         type    object
+ hidden_units hidden_units nparam[+]</code></pre>
+</div>
+</div>
+<p>Wyniki pokazują wartość <code>nparam[+]</code>, co wskazuje, że liczba jednostek ukrytych jest parametrem liczbowym. Istnieje opcjonalny argument identyfikacyjny, który kojarzy nazwę z parametrami. Może się to przydać, gdy ten sam rodzaj parametrów jest dostrajany w różnych miejscach. Na przykład, w przypadku danych dotyczących mieszkania w Ames, przepis zakodował zarówno długość jak i szerokość geograficzną za pomocą funkcji <code>spline</code>. Jeśli chcemy dostroić dwie funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy <code>step_ns()</code> dwukrotnie, raz dla każdego predyktora. Aby parametry były identyfikowalne, argument “identyfikator” może przyjąć dowolny ciąg znaków:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span><span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
+<span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
+<span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span>  <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"longitude df"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>,  deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"latitude df"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">recipes_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
+<span><span class="va">recipes_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 3 parameters for tuning
+
+   identifier      type    object
+    threshold threshold nparam[+]
+ longitude df  deg_free nparam[+]
+  latitude df  deg_free nparam[+]</code></pre>
+</div>
+</div>
+<p>Gdy receptura i specyfikacja modelu są połączone za pomocą przepływu pracy, oba zestawy parametrów są wyświetlane.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">wflow_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 4 parameters for tuning
+
+   identifier         type    object
+ hidden_units hidden_units nparam[+]
+    threshold    threshold nparam[+]
+ longitude df     deg_free nparam[+]
+  latitude df     deg_free nparam[+]</code></pre>
+</div>
+</div>
+<p>W tym przypadku dodanie splajnów do sieci nieurnowej jest tylko na potrzeby przykładu, ponieważ sama sieć neuronowa jest w stanie zamodelować dowolnie złożone zależności.</p>
+<p>Każdy argument parametru dostrajania ma odpowiadającą mu funkcję w pakiecie <code>dials</code>. W zdecydowanej większości przypadków funkcja ma taką samą nazwę jak argument parametru:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">hidden_units</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Hidden Units (quantitative)
+Range: [1, 10]</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">threshold</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Threshold (quantitative)
+Range: [0, 1]</code></pre>
+</div>
+</div>
+<p>Parametr <code>deg_free</code> jest kontrprzykładem - pojęcie stopni swobody pojawia się w wielu różnych kontekstach. Gdy używamy splajnów, istnieje wyspecjalizowana funkcja <code>dials</code> o nazwie <code>spline_degree()</code>, która jest domyślnie wywoływana dla splajnów:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">spline_degree</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Spline Degrees of Freedom (quantitative)
+Range: [1, 10]</code></pre>
+</div>
+</div>
+<p>Pakiet <code>dials</code> posiada również funkcję wygodną do wyodrębnienia konkretnego obiektu parametru:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"threshold"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Threshold (quantitative)
+Range: [0, 0.1]</code></pre>
+</div>
+</div>
+<p>Wewnątrz zestawu parametrów, zakres parametrów może być również aktualizowany:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fu">threshold</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 3 parameters for tuning
+
+   identifier      type    object
+    threshold threshold nparam[+]
+ longitude df  deg_free nparam[+]
+  latitude df  deg_free nparam[+]</code></pre>
+</div>
+</div>
+<p>W niektórych przypadkach łatwo jest mieć rozsądne wartości domyślne dla zakresu możliwych wartości. W innych przypadkach zakres parametrów jest zależny od zbioru danych i nie można go założyć. Podstawowym parametrem dostrajania parametrów dla modeli lasu losowego jest liczba kolumn predyktorów, które są losowo próbkowane dla każdego podziału drzewa, zwykle oznaczana jako <code>mtry()</code>. Bez znajomości liczby predyktorów, ten zakres parametrów nie może być wstępnie skonfigurowany i wymaga finalizacji.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_spec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">rand_forest</span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"regularization"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rf_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span></span>
+<span><span class="va">rf_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 2 parameters for tuning
+
+     identifier                  type    object
+           mtry                  mtry nparam[?]
+ regularization regularization.factor nparam[+]
+
+Model parameters needing finalization:
+   # Randomly Selected Predictors ('mtry')
+
+See `?dials::finalize` or `?dials::update.parameters` for more information.</code></pre>
+</div>
+</div>
+<p>Kompletne obiekty parametrów mają <code>[+]</code> w podsumowaniu; wartość <code>[?]</code> wskazuje, że brakuje przynajmniej jednego końca możliwego zakresu. Istnieją dwie metody radzenia sobie z tym problemem. Pierwszą jest użycie <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code>, aby dodać zakres na podstawie tego, co wiesz o wymiarach danych:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">mtry</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 2 parameters for tuning
+
+     identifier                  type    object
+           mtry                  mtry nparam[+]
+ regularization regularization.factor nparam[+]</code></pre>
+</div>
+</div>
+<p>Jednak to podejście może nie działać, jeśli receptura jest dołączona do przepływu pracy, który używa kroków dodających lub odejmujących kolumny. Jeśli te kroki nie są przeznaczone do dostrajania, funkcja <code>finalize()</code> może wykonać recepturę raz, aby uzyskać wymiary:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># Select the square-footage predictors and extract their PCA components:</span></span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># Select the number of components needed to capture 95% of</span></span>
+<span>  <span class="co"># the variance in the predictors. </span></span>
+<span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span>, threshold <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">updated_param</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">pca_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">finalize</span><span class="op">(</span><span class="va">ames_train</span><span class="op">)</span></span>
+<span><span class="va">updated_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 2 parameters for tuning
+
+     identifier                  type    object
+           mtry                  mtry nparam[+]
+ regularization regularization.factor nparam[+]</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">updated_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"mtry"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Randomly Selected Predictors (quantitative)
+Range: [1, 74]</code></pre>
+</div>
+</div>
+<p>Gdy receptura jest przygotowana, funkcja <code>finalize()</code> uczy się ustawiać górny zakres <code>mtry</code> na 74 predyktory. Dodatkowo, wyniki <code>extract_parameter_set_dials()</code> będą zawierały parametry specyficzne dla silnika (jeśli takie istnieją). Są one odkrywane w taki sam sposób jak główne argumenty i włączane do zestawu parametrów. Pakiet <code>dials</code> zawiera funkcje parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznych dla silnika:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Collection of 2 parameters for tuning
+
+     identifier                  type    object
+           mtry                  mtry nparam[?]
+ regularization regularization.factor nparam[+]
+
+Model parameters needing finalization:
+   # Randomly Selected Predictors ('mtry')
+
+See `?dials::finalize` or `?dials::update.parameters` for more information.</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">regularization_factor</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Gain Penalization (quantitative)
+Range: [0, 1]</code></pre>
+</div>
+</div>
+<p>Wreszcie, niektóre parametry dostrajania są związane z transformacjami. Dobrym przykładem jest parametr kary związany z wieloma modelami regresji regularyzowanej. Ten parametr jest nieujemny i często przedstawia się go w skali logarytmicznej. Podstawowy obiekt parametru <code>dials</code> wskazuje, że domyślnie używana jest transformacja:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Amount of Regularization (quantitative)
+Transformer: log-10 [1e-100, Inf]
+Range (transformed scale): [-10, 0]</code></pre>
+</div>
+</div>
+<p>Jest to ważna informacja, zwłaszcza przy zmianie zakresu. Nowe wartości zakresu muszą być w przekształconych jednostkach:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correct method to have penalty values between 0.1 and 1.0</span></span>
+<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1001  0.1805  0.3115  0.3905  0.5582  0.9919 </code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># incorrect:</span></span>
+<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.260   2.126   3.454   4.132   5.812   9.905 </code></pre>
+</div>
+</div>
+<p>Skala może być zmieniona w razie potrzeby za pomocą argumentu <code>trans</code>.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span>trans <span class="op">=</span> <span class="cn">NULL</span>, range <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Amount of Regularization (quantitative)
+Range: [1e-10, 1]</code></pre>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -722,8 +984,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./grid_search.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
