@@ -469,11 +469,21 @@ Computational engine: stan </code></pre>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">mlp_sfd_race</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 10
-  hidden_un…¹ penalty epochs num_c…² .metric .esti…³  mean     n std_err .config
-        &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  
-1           8   0.814    177      15 roc_auc binary  0.890    10 0.00966 Prepro…
-# … with abbreviated variable names ¹​hidden_units, ²​num_comp, ³​.estimator</code></pre>
+<pre><code># A tibble: 10 × 11
+   .order hidden_u…¹  penalty epochs num_c…² .metric .esti…³  mean     n std_err
+    &lt;int&gt;      &lt;int&gt;    &lt;dbl&gt;  &lt;int&gt;   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+ 1      2          8 8.14e- 1    177      15 roc_auc binary  0.919     1      NA
+ 2      2          4 1.26e- 3    112       9 roc_auc binary  0.918     1      NA
+ 3      2          2 7.91e- 4    164       7 roc_auc binary  0.916     1      NA
+ 4      1          8 8.14e- 1    177      15 roc_auc binary  0.916     1      NA
+ 5      2          3 4.02e- 2    151      10 roc_auc binary  0.915     1      NA
+ 6      2          5 1.30e-10     89       5 roc_auc binary  0.913     1      NA
+ 7      6          8 8.14e- 1    177      15 roc_auc binary  0.907     1      NA
+ 8      3          5 1.30e-10     89       5 roc_auc binary  0.906     1      NA
+ 9     10          8 8.14e- 1    177      15 roc_auc binary  0.904     1      NA
+10      2          2 7.99e- 3    161      32 roc_auc binary  0.904     1      NA
+# … with 1 more variable: .config &lt;chr&gt;, and abbreviated variable names
+#   ¹​hidden_units, ²​num_comp, ³​.estimator</code></pre>
 </div>
 </div>
 <p>Istnieją również inne techniki analizy pośredniej do odrzucania pewnych konfiguracji parametrów.</p>

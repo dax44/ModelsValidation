@@ -134,7 +134,7 @@ Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność p
 Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych.
 Overfitting to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.
 
-![](https://pbs.twimg.com/media/Ef5yDj2X0AIkHEe?format=jpg&name=large){.column-margin fig-align="center" width="400"}
+![](images/tw1.jpeg){.column-margin fig-align="center" width="400"}
 
 Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji.
 Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna[^tuning-2].
