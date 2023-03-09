@@ -1,0 +1,288 @@
+---
+code-fold: show
+---
+
+# Przeszukiwanie iteracyjne
+
+W poprzednich rozdziałach pokazano, jak wyszukiwanie oparte o siatkę przyjmuje wstępnie zdefiniowany zestaw wartości kandydujących, ocenia je, a następnie wybiera najlepsze ustawienia.
+Iteracyjne metody wyszukiwania realizują inną strategię.
+Podczas procesu wyszukiwania przewidują one, które wartości należy przetestować w następnej kolejności.
+
+W tym rozdziale przedstawiono dwie metody wyszukiwania.
+Najpierw omówimy optymalizację bayesowską, która wykorzystuje model statystyczny do przewidywania lepszych ustawień parametrów.
+Następnie rozdział opisuje metodę globalnego wyszukiwania zwaną symulowanym wyżarzaniem (ang. *simulated annealing*).
+
+Do ilustracji wykorzystujemy te same dane dotyczące charakterystyki komórek, co w poprzednim rozdziale, ale zmieniamy model.
+W tym rozdziale użyjemy modelu maszyny wektorów nośnych (ang. *Support Vector Machine*), ponieważ zapewnia on ładne dwuwymiarowe wizualizacje procesów wyszukiwania.
+Dwa dostrajane parametry w optymalizacji to wartość kosztu SVM i parametr jądra funkcji radialnej $\sigma$.
+Oba parametry mogą mieć znaczący wpływ na złożoność i wydajność modelu.
+
+Model SVM wykorzystuje iloczyn skalarny i z tego powodu konieczne jest wyśrodkowanie i przeskalowanie predyktorów.
+Obiekty `tidymodels`: `svm_rec`, `svm_spec` i `svm_wflow` definiują proces tworzenia modelu:
+
+```{r}
+library(tidymodels)
+tidymodels_prefer()
+
+data(cells)
+cells <- cells %>% select(-case)
+
+set.seed(1304)
+cell_folds <- vfold_cv(cells)
+
+svm_rec <- 
+  recipe(class ~ ., data = cells) %>%
+  step_YeoJohnson(all_numeric_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+svm_spec <- 
+  svm_rbf(cost = tune(), rbf_sigma = tune()) %>% 
+  set_engine("kernlab") %>% 
+  set_mode("classification")
+
+svm_wflow <- 
+  workflow() %>% 
+  add_model(svm_spec) %>% 
+  add_recipe(svm_rec)
+```
+
+Oto domyślne zakresy tuningowanych parametrów:
+
+```{r}
+cost()
+rbf_sigma()
+```
+
+Dla ilustracji, zmieńmy nieco zakres parametrów jądra, aby poprawić wizualizacje wyszukiwania:
+
+```{r}
+svm_param <- 
+  svm_wflow %>% 
+  extract_parameter_set_dials() %>% 
+  update(rbf_sigma = rbf_sigma(c(-7, -1)))
+```
+
+Zanim omówimy szczegóły dotyczące wyszukiwania iteracyjnego i jego działania, zbadajmy związek między dwoma parametrami dostrajania SVM a obszarem pod krzywą ROC dla tego konkretnego zestawu danych.
+Skonstruowaliśmy bardzo dużą regularną siatkę, składającą się z 2500 wartości kandydujących, i oceniliśmy siatkę przy użyciu resamplingu.
+Jest to oczywiście niepraktyczne w regularnej analizie danych i ogromnie nieefektywne.
+Jednakże, wyjaśnia ścieżkę, którą powinien podążać proces wyszukiwania i gdzie występuje numerycznie optymalna wartość (wartości).
+
+![Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o dużej gęstości wartości dostrajania parametrów. Najlepszy punkt jest oznaczony kropką w prawym górnym rogu.](images/Zrzut%20ekranu%202023-03-9%20o%2011.49.58.png){#fig-iter1 fig-align="center" width="600"}
+
+@fig-iter1 pokazuje wyniki oceny tej siatki, przy czym jaśniejszy kolor odpowiada wyższej (lepszej) wydajności modelu.
+W dolnej przekątnej przestrzeni parametrów znajduje się duży obszar, który jest stosunkowo płaski i charakteryzuje się słabą wydajnością.
+Grzbiet najlepszej wydajności występuje w prawej górnej części przestrzeni.
+Czarna kropka wskazuje najlepsze ustawienia.
+Przejście od płaskiego obszaru słabych wyników do grzbietu najlepszej wydajności jest bardzo ostre.
+Występuje również gwałtowny spadek obszaru pod krzywą ROC tuż po prawej stronie grzbietu.
+
+Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu.
+W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów.
+Funkcja `tune_grid()` dokonuje próbkowania tej siatki:
+
+```{r}
+#| cache: true
+roc_res <- metric_set(roc_auc)
+
+set.seed(1401)
+start_grid <- 
+  svm_param %>% 
+  update(
+    cost = cost(c(-6, 1)),
+    rbf_sigma = rbf_sigma(c(-6, -4))
+  ) %>% 
+  grid_regular(levels = 2)
+
+set.seed(1402)
+svm_initial <- 
+  svm_wflow %>% 
+  tune_grid(resamples = cell_folds, grid = start_grid, metrics = roc_res)
+
+collect_metrics(svm_initial)
+```
+
+Ta początkowa siatka pokazuje dość równoważne wyniki, przy czym żaden pojedynczy punkt nie jest znacznie lepszy od pozostałych.
+Wyniki te mogą być wykorzystane przez funkcje iteracyjnego dostrajania jako wartości początkowe.
+
+## Optymalizacja bayesowska
+
+Techniki optymalizacji bayesowskiej analizują bieżące wyniki próbkowania i tworzą model predykcyjny, aby zasugerować wartości parametrów dostrajania, które nie zostały jeszcze ocenione.
+Sugerowana kombinacja parametrów jest następnie ponownie próbkowana.
+Wyniki te są następnie wykorzystywane w innym modelu predykcyjnym, który rekomenduje więcej wartości kandydatów do testowania, i tak dalej.
+Proces ten przebiega przez ustaloną liczbę iteracji lub do momentu, gdy nie pojawią się dalsze poprawy.
+@shahriari2016 i @Frazier2018 są dobrymi wprowadzeniami do optymalizacji bayesowskiej.
+
+Podczas korzystania z optymalizacji bayesowskiej, podstawowe problemy to sposób tworzenia modelu i wybór parametrów rekomendowanych przez ten model.
+Najpierw rozważmy technikę najczęściej stosowaną w optymalizacji bayesowskiej, czyli model procesu gaussowskiego.
+
+### Model procesu gaussowskiego
+
+Modele procesu gaussowskiego (GP) [@schulz2016], to techniki statystyczne, które mają swoją historię w statystyce przestrzennej (pod nazwą metod *krigingu*).
+Mogą być wyprowadzone na wiele sposobów, w tym jako model Bayesowski.
+
+Matematycznie, GP jest zbiorem zmiennych losowych, których wspólny rozkład prawdopodobieństwa jest wielowymiarowy normalny.
+W kontekście naszych zastosowań jest to zbiór metryk wydajności dla wartości kandydujących parametrów dostrajania.
+Dla początkowej siatki czterech próbek, realizacje tych czterech zmiennych losowych wynosiły 0.8639, 0.8625, 0.8627 i 0.8659.
+Zakłada się, że mają rozkład wielowymiarowy normalny.
+Wejściami definiującymi zmienne niezależne dla modelu GP są odpowiednie wartości dostrajania parametrów (przedstawione w @tbl-1).
+
+```{r}
+#| label: tbl-1
+#| echo: false
+#| tbl-cap: Wartości startowe w procedurze poszukiwania optymalnych parametrów
+library(gt)
+tab1 <- tibble::tribble(
+    ~ROC,   ~cost, ~rbf_sigma,
+  0.8639, 0.01562,      1e-06,
+  0.8625,       2,      1e-06,
+  0.8627, 0.01562,      1e-04,
+  0.8659,       2,      1e-04
+  )
+gt(tab1)
+```
+
+Modele procesów gaussowskich są określone przez ich funkcje średniej i kowariancji, choć to ta ostatnia ma większy wpływ na charakter modelu GP.
+Funkcja kowariancji jest często parametryzowana w kategoriach wartości wejściowych (oznaczanych jako $x$).
+Przykładowo, powszechnie stosowaną funkcją kowariancji jest funkcja wykładnicza kwadratowa:
+
+$$
+\operatorname{cov}(\boldsymbol{x}_i, \boldsymbol{x}_j) = \exp\left(-\frac{1}{2}|\boldsymbol{x}_i - \boldsymbol{x}_j|^2\right) + \sigma^2_{ij}
+$$ {#eq-iter1}
+
+gdzie $\sigma_{i,j}^2$ jest wariancją błędu modelu równą zero jeśli $i=j$.
+Możemy to interpretować jako, że wraz ze wzrostem odległości pomiędzy dwoma kombinacjami parametrów, kowariancja pomiędzy metrykami wydajności rośnie wykładniczo.
+Z równania wynika również, że zmienność metryki wynikowej jest minimalizowana w punktach, które już zostały zaobserwowane (tzn. gdy $|x_i - x_j|^2$ wynosi zero).
+Charakter tej funkcji kowariancji pozwala procesowi gaussowskiemu reprezentować wysoce nieliniowe zależności między wydajnością modelu a dostrajaniem parametrów, nawet jeśli istnieje tylko niewielka ilość danych.
+
+Ważną zaletą tego modelu jest to, że ponieważ określony jest pełny model prawdopodobieństwa, przewidywania dla nowych wejść mogą odzwierciedlać cały rozkład wyniku.
+Innymi słowy, nowe statystyki wydajności mogą być przewidywane zarówno pod względem średniej jak i wariancji.
+
+Na podstawie początkowej siatki czterech wyników, model GP jest dopasowywany, następnie są obliczane z modelu predykcje dla kandydatów, a piąta kombinacja parametrów dostrajania jest wybierana.
+Obliczamy szacunkową wydajność dla nowej konfiguracji, GP jest ponownie dopasowywany do pięciu istniejących wyników (i tak dalej).
+
+### Funkcja akwizycji
+
+Jak wykorzystać model procesu gaussowskiego po dopasowaniu do aktualnych danych?
+Naszym celem jest wybranie następnej kombinacji dostrajania parametrów, która najprawdopodobniej da "lepsze wyniki" niż obecna najlepsza.
+Jednym z podejść do tego jest stworzenie dużego zbioru kandydatów, a następnie wykonanie prognoz średniej i wariancji dla każdego z nich.
+Korzystając z tych informacji, wybieramy najkorzystniejszą wartość parametru dostrajania.
+
+Klasa funkcji celu, zwanych funkcjami akwizycji, ułatwia kompromis pomiędzy średnią a wariancją.
+Przypomnijmy, że przewidywana wariancja modeli GP zależy głównie od tego, jak bardzo są one oddalone od istniejących danych.
+Kompromis pomiędzy przewidywaną średnią i wariancją dla nowych kandydatów jest często postrzegany przez pryzmat eksploracji i eksploatacji:
+
+-   Eksploracja (ang. *exploration*) - powoduje wybór tych regionów, w których jest mniej obserwowanych modeli kandydujących. W ten sposób nadaje się większą wagę kandydatom o wyższej wariancji i koncentruje się na poszukiwaniu nowych wyników.
+-   Eksploatacja (ang. *exploitation*) - zasadniczo opiera się istniejących wynikach, w celu odnalezienia najlepszej wartości średniej.
+
+Aby zademonstrować, spójrzmy na przykład z jednym parametrem, który ma wartości pomiędzy \[0, 1\], a metryką wydajności jest $R^2$.
+Prawdziwa funkcja jest pokazana na @fig-iter2 wraz z pięcioma wartościami kandydującymi, które mają istniejące wyniki jako punkty.
+
+![Hipotetyczny rzeczywisty profil wydajności dla arbitralnie wybranego parametru dostrajania, z pięcioma szacowanymi punktami](images/Zrzut%20ekranu%202023-03-9%20o%2022.39.44.png){#fig-iter2 fig-align="center" width="600"}
+
+Dla tych danych dopasowanie modelu GP przedstawiono na @fig-iter3. Zacieniowany obszar wskazuje średnią $\pm$ 1 błąd standardowy.
+Dwie pionowe linie wskazują dwa punkty kandydujące, które są później bardziej szczegółowo badane.
+Zacieniowany obszar ufności pokazuje funkcję wykładniczej wariancji kwadratowej; staje się ona bardzo duża między punktami i zbiega do zera w istniejących punktach danych.
+
+![Przykładowy przebieg procesu gaussowskiego z zaznaczoną funkcją średniej i wariancji](images/Zrzut%20ekranu%202023-03-9%20o%2022.44.09.png){#fig-iter3 fig-align="center" width="600"}
+
+Ta nieliniowa funkcja przechodzi przez każdy obserwowany punkt, ale model nie jest doskonały.
+Nie ma obserwowanych punktów w pobliżu prawdziwego optimum ustawienia, a w tym regionie dopasowanie mogłoby być znacznie lepsze.
+Pomimo tego, model GP może skutecznie wskazać nam właściwy kierunek.
+
+Z punktu widzenia czystej eksploatacji, najlepszym wyborem byłoby wybranie wartości parametru, który ma najlepszą średnią predykcję.
+W tym przypadku byłaby to wartość 0,106, tuż na prawo od istniejącego najlepszego zaobserwowanego punktu na poziomie 0,09.
+
+Jako sposób na zachęcenie do eksploracji, prostym (ale nie często stosowanym) podejściem jest znalezienie parametru dostrajania związanego z największym przedziałem ufności.
+
+Jedną z najczęściej stosowanych funkcji akwizycji jest oczekiwana poprawa.
+Pojęcie poprawy wymaga wartości dla bieżących najlepszych wyników (w przeciwieństwie do podejścia opartego na przedziałach ufności).
+Ponieważ GP może opisać nowy punkt kandydacki za pomocą rozkładu, możemy ważyć fragmenty rozkładu, które wykazują poprawę, używając prawdopodobieństwa wystąpienia poprawy.
+
+Na przykład, rozważmy dwie wartości parametrów kandydujących 0,10 i 0,25 (wskazane przez pionowe linie na @fig-iter3). Używając dopasowanego modelu GP, ich przewidywane $R^2$ są pokazane na rysunku 14.4 wraz z linią odniesienia dla aktualnych najlepszych wyników.
+
+![Przewidywane rozkłady wydajności dla dwóch próbkowanych wartości parametrów dostrajania](images/Zrzut%20ekranu%202023-03-9%20o%2022.57.54.png){#fig-iter4 fig-align="center" width="600"}
+
+Rozpatrując tylko średnią $R^2$ lepszym wyborem jest wartość parametru 0,10 (patrz @tbl-1). Rekomendacja parametru dostrajania dla 0,25 ma gorsze przewidywanie średnie niż aktualny najlepszy kandydat.
+Jednakże, ponieważ ma wyższą wariancję, ma większy ogólny obszar prawdopodobieństwa powyżej aktualnego najlepszego.
+W rezultacie ma większą oczekiwaną poprawę:
+
+```{r}
+#| label: tbl-2
+#| tbl-cap: Oczekiwana poprawa dla dwóch kandydujących parametrów dostrajania.
+
+tab2 <- tibble::tribble(
+  ~Parameter.Value,  ~Mean,  ~Std.Dev, ~Expected.Improvment,
+               0.1, 0.8679, 0.0004317,              0.00019,
+              0.25, 0.8671, 0.0039301,             0.001216
+  )
+gt(tab2)
+```
+
+Kiedy oczekiwana poprawa jest obliczana w całym zakresie dostrajania parametrów, zalecany punkt do próbkowania jest znacznie bliższy 0,25 niż 0,10, jak pokazano na rysunku 14.5.
+
+![Szacowany profil wydajności wygenerowany przez model procesu gaussowskiego (górny panel) oraz oczekiwana poprawa (dolny panel). Pionowa linia wskazuje punkt maksymalnej poprawy.](images/Zrzut%20ekranu%202023-03-9%20o%2023.05.39.png){#fig-iter5 fig-align="center" width="600"}
+
+Aby zaimplementować wyszukiwanie iteracyjne poprzez optymalizację bayesowską, należy użyć funkcji `tune_bayes()`.
+Jej składnia jest bardzo podobna do `tune_grid()`, z kilkoma dodatkowymi argumentami:
+
+-   `iter` to maksymalna liczba iteracji wyszukiwania.
+-   `initial` może być liczbą całkowitą, obiektem utworzonym przy pomocy `tune_grid()`, albo jedną z funkcji wyścigowych. Użycie liczby całkowitej określa rozmiar konstrukcji wypełniającej przestrzeń, która jest próbkowana przed pierwszym modelem GP.
+-   `objective` jest argumentem, dla którego należy użyć funkcji akwizycji. Pakiet `tune` zawiera funkcje takie jak `exp_improve()` lub `conf_bound()`.
+-   Argument `param_info`, w tym przypadku określa zakres parametrów, jak również wszelkie transformacje.
+
+Argument `control` funkcji `tune_bayes()` ustawia się za pomocą `control_bayes()`.
+Niektóre istotne argumenty to:
+
+-   `no_improve` to liczba całkowita, która zatrzyma wyszukiwanie, jeśli ulepszone parametry nie zostaną odkryte w ciągu iteracji `no_improve`.
+-   `uncertain` jest również liczbą całkowitą (lub `Inf`), używaną do ustalenia liczby przejść algorytmu wg reguły eksploatacji bez poprawy, aby następnie wybrać próbę z zakresu z wysoką wariancją, po to żeby dokonać eksploracji.
+-   `verbose` jest parametrem, który decyduje co będzie się wyświetlało podczas przebiegu algorytmu.
+
+Użyjmy pierwszych wyników SVM jako początkowego podłoża dla modelu GP.
+Przypomnijmy, że w tym zastosowaniu chcemy zmaksymalizować obszar pod krzywą ROC.
+
+```{r}
+# cache: true
+ctrl <- control_bayes(verbose = TRUE)
+
+set.seed(1403)
+svm_bo <-
+  svm_wflow %>%
+  tune_bayes(
+    resamples = cell_folds,
+    metrics = roc_res,
+    initial = svm_initial,
+    param_info = svm_param,
+    iter = 25,
+    control = ctrl
+  )
+```
+
+```{r}
+collect_metrics(svm_bo) |> 
+  gt()
+```
+
+```{r}
+show_best(svm_bo) |> 
+  gt()
+```
+
+```{r}
+autoplot(svm_bo, type = "performance")
+```
+
+Poniższa animacja wizualizuje wyniki wyszukiwania.
+Czarne "x" pokazują wartości początkowe zawarte w `svm_initial`.
+Niebieski panel u góry po lewej stronie pokazuje przewidywaną średnią wartość obszaru pod krzywą ROC.
+Czerwony panel na górze po prawej stronie pokazuje przewidywaną zmienność wartości ROC, podczas gdy dolny wykres wizualizuje oczekiwaną poprawę.
+W każdym panelu ciemniejsze kolory wskazują mniej atrakcyjne wartości (np. małe wartości średnie, duże zróżnicowanie i małe ulepszenia).
+
+![Przykład działania optymalizacji bayesowskiej](https://www.tmwr.org/bo_search.mp4){#fig-iter6 fig-align="center"}
+
+Powierzchnia przewidywanej średniej jest bardzo niedokładna w pierwszych kilku iteracjach wyszukiwania.
+Pomimo tego, pomaga ona poprowadzić proces w rejon dobrej wydajności.
+W ciągu pierwszych dziesięciu iteracji, wyszukiwanie jest dokonywane w pobliżu optymalnego miejsca.
+
+Podczas gdy najlepsza kombinacja dostrajania parametrów znajduje się na granicy przestrzeni parametrów, optymalizacja bayesowska często wybierze nowe punkty poza granicami przestrzeni parametrów.
+
+Powyższy przykład startował z punktów startowych wybranych nieco arbitralnie ale nieco lepsze wyniki można osiągnąć stosując losowe wypełnienie przestrzeni parametrów.

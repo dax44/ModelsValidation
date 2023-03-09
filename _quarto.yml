@@ -36,6 +36,7 @@ book:
     - tuning.qmd
     - grid_search.qmd
     - parallel.qmd
+    - iterative.qmd
     - references.qmd
 
 bibliography: references.bib
