@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.203">
+<meta name="generator" content="quarto-1.3.234">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 4&nbsp; Przegląd miar dopasowania modelu</title>
 <style>
@@ -17,6 +17,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -80,11 +81,12 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -98,8 +100,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -145,12 +146,15 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./measures.html">&lt;span class='chapter-number'&gt;4&lt;/span&gt;&nbsp; &lt;span class='chapter-title'&gt;Przegląd miar dopasowania modelu&lt;/span&gt;</a></li></ol></nav>
-      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./measures.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></a></li></ol></nav>
+      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
@@ -160,8 +164,8 @@ div.csl-indent {
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
@@ -171,7 +175,7 @@ div.csl-indent {
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
+        <div id="quarto-search" class="" title="Szukaj"></div>
         </div>
         </div>
     <div class="sidebar-menu-container"> 
@@ -250,33 +254,33 @@ div.csl-indent {
    
   <ul>
 <li>
-<a href="#miary-dopasowania-modeli-regresyjnych" id="toc-miary-dopasowania-modeli-regresyjnych" class="nav-link active" data-scroll-target="#miary-dopasowania-modeli-regresyjnych"><span class="toc-section-number">4.1</span>  Miary dopasowania modeli regresyjnych</a>
+<a href="#miary-dopasowania-modeli-regresyjnych" id="toc-miary-dopasowania-modeli-regresyjnych" class="nav-link active" data-scroll-target="#miary-dopasowania-modeli-regresyjnych"><span class="header-section-number">4.1</span> Miary dopasowania modeli regresyjnych</a>
   <ul class="collapse">
-<li><a href="#r2" id="toc-r2" class="nav-link" data-scroll-target="#r2"><span class="toc-section-number">4.1.1</span>  <span class="math inline">\(R^2\)</span></a></li>
-  <li><a href="#rmse" id="toc-rmse" class="nav-link" data-scroll-target="#rmse"><span class="toc-section-number">4.1.2</span>  RMSE</a></li>
-  <li><a href="#mse" id="toc-mse" class="nav-link" data-scroll-target="#mse"><span class="toc-section-number">4.1.3</span>  MSE</a></li>
-  <li><a href="#mae" id="toc-mae" class="nav-link" data-scroll-target="#mae"><span class="toc-section-number">4.1.4</span>  MAE</a></li>
-  <li><a href="#mape" id="toc-mape" class="nav-link" data-scroll-target="#mape"><span class="toc-section-number">4.1.5</span>  MAPE</a></li>
-  <li><a href="#mase" id="toc-mase" class="nav-link" data-scroll-target="#mase"><span class="toc-section-number">4.1.6</span>  MASE</a></li>
-  <li><a href="#mpe" id="toc-mpe" class="nav-link" data-scroll-target="#mpe"><span class="toc-section-number">4.1.7</span>  MPE</a></li>
-  <li><a href="#msd" id="toc-msd" class="nav-link" data-scroll-target="#msd"><span class="toc-section-number">4.1.8</span>  MSD</a></li>
-  <li><a href="#funkcja-straty-hubera" id="toc-funkcja-straty-hubera" class="nav-link" data-scroll-target="#funkcja-straty-hubera"><span class="toc-section-number">4.1.9</span>  Funkcja straty Hubera</a></li>
-  <li><a href="#funkcja-straty-pseudo-hubera" id="toc-funkcja-straty-pseudo-hubera" class="nav-link" data-scroll-target="#funkcja-straty-pseudo-hubera"><span class="toc-section-number">4.1.10</span>  Funkcja straty Pseudo-Hubera</a></li>
-  <li><a href="#logarytm-funkcji-straty-dla-rozk%C5%82adu-poissona" id="toc-logarytm-funkcji-straty-dla-rozkładu-poissona" class="nav-link" data-scroll-target="#logarytm-funkcji-straty-dla-rozk%C5%82adu-poissona"><span class="toc-section-number">4.1.11</span>  Logarytm funkcji straty dla rozkładu Poissona</a></li>
-  <li><a href="#smape" id="toc-smape" class="nav-link" data-scroll-target="#smape"><span class="toc-section-number">4.1.12</span>  SMAPE</a></li>
-  <li><a href="#rpd" id="toc-rpd" class="nav-link" data-scroll-target="#rpd"><span class="toc-section-number">4.1.13</span>  RPD</a></li>
-  <li><a href="#rpiq" id="toc-rpiq" class="nav-link" data-scroll-target="#rpiq"><span class="toc-section-number">4.1.14</span>  RPIQ</a></li>
-  <li><a href="#ccc" id="toc-ccc" class="nav-link" data-scroll-target="#ccc"><span class="toc-section-number">4.1.15</span>  CCC</a></li>
-  <li><a href="#podsumowanie-miar-dla-modeli-regresyjnych" id="toc-podsumowanie-miar-dla-modeli-regresyjnych" class="nav-link" data-scroll-target="#podsumowanie-miar-dla-modeli-regresyjnych"><span class="toc-section-number">4.1.16</span>  Podsumowanie miar dla modeli regresyjnych</a></li>
+<li><a href="#r2" id="toc-r2" class="nav-link" data-scroll-target="#r2"><span class="header-section-number">4.1.1</span> <span class="math inline">\(R^2\)</span></a></li>
+  <li><a href="#rmse" id="toc-rmse" class="nav-link" data-scroll-target="#rmse"><span class="header-section-number">4.1.2</span> RMSE</a></li>
+  <li><a href="#mse" id="toc-mse" class="nav-link" data-scroll-target="#mse"><span class="header-section-number">4.1.3</span> MSE</a></li>
+  <li><a href="#mae" id="toc-mae" class="nav-link" data-scroll-target="#mae"><span class="header-section-number">4.1.4</span> MAE</a></li>
+  <li><a href="#mape" id="toc-mape" class="nav-link" data-scroll-target="#mape"><span class="header-section-number">4.1.5</span> MAPE</a></li>
+  <li><a href="#mase" id="toc-mase" class="nav-link" data-scroll-target="#mase"><span class="header-section-number">4.1.6</span> MASE</a></li>
+  <li><a href="#mpe" id="toc-mpe" class="nav-link" data-scroll-target="#mpe"><span class="header-section-number">4.1.7</span> MPE</a></li>
+  <li><a href="#msd" id="toc-msd" class="nav-link" data-scroll-target="#msd"><span class="header-section-number">4.1.8</span> MSD</a></li>
+  <li><a href="#funkcja-straty-hubera" id="toc-funkcja-straty-hubera" class="nav-link" data-scroll-target="#funkcja-straty-hubera"><span class="header-section-number">4.1.9</span> Funkcja straty Hubera</a></li>
+  <li><a href="#funkcja-straty-pseudo-hubera" id="toc-funkcja-straty-pseudo-hubera" class="nav-link" data-scroll-target="#funkcja-straty-pseudo-hubera"><span class="header-section-number">4.1.10</span> Funkcja straty Pseudo-Hubera</a></li>
+  <li><a href="#logarytm-funkcji-straty-dla-rozk%C5%82adu-poissona" id="toc-logarytm-funkcji-straty-dla-rozkładu-poissona" class="nav-link" data-scroll-target="#logarytm-funkcji-straty-dla-rozk%C5%82adu-poissona"><span class="header-section-number">4.1.11</span> Logarytm funkcji straty dla rozkładu Poissona</a></li>
+  <li><a href="#smape" id="toc-smape" class="nav-link" data-scroll-target="#smape"><span class="header-section-number">4.1.12</span> SMAPE</a></li>
+  <li><a href="#rpd" id="toc-rpd" class="nav-link" data-scroll-target="#rpd"><span class="header-section-number">4.1.13</span> RPD</a></li>
+  <li><a href="#rpiq" id="toc-rpiq" class="nav-link" data-scroll-target="#rpiq"><span class="header-section-number">4.1.14</span> RPIQ</a></li>
+  <li><a href="#ccc" id="toc-ccc" class="nav-link" data-scroll-target="#ccc"><span class="header-section-number">4.1.15</span> CCC</a></li>
+  <li><a href="#podsumowanie-miar-dla-modeli-regresyjnych" id="toc-podsumowanie-miar-dla-modeli-regresyjnych" class="nav-link" data-scroll-target="#podsumowanie-miar-dla-modeli-regresyjnych"><span class="header-section-number">4.1.16</span> Podsumowanie miar dla modeli regresyjnych</a></li>
   </ul>
 </li>
   <li>
-<a href="#miary-dopasowania-modeli-klasyfikacyjnych" id="toc-miary-dopasowania-modeli-klasyfikacyjnych" class="nav-link" data-scroll-target="#miary-dopasowania-modeli-klasyfikacyjnych"><span class="toc-section-number">4.2</span>  Miary dopasowania modeli klasyfikacyjnych</a>
+<a href="#miary-dopasowania-modeli-klasyfikacyjnych" id="toc-miary-dopasowania-modeli-klasyfikacyjnych" class="nav-link" data-scroll-target="#miary-dopasowania-modeli-klasyfikacyjnych"><span class="header-section-number">4.2</span> Miary dopasowania modeli klasyfikacyjnych</a>
   <ul class="collapse">
-<li><a href="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85" id="toc-miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową" class="nav-link" data-scroll-target="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85"><span class="toc-section-number">4.2.1</span>  Miary dopasowania dla modeli ze zmienną wynikową wieloklasową</a></li>
+<li><a href="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85" id="toc-miary-dopasowania-dla-modeli-ze-zmienną-wynikową-wieloklasową" class="nav-link" data-scroll-target="#miary-dopasowania-dla-modeli-ze-zmienn%C4%85-wynikow%C4%85-wieloklasow%C4%85"><span class="header-section-number">4.2.1</span> Miary dopasowania dla modeli ze zmienną wynikową wieloklasową</a></li>
   </ul>
 </li>
-  <li><a href="#uwagi-ko%C5%84cowe" id="toc-uwagi-końcowe" class="nav-link" data-scroll-target="#uwagi-ko%C5%84cowe"><span class="toc-section-number">4.3</span>  Uwagi końcowe</a></li>
+  <li><a href="#uwagi-ko%C5%84cowe" id="toc-uwagi-końcowe" class="nav-link" data-scroll-target="#uwagi-ko%C5%84cowe"><span class="header-section-number">4.3</span> Uwagi końcowe</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -1026,32 +1030,32 @@ Prediction   VF    F    M    L
 <p>Jedną z brakujących informacji w tym podejściu jest to, jak blisko model ten pasuje do rzeczywistych danych. Stosując metody resamplingu, omówione w rozdziale 10, możemy oszacować dokładność tego modelu na około 73,4%. Dokładność jest często słabą miarą wydajności modelu; używamy jej tutaj, ponieważ jest powszechnie rozumiana. Jeśli model ma 73,4% dokładności w stosunku do danych, to czy powinniśmy zaufać wnioskom, które produkuje? Moglibyśmy tak myśleć, dopóki nie zdamy sobie sprawy, że wskaźnik bazowy nieupośledzonych pacjentów w danych wynosi 72,7%. Oznacza to, że pomimo naszej analizy statystycznej, model dwuczynnikowy okazuje się być tylko o 0,8% lepszy od prostej heurystyki, która zawsze przewiduje, że pacjenci nie są upośledzeni, niezależnie od obserwowanych danych.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-EvaluatingForecastAccuracy" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-EvaluatingForecastAccuracy" class="csl-entry" role="listitem">
 <em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>. b.d.
 </div>
-<div id="ref-bellon-maurelCriticalReviewChemometric2010" class="csl-entry" role="doc-biblioentry">
+<div id="ref-bellon-maurelCriticalReviewChemometric2010" class="csl-entry" role="listitem">
 Bellon-Maurel, Véronique, Elvira Fernandez-Ahumada, Bernard Palagos, Jean-Michel Roger, i Alex McBratney. 2010. <span>„Critical Review of Chemometric Indicators Commonly Used for Assessing the Quality of the Prediction of Soil Attributes by <span>NIR</span> Spectroscopy”</span>. <em>TrAC Trends in Analytical Chemistry</em> 29 (9): 1073–81. <a href="https://doi.org/10.1016/j.trac.2010.05.006">https://doi.org/10.1016/j.trac.2010.05.006</a>.
 </div>
-<div id="ref-Craig-Schapiro2011" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Craig-Schapiro2011" class="csl-entry" role="listitem">
 Craig-Schapiro, Rebecca, Max Kuhn, Chengjie Xiong, Eve H. Pickering, Jingxia Liu, Thomas P. Misko, Richard J. Perrin, i in. 2011. <span>„Multiplexed Immunoassay Panel Identifies Novel CSF Biomarkers for Alzheimer’s Disease Diagnosis and Prognosis”</span>. Zredagowane przez Ashley I. Bush. <em>PLoS ONE</em> 6 (4): e18850. <a href="https://doi.org/10.1371/journal.pone.0018850">https://doi.org/10.1371/journal.pone.0018850</a>.
 </div>
-<div id="ref-fransesNoteMeanAbsolute2016" class="csl-entry" role="doc-biblioentry">
+<div id="ref-fransesNoteMeanAbsolute2016" class="csl-entry" role="listitem">
 Franses, Philip Hans. 2016. <span>„A Note on the <span>Mean Absolute Scaled Error</span>”</span>. <em>International Journal of Forecasting</em> 32 (1): 20–22. <a href="https://doi.org/10.1016/j.ijforecast.2015.03.008">https://doi.org/10.1016/j.ijforecast.2015.03.008</a>.
 </div>
-<div id="ref-hosmer2000" class="csl-entry" role="doc-biblioentry">
+<div id="ref-hosmer2000" class="csl-entry" role="listitem">
 Hosmer, David W., i Stanley Lemeshow. 2000. <em>Applied Logistic Regression</em>. John Wiley &amp; Sons, Inc. <a href="https://doi.org/10.1002/0471722146">https://doi.org/10.1002/0471722146</a>.
 </div>
-<div id="ref-hyndmanAnotherLookMeasures2006" class="csl-entry" role="doc-biblioentry">
+<div id="ref-hyndmanAnotherLookMeasures2006" class="csl-entry" role="listitem">
 Hyndman, Rob J., i Anne B. Koehler. 2006. <span>„Another Look at Measures of Forecast Accuracy”</span>. <em>International Journal of Forecasting</em> 22 (4): 679–88. <a href="https://doi.org/10.1016/j.ijforecast.2006.03.001">https://doi.org/10.1016/j.ijforecast.2006.03.001</a>.
 </div>
-<div id="ref-Kim2009" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Kim2009" class="csl-entry" role="listitem">
 Kim, Jungsu, Jacob M. Basak, i David M. Holtzman. 2009. <span>„The Role of Apolipoprotein E in Alzheimer’s Disease”</span>. <em>Neuron</em> 63 (3): 287–303. <a href="https://doi.org/10.1016/j.neuron.2009.06.026">https://doi.org/10.1016/j.neuron.2009.06.026</a>.
 </div>
-<div id="ref-kvalsethCautionaryNoteR21985" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kvalsethCautionaryNoteR21985" class="csl-entry" role="listitem">
 Kvalseth, Tarald O. 1985. <span>„Cautionary <span>Note</span> about <span>R2</span>”</span>. <em>The American Statistician</em> 39 (4): 279–85. <a href="https://doi.org/10.2307/2683704">https://doi.org/10.2307/2683704</a>.
 </div>
-<div id="ref-yehAnalysisStrengthConcrete2006" class="csl-entry" role="doc-biblioentry">
+<div id="ref-yehAnalysisStrengthConcrete2006" class="csl-entry" role="listitem">
 Yeh, I.-Cheng. 2006. <span>„Analysis of <span>Strength</span> of <span>Concrete Using Design</span> of <span>Experiments</span> and <span>Neural Networks</span>”</span>. <em>Journal of Materials in Civil Engineering</em> 18 (4): 597–604. <a href="https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)">https://doi.org/10.1061/(ASCE)0899-1561(2006)18:4(597)</a>.
 </div>
 </div>
@@ -1197,9 +1201,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1402,6 +1420,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Metody walidacji modeli statystycznych, Dariusz Majerek</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
     <div class="nav-footer-right">Książka została napisana w <a href="https://quarto.org/">Quarto</a></div>
   </div>
 </footer>

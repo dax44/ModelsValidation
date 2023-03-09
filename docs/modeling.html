@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.203">
+<meta name="generator" content="quarto-1.3.234">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 2&nbsp; Modelowanie statystyczne</title>
 <style>
@@ -17,6 +17,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -80,11 +81,12 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -98,8 +100,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -145,12 +146,15 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./modeling.html">&lt;span class='chapter-number'&gt;2&lt;/span&gt;&nbsp; &lt;span class='chapter-title'&gt;Modelowanie statystyczne&lt;/span&gt;</a></li></ol></nav>
-      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./modeling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a></li></ol></nav>
+      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
@@ -160,8 +164,8 @@ div.csl-indent {
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
@@ -171,7 +175,7 @@ div.csl-indent {
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
+        <div id="quarto-search" class="" title="Szukaj"></div>
         </div>
         </div>
     <div class="sidebar-menu-container"> 
@@ -250,15 +254,15 @@ div.csl-indent {
    
   <ul>
 <li>
-<a href="#typy-modeli" id="toc-typy-modeli" class="nav-link active" data-scroll-target="#typy-modeli"><span class="toc-section-number">2.1</span>  Typy modeli</a>
+<a href="#typy-modeli" id="toc-typy-modeli" class="nav-link active" data-scroll-target="#typy-modeli"><span class="header-section-number">2.1</span> Typy modeli</a>
   <ul class="collapse">
-<li><a href="#modele-opisowe" id="toc-modele-opisowe" class="nav-link" data-scroll-target="#modele-opisowe"><span class="toc-section-number">2.1.1</span>  Modele opisowe</a></li>
-  <li><a href="#modele-do-wnioskowania" id="toc-modele-do-wnioskowania" class="nav-link" data-scroll-target="#modele-do-wnioskowania"><span class="toc-section-number">2.1.2</span>  Modele do wnioskowania</a></li>
-  <li><a href="#modele-predykcyjne" id="toc-modele-predykcyjne" class="nav-link" data-scroll-target="#modele-predykcyjne"><span class="toc-section-number">2.1.3</span>  Modele predykcyjne</a></li>
+<li><a href="#modele-opisowe" id="toc-modele-opisowe" class="nav-link" data-scroll-target="#modele-opisowe"><span class="header-section-number">2.1.1</span> Modele opisowe</a></li>
+  <li><a href="#modele-do-wnioskowania" id="toc-modele-do-wnioskowania" class="nav-link" data-scroll-target="#modele-do-wnioskowania"><span class="header-section-number">2.1.2</span> Modele do wnioskowania</a></li>
+  <li><a href="#modele-predykcyjne" id="toc-modele-predykcyjne" class="nav-link" data-scroll-target="#modele-predykcyjne"><span class="header-section-number">2.1.3</span> Modele predykcyjne</a></li>
   </ul>
 </li>
-  <li><a href="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli" id="toc-związki-pomiędzy-typami-modeli" class="nav-link" data-scroll-target="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli"><span class="toc-section-number">2.2</span>  Związki pomiędzy typami modeli</a></li>
-  <li><a href="#proces-tworzenie-modelu" id="toc-proces-tworzenie-modelu" class="nav-link" data-scroll-target="#proces-tworzenie-modelu"><span class="toc-section-number">2.3</span>  Proces tworzenie modelu</a></li>
+  <li><a href="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli" id="toc-związki-pomiędzy-typami-modeli" class="nav-link" data-scroll-target="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli"><span class="header-section-number">2.2</span> Związki pomiędzy typami modeli</a></li>
+  <li><a href="#proces-tworzenie-modelu" id="toc-proces-tworzenie-modelu" class="nav-link" data-scroll-target="#proces-tworzenie-modelu"><span class="header-section-number">2.3</span> Proces tworzenie modelu</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -325,12 +329,12 @@ div.csl-indent {
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="https://i.pinimg.com/564x/a7/d1/56/a7d1563affbc70083e252520bc25d86b.jpg" class="img-fluid"></p>
-</div></div><div class="callout callout-style-default callout-important callout-captioned">
+</div></div><div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Ważne
 </div>
 </div>
@@ -394,12 +398,12 @@ Ważne
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="eexzrxyxcx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="yoiflgsdzg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#eexzrxyxcx .gt_table {
+#yoiflgsdzg .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -424,7 +428,7 @@ Ważne
   border-left-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_heading {
+#yoiflgsdzg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -436,12 +440,12 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_caption {
+#yoiflgsdzg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#eexzrxyxcx .gt_title {
+#yoiflgsdzg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -453,7 +457,7 @@ Ważne
   border-bottom-width: 0;
 }
 
-#eexzrxyxcx .gt_subtitle {
+#yoiflgsdzg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -465,13 +469,13 @@ Ważne
   border-top-width: 0;
 }
 
-#eexzrxyxcx .gt_bottom_border {
+#yoiflgsdzg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_col_headings {
+#yoiflgsdzg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -486,7 +490,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_col_heading {
+#yoiflgsdzg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -506,7 +510,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#eexzrxyxcx .gt_column_spanner_outer {
+#yoiflgsdzg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -518,15 +522,15 @@ Ważne
   padding-right: 4px;
 }
 
-#eexzrxyxcx .gt_column_spanner_outer:first-child {
+#yoiflgsdzg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#eexzrxyxcx .gt_column_spanner_outer:last-child {
+#yoiflgsdzg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#eexzrxyxcx .gt_column_spanner {
+#yoiflgsdzg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -538,7 +542,7 @@ Ważne
   width: 100%;
 }
 
-#eexzrxyxcx .gt_group_heading {
+#yoiflgsdzg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -564,7 +568,7 @@ Ważne
   text-align: left;
 }
 
-#eexzrxyxcx .gt_empty_group_heading {
+#yoiflgsdzg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -579,15 +583,15 @@ Ważne
   vertical-align: middle;
 }
 
-#eexzrxyxcx .gt_from_md > :first-child {
+#yoiflgsdzg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#eexzrxyxcx .gt_from_md > :last-child {
+#yoiflgsdzg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#eexzrxyxcx .gt_row {
+#yoiflgsdzg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -606,7 +610,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#eexzrxyxcx .gt_stub {
+#yoiflgsdzg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -619,7 +623,7 @@ Ważne
   padding-right: 5px;
 }
 
-#eexzrxyxcx .gt_stub_row_group {
+#yoiflgsdzg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -633,11 +637,11 @@ Ważne
   vertical-align: top;
 }
 
-#eexzrxyxcx .gt_row_group_first td {
+#yoiflgsdzg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#eexzrxyxcx .gt_summary_row {
+#yoiflgsdzg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -647,16 +651,16 @@ Ważne
   padding-right: 5px;
 }
 
-#eexzrxyxcx .gt_first_summary_row {
+#yoiflgsdzg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_first_summary_row.thick {
+#yoiflgsdzg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#eexzrxyxcx .gt_last_summary_row {
+#yoiflgsdzg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -666,7 +670,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_grand_summary_row {
+#yoiflgsdzg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -676,7 +680,7 @@ Ważne
   padding-right: 5px;
 }
 
-#eexzrxyxcx .gt_first_grand_summary_row {
+#yoiflgsdzg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -686,11 +690,11 @@ Ważne
   border-top-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_striped {
+#yoiflgsdzg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#eexzrxyxcx .gt_table_body {
+#yoiflgsdzg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -699,7 +703,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_footnotes {
+#yoiflgsdzg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -713,7 +717,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_footnote {
+#yoiflgsdzg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -722,7 +726,7 @@ Ważne
   padding-right: 5px;
 }
 
-#eexzrxyxcx .gt_sourcenotes {
+#yoiflgsdzg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -736,7 +740,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#eexzrxyxcx .gt_sourcenote {
+#yoiflgsdzg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -744,71 +748,71 @@ Ważne
   padding-right: 5px;
 }
 
-#eexzrxyxcx .gt_left {
+#yoiflgsdzg .gt_left {
   text-align: left;
 }
 
-#eexzrxyxcx .gt_center {
+#yoiflgsdzg .gt_center {
   text-align: center;
 }
 
-#eexzrxyxcx .gt_right {
+#yoiflgsdzg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#eexzrxyxcx .gt_font_normal {
+#yoiflgsdzg .gt_font_normal {
   font-weight: normal;
 }
 
-#eexzrxyxcx .gt_font_bold {
+#yoiflgsdzg .gt_font_bold {
   font-weight: bold;
 }
 
-#eexzrxyxcx .gt_font_italic {
+#yoiflgsdzg .gt_font_italic {
   font-style: italic;
 }
 
-#eexzrxyxcx .gt_super {
+#yoiflgsdzg .gt_super {
   font-size: 65%;
 }
 
-#eexzrxyxcx .gt_footnote_marks {
+#yoiflgsdzg .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#eexzrxyxcx .gt_asterisk {
+#yoiflgsdzg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#eexzrxyxcx .gt_indent_1 {
+#yoiflgsdzg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#eexzrxyxcx .gt_indent_2 {
+#yoiflgsdzg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#eexzrxyxcx .gt_indent_3 {
+#yoiflgsdzg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#eexzrxyxcx .gt_indent_4 {
+#yoiflgsdzg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#eexzrxyxcx .gt_indent_5 {
+#yoiflgsdzg .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table table table-sm table-striped">
+<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
 <thead class="gt_col_headings"><tr class="header">
-<th id="Thoughts" class="gt_col_heading gt_columns_bottom_border gt_left" scope="col">Thoughts</th>
-<th id="Activity" class="gt_col_heading gt_columns_bottom_border gt_left" scope="col">Activity</th>
+<th id="Thoughts" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Thoughts</th>
+<th id="Activity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Activity</th>
 </tr></thead>
 <tbody class="gt_table_body">
 <tr class="odd">
@@ -886,17 +890,17 @@ Ważne
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-bolstadLowlevelAnalysisHighdensity2004" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bolstadLowlevelAnalysisHighdensity2004" class="csl-entry" role="listitem">
 Bolstad, Benjamin Milo. 2004. <em>Low-Level <span>Analysis</span> of <span>High-Density Oligonucleotide Array Data</span>: <span>Background</span>, <span>Normalization</span> and <span>Summarization</span></em>. <span>University of California, Berkeley</span>.
 </div>
-<div id="ref-gentlemanBioinformaticsComputationalBiology2005" class="csl-entry" role="doc-biblioentry">
+<div id="ref-gentlemanBioinformaticsComputationalBiology2005" class="csl-entry" role="listitem">
 Gentleman, Robert, Vincent Carey, Wolfgang Huber, Sandrine Dudoit, i Rafael Irizarry. 2005. <em>Bioinformatics and <span>Computational Biology Solutions Using R</span> and <span>Bioconductor</span></em>. <span>Springer</span>.
 </div>
-<div id="ref-kuhnFeatureEngineeringSelection2021" class="csl-entry" role="doc-biblioentry">
+<div id="ref-kuhnFeatureEngineeringSelection2021" class="csl-entry" role="listitem">
 Kuhn, Max, i Kjell Johnson. 2021. <em>Feature <span>Engineering</span> and <span>Selection</span>: <span>A Practical Approach</span> for <span>Predictive Models</span></em>. <span>Taylor &amp; Francis Group</span>.
 </div>
-<div id="ref-wickhamWelcomeTidyverse2019" class="csl-entry" role="doc-biblioentry">
+<div id="ref-wickhamWelcomeTidyverse2019" class="csl-entry" role="listitem">
 Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, i in. 2019. <span>„Welcome to the Tidyverse”</span>. <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
 </div>
 </div>
@@ -1042,9 +1046,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1247,6 +1265,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Metody walidacji modeli statystycznych, Dariusz Majerek</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
     <div class="nav-footer-right">Książka została napisana w <a href="https://quarto.org/">Quarto</a></div>
   </div>
 </footer>

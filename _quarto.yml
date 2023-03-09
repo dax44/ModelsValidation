@@ -50,8 +50,8 @@ format:
       gutter-width: 1.5rem
     lang: pl
     theme:
-      light: [journal, mycss.scss]
-      dark: [slate, mycss.scss]
+      light: [flatly, mycss.scss]
+      dark: [darkly, mycss.scss]
     code-link: true
     code-fold: true
 

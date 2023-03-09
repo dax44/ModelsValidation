@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.203">
+<meta name="generator" content="quarto-1.3.234">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 6&nbsp; Praca z tidymodels</title>
 <style>
@@ -17,6 +17,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -126,12 +127,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidymodels.html">&lt;span class='chapter-number'&gt;6&lt;/span&gt;&nbsp; &lt;span class='chapter-title'&gt;Praca z `tidymodels`&lt;/span&gt;</a></li></ol></nav>
-      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidymodels.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z `tidymodels`</span></a></li></ol></nav>
+      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
@@ -141,8 +145,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
@@ -152,7 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
+        <div id="quarto-search" class="" title="Szukaj"></div>
         </div>
         </div>
     <div class="sidebar-menu-container"> 
@@ -230,26 +234,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
    
   <ul>
-<li><a href="#budowa-modelu" id="toc-budowa-modelu" class="nav-link active" data-scroll-target="#budowa-modelu"><span class="toc-section-number">6.1</span>  Budowa modelu</a></li>
-  <li><a href="#u%C5%BCycie-modelu" id="toc-użycie-modelu" class="nav-link" data-scroll-target="#u%C5%BCycie-modelu"><span class="toc-section-number">6.2</span>  Użycie modelu</a></li>
+<li><a href="#budowa-modelu" id="toc-budowa-modelu" class="nav-link active" data-scroll-target="#budowa-modelu"><span class="header-section-number">6.1</span> Budowa modelu</a></li>
+  <li><a href="#u%C5%BCycie-modelu" id="toc-użycie-modelu" class="nav-link" data-scroll-target="#u%C5%BCycie-modelu"><span class="header-section-number">6.2</span> Użycie modelu</a></li>
   <li>
-<a href="#predykcja-z-modelu" id="toc-predykcja-z-modelu" class="nav-link" data-scroll-target="#predykcja-z-modelu"><span class="toc-section-number">6.3</span>  Predykcja z modelu</a>
+<a href="#predykcja-z-modelu" id="toc-predykcja-z-modelu" class="nav-link" data-scroll-target="#predykcja-z-modelu"><span class="header-section-number">6.3</span> Predykcja z modelu</a>
   <ul class="collapse">
-<li><a href="#rozszerzenia" id="toc-rozszerzenia" class="nav-link" data-scroll-target="#rozszerzenia"><span class="toc-section-number">6.3.1</span>  Rozszerzenia</a></li>
+<li><a href="#rozszerzenia" id="toc-rozszerzenia" class="nav-link" data-scroll-target="#rozszerzenia"><span class="header-section-number">6.3.1</span> Rozszerzenia</a></li>
   </ul>
 </li>
-  <li><a href="#przep%C5%82ywy-w-modelowaniu" id="toc-przepływy-w-modelowaniu" class="nav-link" data-scroll-target="#przep%C5%82ywy-w-modelowaniu"><span class="toc-section-number">6.4</span>  Przepływy w modelowaniu</a></li>
+  <li><a href="#przep%C5%82ywy-w-modelowaniu" id="toc-przepływy-w-modelowaniu" class="nav-link" data-scroll-target="#przep%C5%82ywy-w-modelowaniu"><span class="header-section-number">6.4</span> Przepływy w modelowaniu</a></li>
   <li>
-<a href="#in%C5%BCynieria-cech" id="toc-inżynieria-cech" class="nav-link" data-scroll-target="#in%C5%BCynieria-cech"><span class="toc-section-number">6.5</span>  Inżynieria cech</a>
+<a href="#in%C5%BCynieria-cech" id="toc-inżynieria-cech" class="nav-link" data-scroll-target="#in%C5%BCynieria-cech"><span class="header-section-number">6.5</span> Inżynieria cech</a>
   <ul class="collapse">
-<li><a href="#kodowanie-faktor%C3%B3w" id="toc-kodowanie-faktorów" class="nav-link" data-scroll-target="#kodowanie-faktor%C3%B3w"><span class="toc-section-number">6.5.1</span>  Kodowanie faktorów</a></li>
-  <li><a href="#interakcje-efekt%C3%B3w" id="toc-interakcje-efektów" class="nav-link" data-scroll-target="#interakcje-efekt%C3%B3w"><span class="toc-section-number">6.5.2</span>  Interakcje efektów</a></li>
-  <li><a href="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci" id="toc-nieliniowość-zależności" class="nav-link" data-scroll-target="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci"><span class="toc-section-number">6.5.3</span>  Nieliniowość zależności</a></li>
-  <li><a href="#ekstrakcja-cech" id="toc-ekstrakcja-cech" class="nav-link" data-scroll-target="#ekstrakcja-cech"><span class="toc-section-number">6.5.4</span>  Ekstrakcja cech</a></li>
-  <li><a href="#przepisy-wierszowe" id="toc-przepisy-wierszowe" class="nav-link" data-scroll-target="#przepisy-wierszowe"><span class="toc-section-number">6.5.5</span>  Przepisy wierszowe</a></li>
-  <li><a href="#przekszta%C5%82cenia-og%C3%B3lne" id="toc-przekształcenia-ogólne" class="nav-link" data-scroll-target="#przekszta%C5%82cenia-og%C3%B3lne"><span class="toc-section-number">6.5.6</span>  Przekształcenia ogólne</a></li>
-  <li><a href="#pomijanie-krok%C3%B3w" id="toc-pomijanie-kroków" class="nav-link" data-scroll-target="#pomijanie-krok%C3%B3w"><span class="toc-section-number">6.5.7</span>  Pomijanie kroków</a></li>
-  <li><a href="#role-zmiennych" id="toc-role-zmiennych" class="nav-link" data-scroll-target="#role-zmiennych"><span class="toc-section-number">6.5.8</span>  Role zmiennych</a></li>
+<li><a href="#kodowanie-faktor%C3%B3w" id="toc-kodowanie-faktorów" class="nav-link" data-scroll-target="#kodowanie-faktor%C3%B3w"><span class="header-section-number">6.5.1</span> Kodowanie faktorów</a></li>
+  <li><a href="#interakcje-efekt%C3%B3w" id="toc-interakcje-efektów" class="nav-link" data-scroll-target="#interakcje-efekt%C3%B3w"><span class="header-section-number">6.5.2</span> Interakcje efektów</a></li>
+  <li><a href="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci" id="toc-nieliniowość-zależności" class="nav-link" data-scroll-target="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci"><span class="header-section-number">6.5.3</span> Nieliniowość zależności</a></li>
+  <li><a href="#ekstrakcja-cech" id="toc-ekstrakcja-cech" class="nav-link" data-scroll-target="#ekstrakcja-cech"><span class="header-section-number">6.5.4</span> Ekstrakcja cech</a></li>
+  <li><a href="#przepisy-wierszowe" id="toc-przepisy-wierszowe" class="nav-link" data-scroll-target="#przepisy-wierszowe"><span class="header-section-number">6.5.5</span> Przepisy wierszowe</a></li>
+  <li><a href="#przekszta%C5%82cenia-og%C3%B3lne" id="toc-przekształcenia-ogólne" class="nav-link" data-scroll-target="#przekszta%C5%82cenia-og%C3%B3lne"><span class="header-section-number">6.5.6</span> Przekształcenia ogólne</a></li>
+  <li><a href="#pomijanie-krok%C3%B3w" id="toc-pomijanie-kroków" class="nav-link" data-scroll-target="#pomijanie-krok%C3%B3w"><span class="header-section-number">6.5.7</span> Pomijanie kroków</a></li>
+  <li><a href="#role-zmiennych" id="toc-role-zmiennych" class="nav-link" data-scroll-target="#role-zmiennych"><span class="header-section-number">6.5.8</span> Role zmiennych</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
@@ -484,12 +488,12 @@ Longitude      1.611665  0.016726120 -0.001079561
 Latitude      -1.505256 -0.001079561  0.033404800</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-caution callout-captioned">
+<div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Zagrożenie
 </div>
 </div>
@@ -1028,12 +1032,12 @@ Computational engine: lm </code></pre>
 <p>Po pierwsze, podczas wywołania <code>recipe(..., dane)</code>, zestaw danych jest wykorzystywany do określenia typów danych dla każdej kolumny, tak aby można było użyć selektorów takich jak <code>all_numeric()</code> lub <code>all_numeric_predictors()</code>.</p>
 <p>Po drugie, podczas przygotowywania danych za pomocą <code>fit(workflow, data)</code>, dane treningowe są używane do wszystkich operacji estymacji, w tym czynności z przepisu, który może być częścią przepływu, od określenia poziomów czynników do obliczania komponentów PCA i wszystkiego pomiędzy.</p>
 <p>Wreszcie, gdy używamy <code>predict(workflow, new_data)</code>, żadne parametry modelu czy <em>preprocessingu</em>, jak te z przepisu, nie są ponownie szacowane przy użyciu wartości z <code>new_data</code>. Weźmy jako przykład centrowanie i skalowanie przy użyciu <code>step_normalize()</code>. Używając tego kroku, średnie i odchylenia standardowe z odpowiednich kolumn są określane z zestawu treningowego; nowe próbki w czasie predykcji są normalizowane przy użyciu tych wartości z treningu, gdy wywoływana jest funkcja <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code>.</p>
-<div class="callout callout-style-default callout-warning callout-captioned">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Ostrzeżenie
 </div>
 </div>
@@ -1107,12 +1111,12 @@ Ostrzeżenie
 </details>
 </div>
 <p>Można ją było również dodać w klasyczny sposób <code>+var1:var2</code> wpisując do formuły. Jednak w naszym przypadku ten sposób nie byłby poprawny, ponieważ to kazałoby funkcji <code>step_interact()</code>, aby stworzyła indykatory, a następnie utworzyć interakcje. W rzeczywistości, program nie miałby jak stworzyć interakcji, ponieważ powstałyby już nowe zmienne z prefiksem <code>Bldg_Type_</code>.</p>
-<div class="callout callout-style-default callout-important callout-captioned">
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Ważne
 </div>
 </div>
@@ -1181,12 +1185,12 @@ Ważne
 <span class="header-section-number">6.5.5</span> Przepisy wierszowe</h3>
 <p>Do tej pory wspominaliśmy o krokach, które dotyczyły zmiennych, ale istnieją również takie, które dotyczą wierszy. Na przykład, techniki podpróbkowania (ang. <em>subsampling</em>) dla nierównowagi klas zmieniają proporcje klas w danych przekazywanych do modelu; techniki te często nie poprawiają ogólnej wydajności, ale mogą generować lepiej zachowujące się rozkłady przewidywanych prawdopodobieństw klas. O nich jednak będzie więcej w dalszej części tej książki.</p>
 <p>Istnieją inne funkcje krokowe, które są również oparte na wierszach, jak: <code>step_filter()</code>, <code>step_sample()</code>, <code>step_slice()</code> i <code>step_arrange()</code>.</p>
-<div class="callout callout-style-default callout-caution callout-captioned">
+<div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Zagrożenie
 </div>
 </div>
@@ -1197,12 +1201,12 @@ Zagrożenie
 </section><section id="przekształcenia-ogólne" class="level3" data-number="6.5.6"><h3 data-number="6.5.6" class="anchored" data-anchor-id="przekształcenia-ogólne">
 <span class="header-section-number">6.5.6</span> Przekształcenia ogólne</h3>
 <p>Przekształcenia, które mają swoje korzenie w pakiecie <code>dplyr</code> jak <code>step_mutate</code> też mogą być stosowane w przepisach. Najlepiej używać ich do prostych przekształceń, takich jak obliczanie stosunku dwóch zmiennych, (np. <code>Bedroom_AbvGr / Full_Bath)</code>, stosunek sypialni do łazienek dla danych mieszkaniowych <code>ames</code>.</p>
-<div class="callout callout-style-default callout-caution callout-captioned">
+<div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Zagrożenie
 </div>
 </div>
@@ -1219,12 +1223,12 @@ Zagrożenie
 </details>
 </div>
 <p>Ponieważ użycie go powodowałoby problemy przy użyciu całego przepisu na nowych danych do predykcji. Często jest bowiem tak, że zmiennej zależnej w tym zbiorze nie ma.</p>
-<div class="callout callout-style-default callout-caution callout-captioned">
+<div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 Zagrożenie
 </div>
 </div>
@@ -1443,9 +1447,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1648,6 +1666,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Metody walidacji modeli statystycznych, Dariusz Majerek</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
     <div class="nav-footer-right">Książka została napisana w <a href="https://quarto.org/">Quarto</a></div>
   </div>
 </footer>
