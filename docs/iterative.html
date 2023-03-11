@@ -265,6 +265,7 @@ div.csl-indent {
   <li><a href="#funkcja-akwizycji" id="toc-funkcja-akwizycji" class="nav-link" data-scroll-target="#funkcja-akwizycji"><span class="header-section-number">12.1.2</span> Funkcja akwizycji</a></li>
   </ul>
 </li>
+  <li><a href="#symulowane-wy%C5%BCarzanie" id="toc-symulowane-wyżarzanie" class="nav-link" data-scroll-target="#symulowane-wy%C5%BCarzanie"><span class="header-section-number">12.2</span> Symulowane wyżarzanie</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -290,6 +291,7 @@ div.csl-indent {
 <p>Model SVM wykorzystuje iloczyn skalarny i z tego powodu konieczne jest wyśrodkowanie i przeskalowanie predyktorów. Obiekty <code>tidymodels</code>: <code>svm_rec</code>, <code>svm_spec</code> i <code>svm_wflow</code> definiują proces tworzenia modelu:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/finetune">finetune</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
@@ -304,7 +306,7 @@ div.csl-indent {
 <span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">svm_spec</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">svm_rbf</span><span class="op">(</span>cost <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">svm_rbf</span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"kernlab"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
 <span></span>
@@ -333,7 +335,7 @@ Range (transformed scale): [-10, 0]</code></pre>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">svm_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">7</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -344,8 +346,8 @@ Range (transformed scale): [-10, 0]</code></pre>
 </figure>
 </div>
 <p><a href="#fig-iter1">Rysunek&nbsp;<span>12.1</span></a> pokazuje wyniki oceny tej siatki, przy czym jaśniejszy kolor odpowiada wyższej (lepszej) wydajności modelu. W dolnej przekątnej przestrzeni parametrów znajduje się duży obszar, który jest stosunkowo płaski i charakteryzuje się słabą wydajnością. Grzbiet najlepszej wydajności występuje w prawej górnej części przestrzeni. Czarna kropka wskazuje najlepsze ustawienia. Przejście od płaskiego obszaru słabych wyników do grzbietu najlepszej wydajności jest bardzo ostre. Występuje również gwałtowny spadek obszaru pod krzywą ROC tuż po prawej stronie grzbietu.</p>
-<p>Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu. W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów. Funkcja <code>tune_grid()</code> dokonuje próbkowania tej siatki:</p>
-<div class="cell" data-hash="iterative_cache/html/unnamed-chunk-4_0be45f4da026955670e526b3d378055b">
+<p>Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu. W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów. Funkcja <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> dokonuje próbkowania tej siatki:</p>
+<div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1401</span><span class="op">)</span></span>
@@ -355,14 +357,18 @@ Range (transformed scale): [-10, 0]</code></pre>
 <span>    cost <span class="op">=</span> <span class="fu">cost</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1402</span><span class="op">)</span></span>
+<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1402</span><span class="op">)</span></span>
 <span><span class="va">svm_initial</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">tune_grid</span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">cell_folds</span>, grid <span class="op">=</span> <span class="va">start_grid</span>, metrics <span class="op">=</span> <span class="va">roc_res</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">svm_initial</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid</a></span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">cell_folds</span>, grid <span class="op">=</span> <span class="va">start_grid</span>, metrics <span class="op">=</span> <span class="va">roc_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_initial</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 8
     cost rbf_sigma .metric .estimator  mean     n std_err .config             
@@ -385,12 +391,12 @@ Range (transformed scale): [-10, 0]</code></pre>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="ckfdrklqyw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="fyxwfajvzc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ckfdrklqyw .gt_table {
+#fyxwfajvzc .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -415,7 +421,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_heading {
+#fyxwfajvzc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -427,12 +433,12 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_caption {
+#fyxwfajvzc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ckfdrklqyw .gt_title {
+#fyxwfajvzc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -444,7 +450,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-width: 0;
 }
 
-#ckfdrklqyw .gt_subtitle {
+#fyxwfajvzc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -456,13 +462,13 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 0;
 }
 
-#ckfdrklqyw .gt_bottom_border {
+#fyxwfajvzc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_col_headings {
+#fyxwfajvzc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -477,7 +483,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_col_heading {
+#fyxwfajvzc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -497,7 +503,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#ckfdrklqyw .gt_column_spanner_outer {
+#fyxwfajvzc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -509,15 +515,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 4px;
 }
 
-#ckfdrklqyw .gt_column_spanner_outer:first-child {
+#fyxwfajvzc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ckfdrklqyw .gt_column_spanner_outer:last-child {
+#fyxwfajvzc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ckfdrklqyw .gt_column_spanner {
+#fyxwfajvzc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -529,7 +535,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   width: 100%;
 }
 
-#ckfdrklqyw .gt_group_heading {
+#fyxwfajvzc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -555,7 +561,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-align: left;
 }
 
-#ckfdrklqyw .gt_empty_group_heading {
+#fyxwfajvzc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -570,15 +576,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: middle;
 }
 
-#ckfdrklqyw .gt_from_md > :first-child {
+#fyxwfajvzc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ckfdrklqyw .gt_from_md > :last-child {
+#fyxwfajvzc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ckfdrklqyw .gt_row {
+#fyxwfajvzc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -597,7 +603,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#ckfdrklqyw .gt_stub {
+#fyxwfajvzc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -610,7 +616,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ckfdrklqyw .gt_stub_row_group {
+#fyxwfajvzc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -624,11 +630,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: top;
 }
 
-#ckfdrklqyw .gt_row_group_first td {
+#fyxwfajvzc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ckfdrklqyw .gt_summary_row {
+#fyxwfajvzc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -638,16 +644,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ckfdrklqyw .gt_first_summary_row {
+#fyxwfajvzc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_first_summary_row.thick {
+#fyxwfajvzc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ckfdrklqyw .gt_last_summary_row {
+#fyxwfajvzc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -657,7 +663,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_grand_summary_row {
+#fyxwfajvzc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -667,7 +673,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ckfdrklqyw .gt_first_grand_summary_row {
+#fyxwfajvzc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -677,11 +683,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_striped {
+#fyxwfajvzc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ckfdrklqyw .gt_table_body {
+#fyxwfajvzc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -690,7 +696,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_footnotes {
+#fyxwfajvzc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -704,7 +710,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_footnote {
+#fyxwfajvzc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -713,7 +719,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ckfdrklqyw .gt_sourcenotes {
+#fyxwfajvzc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -727,7 +733,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ckfdrklqyw .gt_sourcenote {
+#fyxwfajvzc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -735,64 +741,64 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ckfdrklqyw .gt_left {
+#fyxwfajvzc .gt_left {
   text-align: left;
 }
 
-#ckfdrklqyw .gt_center {
+#fyxwfajvzc .gt_center {
   text-align: center;
 }
 
-#ckfdrklqyw .gt_right {
+#fyxwfajvzc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ckfdrklqyw .gt_font_normal {
+#fyxwfajvzc .gt_font_normal {
   font-weight: normal;
 }
 
-#ckfdrklqyw .gt_font_bold {
+#fyxwfajvzc .gt_font_bold {
   font-weight: bold;
 }
 
-#ckfdrklqyw .gt_font_italic {
+#fyxwfajvzc .gt_font_italic {
   font-style: italic;
 }
 
-#ckfdrklqyw .gt_super {
+#fyxwfajvzc .gt_super {
   font-size: 65%;
 }
 
-#ckfdrklqyw .gt_footnote_marks {
+#fyxwfajvzc .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#ckfdrklqyw .gt_asterisk {
+#fyxwfajvzc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ckfdrklqyw .gt_indent_1 {
+#fyxwfajvzc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ckfdrklqyw .gt_indent_2 {
+#fyxwfajvzc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ckfdrklqyw .gt_indent_3 {
+#fyxwfajvzc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ckfdrklqyw .gt_indent_4 {
+#fyxwfajvzc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ckfdrklqyw .gt_indent_5 {
+#fyxwfajvzc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -871,7 +877,7 @@ Range (transformed scale): [-10, 0]</code></pre>
 </div>
 <p>Rozpatrując tylko średnią <span class="math inline">\(R^2\)</span> lepszym wyborem jest wartość parametru 0,10 (patrz <a href="#tbl-1">Tabela&nbsp;<span>12.1</span></a>). Rekomendacja parametru dostrajania dla 0,25 ma gorsze przewidywanie średnie niż aktualny najlepszy kandydat. Jednakże, ponieważ ma wyższą wariancję, ma większy ogólny obszar prawdopodobieństwa powyżej aktualnego najlepszego. W rezultacie ma większą oczekiwaną poprawę:</p>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tab2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tab2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">Parameter.Value</span>,  <span class="op">~</span><span class="va">Mean</span>,  <span class="op">~</span><span class="va">Std.Dev</span>, <span class="op">~</span><span class="va">Expected.Improvment</span>,</span>
 <span>               <span class="fl">0.1</span>, <span class="fl">0.8679</span>, <span class="fl">0.0004317</span>,              <span class="fl">0.00019</span>,</span>
 <span>              <span class="fl">0.25</span>, <span class="fl">0.8671</span>, <span class="fl">0.0039301</span>,             <span class="fl">0.001216</span></span>
@@ -879,12 +885,12 @@ Range (transformed scale): [-10, 0]</code></pre>
 <span><span class="fu">gt</span><span class="op">(</span><span class="va">tab2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="xxcquxcyhl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="lmthswvhxc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xxcquxcyhl .gt_table {
+#lmthswvhxc .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -909,7 +915,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_heading {
+#lmthswvhxc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -921,12 +927,12 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_caption {
+#lmthswvhxc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xxcquxcyhl .gt_title {
+#lmthswvhxc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -938,7 +944,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-width: 0;
 }
 
-#xxcquxcyhl .gt_subtitle {
+#lmthswvhxc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -950,13 +956,13 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 0;
 }
 
-#xxcquxcyhl .gt_bottom_border {
+#lmthswvhxc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_col_headings {
+#lmthswvhxc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -971,7 +977,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_col_heading {
+#lmthswvhxc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -991,7 +997,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#xxcquxcyhl .gt_column_spanner_outer {
+#lmthswvhxc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1003,15 +1009,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 4px;
 }
 
-#xxcquxcyhl .gt_column_spanner_outer:first-child {
+#lmthswvhxc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xxcquxcyhl .gt_column_spanner_outer:last-child {
+#lmthswvhxc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xxcquxcyhl .gt_column_spanner {
+#lmthswvhxc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1023,7 +1029,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   width: 100%;
 }
 
-#xxcquxcyhl .gt_group_heading {
+#lmthswvhxc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1049,7 +1055,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-align: left;
 }
 
-#xxcquxcyhl .gt_empty_group_heading {
+#lmthswvhxc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1064,15 +1070,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: middle;
 }
 
-#xxcquxcyhl .gt_from_md > :first-child {
+#lmthswvhxc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xxcquxcyhl .gt_from_md > :last-child {
+#lmthswvhxc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xxcquxcyhl .gt_row {
+#lmthswvhxc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1091,7 +1097,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#xxcquxcyhl .gt_stub {
+#lmthswvhxc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1104,7 +1110,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#xxcquxcyhl .gt_stub_row_group {
+#lmthswvhxc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1118,11 +1124,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: top;
 }
 
-#xxcquxcyhl .gt_row_group_first td {
+#lmthswvhxc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xxcquxcyhl .gt_summary_row {
+#lmthswvhxc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1132,16 +1138,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#xxcquxcyhl .gt_first_summary_row {
+#lmthswvhxc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_first_summary_row.thick {
+#lmthswvhxc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xxcquxcyhl .gt_last_summary_row {
+#lmthswvhxc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1151,7 +1157,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_grand_summary_row {
+#lmthswvhxc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1161,7 +1167,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#xxcquxcyhl .gt_first_grand_summary_row {
+#lmthswvhxc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1171,11 +1177,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_striped {
+#lmthswvhxc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xxcquxcyhl .gt_table_body {
+#lmthswvhxc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1184,7 +1190,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_footnotes {
+#lmthswvhxc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1198,7 +1204,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_footnote {
+#lmthswvhxc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1207,7 +1213,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#xxcquxcyhl .gt_sourcenotes {
+#lmthswvhxc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1221,7 +1227,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xxcquxcyhl .gt_sourcenote {
+#lmthswvhxc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1229,64 +1235,64 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#xxcquxcyhl .gt_left {
+#lmthswvhxc .gt_left {
   text-align: left;
 }
 
-#xxcquxcyhl .gt_center {
+#lmthswvhxc .gt_center {
   text-align: center;
 }
 
-#xxcquxcyhl .gt_right {
+#lmthswvhxc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xxcquxcyhl .gt_font_normal {
+#lmthswvhxc .gt_font_normal {
   font-weight: normal;
 }
 
-#xxcquxcyhl .gt_font_bold {
+#lmthswvhxc .gt_font_bold {
   font-weight: bold;
 }
 
-#xxcquxcyhl .gt_font_italic {
+#lmthswvhxc .gt_font_italic {
   font-style: italic;
 }
 
-#xxcquxcyhl .gt_super {
+#lmthswvhxc .gt_super {
   font-size: 65%;
 }
 
-#xxcquxcyhl .gt_footnote_marks {
+#lmthswvhxc .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#xxcquxcyhl .gt_asterisk {
+#lmthswvhxc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xxcquxcyhl .gt_indent_1 {
+#lmthswvhxc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xxcquxcyhl .gt_indent_2 {
+#lmthswvhxc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xxcquxcyhl .gt_indent_3 {
+#lmthswvhxc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xxcquxcyhl .gt_indent_4 {
+#lmthswvhxc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xxcquxcyhl .gt_indent_5 {
+#lmthswvhxc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1325,17 +1331,17 @@ Range (transformed scale): [-10, 0]</code></pre>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;12.5: Szacowany profil wydajności wygenerowany przez model procesu gaussowskiego (górny panel) oraz oczekiwana poprawa (dolny panel). Pionowa linia wskazuje punkt maksymalnej poprawy.</figcaption><p></p>
 </figure>
 </div>
-<p>Aby zaimplementować wyszukiwanie iteracyjne poprzez optymalizację bayesowską, należy użyć funkcji <code>tune_bayes()</code>. Jej składnia jest bardzo podobna do <code>tune_grid()</code>, z kilkoma dodatkowymi argumentami:</p>
+<p>Aby zaimplementować wyszukiwanie iteracyjne poprzez optymalizację bayesowską, należy użyć funkcji <code><a href="https://tune.tidymodels.org/reference/tune_bayes.html">tune_bayes()</a></code>. Jej składnia jest bardzo podobna do <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>, z kilkoma dodatkowymi argumentami:</p>
 <ul>
 <li>
 <code>iter</code> to maksymalna liczba iteracji wyszukiwania.</li>
 <li>
-<code>initial</code> może być liczbą całkowitą, obiektem utworzonym przy pomocy <code>tune_grid()</code>, albo jedną z funkcji wyścigowych. Użycie liczby całkowitej określa rozmiar konstrukcji wypełniającej przestrzeń, która jest próbkowana przed pierwszym modelem GP.</li>
+<code>initial</code> może być liczbą całkowitą, obiektem utworzonym przy pomocy <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>, albo jedną z funkcji wyścigowych. Użycie liczby całkowitej określa rozmiar konstrukcji wypełniającej przestrzeń, która jest próbkowana przed pierwszym modelem GP.</li>
 <li>
-<code>objective</code> jest argumentem, dla którego należy użyć funkcji akwizycji. Pakiet <code>tune</code> zawiera funkcje takie jak <code>exp_improve()</code> lub <code>conf_bound()</code>.</li>
+<code>objective</code> jest argumentem, dla którego należy użyć funkcji akwizycji. Pakiet <code>tune</code> zawiera funkcje takie jak <code><a href="https://tune.tidymodels.org/reference/prob_improve.html">exp_improve()</a></code> lub <code><a href="https://tune.tidymodels.org/reference/prob_improve.html">conf_bound()</a></code>.</li>
 <li>Argument <code>param_info</code>, w tym przypadku określa zakres parametrów, jak również wszelkie transformacje.</li>
 </ul>
-<p>Argument <code>control</code> funkcji <code>tune_bayes()</code> ustawia się za pomocą <code>control_bayes()</code>. Niektóre istotne argumenty to:</p>
+<p>Argument <code>control</code> funkcji <code><a href="https://tune.tidymodels.org/reference/tune_bayes.html">tune_bayes()</a></code> ustawia się za pomocą <code><a href="https://tune.tidymodels.org/reference/control_bayes.html">control_bayes()</a></code>. Niektóre istotne argumenty to:</p>
 <ul>
 <li>
 <code>no_improve</code> to liczba całkowita, która zatrzyma wyszukiwanie, jeśli ulepszone parametry nie zostaną odkryte w ciągu iteracji <code>no_improve</code>.</li>
@@ -1346,13 +1352,12 @@ Range (transformed scale): [-10, 0]</code></pre>
 </ul>
 <p>Użyjmy pierwszych wyników SVM jako początkowego podłoża dla modelu GP. Przypomnijmy, że w tym zastosowaniu chcemy zmaksymalizować obszar pod krzywą ROC.</p>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># cache: true</span></span>
-<span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_bayes</span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_bayes.html">control_bayes</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1403</span><span class="op">)</span></span>
 <span><span class="va">svm_bo</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">tune_bayes</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/tune_bayes.html">tune_bayes</a></span><span class="op">(</span></span>
 <span>    resamples <span class="op">=</span> <span class="va">cell_folds</span>,</span>
 <span>    metrics <span class="op">=</span> <span class="va">roc_res</span>,</span>
 <span>    initial <span class="op">=</span> <span class="va">svm_initial</span>,</span>
@@ -1363,16 +1368,16 @@ Range (transformed scale): [-10, 0]</code></pre>
 </details>
 </div>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="ccavykzgfg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="argozolhlp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ccavykzgfg .gt_table {
+#argozolhlp .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1397,7 +1402,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_heading {
+#argozolhlp .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1409,12 +1414,12 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_caption {
+#argozolhlp .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ccavykzgfg .gt_title {
+#argozolhlp .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1426,7 +1431,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-width: 0;
 }
 
-#ccavykzgfg .gt_subtitle {
+#argozolhlp .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1438,13 +1443,13 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 0;
 }
 
-#ccavykzgfg .gt_bottom_border {
+#argozolhlp .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_col_headings {
+#argozolhlp .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1459,7 +1464,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_col_heading {
+#argozolhlp .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1479,7 +1484,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#ccavykzgfg .gt_column_spanner_outer {
+#argozolhlp .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1491,15 +1496,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 4px;
 }
 
-#ccavykzgfg .gt_column_spanner_outer:first-child {
+#argozolhlp .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ccavykzgfg .gt_column_spanner_outer:last-child {
+#argozolhlp .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ccavykzgfg .gt_column_spanner {
+#argozolhlp .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1511,7 +1516,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   width: 100%;
 }
 
-#ccavykzgfg .gt_group_heading {
+#argozolhlp .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1537,7 +1542,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-align: left;
 }
 
-#ccavykzgfg .gt_empty_group_heading {
+#argozolhlp .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1552,15 +1557,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: middle;
 }
 
-#ccavykzgfg .gt_from_md > :first-child {
+#argozolhlp .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ccavykzgfg .gt_from_md > :last-child {
+#argozolhlp .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ccavykzgfg .gt_row {
+#argozolhlp .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1579,7 +1584,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#ccavykzgfg .gt_stub {
+#argozolhlp .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1592,7 +1597,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ccavykzgfg .gt_stub_row_group {
+#argozolhlp .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1606,11 +1611,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: top;
 }
 
-#ccavykzgfg .gt_row_group_first td {
+#argozolhlp .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ccavykzgfg .gt_summary_row {
+#argozolhlp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1620,16 +1625,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ccavykzgfg .gt_first_summary_row {
+#argozolhlp .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_first_summary_row.thick {
+#argozolhlp .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ccavykzgfg .gt_last_summary_row {
+#argozolhlp .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1639,7 +1644,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_grand_summary_row {
+#argozolhlp .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1649,7 +1654,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ccavykzgfg .gt_first_grand_summary_row {
+#argozolhlp .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1659,11 +1664,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_striped {
+#argozolhlp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ccavykzgfg .gt_table_body {
+#argozolhlp .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1672,7 +1677,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_footnotes {
+#argozolhlp .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1686,7 +1691,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_footnote {
+#argozolhlp .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1695,7 +1700,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ccavykzgfg .gt_sourcenotes {
+#argozolhlp .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1709,7 +1714,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ccavykzgfg .gt_sourcenote {
+#argozolhlp .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1717,68 +1722,70 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#ccavykzgfg .gt_left {
+#argozolhlp .gt_left {
   text-align: left;
 }
 
-#ccavykzgfg .gt_center {
+#argozolhlp .gt_center {
   text-align: center;
 }
 
-#ccavykzgfg .gt_right {
+#argozolhlp .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ccavykzgfg .gt_font_normal {
+#argozolhlp .gt_font_normal {
   font-weight: normal;
 }
 
-#ccavykzgfg .gt_font_bold {
+#argozolhlp .gt_font_bold {
   font-weight: bold;
 }
 
-#ccavykzgfg .gt_font_italic {
+#argozolhlp .gt_font_italic {
   font-style: italic;
 }
 
-#ccavykzgfg .gt_super {
+#argozolhlp .gt_super {
   font-size: 65%;
 }
 
-#ccavykzgfg .gt_footnote_marks {
+#argozolhlp .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#ccavykzgfg .gt_asterisk {
+#argozolhlp .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ccavykzgfg .gt_indent_1 {
+#argozolhlp .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ccavykzgfg .gt_indent_2 {
+#argozolhlp .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ccavykzgfg .gt_indent_3 {
+#argozolhlp .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ccavykzgfg .gt_indent_4 {
+#argozolhlp .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ccavykzgfg .gt_indent_5 {
+#argozolhlp .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
+<div id="tbl-bo1" class="anchored">
 <table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
+<caption>Tabela&nbsp;12.3: Przebieg optymalizacji baysowskiej</caption>
 <thead class="gt_col_headings"><tr class="header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -2113,19 +2120,21 @@ Range (transformed scale): [-10, 0]</code></pre>
 </tbody>
 </table>
 </div>
+
+</div>
 </div>
 </div>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="oidkveixax" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="zsvatcklhn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#oidkveixax .gt_table {
+#zsvatcklhn .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2150,7 +2159,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#oidkveixax .gt_heading {
+#zsvatcklhn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2162,12 +2171,12 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#oidkveixax .gt_caption {
+#zsvatcklhn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#oidkveixax .gt_title {
+#zsvatcklhn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2179,7 +2188,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-width: 0;
 }
 
-#oidkveixax .gt_subtitle {
+#zsvatcklhn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2191,13 +2200,13 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 0;
 }
 
-#oidkveixax .gt_bottom_border {
+#zsvatcklhn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#oidkveixax .gt_col_headings {
+#zsvatcklhn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2212,7 +2221,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#oidkveixax .gt_col_heading {
+#zsvatcklhn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2232,7 +2241,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#oidkveixax .gt_column_spanner_outer {
+#zsvatcklhn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2244,15 +2253,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 4px;
 }
 
-#oidkveixax .gt_column_spanner_outer:first-child {
+#zsvatcklhn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#oidkveixax .gt_column_spanner_outer:last-child {
+#zsvatcklhn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#oidkveixax .gt_column_spanner {
+#zsvatcklhn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2264,7 +2273,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   width: 100%;
 }
 
-#oidkveixax .gt_group_heading {
+#zsvatcklhn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2290,7 +2299,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-align: left;
 }
 
-#oidkveixax .gt_empty_group_heading {
+#zsvatcklhn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2305,15 +2314,15 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: middle;
 }
 
-#oidkveixax .gt_from_md > :first-child {
+#zsvatcklhn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#oidkveixax .gt_from_md > :last-child {
+#zsvatcklhn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#oidkveixax .gt_row {
+#zsvatcklhn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2332,7 +2341,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
 }
 
-#oidkveixax .gt_stub {
+#zsvatcklhn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2345,7 +2354,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#oidkveixax .gt_stub_row_group {
+#zsvatcklhn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2359,11 +2368,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   vertical-align: top;
 }
 
-#oidkveixax .gt_row_group_first td {
+#zsvatcklhn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#oidkveixax .gt_summary_row {
+#zsvatcklhn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2373,16 +2382,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#oidkveixax .gt_first_summary_row {
+#zsvatcklhn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#oidkveixax .gt_first_summary_row.thick {
+#zsvatcklhn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#oidkveixax .gt_last_summary_row {
+#zsvatcklhn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2392,7 +2401,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#oidkveixax .gt_grand_summary_row {
+#zsvatcklhn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2402,7 +2411,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#oidkveixax .gt_first_grand_summary_row {
+#zsvatcklhn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2412,11 +2421,11 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#oidkveixax .gt_striped {
+#zsvatcklhn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#oidkveixax .gt_table_body {
+#zsvatcklhn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2425,7 +2434,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#oidkveixax .gt_footnotes {
+#zsvatcklhn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2439,7 +2448,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#oidkveixax .gt_footnote {
+#zsvatcklhn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2448,7 +2457,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#oidkveixax .gt_sourcenotes {
+#zsvatcklhn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2462,7 +2471,7 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#oidkveixax .gt_sourcenote {
+#zsvatcklhn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2470,68 +2479,70 @@ Range (transformed scale): [-10, 0]</code></pre>
   padding-right: 5px;
 }
 
-#oidkveixax .gt_left {
+#zsvatcklhn .gt_left {
   text-align: left;
 }
 
-#oidkveixax .gt_center {
+#zsvatcklhn .gt_center {
   text-align: center;
 }
 
-#oidkveixax .gt_right {
+#zsvatcklhn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#oidkveixax .gt_font_normal {
+#zsvatcklhn .gt_font_normal {
   font-weight: normal;
 }
 
-#oidkveixax .gt_font_bold {
+#zsvatcklhn .gt_font_bold {
   font-weight: bold;
 }
 
-#oidkveixax .gt_font_italic {
+#zsvatcklhn .gt_font_italic {
   font-style: italic;
 }
 
-#oidkveixax .gt_super {
+#zsvatcklhn .gt_super {
   font-size: 65%;
 }
 
-#oidkveixax .gt_footnote_marks {
+#zsvatcklhn .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#oidkveixax .gt_asterisk {
+#zsvatcklhn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#oidkveixax .gt_indent_1 {
+#zsvatcklhn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#oidkveixax .gt_indent_2 {
+#zsvatcklhn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#oidkveixax .gt_indent_3 {
+#zsvatcklhn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#oidkveixax .gt_indent_4 {
+#zsvatcklhn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#oidkveixax .gt_indent_5 {
+#zsvatcklhn .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
+<div id="tbl-bo2" class="anchored">
 <table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
+<caption>Tabela&nbsp;12.4: Zestaw optymalnych parametrów na podstawie OB</caption>
 <thead class="gt_col_headings"><tr class="header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -2602,28 +2613,1672 @@ Range (transformed scale): [-10, 0]</code></pre>
 </tbody>
 </table>
 </div>
+
+</div>
 </div>
 </div>
 <div class="cell">
-<details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">autoplot</span><span class="op">(</span><span class="va">svm_bo</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_bo</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<p><img src="iterative_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div id="fig-bo1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="iterative_files/figure-html/fig-bo1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.6: Jakość dopasowania modelu w poszczególnych iteracjach OB</figcaption><p></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Poniższa animacja wizualizuje wyniki wyszukiwania. Czarne “x” pokazują wartości początkowe zawarte w <code>svm_initial</code>. Niebieski panel u góry po lewej stronie pokazuje przewidywaną średnią wartość obszaru pod krzywą ROC. Czerwony panel na górze po prawej stronie pokazuje przewidywaną zmienność wartości ROC, podczas gdy dolny wykres wizualizuje oczekiwaną poprawę. W każdym panelu ciemniejsze kolory wskazują mniej atrakcyjne wartości (np. małe wartości średnie, duże zróżnicowanie i małe ulepszenia).</p>
 <div id="fig-iter6" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><video src="https://www.tmwr.org/bo_search.mp4" class="img-fluid" controls=""><a href="https://www.tmwr.org/bo_search.mp4">Video</a></video></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.6: Przykład działania optymalizacji bayesowskiej</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.7: Przykład działania optymalizacji bayesowskiej</figcaption><p></p>
 </figure>
 </div>
 <p>Powierzchnia przewidywanej średniej jest bardzo niedokładna w pierwszych kilku iteracjach wyszukiwania. Pomimo tego, pomaga ona poprowadzić proces w rejon dobrej wydajności. W ciągu pierwszych dziesięciu iteracji, wyszukiwanie jest dokonywane w pobliżu optymalnego miejsca.</p>
 <p>Podczas gdy najlepsza kombinacja dostrajania parametrów znajduje się na granicy przestrzeni parametrów, optymalizacja bayesowska często wybierze nowe punkty poza granicami przestrzeni parametrów.</p>
 <p>Powyższy przykład startował z punktów startowych wybranych nieco arbitralnie ale nieco lepsze wyniki można osiągnąć stosując losowe wypełnienie przestrzeni parametrów.</p>
+</section></section><section id="symulowane-wyżarzanie" class="level2" data-number="12.2"><h2 data-number="12.2" class="anchored" data-anchor-id="symulowane-wyżarzanie">
+<span class="header-section-number">12.2</span> Symulowane wyżarzanie</h2>
+<p>Symulowane wyżarzanie (ang. <em>simulated annealing</em>) <span class="citation" data-cites="kirkpatrickOptimizationSimulatedAnnealing1983 vanlaarhoven1987">(<a href="references.html#ref-kirkpatrickOptimizationSimulatedAnnealing1983" role="doc-biblioref">Kirkpatrick, Gelatt, i Vecchi 1983</a>; <a href="references.html#ref-vanlaarhoven1987" role="doc-biblioref">Laarhoven i Aarts 1987</a>)</span>; jest nieliniową procedurą wyszukiwania zainspirowaną procesem stygnięcia metalu. Jest to metoda globalnego wyszukiwania, która może efektywnie poruszać się po wielu różnych obszarach poszukiwań, w tym po funkcjach nieciągłych. W przeciwieństwie do większości procedur optymalizacji opartych na gradiencie, symulowane wyżarzanie może ponownie ocenić poprzednie rozwiązania.</p>
+<p>Proces użycia symulowanego wyżarzania rozpoczyna się od wartości początkowej i rozpoczyna kontrolowany losowy spacer przez przestrzeń parametrów. Każda nowa wartość parametru-kandydata jest niewielką perturbacją poprzedniej wartości, która utrzymuje nowy punkt w lokalnym sąsiedztwie.</p>
+<p>Punkt kandydujący jest oceniana przy zastosowaniu resamplingu, aby uzyskać odpowiadającą mu wartość wydajności. Jeśli osiąga ona lepsze wyniki niż poprzednie parametry, jest akceptowana jako nowa najlepsza i proces jest kontynuowany. Jeśli wyniki są gorsze niż poprzednia wartość, procedura wyszukiwania może nadal używać tego parametru do określenia dalszych kroków. Zależy to od dwóch czynników. Po pierwsze, prawdopodobieństwo zatrzymania złego kandydata maleje wraz z pogorszeniem się wyników. Innymi słowy, tylko nieco gorszy wynik od obecnie najlepszego ma większą szansę na akceptację niż ten z dużym spadkiem wydajności. Drugim czynnikiem jest liczba iteracji wyszukiwania. Symulowane wyżarzanie próbuje zaakceptować mniej suboptymalnych wartości w miarę postępu wyszukiwania. Z tych dwóch czynników prawdopodobieństwo akceptacji złego wyniku można sformalizować jako:</p>
+<p><span id="eq-simulated-annealing"><span class="math display">\[
+\operatorname{Pr}[\text{accept suboptimal parameters at iteration } i] = \exp(c\times D_i \times i)
+\tag{12.2}\]</span></span></p>
+<p>gdzie <span class="math inline">\(i\)</span> jest numerem iteracji, <span class="math inline">\(c\)</span> jest stałą określoną przez użytkownika, <span class="math inline">\(D_i\)</span> jest procentową różnicą pomiędzy starą i nową wartością (gdzie wartości ujemne oznaczają gorsze wyniki). Dla złego wyniku określamy prawdopodobieństwo akceptacji i porównujemy je z liczbą wylosowaną z rozkładu jednostajnego. Jeśli liczba ta jest większa od wartości prawdopodobieństwa, wyszukiwanie odrzuca bieżące parametry i następna iteracja tworzy swoją wartość kandydata w sąsiedztwie poprzedniej wartości. W przeciwnym razie następna iteracja tworzy kolejny zestaw parametrów na podstawie bieżących (suboptymalnych) wartości.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prawdopodobieństwa akceptacji symulowanego wyżarzania pozwalają na postępowanie w złym kierunku, przynajmniej na krótką metę, z potencjałem znalezienia znacznie lepszego regionu przestrzeni parametrów w dłuższej perspektywie.</p>
+</div>
+</div>
+<p>Mapa ciepła na <a href="#fig-sa1">Rysunek&nbsp;<span>12.8</span></a> pokazuje, jak prawdopodobieństwo akceptacji może się zmieniać w zależności od iteracji, wydajności i współczynnika określonego przez użytkownika.</p>
+<div id="fig-sa1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-03-10 o 19.23.10.png" class="img-fluid figure-img" width="600"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.8: Mapa ciepła prawdopodobieństwa akceptacji symulowanego wyżarzania dla różnych wartości współczynnika</figcaption><p></p>
+</figure>
+</div>
+<p>Użytkownik może dostosować współczynniki <span class="math inline">\(c\)</span>, aby znaleźć profil prawdopodobieństwa, który odpowiada jego potrzebom. W <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">finetune::control_sim_anneal()</a></code>, domyślnym dla tego argumentu <code>cooling_coef</code> jest 0.02. Zmniejszenie tego współczynnika zachęci wyszukiwanie do bycia bardziej wyrozumiałym dla słabych wyników.</p>
+<p>Proces ten trwa przez określoną ilość iteracji, ale może zostać zatrzymany, jeśli w ciągu określonej liczby iteracji nie pojawią się globalnie najlepsze wyniki. Bardzo pomocne może być ustawienie progu restartu. Jeśli wystąpi ciąg niepowodzeń, funkcja ta powraca do ostatnich globalnie najlepszych ustawień parametrów i zaczyna od nowa.</p>
+<p>Najważniejszym szczegółem jest określenie sposobu perturbacji parametrów dostrajania z iteracji na iterację. W literaturze można znaleźć wiele metod na to. My stosujemy metodę podaną przez <span class="citation" data-cites="bohachevsky1986">Bohachevsky, Johnson, i Stein (<a href="references.html#ref-bohachevsky1986" role="doc-biblioref">1986</a>)</span> zwaną uogólnionym symulowanym wyżarzaniem. Dla ciągłych parametrów dostrajania definiujemy mały promień, aby określić lokalne “sąsiedztwo”. Na przykład załóżmy, że są dwa parametry dostrajania i każdy z nich jest ograniczony przez zero i jeden. Proces symulowanego wyżarzania generuje losowe wartości na otaczającym promieniu i losowo wybiera jedną z nich jako aktualną wartość kandydacką.</p>
+<p>Wielkość promienia kontroluje, jak szybko wyszukiwanie bada przestrzeń parametrów. Im większy jest promień tym szybciej przestrzeń parametrów będzie przeszukiwana przez algorytm ale jednocześnie mniej dokładnie.</p>
+<p>Dla zilustrowania użyjemy dwóch głównych parametrów dostrajania <code>glmnet</code>:</p>
+<ul>
+<li>Wielkość kary (<code>penalty</code>). Domyślny zakres tego parametru to od <span class="math inline">\(10^{-10}\)</span> do <span class="math inline">\(10^0\)</span>. Najczęściej jest podawany w skali logarytmicznej o podstawie 10.</li>
+<li>Proporcja kary lasso (<code>mixture</code>) - wartość pomiędzy 0 i 1 określająca balans pomiędzy karą L1 i L2.</li>
+</ul>
+<p>Proces rozpoczyna się od wartości początkowych <code>penalty</code> = 0,025 i <code>mixture</code> = 0,050. Używając promienia, który losowo waha się między 0,050 a 0,015, dane są odpowiednio skalowane, losowe wartości są generowane na promieniach wokół punktu początkowego, a następnie jedna jest losowo wybierana jako kandydat. Dla ilustracji przyjmiemy, że wszystkie wartości kandydujące faktycznie poprawiają wydajność modelu. Korzystając z nowej wartości, generowany jest zestaw nowych losowych sąsiadów, wybierany jest jeden, i tak dalej. <a href="#fig-sa2">Rysunek&nbsp;<span>12.9</span></a> przedstawia sześć iteracji sukcesywnie podążających do lewego górnego rogu.</p>
+<div id="fig-sa2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2023-03-10 o 19.46.04.png" class="img-fluid figure-img" width="600"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.9: Kilka iteracji procesu symulowanego wyżarzania</figcaption><p></p>
+</figure>
+</div>
+<p>Zauważmy, że podczas niektórych iteracji zestawy kandydatów wzdłuż promienia wykluczają punkty poza granicami parametrów. Ponadto, nasza implementacja przesuwa wybór kolejnych konfiguracji dostrajania parametrów od nowych wartości, które są bardzo podobne do poprzednich konfiguracji.</p>
+<p>Dla parametrów kategorycznych i całkowitych, każdy z nich jest generowany z określonym wcześniej prawdopodobieństwem. Argument <code>flip</code> w <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal()</a></code> może być użyty do określenia tego prawdopodobieństwa. Dla parametrów całkowitoliczbowych, używana jest najbliższa wartość całkowita.</p>
+<p>Przeszukiwanie metodą symulowanego wyżarzania może nie być optymalna w przypadku, gdy wiele parametrów jest nienumerycznych lub całkowitoliczbowych o niewielu unikalnych wartościach. W tych przypadkach jest prawdopodobne, że ten sam zestaw kandydatów może być testowany więcej niż raz.</p>
+<p>Aby zaimplementować wyszukiwanie iteracyjne poprzez symulowane wyżarzanie, użyj funkcji <code><a href="https://finetune.tidymodels.org/reference/tune_sim_anneal.html">tune_sim_anneal()</a></code>. Składnia tej funkcji jest niemal identyczna jak <code><a href="https://tune.tidymodels.org/reference/tune_bayes.html">tune_bayes()</a></code>. Nie ma żadnych opcji dotyczących funkcji akwizycji czy próbkowania niepewności. Funkcja <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal()</a></code> posiada pewne szczegóły, które definiują lokalne sąsiedztwo i harmonogram chłodzenia:</p>
+<ul>
+<li>
+<code>no_improve</code> jest liczbą całkowitą, która zatrzyma wyszukiwanie, jeśli w ciągu iteracji określonym przez <code>no_improve</code> nie zostaną odkryte globalnie najlepsze wyniki. Przyjęte suboptymalne lub odrzucone parametry liczą się jako “brak poprawy”.</li>
+<li>
+<code>restart</code> to liczba iteracji, która musi minąć bez poprawy jakości modelu, po której następuje przejście do najlepszego poprzednio ustalonego zestawu parametrów.</li>
+<li>
+<code>radius</code> to wektor liczbowy w przedziale (0, 1), który określa minimalny i maksymalny promień lokalnego sąsiedztwa wokół punktu początkowego.</li>
+<li>
+<code>flip</code> to wartość prawdopodobieństwa określająca szanse zmiany wartości parametrów kategorycznych lub całkowitych.</li>
+<li>
+<code>cooling_coef</code> jest współczynnikiem <span class="math inline">\(c\)</span> w <span class="math inline">\(\exp(c\times D_i \times i)\)</span>, który moduluje jak szybko prawdopodobieństwo akceptacji maleje w trakcie iteracji. Większe wartości <code>cooling_coef</code> zmniejszają prawdopodobieństwo akceptacji suboptymalnego ustawienia parametrów.</li>
+</ul>
+<p>Dla danych dotyczących segmentacji komórek składnia jest bardzo spójna z poprzednio stosowanymi funkcjami:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl_sa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span>, no_improve <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1404</span><span class="op">)</span></span>
+<span><span class="va">svm_sa</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://finetune.tidymodels.org/reference/tune_sim_anneal.html">tune_sim_anneal</a></span><span class="op">(</span></span>
+<span>    resamples <span class="op">=</span> <span class="va">cell_folds</span>,</span>
+<span>    metrics <span class="op">=</span> <span class="va">roc_res</span>,</span>
+<span>    initial <span class="op">=</span> <span class="va">svm_initial</span>,</span>
+<span>    param_info <span class="op">=</span> <span class="va">svm_param</span>,</span>
+<span>    iter <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>    control <span class="op">=</span> <span class="va">ctrl_sa</span></span>
+<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Dane wyjściowe dla poszczególnych iteracji:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+
+<div id="zfsmrgckxu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#zfsmrgckxu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zfsmrgckxu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zfsmrgckxu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zfsmrgckxu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zfsmrgckxu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zfsmrgckxu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zfsmrgckxu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zfsmrgckxu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zfsmrgckxu .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zfsmrgckxu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#zfsmrgckxu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zfsmrgckxu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zfsmrgckxu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zfsmrgckxu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zfsmrgckxu .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zfsmrgckxu .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zfsmrgckxu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zfsmrgckxu .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zfsmrgckxu .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zfsmrgckxu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#zfsmrgckxu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zfsmrgckxu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zfsmrgckxu .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zfsmrgckxu .gt_left {
+  text-align: left;
+}
+
+#zfsmrgckxu .gt_center {
+  text-align: center;
+}
+
+#zfsmrgckxu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zfsmrgckxu .gt_font_normal {
+  font-weight: normal;
+}
+
+#zfsmrgckxu .gt_font_bold {
+  font-weight: bold;
+}
+
+#zfsmrgckxu .gt_font_italic {
+  font-style: italic;
+}
+
+#zfsmrgckxu .gt_super {
+  font-size: 65%;
+}
+
+#zfsmrgckxu .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#zfsmrgckxu .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zfsmrgckxu .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zfsmrgckxu .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zfsmrgckxu .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zfsmrgckxu .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zfsmrgckxu .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<div id="tbl-sa1" class="anchored">
+<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
+<caption>Tabela&nbsp;12.5: Podsumowanie symulowanego wyżarzania</caption>
+<thead class="gt_col_headings"><tr class="header">
+<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
+<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
+<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
+<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
+<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
+<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
+<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
+<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
+<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.0156250</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8638724</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008637894</td>
+<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model1</td>
+<td class="gt_row gt_right" headers=".iter">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">2.0000000</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8625326</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008672545</td>
+<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model2</td>
+<td class="gt_row gt_right" headers=".iter">0</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.0156250</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8627495</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008624554</td>
+<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model3</td>
+<td class="gt_row gt_right" headers=".iter">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">2.0000000</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8659439</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008545691</td>
+<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model4</td>
+<td class="gt_row gt_right" headers=".iter">0</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">2.7792215</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.231877e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8635104</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008642153</td>
+<td class="gt_row gt_left" headers=".config">Iter1</td>
+<td class="gt_row gt_right" headers=".iter">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">8.9751798</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.317101e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8733437</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008401879</td>
+<td class="gt_row gt_left" headers=".config">Iter2</td>
+<td class="gt_row gt_right" headers=".iter">2</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">8.0489544</td>
+<td class="gt_row gt_right" headers="rbf_sigma">3.113457e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8672404</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008380301</td>
+<td class="gt_row gt_left" headers=".config">Iter3</td>
+<td class="gt_row gt_right" headers=".iter">3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">7.4631879</td>
+<td class="gt_row gt_right" headers="rbf_sigma">6.401369e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8704169</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008147365</td>
+<td class="gt_row gt_left" headers=".config">Iter4</td>
+<td class="gt_row gt_right" headers=".iter">4</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">25.4276256</td>
+<td class="gt_row gt_right" headers="rbf_sigma">6.964316e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8744436</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008459084</td>
+<td class="gt_row gt_left" headers=".config">Iter5</td>
+<td class="gt_row gt_right" headers=".iter">5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">26.0442746</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.620597e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8696570</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008110480</td>
+<td class="gt_row gt_left" headers=".config">Iter6</td>
+<td class="gt_row gt_right" headers=".iter">6</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">27.8247939</td>
+<td class="gt_row gt_right" headers="rbf_sigma">6.830484e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8658910</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008447841</td>
+<td class="gt_row gt_left" headers=".config">Iter7</td>
+<td class="gt_row gt_right" headers=".iter">7</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">11.5246937</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.459848e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8623315</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008657469</td>
+<td class="gt_row gt_left" headers=".config">Iter8</td>
+<td class="gt_row gt_right" headers=".iter">8</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">11.5911446</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.938754e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8622997</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008647646</td>
+<td class="gt_row gt_left" headers=".config">Iter9</td>
+<td class="gt_row gt_right" headers=".iter">9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">16.0739132</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.533161e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8623219</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008658226</td>
+<td class="gt_row gt_left" headers=".config">Iter10</td>
+<td class="gt_row gt_right" headers=".iter">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">22.9676231</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.507608e-06</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8623751</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008670690</td>
+<td class="gt_row gt_left" headers=".config">Iter11</td>
+<td class="gt_row gt_right" headers=".iter">11</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">14.6174389</td>
+<td class="gt_row gt_right" headers="rbf_sigma">3.625603e-07</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8624605</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008645675</td>
+<td class="gt_row gt_left" headers=".config">Iter12</td>
+<td class="gt_row gt_right" headers=".iter">12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">30.2128582</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.354001e-07</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8625366</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008612533</td>
+<td class="gt_row gt_left" headers=".config">Iter13</td>
+<td class="gt_row gt_right" headers=".iter">13</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">14.1812532</td>
+<td class="gt_row gt_right" headers="rbf_sigma">7.415027e-05</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8726092</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008351119</td>
+<td class="gt_row gt_left" headers=".config">Iter14</td>
+<td class="gt_row gt_right" headers=".iter">14</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">5.1974958</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.892985e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8727956</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008301061</td>
+<td class="gt_row gt_left" headers=".config">Iter15</td>
+<td class="gt_row gt_right" headers=".iter">15</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">6.2799813</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.101844e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8897887</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008859945</td>
+<td class="gt_row gt_left" headers=".config">Iter16</td>
+<td class="gt_row gt_right" headers=".iter">16</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">1.7551679</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.895039e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8918849</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008922869</td>
+<td class="gt_row gt_left" headers=".config">Iter17</td>
+<td class="gt_row gt_right" headers=".iter">17</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">2.7450163</td>
+<td class="gt_row gt_right" headers="rbf_sigma">7.152477e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8958891</td>
+<td class="gt_row gt_right" headers="n">9</td>
+<td class="gt_row gt_right" headers="std_err">0.009100454</td>
+<td class="gt_row gt_left" headers=".config">Iter18</td>
+<td class="gt_row gt_right" headers=".iter">18</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.6580640</td>
+<td class="gt_row gt_right" headers="rbf_sigma">7.237199e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8944414</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008826226</td>
+<td class="gt_row gt_left" headers=".config">Iter19</td>
+<td class="gt_row gt_right" headers=".iter">19</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">0.2894265</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.800490e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8781751</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008519248</td>
+<td class="gt_row gt_left" headers=".config">Iter20</td>
+<td class="gt_row gt_right" headers=".iter">20</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.8648804</td>
+<td class="gt_row gt_right" headers="rbf_sigma">9.061603e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8744488</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008274188</td>
+<td class="gt_row gt_left" headers=".config">Iter21</td>
+<td class="gt_row gt_right" headers=".iter">21</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">2.6900002</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.370896e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8748006</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008467929</td>
+<td class="gt_row gt_left" headers=".config">Iter22</td>
+<td class="gt_row gt_right" headers=".iter">22</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">1.9738868</td>
+<td class="gt_row gt_right" headers="rbf_sigma">8.518383e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8787410</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008594452</td>
+<td class="gt_row gt_left" headers=".config">Iter23</td>
+<td class="gt_row gt_right" headers=".iter">23</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">2.8390760</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.343734e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8694466</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008255440</td>
+<td class="gt_row gt_left" headers=".config">Iter24</td>
+<td class="gt_row gt_right" headers=".iter">24</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.6443050</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.818297e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8660129</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008642925</td>
+<td class="gt_row gt_left" headers=".config">Iter25</td>
+<td class="gt_row gt_right" headers=".iter">25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">0.4332128</td>
+<td class="gt_row gt_right" headers="rbf_sigma">8.494378e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8702872</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008407344</td>
+<td class="gt_row gt_left" headers=".config">Iter26</td>
+<td class="gt_row gt_right" headers=".iter">26</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">1.5062749</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.117203e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8868902</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008384564</td>
+<td class="gt_row gt_left" headers=".config">Iter27</td>
+<td class="gt_row gt_right" headers=".iter">27</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">1.4313131</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.549218e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8963429</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008367098</td>
+<td class="gt_row gt_left" headers=".config">Iter28</td>
+<td class="gt_row gt_right" headers=".iter">28</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">2.7699626</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.362418e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8929540</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008489741</td>
+<td class="gt_row gt_left" headers=".config">Iter29</td>
+<td class="gt_row gt_right" headers=".iter">29</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">4.9266582</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.583077e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8698810</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009097231</td>
+<td class="gt_row gt_left" headers=".config">Iter30</td>
+<td class="gt_row gt_right" headers=".iter">30</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">7.7758900</td>
+<td class="gt_row gt_right" headers="rbf_sigma">9.490760e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8874485</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008767151</td>
+<td class="gt_row gt_left" headers=".config">Iter31</td>
+<td class="gt_row gt_right" headers=".iter">31</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">4.8976312</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.580979e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8825035</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009000858</td>
+<td class="gt_row gt_left" headers=".config">Iter32</td>
+<td class="gt_row gt_right" headers=".iter">32</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">12.4918485</td>
+<td class="gt_row gt_right" headers="rbf_sigma">8.493479e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8829449</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008897035</td>
+<td class="gt_row gt_left" headers=".config">Iter33</td>
+<td class="gt_row gt_right" headers=".iter">33</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">9.4138354</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.056779e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8971685</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008342496</td>
+<td class="gt_row gt_left" headers=".config">Iter34</td>
+<td class="gt_row gt_right" headers=".iter">34</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">16.7499203</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.398614e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8985179</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.007916078</td>
+<td class="gt_row gt_left" headers=".config">Iter35</td>
+<td class="gt_row gt_right" headers=".iter">35</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">18.8139030</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.403197e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8839150</td>
+<td class="gt_row gt_right" headers="n">9</td>
+<td class="gt_row gt_right" headers="std_err">0.009020320</td>
+<td class="gt_row gt_left" headers=".config">Iter36</td>
+<td class="gt_row gt_right" headers=".iter">36</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">21.9409340</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.216970e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8973481</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008280488</td>
+<td class="gt_row gt_left" headers=".config">Iter37</td>
+<td class="gt_row gt_right" headers=".iter">37</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">8.7296351</td>
+<td class="gt_row gt_right" headers="rbf_sigma">5.154540e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8961246</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008263055</td>
+<td class="gt_row gt_left" headers=".config">Iter38</td>
+<td class="gt_row gt_right" headers=".iter">38</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">13.5493211</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.655684e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8593977</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009612964</td>
+<td class="gt_row gt_left" headers=".config">Iter39</td>
+<td class="gt_row gt_right" headers=".iter">39</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">3.4729934</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.312798e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8847509</td>
+<td class="gt_row gt_right" headers="n">9</td>
+<td class="gt_row gt_right" headers="std_err">0.009126495</td>
+<td class="gt_row gt_left" headers=".config">Iter40</td>
+<td class="gt_row gt_right" headers=".iter">40</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">3.1103793</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.869128e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8969694</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008168916</td>
+<td class="gt_row gt_left" headers=".config">Iter41</td>
+<td class="gt_row gt_right" headers=".iter">41</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">1.2292254</td>
+<td class="gt_row gt_right" headers="rbf_sigma">6.540634e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8965152</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008550536</td>
+<td class="gt_row gt_left" headers=".config">Iter42</td>
+<td class="gt_row gt_right" headers=".iter">42</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">0.5769315</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.846348e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8842725</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008540335</td>
+<td class="gt_row gt_left" headers=".config">Iter43</td>
+<td class="gt_row gt_right" headers=".iter">43</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">22.9584171</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.241411e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8618903</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009740857</td>
+<td class="gt_row gt_left" headers=".config">Iter44</td>
+<td class="gt_row gt_right" headers=".iter">44</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">10.6297370</td>
+<td class="gt_row gt_right" headers="rbf_sigma">4.059190e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8975137</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008203966</td>
+<td class="gt_row gt_left" headers=".config">Iter45</td>
+<td class="gt_row gt_right" headers=".iter">45</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">10.6164560</td>
+<td class="gt_row gt_right" headers="rbf_sigma">2.519507e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8617737</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009517440</td>
+<td class="gt_row gt_left" headers=".config">Iter46</td>
+<td class="gt_row gt_right" headers=".iter">46</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">24.5183146</td>
+<td class="gt_row gt_right" headers="rbf_sigma">7.016539e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8775665</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008934404</td>
+<td class="gt_row gt_left" headers=".config">Iter47</td>
+<td class="gt_row gt_right" headers=".iter">47</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">10.2189037</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.330918e-02</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8733744</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.009258351</td>
+<td class="gt_row gt_left" headers=".config">Iter48</td>
+<td class="gt_row gt_right" headers=".iter">48</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">7.1021781</td>
+<td class="gt_row gt_right" headers="rbf_sigma">1.966405e-03</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8966379</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008539778</td>
+<td class="gt_row gt_left" headers=".config">Iter49</td>
+<td class="gt_row gt_right" headers=".iter">49</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">9.2002334</td>
+<td class="gt_row gt_right" headers="rbf_sigma">5.308068e-04</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8841932</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008839438</td>
+<td class="gt_row gt_left" headers=".config">Iter50</td>
+<td class="gt_row gt_right" headers=".iter">50</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+
+<div id="yfywototxh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#yfywototxh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yfywototxh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yfywototxh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yfywototxh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yfywototxh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yfywototxh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yfywototxh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yfywototxh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yfywototxh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yfywototxh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yfywototxh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yfywototxh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yfywototxh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yfywototxh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yfywototxh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#yfywototxh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#yfywototxh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yfywototxh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yfywototxh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yfywototxh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yfywototxh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yfywototxh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yfywototxh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yfywototxh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yfywototxh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yfywototxh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yfywototxh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#yfywototxh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yfywototxh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yfywototxh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yfywototxh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yfywototxh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yfywototxh .gt_left {
+  text-align: left;
+}
+
+#yfywototxh .gt_center {
+  text-align: center;
+}
+
+#yfywototxh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yfywototxh .gt_font_normal {
+  font-weight: normal;
+}
+
+#yfywototxh .gt_font_bold {
+  font-weight: bold;
+}
+
+#yfywototxh .gt_font_italic {
+  font-style: italic;
+}
+
+#yfywototxh .gt_super {
+  font-size: 65%;
+}
+
+#yfywototxh .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#yfywototxh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yfywototxh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yfywototxh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yfywototxh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yfywototxh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yfywototxh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<div id="tbl-sa2" class="anchored">
+<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
+<caption>Tabela&nbsp;12.6: Najlepsze kombinacje parametrów na podstawie SA</caption>
+<thead class="gt_col_headings"><tr class="header">
+<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
+<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
+<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
+<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
+<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
+<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
+<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
+<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
+<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">16.749920</td>
+<td class="gt_row gt_right" headers="rbf_sigma">0.002398614</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8985179</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.007916078</td>
+<td class="gt_row gt_left" headers=".config">Iter35</td>
+<td class="gt_row gt_right" headers=".iter">35</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">10.629737</td>
+<td class="gt_row gt_right" headers="rbf_sigma">0.004059190</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8975137</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008203966</td>
+<td class="gt_row gt_left" headers=".config">Iter45</td>
+<td class="gt_row gt_right" headers=".iter">45</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">21.940934</td>
+<td class="gt_row gt_right" headers="rbf_sigma">0.001216970</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8973481</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008280488</td>
+<td class="gt_row gt_left" headers=".config">Iter37</td>
+<td class="gt_row gt_right" headers=".iter">37</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="cost">9.413835</td>
+<td class="gt_row gt_right" headers="rbf_sigma">0.002056779</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8971685</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008342496</td>
+<td class="gt_row gt_left" headers=".config">Iter34</td>
+<td class="gt_row gt_right" headers=".iter">34</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="cost">3.110379</td>
+<td class="gt_row gt_right" headers="rbf_sigma">0.004869128</td>
+<td class="gt_row gt_left" headers=".metric">roc_auc</td>
+<td class="gt_row gt_left" headers=".estimator">binary</td>
+<td class="gt_row gt_right" headers="mean">0.8969694</td>
+<td class="gt_row gt_right" headers="n">10</td>
+<td class="gt_row gt_right" headers="std_err">0.008168916</td>
+<td class="gt_row gt_left" headers=".config">Iter41</td>
+<td class="gt_row gt_right" headers=".iter">41</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+</div>
+<p>Podobnie jak w przypadku innych funkcji <code>tune_*()</code>, odpowiadająca im funkcja <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> tworzy wizualną ocenę wyników. Użycie <code>autoplot(svm_sa, type = "performance")</code> pokazuje wydajność w czasie iteracji (<a href="#fig-sa3">Rysunek&nbsp;<span>12.10</span></a>), podczas gdy <code>autoplot(svm_sa, type = "parameters")</code> przedstawia wydajność w zależności od konkretnych wartości dostrajania parametrów (<a href="#fig-sa4">Rysunek&nbsp;<span>12.11</span></a>).</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-sa3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="iterative_files/figure-html/fig-sa3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.10: Przebieg procesu symulowanego wyżarzania</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-sa4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="iterative_files/figure-html/fig-sa4-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.11: Wydajność modeli w kontekście hiperparametrów modelu</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wizualizacja ścieżki wyszukiwania pomaga zrozumieć, gdzie proces wyszukiwania poradził sobie dobrze, a gdzie pobłądził:</p>
+<div id="fig-sa5" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><video src="https://www.tmwr.org/sa_search.mp4" class="img-fluid" controls=""><a href="https://www.tmwr.org/sa_search.mp4">Video</a></video></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;12.12: Wizualizacja przebiegu symulowanego wyżarzania</figcaption><p></p>
+</figure>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bohachevsky1986" class="csl-entry" role="listitem">
+Bohachevsky, Ihor O., Mark E. Johnson, i Myron L. Stein. 1986. <span>„Generalized Simulated Annealing for Function Optimization”</span>. <em>Technometrics</em> 28 (3): 209–17. <a href="https://doi.org/10.1080/00401706.1986.10488128">https://doi.org/10.1080/00401706.1986.10488128</a>.
+</div>
 <div id="ref-Frazier2018" class="csl-entry" role="listitem">
 Frazier, Peter I. 2018. <span>„A Tutorial on Bayesian Optimization”</span>. <a href="https://doi.org/10.48550/ARXIV.1807.02811">https://doi.org/10.48550/ARXIV.1807.02811</a>.
+</div>
+<div id="ref-kirkpatrickOptimizationSimulatedAnnealing1983" class="csl-entry" role="listitem">
+Kirkpatrick, S., C. D. Gelatt, i M. P. Vecchi. 1983. <span>„Optimization by Simulated Annealing”</span>. <em>Science</em> 220 (4598): 671–80. <a href="https://doi.org/10.1126/science.220.4598.671">https://doi.org/10.1126/science.220.4598.671</a>.
+</div>
+<div id="ref-vanlaarhoven1987" class="csl-entry" role="listitem">
+Laarhoven, Peter J. M. van, i Emile H. L. Aarts. 1987. <span>„Simulated annealing”</span>. W, 7–15. Springer Netherlands. <a href="https://doi.org/10.1007/978-94-015-7744-1_2">https://doi.org/10.1007/978-94-015-7744-1_2</a>.
 </div>
 <div id="ref-schulz2016" class="csl-entry" role="listitem">
 Schulz, Eric, Maarten Speekenbrink, i Andreas Krause. 2016. <span>„A tutorial on Gaussian process regression: Modelling, exploring, and exploiting functions”</span>. <a href="http://dx.doi.org/10.1101/095190">http://dx.doi.org/10.1101/095190</a>.
@@ -2632,7 +4287,7 @@ Schulz, Eric, Maarten Speekenbrink, i Andreas Krause. 2016. <span>„A tutorial 
 Shahriari, Bobak, Kevin Swersky, Ziyu Wang, Ryan P. Adams, i Nando de Freitas. 2016. <span>„Taking the Human Out of the Loop: A Review of Bayesian Optimization”</span>. <em>Proceedings of the IEEE</em> 104 (1): 148–75. <a href="https://doi.org/10.1109/jproc.2015.2494218">https://doi.org/10.1109/jproc.2015.2494218</a>.
 </div>
 </div>
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
