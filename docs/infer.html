@@ -247,6 +247,11 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
@@ -350,16 +355,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  39.5
- 2         2  39.6
- 3         3  39.9
- 4         4  41.1
- 5         5  39.0
+ 1         1  40.8
+ 2         2  39.3
+ 3         3  40.2
+ 4         4  40.0
+ 5         5  39.8
  6         6  40.0
- 7         7  40.1
- 8         8  41.0
- 9         9  39.7
-10        10  40.0
+ 7         7  39.4
+ 8         8  39.4
+ 9         9  39.8
+10        10  39.3
 # … with 990 more rows</code></pre>
 </div>
 <details><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -400,7 +405,7 @@ Null Hypothesis: point
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1   0.646</code></pre>
+1   0.644</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>

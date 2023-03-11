@@ -37,6 +37,7 @@ book:
     - grid_search.qmd
     - parallel.qmd
     - iterative.qmd
+    - example.qmd
     - references.qmd
 
 bibliography: references.bib
