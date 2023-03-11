@@ -38,6 +38,7 @@ book:
     - parallel.qmd
     - iterative.qmd
     - example.qmd
+    - dimensionality.qmd
     - references.qmd
 
 bibliography: references.bib
