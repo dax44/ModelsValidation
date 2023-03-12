@@ -269,6 +269,16 @@ div.csl-indent {
    
   <ul>
 <li><a href="#opis-danych" id="toc-opis-danych" class="nav-link active" data-scroll-target="#opis-danych"><span class="header-section-number">14.1</span> Opis danych</a></li>
+  <li>
+<a href="#ekstrakcja-cech" id="toc-ekstrakcja-cech" class="nav-link" data-scroll-target="#ekstrakcja-cech"><span class="header-section-number">14.2</span> Ekstrakcja cech</a>
+  <ul class="collapse">
+<li><a href="#pca" id="toc-pca" class="nav-link" data-scroll-target="#pca"><span class="header-section-number">14.2.1</span> PCA</a></li>
+  <li><a href="#pls" id="toc-pls" class="nav-link" data-scroll-target="#pls"><span class="header-section-number">14.2.2</span> PLS</a></li>
+  <li><a href="#ica" id="toc-ica" class="nav-link" data-scroll-target="#ica"><span class="header-section-number">14.2.3</span> ICA</a></li>
+  <li><a href="#umap" id="toc-umap" class="nav-link" data-scroll-target="#umap"><span class="header-section-number">14.2.4</span> UMAP</a></li>
+  </ul>
+</li>
+  <li><a href="#modelowanie-ze-wst%C4%99pn%C4%85-ekstrakcj%C4%85-cech" id="toc-modelowanie-ze-wstępną-ekstrakcją-cech" class="nav-link" data-scroll-target="#modelowanie-ze-wst%C4%99pn%C4%85-ekstrakcj%C4%85-cech"><span class="header-section-number">14.3</span> Modelowanie ze wstępną ekstrakcją cech</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -370,11 +380,11 @@ Ostrzeżenie
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Pamiętaj, że podczas wywoływania funkcji <code>recipe()</code> kroki nie są w żaden sposób szacowane ani wykonywane.</p>
+<p>Pamiętaj, że podczas wywoływania funkcji <code><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe()</a></code> kroki nie są w żaden sposób szacowane ani wykonywane.</p>
 </div>
 </div>
 <p>Przepis ten zostanie rozszerzony o dodatkowe kroki dla analiz redukcji wymiarowości. Zanim to zrobimy, przejdźmy do tego, jak receptura może być używana poza przepływem pracy.</p>
-<p>Przepływ pracy zawierający recepturę wykorzystuje <code>fit()</code> do estymacji receptury i modelu, a następnie <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> do przetwarzania danych i tworzenia przewidywań modelu. W pakiecie <code>recipes</code> znajdują się analogiczne funkcje, które mogą być użyte do tego samego celu:</p>
+<p>Przepływ pracy zawierający recepturę wykorzystuje <code><a href="https://generics.r-lib.org/reference/fit.html">fit()</a></code> do estymacji receptury i modelu, a następnie <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> do przetwarzania danych i tworzenia przewidywań modelu. W pakiecie <code>recipes</code> znajdują się analogiczne funkcje, które mogą być użyte do tego samego celu:</p>
 <ul>
 <li>
 <code>prep(recipe, training)</code> dopasowuje przepis do zbioru treningowego.</li>
@@ -392,9 +402,9 @@ Ostrzeżenie
 <span><span class="va">bean_rec_trained</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj. <code>all_numeric_predictors()</code>); teraz pokazują rzeczywiste kolumny, które zostały wybrane. Również, <code>prep(bean_rec)</code> nie wymaga argumentu <code>training</code>. Możesz przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte zostaną oryginalne dane z wywołania <code>recipe()</code>. W naszym przypadku były to dane ze zbioru treningowego.</p>
-<p>Jednym z ważnych argumentów funkcji <code>prep()</code> jest <code>retain</code>. Kiedy <code>retain = TRUE</code> (domyślnie), szacunkowa wersja zbioru treningowego jest przechowywana wewnątrz receptury. Ten zestaw danych został wstępnie przetworzony przy użyciu wszystkich kroków wymienionych w recepturze. Ponieważ funkcja <code>prep()</code> musi wykonywać recepturę w trakcie jej wykonywania, korzystne może być zachowanie tej wersji zbioru treningowego, tak że jeśli ten zbiór danych ma być użyty później, można uniknąć zbędnych obliczeń. Jednakże, jeśli zestaw treningowy jest duży, może być problematyczne przechowywanie tak dużej ilości danych w pamięci. Użyj wówczas <code>retain = FALSE</code>, aby tego uniknąć.</p>
-<p>Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie <code>prep()</code> oszacuje tylko niewykształcone kroki. Przyda się to, gdy będziemy próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć, co dzieje się w analizie, jest <code>log_changes</code>:</p>
+<p>Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj. <code><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors()</a></code>); teraz pokazują rzeczywiste kolumny, które zostały wybrane. Również, <code>prep(bean_rec)</code> nie wymaga argumentu <code>training</code>. Możesz przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte zostaną oryginalne dane z wywołania <code><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe()</a></code>. W naszym przypadku były to dane ze zbioru treningowego.</p>
+<p>Jednym z ważnych argumentów funkcji <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> jest <code>retain</code>. Kiedy <code>retain = TRUE</code> (domyślnie), szacunkowa wersja zbioru treningowego jest przechowywana wewnątrz receptury. Ten zestaw danych został wstępnie przetworzony przy użyciu wszystkich kroków wymienionych w recepturze. Ponieważ funkcja <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> musi wykonywać recepturę w trakcie jej wykonywania, korzystne może być zachowanie tej wersji zbioru treningowego, tak że jeśli ten zbiór danych ma być użyty później, można uniknąć zbędnych obliczeń. Jednakże, jeśli zestaw treningowy jest duży, może być problematyczne przechowywanie tak dużej ilości danych w pamięci. Użyj wówczas <code>retain = FALSE</code>, aby tego uniknąć.</p>
+<p>Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> oszacuje tylko niewykształcone kroki. Przyda się to, gdy będziemy próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć, co dzieje się w analizie, jest <code>log_changes</code>:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">show_variables</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">bean_rec</span> <span class="op">%&gt;%</span> </span>
@@ -405,6 +415,337 @@ Ostrzeżenie
 step_orderNorm (orderNorm_4r8al): same number of columns
 
 step_normalize (normalize_x6oqH): same number of columns</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wskazówka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Używanie <code><a href="https://recipes.tidymodels.org/reference/bake.html">bake()</a></code> z recepturą jest bardzo podobne do używania <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> z modelem; operacje oszacowane na zbiorze treningowym są stosowane do dowolnych danych, jak dane testowe lub nowe dane w czasie predykcji.</p>
+</div>
+</div>
+<p>Na przykład, próbki zbioru walidacyjnego mogą być przetwarzane następująco:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_validation</span> <span class="op">&lt;-</span> <span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op">%&gt;%</span> <span class="fu">pluck</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">assessment</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">bean_val_processed</span> <span class="op">&lt;-</span> <span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="va">bean_validation</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><a href="#fig-dim3">Rysunek&nbsp;<span>14.3</span></a> przedstawia histogramy predyktora powierzchni przed i po przygotowaniu receptury.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">bean_validation</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, color <span class="op">=</span> <span class="st">"white"</span>, fill <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Original validation set data"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">bean_val_processed</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, color <span class="op">=</span> <span class="st">"white"</span>, fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Processed validation set data"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-dim3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-dim3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.3: Rozkłady przed i po transformacji</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Warto tutaj zwrócić uwagę na dwa ważne aspekty <code>bake().</code> Po pierwsze, jak wcześniej wspomniano, użycie <code>prep(recipe, retain = TRUE)</code> zachowuje istniejącą przetworzoną wersję zbioru treningowego w recepturze. Dzięki temu użytkownik może użyć <code>bake(recipe, new_data = NULL)</code>, która zwraca ten zestaw danych bez dalszych obliczeń. Na przykład:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] 8163</code></pre>
+</div>
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op">%&gt;%</span> <span class="fu">pluck</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">analysis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] 8163</code></pre>
+</div>
+</div>
+<p>Jeśli zestaw treningowy nie jest patologicznie duży, użycie <code>retain</code> może zaoszczędzić dużo czasu obliczeniowego. Po drugie, w wywołaniu można użyć dodatkowych selektorów, aby określić, które kolumny mają zostać zwrócone. Domyślnym selektorem jest <code>everything()</code>, ale można dokonać bardziej szczegółowych wyborów.</p>
+</section><section id="ekstrakcja-cech" class="level2" data-number="14.2"><h2 data-number="14.2" class="anchored" data-anchor-id="ekstrakcja-cech">
+<span class="header-section-number">14.2</span> Ekstrakcja cech</h2>
+<p>Ponieważ receptury są podstawową opcją w <code>tidymodels</code> do redukcji wymiarowości, napiszmy funkcję, która oszacuje transformację i wykreśli wynikowe dane w postaci macierzy wykresów za pośrednictwem pakietu <code>ggforce</code>:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
+<span><span class="va">plot_validation_results</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">recipe</span>, <span class="va">dat</span> <span class="op">=</span> <span class="fu">assessment</span><span class="op">(</span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">recipe</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Estimate any additional steps</span></span>
+<span>    <span class="fu">prep</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Process the data (the validation set by default)</span></span>
+<span>    <span class="fu">bake</span><span class="op">(</span>new_data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Create the scatterplot matrix</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.panel_x</span>, y <span class="op">=</span> <span class="va">.panel_y</span>, color <span class="op">=</span> <span class="va">class</span>, fill <span class="op">=</span> <span class="va">class</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.4</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/geom_autohistogram.html">geom_autodensity</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/facet_matrix.html">facet_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="op">-</span><span class="va">class</span><span class="op">)</span>, layer.diag <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Funkcji tej użyjemy wielokrotnie do wizualizacji wyników po zastosowaniu różnych metod ekstrakcji cech.</p>
+<section id="pca" class="level3" data-number="14.2.1"><h3 data-number="14.2.1" class="anchored" data-anchor-id="pca">
+<span class="header-section-number">14.2.1</span> PCA</h3>
+<p>PCA jest metodą bez nadzoru, która wykorzystuje liniowe kombinacje predyktorów do określenia nowych cech. Cechy te starają się uwzględnić jak najwięcej zmienności w oryginalnych danych. Dodajemy <code><a href="https://recipes.tidymodels.org/reference/step_pca.html">step_pca()</a></code> do oryginalnego przepisu i wykorzystujemy naszą funkcję do wizualizacji wyników na zbiorze walidacyjnym na <a href="#fig-dim4">Rysunek&nbsp;<span>14.4</span></a> za pomocą:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-dim4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-dim4-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych głównych</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Widzimy, że pierwsze dwie składowe PC1 i PC2, zwłaszcza gdy są używane razem, skutecznie rozróżniają lub oddzielają klasy. To może nas skłonić do oczekiwania, że ogólny problem klasyfikacji tych ziaren nie będzie szczególnie trudny.</p>
+<p>Przypomnijmy, że PCA jest metodą bez nadzoru. Dla tych danych okazuje się, że składowe PCA, które wyjaśniają największe różnice w predyktorach, są również predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet <code>learntidymodels</code> posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla każdego komponentu. Będziemy potrzebowali przygotowanego przepisu; krok PCA jest dodany w poniższym kodzie wraz z wywołaniem <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code>:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">learntidymodels</span><span class="op">)</span></span>
+<span><span class="va">bean_rec_trained</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">prep</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/learntidymodels/man/plot_top_loadings.html">plot_top_loadings</a></span><span class="op">(</span><span class="va">component_number</span> <span class="op">&lt;=</span> <span class="fl">4</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-pca1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-pca1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.5: Ładunki predyktorów w transformacji PCA</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Najwyższe ładunki są w większości związane z grupą skorelowanych predyktorów pokazanych w lewej górnej części poprzedniego wykresu korelacji: obwód, powierzchnia, długość osi głównej i powierzchnia wypukła. Wszystkie one są związane z wielkością fasoli. Miary wydłużenia wydają się dominować w drugim komponencie PCA.</p>
+</section><section id="pls" class="level3" data-number="14.2.2"><h3 data-number="14.2.2" class="anchored" data-anchor-id="pls">
+<span class="header-section-number">14.2.2</span> PLS</h3>
+<p><em>Partial Least Squares</em> jest nadzorowaną wersją PCA. Próbuje znaleźć składowe, które jednocześnie maksymalizują zmienność predyktorów, a jednocześnie maksymalizują związek między tymi składowymi a wynikiem. <a href="#fig-pls1">Rysunek&nbsp;<span>14.6</span></a> przedstawia wyniki tej nieco zmodyfikowanej wersji kodu PCA:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_pls</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-pls1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-pls1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorowane według klas</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Pierwsze dwie składowe PLS wykreślone na <a href="#fig-pls1">Rysunek&nbsp;<span>14.6</span></a> są niemal identyczne z pierwszymi dwiema składowymi PCA! Pozostałe składowe różnią się nieco od PCA. <a href="#fig-pls2">Rysunek&nbsp;<span>14.7</span></a> wizualizuje ładunki, czyli najwyższe cechy dla każdej składowej.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_pls</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">prep</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/learntidymodels/man/plot_top_loadings.html">plot_top_loadings</a></span><span class="op">(</span><span class="va">component_number</span> <span class="op">&lt;=</span> <span class="fl">4</span>, n <span class="op">=</span> <span class="fl">5</span>, type <span class="op">=</span> <span class="st">"pls"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-pls2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-pls2-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.7: Ładunki predyktorów w transformacji PLS</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="ica" class="level3" data-number="14.2.3"><h3 data-number="14.2.3" class="anchored" data-anchor-id="ica">
+<span class="header-section-number">14.2.3</span> ICA</h3>
+<p>Metoda składowych niezależnych różni się nieco od PCA tym, że znajduje składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe (w przeciwieństwie do bycia nieskorelowanym). Można o tym myśleć jako o rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA. Użyjmy funkcji <code><a href="https://recipes.tidymodels.org/reference/step_ica.html">step_ica()</a></code> do wykonania dekompozycji (patrz rysunku 16.9):</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">step_ica</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Independent Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-ica1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-ica1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokolorowane według klas</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Analiza wyników nie wskazuje na wyraźne różnice między klasami w pierwszych kilku komponentach ICA. Te niezależne (lub tak niezależne, jak to możliwe) komponenty nie separują typów fasoli.</p>
+</section><section id="umap" class="level3" data-number="14.2.4"><h3 data-number="14.2.4" class="anchored" data-anchor-id="umap">
+<span class="header-section-number">14.2.4</span> UMAP</h3>
+<p><em>Uniform manifold approximation and projection</em> jest podobna do innej znanej metody t-SNE służącej do nieliniowej redukcji wymiarów. W oryginalnej przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z dużym prawdopodobieństwem są powiązane. Relacje między punktami danych są zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest połączona. Stąd UMAP tłumaczy punkty w grafie na przestrzeń o zmniejszonym wymiarze. Aby to zrobić, algorytm posiada proces optymalizacji, który wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego zestawu cech, tak aby graf był dobrze przybliżony.</p>
+<p>Pakiet <code>embed</code> zawiera funkcję krokową dla tej metody, zwizualizowaną na <a href="#fig-umap1">Rysunek&nbsp;<span>14.9</span></a>.</p>
+<div class="cell" data-hash="dimensionality_cache/html/fig-umap1_a95d480538c839bc45737f24b2473d58">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://embed.tidymodels.org">embed</a></span><span class="op">)</span></span>
+<span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-umap1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-umap1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolorowane według klas</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Widać wyraźne przestrzenie pomiędzy skupieniami, choć te dalej mogą być heterogeniczne.</p>
+<p>Istnieje też odmiana UMAP nadzorowana, która zamiast używać podobieństwa do określenia skupień w wielowymiarowej przestrzeni, używa etykiet.</p>
+<div class="cell" data-hash="dimensionality_cache/html/fig-umap2_5462743abefaba9ef53389974f94767a">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP (supervised)"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-umap2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>UMAP jest wydajną metodą redukcji przestrzeni cech. Jednak może być bardzo wrażliwa na dostrajanie parametrów (np. liczba sąsiadów). Z tego powodu pomocne byłoby eksperymentowanie z kilkoma parametrami, aby ocenić, jak wiarygodne są wyniki dla tych danych.</p>
+</section></section><section id="modelowanie-ze-wstępną-ekstrakcją-cech" class="level2" data-number="14.3"><h2 data-number="14.3" class="anchored" data-anchor-id="modelowanie-ze-wstępną-ekstrakcją-cech">
+<span class="header-section-number">14.3</span> Modelowanie ze wstępną ekstrakcją cech</h2>
+<p>Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi modelami. Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa, <em>bagged trees</em>, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i regularyzowana analiza dyskryminacyjna (RDA).</p>
+<p>Stworzymy serię specyfikacji modeli, a następnie użyjemy zestawu przepływów pracy do dostrojenia modeli w poniższym kodzie. Zauważ, że parametry modelu są dostrajane w połączeniu z parametrami receptury (np. rozmiar zredukowanego wymiaru, parametry UMAP).</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://baguette.tidymodels.org">baguette</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/discrim">discrim</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_spec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/mlp.html">mlp</a></span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'nnet'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span><span class="op">(</span><span class="st">'classification'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bagging_spec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/bag_tree.html">bag_tree</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'rpart'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html">set_mode</a></span><span class="op">(</span><span class="st">'classification'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fda_spec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/discrim_flexible.html">discrim_flexible</a></span><span class="op">(</span></span>
+<span>    prod_degree <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'earth'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rda_spec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/discrim_regularized.html">discrim_regularized</a></span><span class="op">(</span>frac_common_cov <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, frac_identity <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'klaR'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bayes_spec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/naive_Bayes.html">naive_Bayes</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'klaR'</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Potrzebujemy również receptur dla metod redukcji wymiarowości, które będziemy testować. Zacznijmy od bazowego przepisu <code>bean_rec</code>, a następnie rozszerzmy go o różne kroki redukcji wymiarowości:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">bean_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://petersonr.github.io/bestNormalize/reference/step_orderNorm.html">step_orderNorm</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pls_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">bean_rec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pls.html">step_pls</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">umap_rec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">bean_rec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    outcome <span class="op">=</span> <span class="st">"class"</span>,</span>
+<span>    num_comp <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    min_dist <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Po raz kolejny pakiet <code>workflowsets</code> bierze reguły wstępnego przetwarzani oraz modele i krzyżuje je. Opcja kontrolna <code>parallel_over</code> jest ustawiona tak, aby przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach dostrajania parametrów. Funkcja <code>workflow_map()</code> stosuje przeszukiwanie siatki w celu optymalizacji parametrów modelu/przetwarzania wstępnego (jeśli istnieją) w 10 kombinacjach parametrów. Obszar pod krzywą ROC jest szacowany na zbiorze walidacyjnym.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_grid</span><span class="op">(</span>parallel_over <span class="op">=</span> <span class="st">"resamples"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bean_res</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow_set</span><span class="op">(</span></span>
+<span>    preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>basic <span class="op">=</span> <span class="va">class</span> <span class="op">~</span><span class="va">.</span>, pls <span class="op">=</span> <span class="va">pls_rec</span>, umap <span class="op">=</span> <span class="va">umap_rec</span><span class="op">)</span>, </span>
+<span>    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>bayes <span class="op">=</span> <span class="va">bayes_spec</span>, fda <span class="op">=</span> <span class="va">fda_spec</span>,</span>
+<span>                  rda <span class="op">=</span> <span class="va">rda_spec</span>, bag <span class="op">=</span> <span class="va">bagging_spec</span>,</span>
+<span>                  mlp <span class="op">=</span> <span class="va">mlp_spec</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">workflow_map</span><span class="op">(</span></span>
+<span>    verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    seed <span class="op">=</span> <span class="fl">1603</span>,</span>
+<span>    resamples <span class="op">=</span> <span class="va">bean_val</span>,</span>
+<span>    grid <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    metrics <span class="op">=</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span>,</span>
+<span>    control <span class="op">=</span> <span class="va">ctrl</span></span>
+<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"models/bean_res.rda"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span></span>
+<span><span class="va">bean_res</span>,</span>
+<span>rank_metric <span class="op">=</span> <span class="st">"roc_auc"</span>,  <span class="co"># &lt;- how to order models</span></span>
+<span>metric <span class="op">=</span> <span class="st">"roc_auc"</span>,       <span class="co"># &lt;- which metric to visualize</span></span>
+<span>select_best <span class="op">=</span> <span class="cn">TRUE</span>     <span class="co"># &lt;- one point per workflow</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">0.02</span>, label <span class="op">=</span> <span class="va">wflow_id</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span>, hjust <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">lims</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-all-models1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="dimensionality_files/figure-html/fig-all-models1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Rysunek&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Możemy uszeregować modele według ich oszacowań obszaru pod krzywą ROC w zbiorze walidacyjnym:</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rankings</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">rank_results</span><span class="op">(</span><span class="va">bean_res</span>, select_best <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>method <span class="op">=</span> <span class="fu">map_chr</span><span class="op">(</span><span class="va">wflow_id</span>, <span class="op">~</span> <span class="fu">str_split</span><span class="op">(</span><span class="va">.x</span>, <span class="st">"_"</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">rankings</span>, <span class="va">rank</span> <span class="op">&lt;=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">rank</span>, <span class="va">mean</span>, <span class="va">model</span>, <span class="va">method</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+   rank  mean model               method
+  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt; 
+1     1 0.995 mlp                 basic 
+2     2 0.995 discrim_regularized pls   
+3     3 0.994 naive_Bayes         pls   
+4     4 0.994 mlp                 pls   
+5     5 0.994 discrim_flexible    basic </code></pre>
+</div>
+</div>
+<p>Z tych wyników jasno wynika, że większość modeli daje bardzo dobre wyniki; niewiele jest tu złych wyborów. Dla demonstracji użyjemy modelu RDA z cechami PLS jako modelu końcowego.</p>
+<div class="cell">
+<details open=""><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rda_res</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">bean_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">extract_workflow</span><span class="op">(</span><span class="st">"pls_rda"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">finalize_workflow</span><span class="op">(</span></span>
+<span>    <span class="va">bean_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu">extract_workflow_set_result</span><span class="op">(</span><span class="st">"pls_rda"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu">select_best</span><span class="op">(</span>metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">last_fit</span><span class="op">(</span>split <span class="op">=</span> <span class="va">bean_split</span>, metrics <span class="op">=</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">rda_wflow_fit</span> <span class="op">&lt;-</span> <span class="fu">extract_workflow</span><span class="op">(</span><span class="va">rda_res</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">rda_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  .metric .estimator .estimate .config             
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 roc_auc hand_till      0.995 Preprocessor1_Model1</code></pre>
 </div>
 </div>
 
