@@ -39,6 +39,7 @@ book:
     - iterative.qmd
     - example.qmd
     - dimensionality.qmd
+    - imbalance.qmd
     - references.qmd
 
 bibliography: references.bib

@@ -330,10 +330,13 @@ Aby to zrobić, algorytm posiada proces optymalizacji, który wykorzystuje entro
 Pakiet `embed` zawiera funkcję krokową dla tej metody, zwizualizowaną na @fig-umap1.
 
 ```{r}
+library(embed)
+```
+
+```{r}
 #| cache: true
 #| label: fig-umap1
 #| fig-cap: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolorowane według klas
-library(embed)
 bean_rec_trained %>%
   step_umap(all_numeric_predictors(), num_comp = 4) %>%
   plot_validation_results() +
