@@ -644,9 +644,13 @@ Wskazówka
 </div>
 </div>
 <p>Jak to sygnalizowaliśmy wcześniej, dobrym pomysłem jest ocena modeli za pomocą wielu metryk, tak aby uwzględnione zostały różne aspekty dopasowania modelu. Ponadto, często sensowne jest wybranie nieco suboptymalnej kombinacji parametrów, która jest związana z prostszym modelem. W przypadku tego modelu prostota odpowiada większym wartościom kar i/lub mniejszej liczbie neuronów w warstwie ukrytej.</p>
-</section><section id="finalizowanie-modelu" class="level2" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="finalizowanie-modelu">
+</section><section id="finalizowanie-modelu" class="level2 page-columns page-full" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="finalizowanie-modelu">
 <span class="header-section-number">10.4</span> Finalizowanie modelu</h2>
-<p>Jeśli jeden z zestawów możliwych parametrów modelu znalezionych poprzez show_best() byłby atrakcyjną opcją końcową dla tych danych, moglibyśmy chcieć ocenić jak dobrze radzi sobie na zestawie testowym. Jednakże, wyniki funkcji <code>tune_grid()</code> dostarczają jedynie podłoża do wyboru odpowiednich parametrów. Funkcja ta nie dopasowuje modelu końcowego. Aby dopasować model końcowy, należy określić ostateczny zestaw wartości parametrów. Istnieją dwie metody, aby to zrobić:</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://media1.giphy.com/media/xBqg5gAf1xINizpek6/giphy.gif" class="img-fluid figure-img"></p>
+</figure>
+</div></div><p>Jeśli jeden z zestawów możliwych parametrów modelu znalezionych poprzez show_best() byłby atrakcyjną opcją końcową dla tych danych, moglibyśmy chcieć ocenić jak dobrze radzi sobie na zestawie testowym. Jednakże, wyniki funkcji <code>tune_grid()</code> dostarczają jedynie podłoża do wyboru odpowiednich parametrów. Funkcja ta nie dopasowuje modelu końcowego. Aby dopasować model końcowy, należy określić ostateczny zestaw wartości parametrów. Istnieją dwie metody, aby to zrobić:</p>
 <ul>
 <li>ręcznie wybrać wartości, które wydają się odpowiednie,</li>
 <li>użyć funkcji <code>select_*().</code>

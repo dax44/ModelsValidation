@@ -16,6 +16,8 @@ Wówczas aby zaoszczędzić czas procedura tuningu modelu względem liczby skła
 To znacząco przyspiesza czas dostrajania modelu.
 Oczywiście nie wszystkie modele mają tą własność, ale te które mają korzystają z tej procedury nazywanej optymalizacją podprocesów (ang. *submodel optimization*).
 
+![](https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif){.column-margin fig-align="center" width="400"}
+
 W innych przypadkach, chcąc przyspieszyć procedurę tuningu, musimy stosować paralelizację procedury dostrajania.
 W pakiecie `tune` możliwe jest zastosowanie paralelizacji na dwa sposoby.
 Podczas dostrajania modeli poprzez wyszukiwanie w siatce, istnieją dwie odrębne pętle: jedna nad foldami (zewnętrzna pętla) i druga nad unikalnymi kombinacjami parametrów (wewnętrzna pętla).
@@ -54,6 +56,8 @@ W takich przypadkach ten schemat paralelizacji byłby najlepszy.
 Tutaj każdy proces roboczy obsługuje wiele foldów, a przetwarzanie wstępne jest niepotrzebnie powtarzane.
 Na przykład, dla pierwszego foldu, preprocessing został wykonany siedem razy zamiast raz.
 Dla tego schematu argumentem funkcji sterującej jest `parallel_over = "everything"`.
+
+![](https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif){.column-margin fig-align="center" width="400"}
 
 Aby porównać różne schematy paralelizacji, dostroiliśmy drzewo wzmacniane za pomocą silnika xgboost, używając zestawu danych składającego się z 4000 próbek, z 5-krotną walidacją krzyżową i 10 modelami kandydującymi.
 Dane te wymagały pewnego podstawowego przetwarzania wstępnego.
@@ -165,6 +169,8 @@ Jednym z problemów z przeszukiwaniem siatki jest to, że wszystkie modele musz�
 Byłoby pomocne, gdyby zamiast tego, w pewnym momencie podczas dostrajania parametrów, można było przeprowadzić analizę przejściową w celu wyeliminowania wszelkich naprawdę bezużytecznych kandydatów na parametry.
 Byłoby to podobne do analizy daremności w badaniach klinicznych.
 Jeśli nowy lek działa zbyt słabo (lub dobrze), to potencjalnie nieetyczne jest czekanie na zakończenie badania, by podjąć decyzję.
+
+![](https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif){.column-margin fig-align="center" width="400"}
 
 W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. *racing method*) [@NIPS1993_02a32ad2].
 W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów.

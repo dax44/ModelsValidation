@@ -305,6 +305,8 @@ W przypadku tego modelu prostota odpowiada większym wartościom kar i/lub mniej
 
 ## Finalizowanie modelu
 
+![](https://media1.giphy.com/media/xBqg5gAf1xINizpek6/giphy.gif){.column-margin fig-align="center"}
+
 Jeśli jeden z zestawów możliwych parametrów modelu znalezionych poprzez show_best() byłby atrakcyjną opcją końcową dla tych danych, moglibyśmy chcieć ocenić jak dobrze radzi sobie na zestawie testowym.
 Jednakże, wyniki funkcji `tune_grid()` dostarczają jedynie podłoża do wyboru odpowiednich parametrów.
 Funkcja ta nie dopasowuje modelu końcowego.

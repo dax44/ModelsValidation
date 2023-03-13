@@ -142,7 +142,7 @@ div.csl-indent {
   }
 }</script>
 </head>
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
@@ -278,7 +278,7 @@ div.csl-indent {
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
 <span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span>
 </h1>
@@ -295,7 +295,11 @@ div.csl-indent {
   
 
 </header><p>Próbkowanie (ang. <em>subsampling</em>) zbioru treningowego, zarówno zaniżanie (ang. <em>undersampling</em>), jak i zawyżanie (ang. <em>oversampling</em>) próbkowania odpowiedniej klasy lub klas, może być pomocne w radzeniu sobie z danymi klasyfikacyjnymi, w których jedna lub więcej klas występuje bardzo rzadko. W takiej sytuacji (bez kompensacji), większość modeli będzie nadmiernie dopasowana do klasy większościowej i wytworzy bardzo dobre statystyki dopasowania dla klasy zawierającej często występujące klasy, podczas gdy klasy mniejszościowe będą miały słabe wyniki.</p>
-<p>Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z nierównowagą klas.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="http://31.media.tumblr.com/64ae47b479a51d91af792dbea9b4e997/tumblr_mthcjipiao1surx6co1_400.gif" class="img-fluid figure-img"></p>
+</figure>
+</div></div><p>Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z nierównowagą klas.</p>
 <p>Rozważmy problem dwuklasowy, w którym pierwsza klasa ma bardzo niską częstość występowania. Dane zostały zasymulowane i można je zaimportować do R za pomocą poniższego kodu:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
@@ -316,10 +320,14 @@ Class1 Class2
 </div>
 <p>Jeśli “klasa1” jest zdarzeniem będącym przedmiotem zainteresowania, jest bardzo prawdopodobne, że model klasyfikacyjny byłby w stanie osiągnąć bardzo dobrą specyficzność, ponieważ prawie wszystkie dane należą do drugiej klasy. Czułość jednak będzie prawdopodobnie słaba, ponieważ modele będą optymalizować dokładność (lub inne funkcje straty) poprzez przewidywanie, że wszystko jest klasą większościową.</p>
 <p>Jednym z rezultatów braku równowagi klasowej, gdy istnieją dwie klasy, jest to, że domyślne odcięcie prawdopodobieństwa na poziomie 50% jest nieodpowiednie; inne odcięcie, które jest bardziej ekstremalne, może być w stanie osiągnąć lepszą wydajność.</p>
-<section id="próbkowanie-danych" class="level2" data-number="15.1"><h2 data-number="15.1" class="anchored" data-anchor-id="próbkowanie-danych">
+<section id="próbkowanie-danych" class="level2 page-columns page-full" data-number="15.1"><h2 data-number="15.1" class="anchored" data-anchor-id="próbkowanie-danych">
 <span class="header-section-number">15.1</span> Próbkowanie danych</h2>
 <p>Jednym ze sposobów na złagodzenie tego problemu jest podpróbkowanie danych. Istnieje wiele sposobów, aby to zrobić, ale najprostszym jest próbkowanie w dół (<em>undersample</em>) danych klasy większościowej, aż wystąpi ona z taką samą częstotliwością jak klasa mniejszościowa. Choć może się to wydawać sprzeczne z intuicją, wyrzucenie dużego procentu danych może być skuteczne w tworzeniu użytecznego modelu, który potrafi rozpoznać zarówno klasy większościowe, jak i mniejszościowe. W niektórych przypadkach oznacza to nawet, że ogólna wydajność modelu jest lepsza (np. poprawiony obszar pod krzywą ROC). Podpróbkowanie prawie zawsze daje modele, które są lepiej skalibrowane, co oznacza, że rozkłady prawdopodobieństwa klas są lepiej zachowane. W rezultacie, domyślne odcięcie 50% daje znacznie większe prawdopodobieństwo uzyskania lepszych wartości czułości i specyficzności niż w innym przypadku.</p>
-<p>Istnieją również techniki <em>oversampling</em>, które sprowadzają klasy mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już istniejących w klasie mniejszościowej. W pakiecie <code>themis</code> można znaleźć różne techniki próbkowania w górę: <code><a href="https://themis.tidymodels.org/reference/step_upsample.html">step_upsample()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_smote.html">step_smote()</a></code>, <code>step_bsmote(method = 1)</code>, <code>step_bsmote(method = 2)</code>, <code><a href="https://themis.tidymodels.org/reference/step_adasyn.html">step_adasyn()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_rose.html">step_rose()</a></code> oraz kilka technik próbkowania w dół: <code><a href="https://themis.tidymodels.org/reference/step_downsample.html">step_downsample()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_nearmiss.html">step_nearmiss()</a></code> i <code><a href="https://themis.tidymodels.org/reference/step_tomek.html">step_tomek()</a></code>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://media.tenor.com/lB26Hv-TnvwAAAAd/freesample-eat.gif" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><p>Istnieją również techniki <em>oversampling</em>, które sprowadzają klasy mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już istniejących w klasie mniejszościowej. W pakiecie <code>themis</code> można znaleźć różne techniki próbkowania w górę: <code><a href="https://themis.tidymodels.org/reference/step_upsample.html">step_upsample()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_smote.html">step_smote()</a></code>, <code>step_bsmote(method = 1)</code>, <code>step_bsmote(method = 2)</code>, <code><a href="https://themis.tidymodels.org/reference/step_adasyn.html">step_adasyn()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_rose.html">step_rose()</a></code> oraz kilka technik próbkowania w dół: <code><a href="https://themis.tidymodels.org/reference/step_downsample.html">step_downsample()</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_nearmiss.html">step_nearmiss()</a></code> i <code><a href="https://themis.tidymodels.org/reference/step_tomek.html">step_tomek()</a></code>.</p>
 <p>Zbadajmy działanie próbkowania używając <code><a href="https://themis.tidymodels.org/reference/step_rose.html">themis::step_rose()</a></code> w przepisie dla symulowanych danych. Wykorzystuje ona metodę ROSE (ang. <em>Random Over Sampling Examples</em>) z <span class="citation" data-cites="menardi2012">Menardi i Torelli (<a href="references.html#ref-menardi2012" role="doc-biblioref">2012</a>)</span>. Jest to przykład strategii <em>oversampling</em>.</p>
 <p>W zakresie przepływu pracy:</p>
 <ul>

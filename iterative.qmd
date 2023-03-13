@@ -77,6 +77,8 @@ Czarna kropka wskazuje najlepsze ustawienia.
 Przejście od płaskiego obszaru słabych wyników do grzbietu najlepszej wydajności jest bardzo ostre.
 Występuje również gwałtowny spadek obszaru pod krzywą ROC tuż po prawej stronie grzbietu.
 
+![](https://gifdb.com/images/file/confused-tigger-comic-6vr45zk3ghvf3rg4.gif){.column-margin fig-align="center" width="400"}
+
 Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu.
 W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów.
 Funkcja `tune_grid()` dokonuje próbkowania tej siatki:
@@ -123,6 +125,8 @@ Sugerowana kombinacja parametrów jest następnie ponownie próbkowana.
 Wyniki te są następnie wykorzystywane w innym modelu predykcyjnym, który rekomenduje więcej wartości kandydatów do testowania, i tak dalej.
 Proces ten przebiega przez ustaloną liczbę iteracji lub do momentu, gdy nie pojawią się dalsze poprawy.
 @shahriari2016 i @Frazier2018 są dobrymi wprowadzeniami do optymalizacji bayesowskiej.
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh13rfq4kyHfc7s98sZwnlgwiC5nx4uf9ZPw&usqp=CAU){.column-margin fig-align="center" width="400"}
 
 Podczas korzystania z optymalizacji bayesowskiej, podstawowe problemy to sposób tworzenia modelu i wybór parametrów rekomendowanych przez ten model.
 Najpierw rozważmy technikę najczęściej stosowaną w optymalizacji bayesowskiej, czyli model procesu gaussowskiego.
@@ -178,6 +182,8 @@ Jak wykorzystać model procesu gaussowskiego po dopasowaniu do aktualnych danych
 Naszym celem jest wybranie następnej kombinacji dostrajania parametrów, która najprawdopodobniej da "lepsze wyniki" niż obecna najlepsza.
 Jednym z podejść do tego jest stworzenie dużego zbioru kandydatów, a następnie wykonanie prognoz średniej i wariancji dla każdego z nich.
 Korzystając z tych informacji, wybieramy najkorzystniejszą wartość parametru dostrajania.
+
+![](https://media.tenor.com/MjdDlyCEARcAAAAM/math-dance.gif){.column-margin fig-align="center"}
 
 Klasa funkcji celu, zwanych funkcjami akwizycji, ułatwia kompromis pomiędzy średnią a wariancją.
 Przypomnijmy, że przewidywana wariancja modeli GP zależy głównie od tego, jak bardzo są one oddalone od istniejących danych.
@@ -356,6 +362,8 @@ Zmniejszenie tego współczynnika zachęci wyszukiwanie do bycia bardziej wyrozu
 Proces ten trwa przez określoną ilość iteracji, ale może zostać zatrzymany, jeśli w ciągu określonej liczby iteracji nie pojawią się globalnie najlepsze wyniki.
 Bardzo pomocne może być ustawienie progu restartu.
 Jeśli wystąpi ciąg niepowodzeń, funkcja ta powraca do ostatnich globalnie najlepszych ustawień parametrów i zaczyna od nowa.
+
+![](https://i.pinimg.com/originals/66/5d/14/665d149267356ca2a1edb36b20414122.gif){.column-margin fig-align="center" width="400"}
 
 Najważniejszym szczegółem jest określenie sposobu perturbacji parametrów dostrajania z iteracji na iterację.
 W literaturze można znaleźć wiele metod na to.

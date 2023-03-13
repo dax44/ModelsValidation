@@ -300,7 +300,7 @@ div.csl-indent {
 </header><p>W przypadku projektów z nowymi zbiorami danych, które nie zostały jeszcze dobrze poznane, osoba zajmująca się danymi może być zmuszona do sprawdzenia wielu kombinacji modeli i różnych kombinacji metod przygotowania danych. Powszechne jest to, że nie posiadamy wiedzy a priori na temat tego, która metoda będzie działać najlepiej z nowym zestawem danych.</p>
 <p>Dobrą strategią jest poświęcenie trochę uwagi na wypróbowanie różnych podejść do modelowania, określenie, co działa najlepiej, a następnie zainwestowanie dodatkowego czasu na dostosowanie / optymalizację małego zestawu modeli.</p>
 <p>Aby zademonstrować, jak przesiewać zestaw wielu modeli, użyjemy jako przykładu danych mieszanki betonowej z książki <em>Applied Predictive Modeling</em> <span class="citation" data-cites="khun2013a">(<a href="references.html#ref-khun2013a" role="doc-biblioref">Khun i Johnson 2013</a>)</span>. W rozdziale 10 tej książki zademonstrowano modele do przewidywania wytrzymałości na ściskanie mieszanek betonowych z wykorzystaniem składników jako zmiennych niezależnych. Oceniono wiele różnych modeli z różnymi zestawami predyktorów i typami metod wstępnego przetwarzania.</p>
-<section id="przygotowanie-danych" class="level2" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="przygotowanie-danych">
+<section id="przygotowanie-danych" class="level2 page-columns page-full" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="przygotowanie-danych">
 <span class="header-section-number">13.1</span> Przygotowanie danych</h2>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
@@ -323,7 +323,11 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 </div>
 </div>
 <p>Zmienna <code>compressive_strength</code> jest zmienną zależną, przewidywaną w tym zadaniu. W kilku przypadkach w tym zestawie danych, ta sama formuła betonu była testowana wielokrotnie. Wolimy nie uwzględniać tych replikowanych mieszanek jako pojedynczych punktów danych, ponieważ mogą one być rozmieszczone zarówno w zbiorze treningowym, jak i testowym. Może to sztucznie zawyżyć nasze szacunki wydajności.</p>
-<div class="cell">
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://media.tenor.com/6o6fbn1EposAAAAM/fml-wtf.gif" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">concrete</span> <span class="op">&lt;-</span> </span>
 <span>   <span class="va">concrete</span> <span class="op">%&gt;%</span> </span>
 <span>   <span class="fu">group_by</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="op">-</span><span class="va">compressive_strength</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
@@ -358,7 +362,7 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 <span>   <span class="fu">step_interact</span><span class="op">(</span><span class="op">~</span> <span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="fu">all_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section><section id="określenie-modeli" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="określenie-modeli">
+</section><section id="określenie-modeli" class="level2 page-columns page-full" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="określenie-modeli">
 <span class="header-section-number">13.2</span> Określenie modeli</h2>
 <p>Teraz zdefiniujmy model, które chcemy przetestować:</p>
 <div class="cell">
@@ -472,7 +476,11 @@ Computational engine: kknn </code></pre>
 </div>
 </div>
 <p>Kolumna <code>option</code> to miejsce na dowolne argumenty, których należy użyć, gdy oceniamy przepływ pracy. Na przykład, aby dodać obiekt parametrów sieci neuronowej:</p>
-<div class="cell">
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://media.tenor.com/HLDX3w3zk9YAAAAM/we-are-here-to-normalize-mental-health-tyler-oakley.gif" class="img-fluid figure-img"></p>
+</figure>
+</div></div><div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">normalized</span> <span class="op">&lt;-</span> </span>
 <span>   <span class="va">normalized</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>   <span class="fu">option_add</span><span class="op">(</span>param_info <span class="op">=</span> <span class="va">nnet_param</span>, id <span class="op">=</span> <span class="st">"normalized_neural_network"</span><span class="op">)</span></span>
@@ -546,10 +554,14 @@ Computational engine: kknn </code></pre>
 12 full_quad_KNN        &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;</code></pre>
 </div>
 </div>
-</section><section id="tuning-modeli" class="level2" data-number="13.3"><h2 data-number="13.3" class="anchored" data-anchor-id="tuning-modeli">
+</section><section id="tuning-modeli" class="level2 page-columns page-full" data-number="13.3"><h2 data-number="13.3" class="anchored" data-anchor-id="tuning-modeli">
 <span class="header-section-number">13.3</span> Tuning modeli</h2>
 <p>Prawie wszystkie modele ujęte w <code>all_workflows</code> zawierają parametry dostrajania. Aby ocenić ich wydajność, możemy użyć standardowych funkcji strojenia lub resamplingu (np. <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> i tak dalej). Funkcja <code>workflow_map()</code> zastosuje tę samą funkcję do wszystkich przepływów w zestawie; domyślnie jest to <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>.</p>
-<p>Dla tego przykładu, wyszukiwanie w oparciu o siatkę jest stosowane do każdego przepływu pracy, stosując jednocześnie 25 różnych kandydatów na parametry. Istnieje zestaw wspólnych opcji do wykorzystania przy każdym wykonaniu <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>. Na przykład, w poniższym kodzie użyjemy tego samego próbkowania i obiektów kontrolnych dla każdego przepływu pracy, wraz z rozmiarem siatki równym 25. Funkcja <code>workflow_map()</code> posiada dodatkowy argument o nazwie <code>seed</code>, który służy do zapewnienia, że każde wykonanie <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> zużywa tych samych liczb losowych.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="http://kuvaton.com/kuvei/noniin_shit.gif" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><p>Dla tego przykładu, wyszukiwanie w oparciu o siatkę jest stosowane do każdego przepływu pracy, stosując jednocześnie 25 różnych kandydatów na parametry. Istnieje zestaw wspólnych opcji do wykorzystania przy każdym wykonaniu <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>. Na przykład, w poniższym kodzie użyjemy tego samego próbkowania i obiektów kontrolnych dla każdego przepływu pracy, wraz z rozmiarem siatki równym 25. Funkcja <code>workflow_map()</code> posiada dodatkowy argument o nazwie <code>seed</code>, który służy do zapewnienia, że każde wykonanie <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> zużywa tych samych liczb losowych.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel">doParallel</a></span><span class="op">)</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html">makeCluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
@@ -650,8 +662,12 @@ Computational engine: kknn </code></pre>
 <p>W powyższym procesie optymalizacji przeuczono 12600 modeli, co zajęło około 2 godzin przy wykorzystaniu 4 rdzeni procesora. Pokazuje to, że zagadnienie tuningu nawet kilku kandydackich modeli zajmuje sporo czasu.</p>
 </section><section id="efektywna-filtracja-modeli" class="level2 page-columns page-full" data-number="13.4"><h2 data-number="13.4" class="anchored" data-anchor-id="efektywna-filtracja-modeli">
 <span class="header-section-number">13.4</span> Efektywna filtracja modeli</h2>
-<p>Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie podejścia wyścigowego opisanego wcześnej. Mając zestaw przepływów pracy, możemy użyć funkcji <code>workflow_map()</code> do podejścia wyścigowego.</p>
-<div class="cell">
+<p>Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie podejścia wyścigowego opisanego wcześniej. Mając zestaw przepływów pracy, możemy użyć funkcji <code>workflow_map()</code> do podejścia wyścigowego.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://www.eatliver.com/wp-content/uploads/2021/03/art-gifs7.gif" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">race_ctrl</span> <span class="op">&lt;-</span></span>
 <span>   <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_race.html">control_race</a></span><span class="op">(</span></span>
 <span>      save_pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -738,7 +754,7 @@ Computational engine: kknn </code></pre>
 </div>
 </div>
 <p>Podczas gdy podejście wyścigowe wybrało te same parametry kandydata co kompletna siatka tylko dla 41,67% modeli, metryki wydajności modeli wybranych przez wyścig były prawie równe. Korelacja wartości RMSE wyniosła 0,968, a korelacja rangowa 0,951. Wskazuje to, że w obrębie modelu istniało wiele kombinacji dostrajania parametrów, które dawały niemal identyczne wyniki.</p>
-</section><section id="finalizacja-modelu" class="level2" data-number="13.5"><h2 data-number="13.5" class="anchored" data-anchor-id="finalizacja-modelu">
+</section><section id="finalizacja-modelu" class="level2 page-columns page-full" data-number="13.5"><h2 data-number="13.5" class="anchored" data-anchor-id="finalizacja-modelu">
 <span class="header-section-number">13.5</span> Finalizacja modelu</h2>
 <p>Podobnie do tego, co pokazaliśmy w poprzednich rozdziałach, proces wyboru ostatecznego modelu i dopasowania go na zbiorze treningowym jest prosty. Pierwszym krokiem jest wybranie zbioru treningowego do sfinalizowania. Ponieważ model <code>boosted tree</code> działał dobrze, wyodrębnimy go ze zbioru, zaktualizujemy parametry o numerycznie najlepsze ustawienia i dopasujemy do zbioru treningowego. W przypadku gdy mamy wątpliwości dotyczące siatki hiperparametrów dobranych podczas filtrowania modeli, np. że pomija ona ważne kombinacje, możemy zastosować do wybranego modelu metody <code>finetune</code> przedstawione w poprzednim rozdziale.</p>
 <div class="cell">
@@ -789,7 +805,11 @@ Computational engine: kknn </code></pre>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://media1.giphy.com/media/BPJmthQ3YRwD6QqcVD/giphy.gif" class="img-fluid figure-img" width="400"></p>
+</figure>
+</div></div><div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-khun2013a" class="csl-entry" role="listitem">
 Khun, M., i K. Johnson. 2013. <em>Applied <span>Predictive Modeling</span></em>. <span>New York</span>: <span>Springer</span>.
 </div>

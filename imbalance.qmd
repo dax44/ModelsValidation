@@ -8,6 +8,8 @@ bibliography: references.bib
 Próbkowanie (ang. *subsampling*) zbioru treningowego, zarówno zaniżanie (ang. *undersampling*), jak i zawyżanie (ang. *oversampling*) próbkowania odpowiedniej klasy lub klas, może być pomocne w radzeniu sobie z danymi klasyfikacyjnymi, w których jedna lub więcej klas występuje bardzo rzadko.
 W takiej sytuacji (bez kompensacji), większość modeli będzie nadmiernie dopasowana do klasy większościowej i wytworzy bardzo dobre statystyki dopasowania dla klasy zawierającej często występujące klasy, podczas gdy klasy mniejszościowe będą miały słabe wyniki.
 
+![](http://31.media.tumblr.com/64ae47b479a51d91af792dbea9b4e997/tumblr_mthcjipiao1surx6co1_400.gif){.column-margin fig-align="center"}
+
 Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z nierównowagą klas.
 
 Rozważmy problem dwuklasowy, w którym pierwsza klasa ma bardzo niską częstość występowania.
@@ -38,11 +40,14 @@ W niektórych przypadkach oznacza to nawet, że ogólna wydajność modelu jest 
 Podpróbkowanie prawie zawsze daje modele, które są lepiej skalibrowane, co oznacza, że rozkłady prawdopodobieństwa klas są lepiej zachowane.
 W rezultacie, domyślne odcięcie 50% daje znacznie większe prawdopodobieństwo uzyskania lepszych wartości czułości i specyficzności niż w innym przypadku.
 
+![](https://media.tenor.com/lB26Hv-TnvwAAAAd/freesample-eat.gif){.column-margin fig-align="center" width="400"}
+
 Istnieją również techniki *oversampling*, które sprowadzają klasy mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już istniejących w klasie mniejszościowej.
 W pakiecie `themis` można znaleźć różne techniki próbkowania w górę: `step_upsample()`, `step_smote()`, `step_bsmote(method = 1)`, `step_bsmote(method = 2)`, `step_adasyn()`, `step_rose()` oraz kilka technik próbkowania w dół: `step_downsample()`, `step_nearmiss()` i `step_tomek()`.
 
 Zbadajmy działanie próbkowania używając `themis::step_rose()` w przepisie dla symulowanych danych.
-Wykorzystuje ona metodę ROSE (ang. *Random Over Sampling Examples*) z @menardi2012. Jest to przykład strategii *oversampling*.
+Wykorzystuje ona metodę ROSE (ang. *Random Over Sampling Examples*) z @menardi2012.
+Jest to przykład strategii *oversampling*.
 
 W zakresie przepływu pracy:
 

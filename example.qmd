@@ -29,6 +29,8 @@ W kilku przypadkach w tym zestawie danych, ta sama formuła betonu była testowa
 Wolimy nie uwzględniać tych replikowanych mieszanek jako pojedynczych punktów danych, ponieważ mogą one być rozmieszczone zarówno w zbiorze treningowym, jak i testowym.
 Może to sztucznie zawyżyć nasze szacunki wydajności.
 
+![](https://media.tenor.com/6o6fbn1EposAAAAM/fml-wtf.gif){.column-margin fig-align="center" width="400"}
+
 ```{r}
 concrete <- 
    concrete %>% 
@@ -163,6 +165,8 @@ normalized %>% extract_workflow(id = "normalized_KNN")
 Kolumna `option` to miejsce na dowolne argumenty, których należy użyć, gdy oceniamy przepływ pracy.
 Na przykład, aby dodać obiekt parametrów sieci neuronowej:
 
+![](https://media.tenor.com/HLDX3w3zk9YAAAAM/we-are-here-to-normalize-mental-health-tyler-oakley.gif){.column-margin fig-align="center"}
+
 ```{r}
 normalized <- 
    normalized %>% 
@@ -213,6 +217,8 @@ all_workflows
 Prawie wszystkie modele ujęte w `all_workflows` zawierają parametry dostrajania.
 Aby ocenić ich wydajność, możemy użyć standardowych funkcji strojenia lub resamplingu (np. `tune_grid()` i tak dalej).
 Funkcja `workflow_map()` zastosuje tę samą funkcję do wszystkich przepływów w zestawie; domyślnie jest to `tune_grid()`.
+
+![](http://kuvaton.com/kuvei/noniin_shit.gif){.column-margin fig-align="center" width="400"}
 
 Dla tego przykładu, wyszukiwanie w oparciu o siatkę jest stosowane do każdego przepływu pracy, stosując jednocześnie 25 różnych kandydatów na parametry.
 Istnieje zestaw wspólnych opcji do wykorzystania przy każdym wykonaniu `tune_grid()`.
@@ -301,8 +307,10 @@ Pokazuje to, że zagadnienie tuningu nawet kilku kandydackich modeli zajmuje spo
 
 ## Efektywna filtracja modeli
 
-Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie podejścia wyścigowego opisanego wcześnej.
+Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie podejścia wyścigowego opisanego wcześniej.
 Mając zestaw przepływów pracy, możemy użyć funkcji `workflow_map()` do podejścia wyścigowego.
+
+![](https://www.eatliver.com/wp-content/uploads/2021/03/art-gifs7.gif){.column-margin fig-align="center" width="400"}
 
 ```{r}
 #| eval: false
@@ -418,3 +426,5 @@ boosting_test_results %>%
    coord_obs_pred() + 
    labs(x = "observed", y = "predicted")
 ```
+
+![](https://media1.giphy.com/media/BPJmthQ3YRwD6QqcVD/giphy.gif){.column-margin fig-align="center" width="400"}

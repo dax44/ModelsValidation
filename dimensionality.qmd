@@ -12,6 +12,8 @@ Redukcja wymiarowości może być stosowana zarówno w inżynierii cech, jak i w
 Na przykład, w wielowymiarowych eksperymentach biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty niezwiązane z interesującym nas zagadnieniem, takie jak różnice między laboratoriami).
 Eksploracja danych jest trudna, gdy istnieją setki tysięcy wymiarów, a redukcja wymiarowości może być pomocą w analizie danych.
 
+![](https://thumbs.gfycat.com/SlimCreepyAmericanwarmblood-size_restricted.gif){.column-margin fig-align="center" width="400"}
+
 Inną potencjalną konsekwencją posiadania wielu predyktorów jest model nadmiarową liczbą predyktorów.
 Najprostszym przykładem jest regresja liniowa, gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do dopasowania modelu.
 Innym problemem jest współliniowość, gdzie korelacje między predyktorami mogą negatywnie wpływać na operacje matematyczne używane do oszacowania modelu.
@@ -47,6 +49,8 @@ Te piksele mogą być analizowane w celu uzyskania cech dla każdej fasoli, taki
 Cechy te są następnie wykorzystywane do modelowania wyniku (odmiany fasoli), ponieważ różne odmiany fasoli wyglądają inaczej.
 Dane treningowe pochodzą z zestawu ręcznie oznakowanych obrazów, a ten zestaw danych jest używany do tworzenia modelu predykcyjnego, który może rozróżnić siedem odmian fasoli: Cali, Horoz, Dermason, Seker, Bombay, Barbunya i Sira.
 Stworzenie skutecznego modelu może pomóc producentom w ilościowym określeniu jednorodności partii fasoli.
+
+![](https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif){.column-margin fig-align="center" width="400"}
 
 Istnieje wiele metod kwantyfikacji kształtów obiektów [@mingqiang2008].
 Wiele z nich dotyczy granic lub regionów interesującego nas obiektu.
@@ -124,6 +128,8 @@ Pamiętaj, że podczas wywoływania funkcji `recipe()` kroki nie są w żaden sp
 
 Przepis ten zostanie rozszerzony o dodatkowe kroki dla analiz redukcji wymiarowości.
 Zanim to zrobimy, przejdźmy do tego, jak receptura może być używana poza przepływem pracy.
+
+![](https://media.tenor.com/tc9hmi0Hfs8AAAAM/cook-fail.gif){.column-margin fig-align="center" width="400"}
 
 Przepływ pracy zawierający recepturę wykorzystuje `fit()` do estymacji receptury i modelu, a następnie `predict()` do przetwarzania danych i tworzenia przewidywań modelu.
 W pakiecie `recipes` znajdują się analogiczne funkcje, które mogą być użyte do tego samego celu:
@@ -210,6 +216,8 @@ Domyślnym selektorem jest `everything()`, ale można dokonać bardziej szczegó
 ## Ekstrakcja cech
 
 Ponieważ receptury są podstawową opcją w `tidymodels` do redukcji wymiarowości, napiszmy funkcję, która oszacuje transformację i wykreśli wynikowe dane w postaci macierzy wykresów za pośrednictwem pakietu `ggforce`:
+
+![](http://2.bp.blogspot.com/-lhU1CX7za18/Vqd2ZTeMK5I/AAAAAAAEQi0/MX3n8m60ZdE/s1600/pulp_fictions_confused_travolta_is_popping_up_in_gifs_across_the_web_and_theyre_hil%252B%25252814%252529.gif){.column-margin fig-align="center" width="400"}
 
 ```{r}
 library(ggforce)
@@ -365,6 +373,8 @@ Z tego powodu pomocne byłoby eksperymentowanie z kilkoma parametrami, aby oceni
 
 Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi modelami.
 Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa, *bagged trees*, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i regularyzowana analiza dyskryminacyjna (RDA).
+
+![](https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif){.column-margin fig-align="center" width="400"}
 
 Stworzymy serię specyfikacji modeli, a następnie użyjemy zestawu przepływów pracy do dostrojenia modeli w poniższym kodzie.
 Zauważ, że parametry modelu są dostrajane w połączeniu z parametrami receptury (np. rozmiar zredukowanego wymiaru, parametry UMAP).
