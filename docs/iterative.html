@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.234">
+<meta name="generator" content="quarto-1.3.299">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 12&nbsp; Przeszukiwanie iteracyjne</title>
 <style>
@@ -14,7 +14,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
@@ -44,43 +44,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -111,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./example.html" rel="next">
 <link href="./parallel.html" rel="prev">
-<link href="./cover.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -140,7 +110,7 @@ div.csl-indent {
     "search-detached-cancel-button-title": "Anuluj",
     "search-submit-button-title": "Zatwierdź"
   }
-}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
 <body class="nav-sidebar floating slimcontent">
 
@@ -150,7 +120,7 @@ div.csl-indent {
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./iterative.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></a></li></ol></nav>
-      <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -182,87 +152,104 @@ div.csl-indent {
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Wprowadzenie</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a>
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./infer.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></a>
+  <a href="./infer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./measures.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></a>
+  <a href="./measures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./resampling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></a>
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></a>
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./resampling2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></a>
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./comparison.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></a>
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tuning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></a>
+  <a href="./tuning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./grid_search.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></a>
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parallel.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></a>
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./iterative.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></a>
+  <a href="./iterative.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./example.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></a>
+  <a href="./example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></a>
+  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./imbalance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></a>
+  <a href="./imbalance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
@@ -413,15 +400,28 @@ Range (transformed scale): [-10, 0]</code></pre>
 <p>Matematycznie, GP jest zbiorem zmiennych losowych, których wspólny rozkład prawdopodobieństwa jest wielowymiarowy normalny. W kontekście naszych zastosowań jest to zbiór metryk wydajności dla wartości kandydujących parametrów dostrajania. Dla początkowej siatki czterech próbek, realizacje tych czterech zmiennych losowych wynosiły 0.8639, 0.8625, 0.8627 i 0.8659. Zakłada się, że mają rozkład wielowymiarowy normalny. Wejściami definiującymi zmienne niezależne dla modelu GP są odpowiednie wartości dostrajania parametrów (przedstawione w <a href="#tbl-1">Tabela&nbsp;<span>12.1</span></a>).</p>
 <div class="cell">
 <div class="cell-output-display">
+<div id="tbl-1" class="anchored">
 
 <div id="fyxwfajvzc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#fyxwfajvzc table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#fyxwfajvzc thead, #fyxwfajvzc tbody, #fyxwfajvzc tfoot, #fyxwfajvzc tr, #fyxwfajvzc td, #fyxwfajvzc th {
+  border-style: none;
+}
+
+#fyxwfajvzc p {
+  margin: 0;
+  padding: 0;
 }
 
 #fyxwfajvzc .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -442,18 +442,6 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#fyxwfajvzc .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #fyxwfajvzc .gt_caption {
@@ -477,12 +465,24 @@ Range (transformed scale): [-10, 0]</code></pre>
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#fyxwfajvzc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #fyxwfajvzc .gt_bottom_border {
@@ -556,6 +556,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#fyxwfajvzc .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #fyxwfajvzc .gt_group_heading {
@@ -657,6 +661,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 2px;
 }
 
+#fyxwfajvzc .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #fyxwfajvzc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -706,6 +714,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
+#fyxwfajvzc .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #fyxwfajvzc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -736,8 +754,8 @@ Range (transformed scale): [-10, 0]</code></pre>
 #fyxwfajvzc .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -794,10 +812,9 @@ Range (transformed scale): [-10, 0]</code></pre>
 }
 
 #fyxwfajvzc .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #fyxwfajvzc .gt_asterisk {
@@ -825,39 +842,38 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-indent: 25px;
 }
 </style>
-<div id="tbl-1" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.1: Wartości startowe w procedurze poszukiwania optymalnych parametrów</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="ROC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">ROC</th>
-<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
-<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.1:  <p>Wartości startowe w procedurze poszukiwania optymalnych
+parametrów</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ROC">ROC</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cost">cost</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rbf_sigma">rbf_sigma</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="ROC">0.8639</td>
-<td class="gt_row gt_right" headers="cost">0.01562</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1e-06</td>
+<tr>
+<td headers="ROC" class="gt_row gt_right">0.8639</td>
+<td headers="cost" class="gt_row gt_right">0.01562</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1e-06</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="ROC">0.8625</td>
-<td class="gt_row gt_right" headers="cost">2.00000</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1e-06</td>
+<tr>
+<td headers="ROC" class="gt_row gt_right">0.8625</td>
+<td headers="cost" class="gt_row gt_right">2.00000</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1e-06</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="ROC">0.8627</td>
-<td class="gt_row gt_right" headers="cost">0.01562</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1e-04</td>
+<tr>
+<td headers="ROC" class="gt_row gt_right">0.8627</td>
+<td headers="cost" class="gt_row gt_right">0.01562</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1e-04</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="ROC">0.8659</td>
-<td class="gt_row gt_right" headers="cost">2.00000</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1e-04</td>
+<tr>
+<td headers="ROC" class="gt_row gt_right">0.8659</td>
+<td headers="cost" class="gt_row gt_right">2.00000</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1e-04</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>
@@ -911,15 +927,28 @@ Range (transformed scale): [-10, 0]</code></pre>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">gt</span><span class="op">(</span><span class="va">tab2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-2" class="anchored">
 
 <div id="lmthswvhxc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#lmthswvhxc table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#lmthswvhxc thead, #lmthswvhxc tbody, #lmthswvhxc tfoot, #lmthswvhxc tr, #lmthswvhxc td, #lmthswvhxc th {
+  border-style: none;
+}
+
+#lmthswvhxc p {
+  margin: 0;
+  padding: 0;
 }
 
 #lmthswvhxc .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -940,18 +969,6 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#lmthswvhxc .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #lmthswvhxc .gt_caption {
@@ -975,12 +992,24 @@ Range (transformed scale): [-10, 0]</code></pre>
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#lmthswvhxc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #lmthswvhxc .gt_bottom_border {
@@ -1054,6 +1083,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#lmthswvhxc .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #lmthswvhxc .gt_group_heading {
@@ -1155,6 +1188,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 2px;
 }
 
+#lmthswvhxc .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #lmthswvhxc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -1204,6 +1241,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
+#lmthswvhxc .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #lmthswvhxc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -1234,8 +1281,8 @@ Range (transformed scale): [-10, 0]</code></pre>
 #lmthswvhxc .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -1292,10 +1339,9 @@ Range (transformed scale): [-10, 0]</code></pre>
 }
 
 #lmthswvhxc .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #lmthswvhxc .gt_asterisk {
@@ -1323,32 +1369,31 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-indent: 25px;
 }
 </style>
-<div id="tbl-2" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.2: Oczekiwana poprawa dla dwóch kandydujących parametrów dostrajania.</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="Parameter.Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Parameter.Value</th>
-<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Mean</th>
-<th id="Std.Dev" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Std.Dev</th>
-<th id="Expected.Improvment" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Expected.Improvment</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.2:  <p>Oczekiwana poprawa dla dwóch kandydujących parametrów
+dostrajania.</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Parameter.Value">Parameter.Value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Std.Dev">Std.Dev</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Expected.Improvment">Expected.Improvment</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="Parameter.Value">0.10</td>
-<td class="gt_row gt_right" headers="Mean">0.8679</td>
-<td class="gt_row gt_right" headers="Std.Dev">0.0004317</td>
-<td class="gt_row gt_right" headers="Expected.Improvment">0.000190</td>
+<tr>
+<td headers="Parameter.Value" class="gt_row gt_right">0.10</td>
+<td headers="Mean" class="gt_row gt_right">0.8679</td>
+<td headers="Std.Dev" class="gt_row gt_right">0.0004317</td>
+<td headers="Expected.Improvment" class="gt_row gt_right">0.000190</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="Parameter.Value">0.25</td>
-<td class="gt_row gt_right" headers="Mean">0.8671</td>
-<td class="gt_row gt_right" headers="Std.Dev">0.0039301</td>
-<td class="gt_row gt_right" headers="Expected.Improvment">0.001216</td>
+<tr>
+<td headers="Parameter.Value" class="gt_row gt_right">0.25</td>
+<td headers="Mean" class="gt_row gt_right">0.8671</td>
+<td headers="Std.Dev" class="gt_row gt_right">0.0039301</td>
+<td headers="Expected.Improvment" class="gt_row gt_right">0.001216</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>
@@ -1398,15 +1443,28 @@ Range (transformed scale): [-10, 0]</code></pre>
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-bo1" class="anchored">
 
 <div id="argozolhlp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#argozolhlp table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#argozolhlp thead, #argozolhlp tbody, #argozolhlp tfoot, #argozolhlp tr, #argozolhlp td, #argozolhlp th {
+  border-style: none;
+}
+
+#argozolhlp p {
+  margin: 0;
+  padding: 0;
 }
 
 #argozolhlp .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -1427,18 +1485,6 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#argozolhlp .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #argozolhlp .gt_caption {
@@ -1462,12 +1508,24 @@ Range (transformed scale): [-10, 0]</code></pre>
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#argozolhlp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #argozolhlp .gt_bottom_border {
@@ -1541,6 +1599,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#argozolhlp .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #argozolhlp .gt_group_heading {
@@ -1642,6 +1704,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 2px;
 }
 
+#argozolhlp .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #argozolhlp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -1691,6 +1757,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
+#argozolhlp .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #argozolhlp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -1721,8 +1797,8 @@ Range (transformed scale): [-10, 0]</code></pre>
 #argozolhlp .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -1779,10 +1855,9 @@ Range (transformed scale): [-10, 0]</code></pre>
 }
 
 #argozolhlp .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #argozolhlp .gt_asterisk {
@@ -1810,344 +1885,342 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-indent: 25px;
 }
 </style>
-<div id="tbl-bo1" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.3: Przebieg optymalizacji baysowskiej</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
-<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
-<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
-<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
-<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
-<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
-<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
-<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
-<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.3:  <p>Przebieg optymalizacji baysowskiej</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cost">cost</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rbf_sigma">rbf_sigma</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".metric">.metric</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".estimator">.estimator</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mean">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std_err">std_err</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".config">.config</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=".iter">.iter</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.562500e-02</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8638724</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008637894</td>
-<td class="gt_row gt_left" headers=".config">Preprocessor1_Model1</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.562500e-02</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8638724</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008637894</td>
+<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.000000e+00</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8625326</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008672545</td>
-<td class="gt_row gt_left" headers=".config">Preprocessor1_Model2</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.000000e+00</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8625326</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008672545</td>
+<td headers=".config" class="gt_row gt_left">Preprocessor1_Model2</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.562500e-02</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8627495</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008624554</td>
-<td class="gt_row gt_left" headers=".config">Preprocessor1_Model3</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.562500e-02</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8627495</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008624554</td>
+<td headers=".config" class="gt_row gt_left">Preprocessor1_Model3</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.000000e+00</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8659439</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008545691</td>
-<td class="gt_row gt_left" headers=".config">Preprocessor1_Model4</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.000000e+00</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8659439</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008545691</td>
+<td headers=".config" class="gt_row gt_left">Preprocessor1_Model4</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">8.381539e+00</td>
-<td class="gt_row gt_right" headers="rbf_sigma">5.408960e-07</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8625673</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008627089</td>
-<td class="gt_row gt_left" headers=".config">Iter1</td>
-<td class="gt_row gt_right" headers=".iter">1</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">8.381539e+00</td>
+<td headers="rbf_sigma" class="gt_row gt_right">5.408960e-07</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8625673</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008627089</td>
+<td headers=".config" class="gt_row gt_left">Iter1</td>
+<td headers=".iter" class="gt_row gt_right">1</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">5.608902e+00</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.613260e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8728182</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008236644</td>
-<td class="gt_row gt_left" headers=".config">Iter2</td>
-<td class="gt_row gt_right" headers=".iter">2</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">5.608902e+00</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.613260e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8728182</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008236644</td>
+<td headers=".config" class="gt_row gt_left">Iter2</td>
+<td headers=".iter" class="gt_row gt_right">2</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.600639e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.983450e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8781692</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008684509</td>
-<td class="gt_row gt_left" headers=".config">Iter3</td>
-<td class="gt_row gt_right" headers=".iter">3</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.600639e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.983450e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8781692</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008684509</td>
+<td headers=".config" class="gt_row gt_left">Iter3</td>
+<td headers=".iter" class="gt_row gt_right">3</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.541191e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.585081e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8832282</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.009833644</td>
-<td class="gt_row gt_left" headers=".config">Iter4</td>
-<td class="gt_row gt_right" headers=".iter">4</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.541191e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.585081e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8832282</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.009833644</td>
+<td headers=".config" class="gt_row gt_left">Iter4</td>
+<td headers=".iter" class="gt_row gt_right">4</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">2.912115e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">3.961177e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8894476</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008674057</td>
-<td class="gt_row gt_left" headers=".config">Iter5</td>
-<td class="gt_row gt_right" headers=".iter">5</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.912115e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">3.961177e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8894476</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008674057</td>
+<td headers=".config" class="gt_row gt_left">Iter5</td>
+<td headers=".iter" class="gt_row gt_right">5</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.282106e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">7.094282e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8933213</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008618012</td>
-<td class="gt_row gt_left" headers=".config">Iter6</td>
-<td class="gt_row gt_right" headers=".iter">6</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.282106e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">7.094282e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8933213</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008618012</td>
+<td headers=".config" class="gt_row gt_left">Iter6</td>
+<td headers=".iter" class="gt_row gt_right">6</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">3.049977e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.166976e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8978111</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008046705</td>
-<td class="gt_row gt_left" headers=".config">Iter7</td>
-<td class="gt_row gt_right" headers=".iter">7</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.049977e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.166976e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8978111</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008046705</td>
+<td headers=".config" class="gt_row gt_left">Iter7</td>
+<td headers=".iter" class="gt_row gt_right">7</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.155839e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.888618e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8925884</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.008601545</td>
-<td class="gt_row gt_left" headers=".config">Iter8</td>
-<td class="gt_row gt_right" headers=".iter">8</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.155839e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.888618e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8925884</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.008601545</td>
+<td headers=".config" class="gt_row gt_left">Iter8</td>
+<td headers=".iter" class="gt_row gt_right">8</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.312493e-03</td>
-<td class="gt_row gt_right" headers="rbf_sigma">9.584302e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8762837</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008684225</td>
-<td class="gt_row gt_left" headers=".config">Iter9</td>
-<td class="gt_row gt_right" headers=".iter">9</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.312493e-03</td>
+<td headers="rbf_sigma" class="gt_row gt_right">9.584302e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8762837</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008684225</td>
+<td headers=".config" class="gt_row gt_left">Iter9</td>
+<td headers=".iter" class="gt_row gt_right">9</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.908667e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.420931e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8979937</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007875059</td>
-<td class="gt_row gt_left" headers=".config">Iter10</td>
-<td class="gt_row gt_right" headers=".iter">10</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.908667e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.420931e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8979937</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007875059</td>
+<td headers=".config" class="gt_row gt_left">Iter10</td>
+<td headers=".iter" class="gt_row gt_right">10</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.058781e-03</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.364654e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8656167</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008754313</td>
-<td class="gt_row gt_left" headers=".config">Iter11</td>
-<td class="gt_row gt_right" headers=".iter">11</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.058781e-03</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.364654e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8656167</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008754313</td>
+<td headers=".config" class="gt_row gt_left">Iter11</td>
+<td headers=".iter" class="gt_row gt_right">11</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.154910e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.210898e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8978275</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007994954</td>
-<td class="gt_row gt_left" headers=".config">Iter12</td>
-<td class="gt_row gt_right" headers=".iter">12</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.154910e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.210898e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8978275</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007994954</td>
+<td headers=".config" class="gt_row gt_left">Iter12</td>
+<td headers=".iter" class="gt_row gt_right">12</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">3.073241e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.451115e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8982018</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007819465</td>
-<td class="gt_row gt_left" headers=".config">Iter13</td>
-<td class="gt_row gt_right" headers=".iter">13</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.073241e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.451115e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8982018</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007819465</td>
+<td headers=".config" class="gt_row gt_left">Iter13</td>
+<td headers=".iter" class="gt_row gt_right">13</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.033878e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">9.917137e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8770458</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008412071</td>
-<td class="gt_row gt_left" headers=".config">Iter14</td>
-<td class="gt_row gt_right" headers=".iter">14</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.033878e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">9.917137e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8770458</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008412071</td>
+<td headers=".config" class="gt_row gt_left">Iter14</td>
+<td headers=".iter" class="gt_row gt_right">14</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.129147e-03</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.026267e-07</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8641243</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008666403</td>
-<td class="gt_row gt_left" headers=".config">Iter15</td>
-<td class="gt_row gt_right" headers=".iter">15</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.129147e-03</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.026267e-07</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8641243</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008666403</td>
+<td headers=".config" class="gt_row gt_left">Iter15</td>
+<td headers=".iter" class="gt_row gt_right">15</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.111979e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.698500e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8986102</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007828958</td>
-<td class="gt_row gt_left" headers=".config">Iter16</td>
-<td class="gt_row gt_right" headers=".iter">16</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.111979e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.698500e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8986102</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007828958</td>
+<td headers=".config" class="gt_row gt_left">Iter16</td>
+<td headers=".iter" class="gt_row gt_right">16</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.128109e-03</td>
-<td class="gt_row gt_right" headers="rbf_sigma">9.256031e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8639301</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008622849</td>
-<td class="gt_row gt_left" headers=".config">Iter17</td>
-<td class="gt_row gt_right" headers=".iter">17</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.128109e-03</td>
+<td headers="rbf_sigma" class="gt_row gt_right">9.256031e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8639301</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008622849</td>
+<td headers=".config" class="gt_row gt_left">Iter17</td>
+<td headers=".iter" class="gt_row gt_right">17</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">9.925669e-04</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.237736e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8744407</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008990285</td>
-<td class="gt_row gt_left" headers=".config">Iter18</td>
-<td class="gt_row gt_right" headers=".iter">18</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">9.925669e-04</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.237736e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8744407</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008990285</td>
+<td headers=".config" class="gt_row gt_left">Iter18</td>
+<td headers=".iter" class="gt_row gt_right">18</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">3.133523e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.896086e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8984786</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007870489</td>
-<td class="gt_row gt_left" headers=".config">Iter19</td>
-<td class="gt_row gt_right" headers=".iter">19</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.133523e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.896086e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8984786</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007870489</td>
+<td headers=".config" class="gt_row gt_left">Iter19</td>
+<td headers=".iter" class="gt_row gt_right">19</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.064022e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.581975e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8985440</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007808150</td>
-<td class="gt_row gt_left" headers=".config">Iter20</td>
-<td class="gt_row gt_right" headers=".iter">20</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.064022e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.581975e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8985440</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007808150</td>
+<td headers=".config" class="gt_row gt_left">Iter20</td>
+<td headers=".iter" class="gt_row gt_right">20</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.480665e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.821641e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8953765</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.008709148</td>
-<td class="gt_row gt_left" headers=".config">Iter21</td>
-<td class="gt_row gt_right" headers=".iter">21</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.480665e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.821641e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8953765</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.008709148</td>
+<td headers=".config" class="gt_row gt_left">Iter21</td>
+<td headers=".iter" class="gt_row gt_right">21</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.184368e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.715154e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8987420</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007764247</td>
-<td class="gt_row gt_left" headers=".config">Iter22</td>
-<td class="gt_row gt_right" headers=".iter">22</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.184368e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.715154e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8987420</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007764247</td>
+<td headers=".config" class="gt_row gt_left">Iter22</td>
+<td headers=".iter" class="gt_row gt_right">22</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">2.927864e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">8.793267e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8674531</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008316968</td>
-<td class="gt_row gt_left" headers=".config">Iter23</td>
-<td class="gt_row gt_right" headers=".iter">23</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.927864e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">8.793267e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8674531</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008316968</td>
+<td headers=".config" class="gt_row gt_left">Iter23</td>
+<td headers=".iter" class="gt_row gt_right">23</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.878067e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.244728e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8544690</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009459848</td>
-<td class="gt_row gt_left" headers=".config">Iter24</td>
-<td class="gt_row gt_right" headers=".iter">24</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.878067e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.244728e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8544690</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009459848</td>
+<td headers=".config" class="gt_row gt_left">Iter24</td>
+<td headers=".iter" class="gt_row gt_right">24</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.456602e+01</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.021120e-07</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8623536</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008611959</td>
-<td class="gt_row gt_left" headers=".config">Iter25</td>
-<td class="gt_row gt_right" headers=".iter">25</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.456602e+01</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.021120e-07</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8623536</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008611959</td>
+<td headers=".config" class="gt_row gt_left">Iter25</td>
+<td headers=".iter" class="gt_row gt_right">25</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>
@@ -2155,15 +2228,28 @@ Range (transformed scale): [-10, 0]</code></pre>
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-bo2" class="anchored">
 
 <div id="zsvatcklhn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#zsvatcklhn table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zsvatcklhn thead, #zsvatcklhn tbody, #zsvatcklhn tfoot, #zsvatcklhn tr, #zsvatcklhn td, #zsvatcklhn th {
+  border-style: none;
+}
+
+#zsvatcklhn p {
+  margin: 0;
+  padding: 0;
 }
 
 #zsvatcklhn .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -2184,18 +2270,6 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#zsvatcklhn .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #zsvatcklhn .gt_caption {
@@ -2219,12 +2293,24 @@ Range (transformed scale): [-10, 0]</code></pre>
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#zsvatcklhn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #zsvatcklhn .gt_bottom_border {
@@ -2298,6 +2384,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#zsvatcklhn .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #zsvatcklhn .gt_group_heading {
@@ -2399,6 +2489,10 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-width: 2px;
 }
 
+#zsvatcklhn .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #zsvatcklhn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -2448,6 +2542,16 @@ Range (transformed scale): [-10, 0]</code></pre>
   border-top-color: #D3D3D3;
 }
 
+#zsvatcklhn .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #zsvatcklhn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -2478,8 +2582,8 @@ Range (transformed scale): [-10, 0]</code></pre>
 #zsvatcklhn .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -2536,10 +2640,9 @@ Range (transformed scale): [-10, 0]</code></pre>
 }
 
 #zsvatcklhn .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #zsvatcklhn .gt_asterisk {
@@ -2567,80 +2670,78 @@ Range (transformed scale): [-10, 0]</code></pre>
   text-indent: 25px;
 }
 </style>
-<div id="tbl-bo2" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.4: Zestaw optymalnych parametrów na podstawie OB</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
-<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
-<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
-<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
-<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
-<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
-<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
-<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
-<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.4:  <p>Zestaw optymalnych parametrów na podstawie OB</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cost">cost</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rbf_sigma">rbf_sigma</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".metric">.metric</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".estimator">.estimator</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mean">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std_err">std_err</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".config">.config</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=".iter">.iter</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">31.84368</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001715154</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8987420</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007764247</td>
-<td class="gt_row gt_left" headers=".config">Iter22</td>
-<td class="gt_row gt_right" headers=".iter">22</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">31.84368</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001715154</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8987420</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007764247</td>
+<td headers=".config" class="gt_row gt_left">Iter22</td>
+<td headers=".iter" class="gt_row gt_right">22</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">31.11979</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001698500</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8986102</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007828958</td>
-<td class="gt_row gt_left" headers=".config">Iter16</td>
-<td class="gt_row gt_right" headers=".iter">16</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">31.11979</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001698500</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8986102</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007828958</td>
+<td headers=".config" class="gt_row gt_left">Iter16</td>
+<td headers=".iter" class="gt_row gt_right">16</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">30.64022</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001581975</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8985440</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007808150</td>
-<td class="gt_row gt_left" headers=".config">Iter20</td>
-<td class="gt_row gt_right" headers=".iter">20</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">30.64022</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001581975</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8985440</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007808150</td>
+<td headers=".config" class="gt_row gt_left">Iter20</td>
+<td headers=".iter" class="gt_row gt_right">20</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">31.33523</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001896086</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8984786</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007870489</td>
-<td class="gt_row gt_left" headers=".config">Iter19</td>
-<td class="gt_row gt_right" headers=".iter">19</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">31.33523</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001896086</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8984786</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007870489</td>
+<td headers=".config" class="gt_row gt_left">Iter19</td>
+<td headers=".iter" class="gt_row gt_right">19</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">30.73241</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001451115</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8982018</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007819465</td>
-<td class="gt_row gt_left" headers=".config">Iter13</td>
-<td class="gt_row gt_right" headers=".iter">13</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">30.73241</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001451115</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8982018</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007819465</td>
+<td headers=".config" class="gt_row gt_left">Iter13</td>
+<td headers=".iter" class="gt_row gt_right">13</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>
@@ -2748,15 +2849,28 @@ Zagrożenie
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-sa1" class="anchored">
 
 <div id="zfsmrgckxu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#zfsmrgckxu table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zfsmrgckxu thead, #zfsmrgckxu tbody, #zfsmrgckxu tfoot, #zfsmrgckxu tr, #zfsmrgckxu td, #zfsmrgckxu th {
+  border-style: none;
+}
+
+#zfsmrgckxu p {
+  margin: 0;
+  padding: 0;
 }
 
 #zfsmrgckxu .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -2777,18 +2891,6 @@ Zagrożenie
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#zfsmrgckxu .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #zfsmrgckxu .gt_caption {
@@ -2812,12 +2914,24 @@ Zagrożenie
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#zfsmrgckxu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #zfsmrgckxu .gt_bottom_border {
@@ -2891,6 +3005,10 @@ Zagrożenie
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#zfsmrgckxu .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #zfsmrgckxu .gt_group_heading {
@@ -2992,6 +3110,10 @@ Zagrożenie
   border-top-width: 2px;
 }
 
+#zfsmrgckxu .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #zfsmrgckxu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -3041,6 +3163,16 @@ Zagrożenie
   border-top-color: #D3D3D3;
 }
 
+#zfsmrgckxu .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #zfsmrgckxu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -3071,8 +3203,8 @@ Zagrożenie
 #zfsmrgckxu .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -3129,10 +3261,9 @@ Zagrożenie
 }
 
 #zfsmrgckxu .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #zfsmrgckxu .gt_asterisk {
@@ -3160,619 +3291,617 @@ Zagrożenie
   text-indent: 25px;
 }
 </style>
-<div id="tbl-sa1" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.5: Podsumowanie symulowanego wyżarzania</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
-<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
-<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
-<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
-<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
-<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
-<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
-<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
-<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.5:  <p>Podsumowanie symulowanego wyżarzania</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cost">cost</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rbf_sigma">rbf_sigma</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".metric">.metric</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".estimator">.estimator</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mean">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std_err">std_err</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".config">.config</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=".iter">.iter</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.0156250</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8638724</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008637894</td>
-<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model1</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.0156250</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8638724</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008637894</td>
+<td headers=".config" class="gt_row gt_left">initial_Preprocessor1_Model1</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.0000000</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8625326</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008672545</td>
-<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model2</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.0000000</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8625326</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008672545</td>
+<td headers=".config" class="gt_row gt_left">initial_Preprocessor1_Model2</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.0156250</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8627495</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008624554</td>
-<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model3</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.0156250</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8627495</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008624554</td>
+<td headers=".config" class="gt_row gt_left">initial_Preprocessor1_Model3</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.0000000</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.000000e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8659439</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008545691</td>
-<td class="gt_row gt_left" headers=".config">initial_Preprocessor1_Model4</td>
-<td class="gt_row gt_right" headers=".iter">0</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.0000000</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.000000e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8659439</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008545691</td>
+<td headers=".config" class="gt_row gt_left">initial_Preprocessor1_Model4</td>
+<td headers=".iter" class="gt_row gt_right">0</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">2.7792215</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.231877e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8635104</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008642153</td>
-<td class="gt_row gt_left" headers=".config">Iter1</td>
-<td class="gt_row gt_right" headers=".iter">1</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.7792215</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.231877e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8635104</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008642153</td>
+<td headers=".config" class="gt_row gt_left">Iter1</td>
+<td headers=".iter" class="gt_row gt_right">1</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">8.9751798</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.317101e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8733437</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008401879</td>
-<td class="gt_row gt_left" headers=".config">Iter2</td>
-<td class="gt_row gt_right" headers=".iter">2</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">8.9751798</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.317101e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8733437</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008401879</td>
+<td headers=".config" class="gt_row gt_left">Iter2</td>
+<td headers=".iter" class="gt_row gt_right">2</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">8.0489544</td>
-<td class="gt_row gt_right" headers="rbf_sigma">3.113457e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8672404</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008380301</td>
-<td class="gt_row gt_left" headers=".config">Iter3</td>
-<td class="gt_row gt_right" headers=".iter">3</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">8.0489544</td>
+<td headers="rbf_sigma" class="gt_row gt_right">3.113457e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8672404</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008380301</td>
+<td headers=".config" class="gt_row gt_left">Iter3</td>
+<td headers=".iter" class="gt_row gt_right">3</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">7.4631879</td>
-<td class="gt_row gt_right" headers="rbf_sigma">6.401369e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8704169</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008147365</td>
-<td class="gt_row gt_left" headers=".config">Iter4</td>
-<td class="gt_row gt_right" headers=".iter">4</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">7.4631879</td>
+<td headers="rbf_sigma" class="gt_row gt_right">6.401369e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8704169</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008147365</td>
+<td headers=".config" class="gt_row gt_left">Iter4</td>
+<td headers=".iter" class="gt_row gt_right">4</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">25.4276256</td>
-<td class="gt_row gt_right" headers="rbf_sigma">6.964316e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8744436</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008459084</td>
-<td class="gt_row gt_left" headers=".config">Iter5</td>
-<td class="gt_row gt_right" headers=".iter">5</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">25.4276256</td>
+<td headers="rbf_sigma" class="gt_row gt_right">6.964316e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8744436</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008459084</td>
+<td headers=".config" class="gt_row gt_left">Iter5</td>
+<td headers=".iter" class="gt_row gt_right">5</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">26.0442746</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.620597e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8696570</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008110480</td>
-<td class="gt_row gt_left" headers=".config">Iter6</td>
-<td class="gt_row gt_right" headers=".iter">6</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">26.0442746</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.620597e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8696570</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008110480</td>
+<td headers=".config" class="gt_row gt_left">Iter6</td>
+<td headers=".iter" class="gt_row gt_right">6</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">27.8247939</td>
-<td class="gt_row gt_right" headers="rbf_sigma">6.830484e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8658910</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008447841</td>
-<td class="gt_row gt_left" headers=".config">Iter7</td>
-<td class="gt_row gt_right" headers=".iter">7</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">27.8247939</td>
+<td headers="rbf_sigma" class="gt_row gt_right">6.830484e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8658910</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008447841</td>
+<td headers=".config" class="gt_row gt_left">Iter7</td>
+<td headers=".iter" class="gt_row gt_right">7</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">11.5246937</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.459848e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8623315</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008657469</td>
-<td class="gt_row gt_left" headers=".config">Iter8</td>
-<td class="gt_row gt_right" headers=".iter">8</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">11.5246937</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.459848e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8623315</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008657469</td>
+<td headers=".config" class="gt_row gt_left">Iter8</td>
+<td headers=".iter" class="gt_row gt_right">8</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">11.5911446</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.938754e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8622997</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008647646</td>
-<td class="gt_row gt_left" headers=".config">Iter9</td>
-<td class="gt_row gt_right" headers=".iter">9</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">11.5911446</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.938754e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8622997</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008647646</td>
+<td headers=".config" class="gt_row gt_left">Iter9</td>
+<td headers=".iter" class="gt_row gt_right">9</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">16.0739132</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.533161e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8623219</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008658226</td>
-<td class="gt_row gt_left" headers=".config">Iter10</td>
-<td class="gt_row gt_right" headers=".iter">10</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">16.0739132</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.533161e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8623219</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008658226</td>
+<td headers=".config" class="gt_row gt_left">Iter10</td>
+<td headers=".iter" class="gt_row gt_right">10</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">22.9676231</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.507608e-06</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8623751</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008670690</td>
-<td class="gt_row gt_left" headers=".config">Iter11</td>
-<td class="gt_row gt_right" headers=".iter">11</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">22.9676231</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.507608e-06</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8623751</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008670690</td>
+<td headers=".config" class="gt_row gt_left">Iter11</td>
+<td headers=".iter" class="gt_row gt_right">11</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">14.6174389</td>
-<td class="gt_row gt_right" headers="rbf_sigma">3.625603e-07</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8624605</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008645675</td>
-<td class="gt_row gt_left" headers=".config">Iter12</td>
-<td class="gt_row gt_right" headers=".iter">12</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">14.6174389</td>
+<td headers="rbf_sigma" class="gt_row gt_right">3.625603e-07</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8624605</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008645675</td>
+<td headers=".config" class="gt_row gt_left">Iter12</td>
+<td headers=".iter" class="gt_row gt_right">12</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">30.2128582</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.354001e-07</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8625366</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008612533</td>
-<td class="gt_row gt_left" headers=".config">Iter13</td>
-<td class="gt_row gt_right" headers=".iter">13</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">30.2128582</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.354001e-07</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8625366</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008612533</td>
+<td headers=".config" class="gt_row gt_left">Iter13</td>
+<td headers=".iter" class="gt_row gt_right">13</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">14.1812532</td>
-<td class="gt_row gt_right" headers="rbf_sigma">7.415027e-05</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8726092</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008351119</td>
-<td class="gt_row gt_left" headers=".config">Iter14</td>
-<td class="gt_row gt_right" headers=".iter">14</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">14.1812532</td>
+<td headers="rbf_sigma" class="gt_row gt_right">7.415027e-05</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8726092</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008351119</td>
+<td headers=".config" class="gt_row gt_left">Iter14</td>
+<td headers=".iter" class="gt_row gt_right">14</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">5.1974958</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.892985e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8727956</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008301061</td>
-<td class="gt_row gt_left" headers=".config">Iter15</td>
-<td class="gt_row gt_right" headers=".iter">15</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">5.1974958</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.892985e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8727956</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008301061</td>
+<td headers=".config" class="gt_row gt_left">Iter15</td>
+<td headers=".iter" class="gt_row gt_right">15</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">6.2799813</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.101844e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8897887</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008859945</td>
-<td class="gt_row gt_left" headers=".config">Iter16</td>
-<td class="gt_row gt_right" headers=".iter">16</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">6.2799813</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.101844e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8897887</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008859945</td>
+<td headers=".config" class="gt_row gt_left">Iter16</td>
+<td headers=".iter" class="gt_row gt_right">16</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.7551679</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.895039e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8918849</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008922869</td>
-<td class="gt_row gt_left" headers=".config">Iter17</td>
-<td class="gt_row gt_right" headers=".iter">17</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.7551679</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.895039e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8918849</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008922869</td>
+<td headers=".config" class="gt_row gt_left">Iter17</td>
+<td headers=".iter" class="gt_row gt_right">17</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.7450163</td>
-<td class="gt_row gt_right" headers="rbf_sigma">7.152477e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8958891</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.009100454</td>
-<td class="gt_row gt_left" headers=".config">Iter18</td>
-<td class="gt_row gt_right" headers=".iter">18</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.7450163</td>
+<td headers="rbf_sigma" class="gt_row gt_right">7.152477e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8958891</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.009100454</td>
+<td headers=".config" class="gt_row gt_left">Iter18</td>
+<td headers=".iter" class="gt_row gt_right">18</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.6580640</td>
-<td class="gt_row gt_right" headers="rbf_sigma">7.237199e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8944414</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008826226</td>
-<td class="gt_row gt_left" headers=".config">Iter19</td>
-<td class="gt_row gt_right" headers=".iter">19</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.6580640</td>
+<td headers="rbf_sigma" class="gt_row gt_right">7.237199e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8944414</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008826226</td>
+<td headers=".config" class="gt_row gt_left">Iter19</td>
+<td headers=".iter" class="gt_row gt_right">19</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">0.2894265</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.800490e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8781751</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008519248</td>
-<td class="gt_row gt_left" headers=".config">Iter20</td>
-<td class="gt_row gt_right" headers=".iter">20</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.2894265</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.800490e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8781751</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008519248</td>
+<td headers=".config" class="gt_row gt_left">Iter20</td>
+<td headers=".iter" class="gt_row gt_right">20</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.8648804</td>
-<td class="gt_row gt_right" headers="rbf_sigma">9.061603e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8744488</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008274188</td>
-<td class="gt_row gt_left" headers=".config">Iter21</td>
-<td class="gt_row gt_right" headers=".iter">21</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.8648804</td>
+<td headers="rbf_sigma" class="gt_row gt_right">9.061603e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8744488</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008274188</td>
+<td headers=".config" class="gt_row gt_left">Iter21</td>
+<td headers=".iter" class="gt_row gt_right">21</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.6900002</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.370896e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8748006</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008467929</td>
-<td class="gt_row gt_left" headers=".config">Iter22</td>
-<td class="gt_row gt_right" headers=".iter">22</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.6900002</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.370896e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8748006</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008467929</td>
+<td headers=".config" class="gt_row gt_left">Iter22</td>
+<td headers=".iter" class="gt_row gt_right">22</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.9738868</td>
-<td class="gt_row gt_right" headers="rbf_sigma">8.518383e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8787410</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008594452</td>
-<td class="gt_row gt_left" headers=".config">Iter23</td>
-<td class="gt_row gt_right" headers=".iter">23</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.9738868</td>
+<td headers="rbf_sigma" class="gt_row gt_right">8.518383e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8787410</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008594452</td>
+<td headers=".config" class="gt_row gt_left">Iter23</td>
+<td headers=".iter" class="gt_row gt_right">23</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">2.8390760</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.343734e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8694466</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008255440</td>
-<td class="gt_row gt_left" headers=".config">Iter24</td>
-<td class="gt_row gt_right" headers=".iter">24</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.8390760</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.343734e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8694466</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008255440</td>
+<td headers=".config" class="gt_row gt_left">Iter24</td>
+<td headers=".iter" class="gt_row gt_right">24</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.6443050</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.818297e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8660129</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008642925</td>
-<td class="gt_row gt_left" headers=".config">Iter25</td>
-<td class="gt_row gt_right" headers=".iter">25</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.6443050</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.818297e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8660129</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008642925</td>
+<td headers=".config" class="gt_row gt_left">Iter25</td>
+<td headers=".iter" class="gt_row gt_right">25</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">0.4332128</td>
-<td class="gt_row gt_right" headers="rbf_sigma">8.494378e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8702872</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008407344</td>
-<td class="gt_row gt_left" headers=".config">Iter26</td>
-<td class="gt_row gt_right" headers=".iter">26</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.4332128</td>
+<td headers="rbf_sigma" class="gt_row gt_right">8.494378e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8702872</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008407344</td>
+<td headers=".config" class="gt_row gt_left">Iter26</td>
+<td headers=".iter" class="gt_row gt_right">26</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">1.5062749</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.117203e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8868902</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008384564</td>
-<td class="gt_row gt_left" headers=".config">Iter27</td>
-<td class="gt_row gt_right" headers=".iter">27</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.5062749</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.117203e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8868902</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008384564</td>
+<td headers=".config" class="gt_row gt_left">Iter27</td>
+<td headers=".iter" class="gt_row gt_right">27</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">1.4313131</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.549218e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8963429</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008367098</td>
-<td class="gt_row gt_left" headers=".config">Iter28</td>
-<td class="gt_row gt_right" headers=".iter">28</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.4313131</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.549218e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8963429</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008367098</td>
+<td headers=".config" class="gt_row gt_left">Iter28</td>
+<td headers=".iter" class="gt_row gt_right">28</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">2.7699626</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.362418e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8929540</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008489741</td>
-<td class="gt_row gt_left" headers=".config">Iter29</td>
-<td class="gt_row gt_right" headers=".iter">29</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">2.7699626</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.362418e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8929540</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008489741</td>
+<td headers=".config" class="gt_row gt_left">Iter29</td>
+<td headers=".iter" class="gt_row gt_right">29</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">4.9266582</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.583077e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8698810</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009097231</td>
-<td class="gt_row gt_left" headers=".config">Iter30</td>
-<td class="gt_row gt_right" headers=".iter">30</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">4.9266582</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.583077e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8698810</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009097231</td>
+<td headers=".config" class="gt_row gt_left">Iter30</td>
+<td headers=".iter" class="gt_row gt_right">30</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">7.7758900</td>
-<td class="gt_row gt_right" headers="rbf_sigma">9.490760e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8874485</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008767151</td>
-<td class="gt_row gt_left" headers=".config">Iter31</td>
-<td class="gt_row gt_right" headers=".iter">31</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">7.7758900</td>
+<td headers="rbf_sigma" class="gt_row gt_right">9.490760e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8874485</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008767151</td>
+<td headers=".config" class="gt_row gt_left">Iter31</td>
+<td headers=".iter" class="gt_row gt_right">31</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">4.8976312</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.580979e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8825035</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009000858</td>
-<td class="gt_row gt_left" headers=".config">Iter32</td>
-<td class="gt_row gt_right" headers=".iter">32</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">4.8976312</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.580979e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8825035</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009000858</td>
+<td headers=".config" class="gt_row gt_left">Iter32</td>
+<td headers=".iter" class="gt_row gt_right">32</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">12.4918485</td>
-<td class="gt_row gt_right" headers="rbf_sigma">8.493479e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8829449</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008897035</td>
-<td class="gt_row gt_left" headers=".config">Iter33</td>
-<td class="gt_row gt_right" headers=".iter">33</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">12.4918485</td>
+<td headers="rbf_sigma" class="gt_row gt_right">8.493479e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8829449</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008897035</td>
+<td headers=".config" class="gt_row gt_left">Iter33</td>
+<td headers=".iter" class="gt_row gt_right">33</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">9.4138354</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.056779e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8971685</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008342496</td>
-<td class="gt_row gt_left" headers=".config">Iter34</td>
-<td class="gt_row gt_right" headers=".iter">34</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">9.4138354</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.056779e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8971685</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008342496</td>
+<td headers=".config" class="gt_row gt_left">Iter34</td>
+<td headers=".iter" class="gt_row gt_right">34</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">16.7499203</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.398614e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8985179</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007916078</td>
-<td class="gt_row gt_left" headers=".config">Iter35</td>
-<td class="gt_row gt_right" headers=".iter">35</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">16.7499203</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.398614e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8985179</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007916078</td>
+<td headers=".config" class="gt_row gt_left">Iter35</td>
+<td headers=".iter" class="gt_row gt_right">35</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">18.8139030</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.403197e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8839150</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.009020320</td>
-<td class="gt_row gt_left" headers=".config">Iter36</td>
-<td class="gt_row gt_right" headers=".iter">36</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">18.8139030</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.403197e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8839150</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.009020320</td>
+<td headers=".config" class="gt_row gt_left">Iter36</td>
+<td headers=".iter" class="gt_row gt_right">36</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">21.9409340</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.216970e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8973481</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008280488</td>
-<td class="gt_row gt_left" headers=".config">Iter37</td>
-<td class="gt_row gt_right" headers=".iter">37</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">21.9409340</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.216970e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8973481</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008280488</td>
+<td headers=".config" class="gt_row gt_left">Iter37</td>
+<td headers=".iter" class="gt_row gt_right">37</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">8.7296351</td>
-<td class="gt_row gt_right" headers="rbf_sigma">5.154540e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8961246</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008263055</td>
-<td class="gt_row gt_left" headers=".config">Iter38</td>
-<td class="gt_row gt_right" headers=".iter">38</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">8.7296351</td>
+<td headers="rbf_sigma" class="gt_row gt_right">5.154540e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8961246</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008263055</td>
+<td headers=".config" class="gt_row gt_left">Iter38</td>
+<td headers=".iter" class="gt_row gt_right">38</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">13.5493211</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.655684e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8593977</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009612964</td>
-<td class="gt_row gt_left" headers=".config">Iter39</td>
-<td class="gt_row gt_right" headers=".iter">39</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">13.5493211</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.655684e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8593977</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009612964</td>
+<td headers=".config" class="gt_row gt_left">Iter39</td>
+<td headers=".iter" class="gt_row gt_right">39</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">3.4729934</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.312798e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8847509</td>
-<td class="gt_row gt_right" headers="n">9</td>
-<td class="gt_row gt_right" headers="std_err">0.009126495</td>
-<td class="gt_row gt_left" headers=".config">Iter40</td>
-<td class="gt_row gt_right" headers=".iter">40</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.4729934</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.312798e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8847509</td>
+<td headers="n" class="gt_row gt_right">9</td>
+<td headers="std_err" class="gt_row gt_right">0.009126495</td>
+<td headers=".config" class="gt_row gt_left">Iter40</td>
+<td headers=".iter" class="gt_row gt_right">40</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">3.1103793</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.869128e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8969694</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008168916</td>
-<td class="gt_row gt_left" headers=".config">Iter41</td>
-<td class="gt_row gt_right" headers=".iter">41</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.1103793</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.869128e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8969694</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008168916</td>
+<td headers=".config" class="gt_row gt_left">Iter41</td>
+<td headers=".iter" class="gt_row gt_right">41</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">1.2292254</td>
-<td class="gt_row gt_right" headers="rbf_sigma">6.540634e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8965152</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008550536</td>
-<td class="gt_row gt_left" headers=".config">Iter42</td>
-<td class="gt_row gt_right" headers=".iter">42</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">1.2292254</td>
+<td headers="rbf_sigma" class="gt_row gt_right">6.540634e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8965152</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008550536</td>
+<td headers=".config" class="gt_row gt_left">Iter42</td>
+<td headers=".iter" class="gt_row gt_right">42</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">0.5769315</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.846348e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8842725</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008540335</td>
-<td class="gt_row gt_left" headers=".config">Iter43</td>
-<td class="gt_row gt_right" headers=".iter">43</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">0.5769315</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.846348e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8842725</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008540335</td>
+<td headers=".config" class="gt_row gt_left">Iter43</td>
+<td headers=".iter" class="gt_row gt_right">43</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">22.9584171</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.241411e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8618903</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009740857</td>
-<td class="gt_row gt_left" headers=".config">Iter44</td>
-<td class="gt_row gt_right" headers=".iter">44</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">22.9584171</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.241411e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8618903</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009740857</td>
+<td headers=".config" class="gt_row gt_left">Iter44</td>
+<td headers=".iter" class="gt_row gt_right">44</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">10.6297370</td>
-<td class="gt_row gt_right" headers="rbf_sigma">4.059190e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8975137</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008203966</td>
-<td class="gt_row gt_left" headers=".config">Iter45</td>
-<td class="gt_row gt_right" headers=".iter">45</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">10.6297370</td>
+<td headers="rbf_sigma" class="gt_row gt_right">4.059190e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8975137</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008203966</td>
+<td headers=".config" class="gt_row gt_left">Iter45</td>
+<td headers=".iter" class="gt_row gt_right">45</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">10.6164560</td>
-<td class="gt_row gt_right" headers="rbf_sigma">2.519507e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8617737</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009517440</td>
-<td class="gt_row gt_left" headers=".config">Iter46</td>
-<td class="gt_row gt_right" headers=".iter">46</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">10.6164560</td>
+<td headers="rbf_sigma" class="gt_row gt_right">2.519507e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8617737</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009517440</td>
+<td headers=".config" class="gt_row gt_left">Iter46</td>
+<td headers=".iter" class="gt_row gt_right">46</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">24.5183146</td>
-<td class="gt_row gt_right" headers="rbf_sigma">7.016539e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8775665</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008934404</td>
-<td class="gt_row gt_left" headers=".config">Iter47</td>
-<td class="gt_row gt_right" headers=".iter">47</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">24.5183146</td>
+<td headers="rbf_sigma" class="gt_row gt_right">7.016539e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8775665</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008934404</td>
+<td headers=".config" class="gt_row gt_left">Iter47</td>
+<td headers=".iter" class="gt_row gt_right">47</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">10.2189037</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.330918e-02</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8733744</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.009258351</td>
-<td class="gt_row gt_left" headers=".config">Iter48</td>
-<td class="gt_row gt_right" headers=".iter">48</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">10.2189037</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.330918e-02</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8733744</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.009258351</td>
+<td headers=".config" class="gt_row gt_left">Iter48</td>
+<td headers=".iter" class="gt_row gt_right">48</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">7.1021781</td>
-<td class="gt_row gt_right" headers="rbf_sigma">1.966405e-03</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8966379</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008539778</td>
-<td class="gt_row gt_left" headers=".config">Iter49</td>
-<td class="gt_row gt_right" headers=".iter">49</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">7.1021781</td>
+<td headers="rbf_sigma" class="gt_row gt_right">1.966405e-03</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8966379</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008539778</td>
+<td headers=".config" class="gt_row gt_left">Iter49</td>
+<td headers=".iter" class="gt_row gt_right">49</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">9.2002334</td>
-<td class="gt_row gt_right" headers="rbf_sigma">5.308068e-04</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8841932</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008839438</td>
-<td class="gt_row gt_left" headers=".config">Iter50</td>
-<td class="gt_row gt_right" headers=".iter">50</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">9.2002334</td>
+<td headers="rbf_sigma" class="gt_row gt_right">5.308068e-04</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8841932</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008839438</td>
+<td headers=".config" class="gt_row gt_left">Iter50</td>
+<td headers=".iter" class="gt_row gt_right">50</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>
@@ -3780,15 +3909,28 @@ Zagrożenie
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
+<div id="tbl-sa2" class="anchored">
 
 <div id="yfywototxh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<style>#yfywototxh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yfywototxh thead, #yfywototxh tbody, #yfywototxh tfoot, #yfywototxh tr, #yfywototxh td, #yfywototxh th {
+  border-style: none;
+}
+
+#yfywototxh p {
+  margin: 0;
+  padding: 0;
 }
 
 #yfywototxh .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -3809,18 +3951,6 @@ Zagrożenie
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
-}
-
-#yfywototxh .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
 }
 
 #yfywototxh .gt_caption {
@@ -3844,12 +3974,24 @@ Zagrożenie
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#yfywototxh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #yfywototxh .gt_bottom_border {
@@ -3923,6 +4065,10 @@ Zagrożenie
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
+}
+
+#yfywototxh .gt_spanner_row {
+  border-bottom-style: hidden;
 }
 
 #yfywototxh .gt_group_heading {
@@ -4024,6 +4170,10 @@ Zagrożenie
   border-top-width: 2px;
 }
 
+#yfywototxh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #yfywototxh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -4073,6 +4223,16 @@ Zagrożenie
   border-top-color: #D3D3D3;
 }
 
+#yfywototxh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #yfywototxh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -4103,8 +4263,8 @@ Zagrożenie
 #yfywototxh .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -4161,10 +4321,9 @@ Zagrożenie
 }
 
 #yfywototxh .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #yfywototxh .gt_asterisk {
@@ -4192,80 +4351,78 @@ Zagrożenie
   text-indent: 25px;
 }
 </style>
-<div id="tbl-sa2" class="anchored">
-<table class="gt_table table table-sm table-striped" data-quarto-postprocess="true">
-<caption>Tabela&nbsp;12.6: Najlepsze kombinacje parametrów na podstawie SA</caption>
-<thead class="gt_col_headings"><tr class="header">
-<th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
-<th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
-<th id=".metric" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.metric</th>
-<th id=".estimator" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.estimator</th>
-<th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
-<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
-<th id="std_err" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">std_err</th>
-<th id=".config" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">.config</th>
-<th id=".iter" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">.iter</th>
-</tr></thead>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<caption>Tabela&nbsp;12.6:  <p>Najlepsze kombinacje parametrów na podstawie SA</p> </caption>
+  <thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cost">cost</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rbf_sigma">rbf_sigma</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".metric">.metric</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".estimator">.estimator</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mean">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="std_err">std_err</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=".config">.config</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=".iter">.iter</th>
+    </tr></thead>
 <tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">16.749920</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.002398614</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8985179</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.007916078</td>
-<td class="gt_row gt_left" headers=".config">Iter35</td>
-<td class="gt_row gt_right" headers=".iter">35</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">16.749920</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.002398614</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8985179</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.007916078</td>
+<td headers=".config" class="gt_row gt_left">Iter35</td>
+<td headers=".iter" class="gt_row gt_right">35</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">10.629737</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.004059190</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8975137</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008203966</td>
-<td class="gt_row gt_left" headers=".config">Iter45</td>
-<td class="gt_row gt_right" headers=".iter">45</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">10.629737</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.004059190</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8975137</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008203966</td>
+<td headers=".config" class="gt_row gt_left">Iter45</td>
+<td headers=".iter" class="gt_row gt_right">45</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">21.940934</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.001216970</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8973481</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008280488</td>
-<td class="gt_row gt_left" headers=".config">Iter37</td>
-<td class="gt_row gt_right" headers=".iter">37</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">21.940934</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.001216970</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8973481</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008280488</td>
+<td headers=".config" class="gt_row gt_left">Iter37</td>
+<td headers=".iter" class="gt_row gt_right">37</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="cost">9.413835</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.002056779</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8971685</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008342496</td>
-<td class="gt_row gt_left" headers=".config">Iter34</td>
-<td class="gt_row gt_right" headers=".iter">34</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">9.413835</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.002056779</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8971685</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008342496</td>
+<td headers=".config" class="gt_row gt_left">Iter34</td>
+<td headers=".iter" class="gt_row gt_right">34</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="cost">3.110379</td>
-<td class="gt_row gt_right" headers="rbf_sigma">0.004869128</td>
-<td class="gt_row gt_left" headers=".metric">roc_auc</td>
-<td class="gt_row gt_left" headers=".estimator">binary</td>
-<td class="gt_row gt_right" headers="mean">0.8969694</td>
-<td class="gt_row gt_right" headers="n">10</td>
-<td class="gt_row gt_right" headers="std_err">0.008168916</td>
-<td class="gt_row gt_left" headers=".config">Iter41</td>
-<td class="gt_row gt_right" headers=".iter">41</td>
+<tr>
+<td headers="cost" class="gt_row gt_right">3.110379</td>
+<td headers="rbf_sigma" class="gt_row gt_right">0.004869128</td>
+<td headers=".metric" class="gt_row gt_left">roc_auc</td>
+<td headers=".estimator" class="gt_row gt_left">binary</td>
+<td headers="mean" class="gt_row gt_right">0.8969694</td>
+<td headers="n" class="gt_row gt_right">10</td>
+<td headers="std_err" class="gt_row gt_right">0.008168916</td>
+<td headers=".config" class="gt_row gt_left">Iter41</td>
+<td headers=".iter" class="gt_row gt_right">41</td>
 </tr>
 </tbody>
 </table>
 </div>
-
 </div>
 </div>
 </div>

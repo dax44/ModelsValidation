@@ -58,7 +58,7 @@ $$
 \tilde{R}^2=[\operatorname{Cor}(Y, \hat{Y})]^2.
 $$ {#eq-r2cor}
 
-Miara zdefiniowana w ([-@eq-r2cor]) zapewnia nam wartości w przedziale (0,1), a klasyczna miara ([-@eq-r2trad]) nie[@kvalsethCautionaryNoteR21985].
+Miara zdefiniowana w ([-@eq-r2cor]) zapewnia nam wartości w przedziale (0,1), a klasyczna miara ([-@eq-r2trad]) nie [@kvalsethCautionaryNoteR21985].
 Tradycyjna jest zdefiniowana w bibliotece `yardstick`[^measures-5] pod nazwą `rsq_trad`, natomiast miara oparta na korelacji jako `rsq`. Oczywiście interpretacja jest następująca, że jeśli wartość $\tilde{R}^2$ jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.
 
 [^measures-5]: będącej częścią ekosystemu `tidymodels`
@@ -120,13 +120,16 @@ Do wywołania go w pakiecie `yardstick` używamy funkcji `mape`.
 ### MASE
 
 Średni bezwzględny błąd skalowany (ang. *Mean Absolute Scaled Error*) jest miarą dokładności prognoz.
-Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako "ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach."[@hyndmanAnotherLookMeasures2006] Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych.[@fransesNoteMeanAbsolute2016] Definiujemy go następująco
+Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako "ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach" [@hyndmanAnotherLookMeasures2006].
+Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych [@fransesNoteMeanAbsolute2016].
+Definiujemy go następująco
 
 $$
 MASE = \frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{\sum_{i=1}^n\vert y_i-\bar{y}_i\vert}.
 $$ {#eq-mase}
 
-Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej[@hyndmanAnotherLookMeasures2006; @EvaluatingForecastAccuracy] Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów.
+Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej [@hyndmanAnotherLookMeasures2006; @EvaluatingForecastAccuracy].
+Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów.
 Wywołujemy go funkcją `mase`.
 
 ### MPE
@@ -139,7 +142,7 @@ $$ {#eq-mpe}
 
 Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować.
 W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach.
-Wadą tej miary jest to, że jest ona nieokreślona zawsze, gdy pojedyncza wartość rzeczywista wynosi zero.
+Wadą tej miary jest to, że jest ona zawsze określona, gdy pojedyncza wartość rzeczywista wynosi zero.
 Wywołujemy ją za pomocą `mpe`.
 
 ### MSD
@@ -159,7 +162,7 @@ Wśród nich należy wymienić
 
 ### Funkcja straty Hubera
 
-Funkcja straty Hubera (ang. *Huber loss*) jest nieco bardziej odporną na punkty odstające niż RMSE miarą błędu.
+Funkcja straty Hubera (ang. *Huber loss*) jest miarą błędu nieco bardziej odporną na punkty odstające niż RMSE.
 Definiujemy ją następująco:
 
 $$
@@ -167,8 +170,10 @@ L_{\delta}(y, \hat{y})= \begin{cases}
   \frac12 (y_i-\hat{y}_i)^2, &\text{ jeśli }\vert y_i-\hat{y}_i\vert\leq\delta\\
   \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta, &\text{ w przeciwnym przypadku}.
 \end{cases}
-$$ {#eq-huber} W implementacji `yardstick` $\delta=1$ natomiast wyliczanie funkcji straty następuje przez uśrednienie po wszystkih obserwacjach.
-Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegaja od obserwowanych wartości.
+$$ {#eq-huber}
+
+W implementacji `yardstick` $\delta=1$ natomiast wyliczanie funkcji straty następuje przez uśrednienie po wszystkich obserwacjach.
+Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości.
 Wywołujemy ją przez funkcję `huber_loss`.
 
 ### Funkcja straty Pseudo-Hubera
@@ -222,7 +227,7 @@ Wywołujemy za pomocą `rpd`.
 
 W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu.
 Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model.
-Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku skośnych zbiorów danych.
+Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku zbiorów danych z asymetrią rozkładów.
 Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez @bellon-maurelCriticalReviewChemometric2010 w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.
 
 ### RPIQ
@@ -428,8 +433,9 @@ Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
 -   $F_1$ - jest miarą zdefiniowaną jako $\frac{2PPV*TPR}{PPV+TPR}$.
 
 -   MCC - *Mathews Correlation Coeficient -* jest zdefiniowany jako $\sqrt{TPR*TNR*PPV*NPV}-\sqrt{FNR*FPR*NPV*FDR}$.
+    Istnieje również odmiana tej miary dla przypadku wielostanowej zmiennej wynikowej.
 
--   *bakanced accuracy* - liczona jako średnia *sensitivity* i *specificity*.
+-   *balanced accuracy* - liczona jako średnia *sensitivity* i *specificity*.
 
 -   *detection prevalence* - zdefiniowana jako stosunek poprawnie przewidywanych obserwacji do liczby wszystkich przewidywanych wartości.
 
@@ -450,10 +456,10 @@ Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
     Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć "dodatkowy szum", który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet.
     Minimalizując entropię krzyżową, maksymalizujemy dokładność klasyfikatora.
     Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.
-    W szczególności, jeśli surowe wyjście klasyfikatora jest prawdopodobieństwem zamiast etykiety klasy 0 lub 1, wówczas można użyć log-loss.
+
     Prawdopodobieństwo można rozumieć jako miernik zaufania.
-    Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki bład, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5.
-    Log-loss jest "miękką" miarą dokładności, która uwzględnia tę ideę probabilistycznego zaufania.
+    Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki błąd, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5.
+    Log-loss jest subtelną miarą dokładności.
 
 Należy pamiętać, że większość wspomnianych miar opiera się na wartościach z macierzy klasyfikacji.
 Przy czym aby obserwacje zaklasyfikować do jednej z klas należy przyjąć pewien punkt odcięcia (*threshold*) prawdopodobieństwa, od którego przewidywana wartość będzie przyjmowała stan "1".
@@ -475,17 +481,17 @@ Należą do nich:
 
     -   PRC - *Precision-Recall Curve* - krzywa, która pokazuje kompromis pomiędzy *precision i recall.* Precision i recall to tak naprawdę dwie metryki.
         Jednak często są one używane razem.
-        Precision odpowiada na pytanie: "Z elementów, które klasyfikator przewidział jako istotne ile jest rzeczywiście istotnych?".
-        Natomiast recall odpowiada na pytanie: "Spośród wszystkich elementów, które są naprawdę istotne, ile zostało przewidzianych jako takie przez klasyfikator?".
+        Precision odpowiada na pytanie: "Z elementów, które klasyfikator przewidział jako pozytywnych ile jest rzeczywiście pozytywnych?".
+        Natomiast recall odpowiada na pytanie: "Spośród wszystkich elementów, które są pozytywne, ile zostało przewidzianych jako takie przez klasyfikator?".
         Krzywa PRC to po prostu wykres z wartościami Precision na osi y i Recall na osi x.
         Innymi słowy, krzywa PRC zawiera TP/(TP+FP) na osi y oraz TP/(TP+FN) na osi x.
 
-    -   Krzywa wzrostu (ang. *Gain Curve*) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.
+    -   Krzywa wzrostu (ang. *Gain Curve*) - to krzywa przedstawiająca stosunek skumulowanej liczby pozytywnych (wyróżnionych) obserwacji w decylu do całkowitej liczby pozytywnych obserwacji w danych.
 
     -   Krzywa wyniesienia (ang. *Lift Curve*) - jest stosunkiem liczby pozytywnych obserwacji w $i$-tym decylu na podstawie modelu do oczekiwanej liczby pozytywnych obserwacji należących do $i$-tego decyla na podstawie modelu losowego.
 -   miary:
     -   AUC - *Area Under ROC Curve* - mierzy pole pod krzywą ROC.
-        Krzywa ROC nie jest tylko pojedynczą liczbą; jest to cała krzywa.
+        Krzywa ROC nie jest pojedynczą liczbą ale całą krzywą.
         Dostarcza ona szczegółowych informacji o zachowaniu klasyfikatora, ale trudno jest szybko porównać wiele krzywych ROC ze sobą.
         W szczególności, jeśli ktoś chciałby zastosować jakiś automatyczny mechanizm tuningowania hiperparametrów, maszyna potrzebowałaby wymiernego wyniku zamiast wykresu, który wymaga wizualnej inspekcji.
         AUC jest jednym ze sposobów podsumowania krzywej ROC w jedną liczbę, tak aby można było ją łatwo i automatycznie porównać.

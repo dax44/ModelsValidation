@@ -65,7 +65,7 @@ W naszym przykładzie badania klinicznego, jeśli znaczenie statystyczne (i klin
 Czasami modelowania używamy w celu uzyskania jak najdokładniejszej prognozy dla nowych danych.
 W tym przypadku głównym celem jest, aby przewidywane wartości (ang. *prediction*) miały najwyższą możliwą zgodność z prawdziwą wartością (ang. *observed*).
 
-Prostym przykładem może być przewidywanie przez sprzedającego książki, ile egzemplarzy danej książki powinno być wysłanych do jego sklepu w następnym miesiącu.
+Prostym przykładem może być przewidywanie przez sprzedającego książki, ile egzemplarzy danej książki powinno być zamówionych do jego sklepu w następnym miesiącu.
 Nadmierna prognoza powoduje marnowanie miejsca i pieniędzy z powodu nadmiaru książek.
 Jeśli przewidywanie jest mniejsze niż powinno, następuje utrata potencjału i mniejszy zysk.
 
@@ -165,7 +165,7 @@ Ważne jest również, aby metryka była zgodna z szerszymi celami analizy danyc
 ![Typowy przebieg budowy modelu](images/Zrzut%20ekranu%202023-01-29%20o%2012.40.00.png){fig-align="center"}
 
 Proces badania danych może nie być prosty.
-[@wickhamWelcomeTidyverse2019] przedstawili doskonałą ilustrację ogólnego procesu analizy danych .
+@wickhamWelcomeTidyverse2019 przedstawili doskonałą ilustrację ogólnego procesu analizy danych.
 Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki.
 Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć.
 Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.

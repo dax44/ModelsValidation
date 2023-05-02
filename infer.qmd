@@ -30,9 +30,9 @@ z.
 
 [^infer-3]: w przypadku badania efektu za pomocą modelu liniowego
 
-Konieczność spełnienia wymienionych w stosowanej metodzie wnioskowania założeń jest konieczna, ponieważ w przeciwnym przypadku nie możemy być pewni czy wyniki zastosowanej metody są trafne[^infer-4].
-Konsekwencją niespełnienia warunków początkowych metody, nie możemy być pewni czy rozkład statystyki testowej jest taki jak głosi metoda.
-I choć istnieją prace, które wyraźnie wskazują na odporność pewnych metod statystycznych na niespełnienie założeń, to nie zwalniają nas z weryfikacji tychże założeń, ponieważ w przypadku niektórych z nich nie znamy konsekwencji ich naruszenia.
+Konieczność spełnienia wymienionych w stosowanej metodzie wnioskowania założeń jest wymagana, ponieważ w przeciwnym przypadku nie możemy być pewni czy wyniki zastosowanej metody są trafne[^infer-4].
+Konsekwencją niespełnienia warunków początkowych metody jest to, że nie możemy być pewni czy rozkład statystyki testowej jest taki jak głosi metoda.
+I choć istnieją prace, które wyraźnie wskazują na odporność pewnych metod statystycznych na niespełnienie założeń, to nie zwalniają nas z weryfikacji tychże, ponieważ w przypadku niektórych z nich nie znamy konsekwencji ich naruszenia.
 
 [^infer-4]: czy wniosek wyciągnięty na podstawie modelu jest właściwy
 
@@ -117,6 +117,13 @@ null_mean |>
 Koncentracja wokół wartości 40 może przemawiać za przyjęciem hipotezy $H_0$.
 Ponadto wygląda na to, że otrzymany przedział ufności zawiera teoretyczną średnią wieku 40, co jest kolejny argumentem za przyjęciem hipotezy zerowej.
 Na koniec wyliczymy $p$ dla testu bootstrapowego.
+Wyliczanie $p$ dla testu bootstrapowego odbywa się wg następujących kroków:
+
+1.  Wyznaczamy na podstawie próby statystykę interesującą nas w teście (w naszym przypadku średnią $\bar{x}$).
+2.  Następnie przesuwamy wszystkie obserwację o różnicę pomiędzy średnią teoretyczną a $\bar{x}$, tak aby rozkład miał średnią teoretyczną.
+3.  Losujemy próby bootstrapowe z nowej (przesuniętej) próby.
+4.  Na podstawie prób bootstrapowych wyznaczamy rozkład średnich poszczególnych prób.
+5.  Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż $-\bar{x}$ (patrz Rys. -@fig-hist4)
 
 ```{r}
 null_mean |> 

@@ -3,7 +3,7 @@
 Książka zawiera szereg przykładów ilustrujących zasadę działania poszczególnych technik walidacji modeli.
 Ponieważ od wielu lat używam języka R do budowania modeli uczenia maszynowego, to również w tej książce znajdą się implementacje metod ewaluacji modeli wykonane w R.
 Spośród trzech dominujących ekosystemów w języku R do budowania modeli uczenia maszynowego, czyli `caret`[^intro-1],`mlr3`[^intro-2] i `tidymodels`[^intro-3] postanowiłem postawić na ten ostatn
-i. Stanowi on przeniesienie filozofii "tidy data" realizowanej w pakiecie `tidyverse`[^intro-4] na modele
+i. Stanowi on przeniesienie filozofii *tidy data* realizowanej w pakiecie `tidyverse`[^intro-4] na modele
 ML. `tidymodels` jest meta-pakietem zawierającym w sob
 ie:
 

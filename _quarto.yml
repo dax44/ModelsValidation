@@ -11,7 +11,7 @@ book:
     right: |
       Książka została napisana w <a href="https://quarto.org/">Quarto</a>
   cover-image: images/logo2.png
-  favicon: cover.png
+  favicon: images/logo2.png
   repo-url: https://github.com/dax44/ModelsValidation/
   repo-actions: [issue]
   search: true
@@ -57,7 +57,7 @@ format:
       light: [flatly, mycss.scss]
       dark: [darkly, mycss.scss]
     code-link: true
-    code-fold: true
+    code-fold: show
 
 execute: 
   warning: false

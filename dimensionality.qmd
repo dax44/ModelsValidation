@@ -67,6 +67,7 @@ W danych dotyczących fasoli obliczono 16 cech morfologicznych: powierzchnię, o
 ```{r}
 library(tidymodels)
 tidymodels_prefer()
+library(tidyverse)
 library(beans)
 ```
 
