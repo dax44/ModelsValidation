@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./parallel.html" rel="next">
 <link href="./tuning.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -390,7 +387,7 @@ Range: [10, 1000]</code></pre>
 12           10 1              1000</code></pre>
 </div>
 </div>
-<p>Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują wszystkich możliwych wartości każdego zestawu parametrów. Można również wykorzystać te konstrukcje czynnikowe ułamkowe <span class="citation" data-cites="booth1979">(<a href="references.html#ref-booth1979" role="doc-biblioref">Booth i in. 1979</a>)</span>.</p>
+<p>Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują wszystkich możliwych wartości każdego zestawu parametrów. Można również wykorzystać te konstrukcje czynnikowe ułamkowe <span class="citation" data-cites="booth1979">(<a href="#ref-booth1979" role="doc-biblioref">Booth i in. 1979</a>)</span>.</p>
 <p>Jedną z zalet stosowania regularnej siatki jest to, że związki i wzorce między dostrajaniem parametrów i metrykami modelu są łatwo zrozumiałe. Czynnikowa natura tych planów pozwala na zbadanie każdego parametru osobno z niewielką współzależnością między parametrami.</p>
 </section><section id="siatki-nieregularne" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="siatki-nieregularne">
 <span class="header-section-number">10.2</span> Siatki nieregularne</h2>
@@ -431,7 +428,7 @@ Range: [10, 1000]</code></pre>
 </div>
 </div>
 </div>
-<p>Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych zwanych planami wypełniającymi przestrzeń. Chociaż różne metody projektowania mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia nakładających się lub nadmiarowych wartości. Przykładami takich planów są hipersześciany łacińskie (ang. <em>Latin hypercube</em>) <span class="citation" data-cites="mckay1979">(<a href="references.html#ref-mckay1979" role="doc-biblioref">McKay, Beckman, i Conover 1979</a>)</span>, plany maksymalnej entropii (ang. <em>maximum entropy</em>) <span class="citation" data-cites="shewryMaximumEntropySampling1987a">(<a href="references.html#ref-shewryMaximumEntropySampling1987a" role="doc-biblioref">Shewry i Wynn 1987</a>)</span>, plany maksymalnej projekcji (ang. <em>maximum projection</em>) <span class="citation" data-cites="joseph2015">(<a href="references.html#ref-joseph2015" role="doc-biblioref">Joseph, Gul, i Ba 2015</a>)</span>i inne.</p>
+<p>Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych zwanych planami wypełniającymi przestrzeń. Chociaż różne metody projektowania mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia nakładających się lub nadmiarowych wartości. Przykładami takich planów są hipersześciany łacińskie (ang. <em>Latin hypercube</em>) <span class="citation" data-cites="mckay1979">(<a href="#ref-mckay1979" role="doc-biblioref">McKay, Beckman, i Conover 1979</a>)</span>, plany maksymalnej entropii (ang. <em>maximum entropy</em>) <span class="citation" data-cites="shewryMaximumEntropySampling1987a">(<a href="#ref-shewryMaximumEntropySampling1987a" role="doc-biblioref">Shewry i Wynn 1987</a>)</span>, plany maksymalnej projekcji (ang. <em>maximum projection</em>) <span class="citation" data-cites="joseph2015">(<a href="#ref-joseph2015" role="doc-biblioref">Joseph, Gul, i Ba 2015</a>)</span>i inne.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1303</span><span class="op">)</span></span>
 <span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
@@ -455,7 +452,7 @@ Range: [10, 1000]</code></pre>
 <span class="header-section-number">10.3</span> Ocena hiperparametrów sieci</h2>
 <p>Aby wybrać najlepszą kombinację parametrów dostrajania, każdy zestaw kandydatów jest oceniany przy użyciu danych, które nie były używane do szkolenia tego modelu. Metody ponownego próbkowania lub pojedynczy zestaw walidacyjny dobrze sprawdzają się w tym celu.</p>
 <p>Po resamplingu, użytkownik wybiera najbardziej odpowiedni zestaw parametrów. Sensowne może być wybranie empirycznie najlepszej kombinacji parametrów lub ukierunkowanie wyboru na inne aspekty dopasowania modelu, takie jak prostota modelu.</p>
-<p>W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do demonstracji tuningu modelu. Dane pochodzą od <span class="citation" data-cites="Hill2007">Hill i in. (<a href="references.html#ref-Hill2007" role="doc-biblioref">2007</a>)</span>, którzy opracowali zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad nowotworami. Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich komórkach raka piersi. Predyktory te reprezentują cechy kształtu i intensywności różnych części komórek (np. jądro, granica komórki itp.). Istnieje wysoki stopień korelacji między predyktorami. Na przykład, istnieje kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę komórki. Wiele predyktorów ma rozkłady skośne.</p>
+<p>W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do demonstracji tuningu modelu. Dane pochodzą od <span class="citation" data-cites="Hill2007">Hill i in. (<a href="#ref-Hill2007" role="doc-biblioref">2007</a>)</span>, którzy opracowali zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad nowotworami. Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich komórkach raka piersi. Predyktory te reprezentują cechy kształtu i intensywności różnych części komórek (np. jądro, granica komórki itp.). Istnieje wysoki stopień korelacji między predyktorami. Na przykład, istnieje kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę komórki. Wiele predyktorów ma rozkłady skośne.</p>
 <p>Każda komórka należy do jednej z dwóch klas. Ponieważ jest to część zautomatyzowanego testu laboratoryjnego, skupiliśmy się na zdolności przewidywania, a nie wnioskowania.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
@@ -656,7 +653,7 @@ Wskazówka
 1            5       1     50        0 Preprocessor1_Model08</code></pre>
 </div>
 </div>
-<p>Patrząc na <a href="#fig-grid3">Rysunek&nbsp;<span>10.3</span></a>, widzimy, że model z pojedynczym neuronem w warstwie ukrytej trenowany przez 125 epok na oryginalnych predyktorach z dużą wartością kary ma wydajność konkurencyjną do modelu otrzymanego z zagęszczeniem wartości parametrów, a jest prostszy. Jest to w zasadzie regularyzowana regresja logistyczna! Aby ręcznie określić te parametry, możemy utworzyć <code>tibble</code> z tymi wartościami, a następnie użyć funkcji finalizacji, aby spleść wartości z powrotem do przepływu pracy:</p>
+<p>Patrząc na <a href="#fig-grid3">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-grid3</span></a>, widzimy, że model z pojedynczym neuronem w warstwie ukrytej trenowany przez 125 epok na oryginalnych predyktorach z dużą wartością kary ma wydajność konkurencyjną do modelu otrzymanego z zagęszczeniem wartości parametrów, a jest prostszy. Jest to w zasadzie regularyzowana regresja logistyczna! Aby ręcznie określić te parametry, możemy utworzyć <code>tibble</code> z tymi wartościami, a następnie użyć funkcji finalizacji, aby spleść wartości z powrotem do przepływu pracy:</p>
 <div class="cell" data-hash="grid_search_cache/html/unnamed-chunk-20_8e656ba4cfdc2c9019f2c77c840ead92">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">logistic_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">tibble</span><span class="op">(</span></span>
@@ -745,7 +742,7 @@ xgboost_tune &lt;-
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-booth1979" class="csl-entry" role="listitem">
 Booth, Gordon D., George E. P. Box, William G. Hunter, i J. Stuart Hunter. 1979. <span>„Statistics for Experimenters: An Introduction to Design, Data Analysis, and Model Building.”</span> <em>Journal of the American Statistical Association</em> 74 (367): 731. <a href="https://doi.org/10.2307/2287009">https://doi.org/10.2307/2287009</a>.
 </div>

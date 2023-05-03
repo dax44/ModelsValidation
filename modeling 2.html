@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./infer.html" rel="next">
 <link href="./intro.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -309,7 +306,7 @@ div.csl-indent {
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;2.1: Ocena jakości odczytów z mikroczipa</figcaption><p></p>
 </figure>
 </div>
-<p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="references.html#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip">Rysunek&nbsp;<span>2.1</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="references.html#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
+<p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip">Rysunek&nbsp;<span class="quarto-unresolved-ref ref-noprefix">fig-chip</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
 </section><section id="modele-do-wnioskowania" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="modele-do-wnioskowania">
 <span class="header-section-number">2.1.2</span> Modele do wnioskowania</h3>
 <p>Celem modelu inferencyjnego jest podjęcie decyzji dotyczącej pytania badawczego lub sprawdzenie określonej hipotezy, podobnie jak w przypadku testów statystycznych. Model inferencyjny zaczyna się od wcześniej zdefiniowanego przypuszczenia lub pomysłu na temat populacji i tworzy wniosek statystyczny, taki jak szacunek przedziału lub odrzucenie hipotezy.</p>
@@ -369,7 +366,7 @@ Ważne
 <p></p><figcaption class="figure-caption">Typowy przebieg budowy modelu</figcaption><p></p>
 </figure>
 </div>
-<p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="references.html#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
+<p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
 <p>W ramach czynności zaznaczonych na szarym polu możemy wyróżnić:</p>
 <ul>
 <li>eksploracyjna analiza danych - to kombinacja pewnych obliczeń statystycznych i wizualizacji, w celu odpowiedzi na podstawowe pytania i postawienia kolejnych. Przykładowo jeśli na wykresie histogramu lub gęstości zmiennej wynikowej w zadaniu regresyjnym zauważymy wyraźną dwumodalność, to może ona świadczyć, że badana zbiorowość nie jest homogeniczna w kontekście analizowanej zmiennej, a co w konsekwencji może skłonić nas do oddzielnego modelowania zjawisk w każdej z podpopulacji.</li>
@@ -382,7 +379,7 @@ Ważne
 <p></p><figcaption class="figure-caption">Przykładowy przebieg budowy modelu</figcaption><p></p>
 </figure>
 </div>
-<p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="references.html#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
+<p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
 <span>                                                                                                                           <span class="op">~</span><span class="va">Thoughts</span>,             <span class="op">~</span><span class="va">Activity</span>,</span>
@@ -408,23 +405,23 @@ Ważne
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="mgvnnqaawo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mgvnnqaawo table {
+<div id="irvywysimg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#irvywysimg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#mgvnnqaawo thead, #mgvnnqaawo tbody, #mgvnnqaawo tfoot, #mgvnnqaawo tr, #mgvnnqaawo td, #mgvnnqaawo th {
+#irvywysimg thead, #irvywysimg tbody, #irvywysimg tfoot, #irvywysimg tr, #irvywysimg td, #irvywysimg th {
   border-style: none;
 }
 
-#mgvnnqaawo p {
+#irvywysimg p {
   margin: 0;
   padding: 0;
 }
 
-#mgvnnqaawo .gt_table {
+#irvywysimg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -450,12 +447,12 @@ Ważne
   border-left-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_caption {
+#irvywysimg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#mgvnnqaawo .gt_title {
+#irvywysimg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -467,7 +464,7 @@ Ważne
   border-bottom-width: 0;
 }
 
-#mgvnnqaawo .gt_subtitle {
+#irvywysimg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -479,7 +476,7 @@ Ważne
   border-top-width: 0;
 }
 
-#mgvnnqaawo .gt_heading {
+#irvywysimg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -491,13 +488,13 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_bottom_border {
+#irvywysimg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_col_headings {
+#irvywysimg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -512,7 +509,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_col_heading {
+#irvywysimg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -532,7 +529,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#mgvnnqaawo .gt_column_spanner_outer {
+#irvywysimg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -544,15 +541,15 @@ Ważne
   padding-right: 4px;
 }
 
-#mgvnnqaawo .gt_column_spanner_outer:first-child {
+#irvywysimg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mgvnnqaawo .gt_column_spanner_outer:last-child {
+#irvywysimg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mgvnnqaawo .gt_column_spanner {
+#irvywysimg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -564,11 +561,11 @@ Ważne
   width: 100%;
 }
 
-#mgvnnqaawo .gt_spanner_row {
+#irvywysimg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#mgvnnqaawo .gt_group_heading {
+#irvywysimg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -594,7 +591,7 @@ Ważne
   text-align: left;
 }
 
-#mgvnnqaawo .gt_empty_group_heading {
+#irvywysimg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -609,15 +606,15 @@ Ważne
   vertical-align: middle;
 }
 
-#mgvnnqaawo .gt_from_md > :first-child {
+#irvywysimg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mgvnnqaawo .gt_from_md > :last-child {
+#irvywysimg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mgvnnqaawo .gt_row {
+#irvywysimg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -636,7 +633,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#mgvnnqaawo .gt_stub {
+#irvywysimg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -649,7 +646,7 @@ Ważne
   padding-right: 5px;
 }
 
-#mgvnnqaawo .gt_stub_row_group {
+#irvywysimg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -663,15 +660,15 @@ Ważne
   vertical-align: top;
 }
 
-#mgvnnqaawo .gt_row_group_first td {
+#irvywysimg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mgvnnqaawo .gt_row_group_first th {
+#irvywysimg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#mgvnnqaawo .gt_summary_row {
+#irvywysimg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -681,16 +678,16 @@ Ważne
   padding-right: 5px;
 }
 
-#mgvnnqaawo .gt_first_summary_row {
+#irvywysimg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_first_summary_row.thick {
+#irvywysimg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mgvnnqaawo .gt_last_summary_row {
+#irvywysimg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -700,7 +697,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_grand_summary_row {
+#irvywysimg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -710,7 +707,7 @@ Ważne
   padding-right: 5px;
 }
 
-#mgvnnqaawo .gt_first_grand_summary_row {
+#irvywysimg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -720,7 +717,7 @@ Ważne
   border-top-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_last_grand_summary_row_top {
+#irvywysimg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -730,11 +727,11 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_striped {
+#irvywysimg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mgvnnqaawo .gt_table_body {
+#irvywysimg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -743,7 +740,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_footnotes {
+#irvywysimg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -757,7 +754,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_footnote {
+#irvywysimg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -766,7 +763,7 @@ Ważne
   padding-right: 5px;
 }
 
-#mgvnnqaawo .gt_sourcenotes {
+#irvywysimg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -780,7 +777,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#mgvnnqaawo .gt_sourcenote {
+#irvywysimg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -788,63 +785,63 @@ Ważne
   padding-right: 5px;
 }
 
-#mgvnnqaawo .gt_left {
+#irvywysimg .gt_left {
   text-align: left;
 }
 
-#mgvnnqaawo .gt_center {
+#irvywysimg .gt_center {
   text-align: center;
 }
 
-#mgvnnqaawo .gt_right {
+#irvywysimg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mgvnnqaawo .gt_font_normal {
+#irvywysimg .gt_font_normal {
   font-weight: normal;
 }
 
-#mgvnnqaawo .gt_font_bold {
+#irvywysimg .gt_font_bold {
   font-weight: bold;
 }
 
-#mgvnnqaawo .gt_font_italic {
+#irvywysimg .gt_font_italic {
   font-style: italic;
 }
 
-#mgvnnqaawo .gt_super {
+#irvywysimg .gt_super {
   font-size: 65%;
 }
 
-#mgvnnqaawo .gt_footnote_marks {
+#irvywysimg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#mgvnnqaawo .gt_asterisk {
+#irvywysimg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mgvnnqaawo .gt_indent_1 {
+#irvywysimg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#mgvnnqaawo .gt_indent_2 {
+#irvywysimg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#mgvnnqaawo .gt_indent_3 {
+#irvywysimg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#mgvnnqaawo .gt_indent_4 {
+#irvywysimg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#mgvnnqaawo .gt_indent_5 {
+#irvywysimg .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -929,7 +926,7 @@ Ważne
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-bolstadLowlevelAnalysisHighdensity2004" class="csl-entry" role="listitem">
 Bolstad, Benjamin Milo. 2004. <em>Low-Level <span>Analysis</span> of <span>High-Density Oligonucleotide Array Data</span>: <span>Background</span>, <span>Normalization</span> and <span>Summarization</span></em>. <span>University of California, Berkeley</span>.
 </div>

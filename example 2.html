@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./dimensionality.html" rel="next">
 <link href="./iterative.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -289,7 +286,7 @@ div.csl-indent {
 
 </header><p>W przypadku projektów z nowymi zbiorami danych, które nie zostały jeszcze dobrze poznane, osoba zajmująca się danymi może być zmuszona do sprawdzenia wielu kombinacji modeli i różnych kombinacji metod przygotowania danych. Powszechne jest to, że nie posiadamy wiedzy a priori na temat tego, która metoda będzie działać najlepiej z nowym zestawem danych.</p>
 <p>Dobrą strategią jest poświęcenie trochę uwagi na wypróbowanie różnych podejść do modelowania, określenie, co działa najlepiej, a następnie zainwestowanie dodatkowego czasu na dostosowanie / optymalizację małego zestawu modeli.</p>
-<p>Aby zademonstrować, jak przesiewać zestaw wielu modeli, użyjemy jako przykładu danych mieszanki betonowej z książki <em>Applied Predictive Modeling</em> <span class="citation" data-cites="khun2013a">(<a href="references.html#ref-khun2013a" role="doc-biblioref">Khun i Johnson 2013</a>)</span>. W rozdziale 10 tej książki zademonstrowano modele do przewidywania wytrzymałości na ściskanie mieszanek betonowych z wykorzystaniem składników jako zmiennych niezależnych. Oceniono wiele różnych modeli z różnymi zestawami predyktorów i typami metod wstępnego przetwarzania.</p>
+<p>Aby zademonstrować, jak przesiewać zestaw wielu modeli, użyjemy jako przykładu danych mieszanki betonowej z książki <em>Applied Predictive Modeling</em> <span class="citation" data-cites="khun2013a">(<a href="#ref-khun2013a" role="doc-biblioref">Khun i Johnson 2013</a>)</span>. W rozdziale 10 tej książki zademonstrowano modele do przewidywania wytrzymałości na ściskanie mieszanek betonowych z wykorzystaniem składników jako zmiennych niezależnych. Oceniono wiele różnych modeli z różnymi zestawami predyktorów i typami metod wstępnego przetwarzania.</p>
 <section id="przygotowanie-danych" class="level2 page-columns page-full" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="przygotowanie-danych">
 <span class="header-section-number">13.1</span> Przygotowanie danych</h2>
 <div class="cell">
@@ -414,7 +411,7 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 <span>   <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"Cubist"</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Autorzy w <span class="citation" data-cites="khun2013a">Khun i Johnson (<a href="references.html#ref-khun2013a" role="doc-biblioref">2013</a>)</span> określa, że sieć neuronowa powinna mieć do 27 jednostek ukrytych w warstwie. Funkcja <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials()</a></code> wyodrębnia zbiór parametrów, który modyfikujemy, aby miał prawidłowy zakres parametrów:</p>
+<p>Autorzy w <span class="citation" data-cites="khun2013a">Khun i Johnson (<a href="#ref-khun2013a" role="doc-biblioref">2013</a>)</span> określa, że sieć neuronowa powinna mieć do 27 jednostek ukrytych w warstwie. Funkcja <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials()</a></code> wyodrębnia zbiór parametrów, który modyfikujemy, aby miał prawidłowy zakres parametrów:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nnet_param</span> <span class="op">&lt;-</span> </span>
 <span>   <span class="va">nnet_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -618,7 +615,7 @@ Computational engine: kknn </code></pre>
 # ℹ 242 more rows</code></pre>
 </div>
 </div>
-<p>Domyślnie funkcja szereguje wszystkie zestawy kandydatów, dlatego ten sam model może pojawić się wielokrotnie na wyjściu. Opcja <code>select_best</code> może być użyta do uszeregowania modeli przy użyciu najlepszej kombinacji dostrajania parametrów. Metoda <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> tworzy wykresy rankingowy; posiada ona również argument <code>select_best</code>. Wykres na <a href="#fig-mods1">Rysunek&nbsp;<span>13.1</span></a> wizualizuje najlepsze wyniki dla każdego modelu i jest generowany za pomocą:</p>
+<p>Domyślnie funkcja szereguje wszystkie zestawy kandydatów, dlatego ten sam model może pojawić się wielokrotnie na wyjściu. Opcja <code>select_best</code> może być użyta do uszeregowania modeli przy użyciu najlepszej kombinacji dostrajania parametrów. Metoda <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> tworzy wykresy rankingowy; posiada ona również argument <code>select_best</code>. Wykres na <a href="#fig-mods1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-mods1</span></a> wizualizuje najlepsze wyniki dla każdego modelu i jest generowany za pomocą:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span></span>
 <span>   <span class="va">grid_results</span>,</span>
@@ -637,7 +634,7 @@ Computational engine: kknn </code></pre>
 </div>
 </div>
 </div>
-<p>W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego modelu, tak jak na <a href="#fig-mods2">Rysunek&nbsp;<span>13.2</span></a>, argument <code>id</code> może przyjąć pojedynczą wartość z kolumny <code>wflow_id</code> dla którego modelu ma być wykreślony:</p>
+<p>W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego modelu, tak jak na <a href="#fig-mods2">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-mods2</span></a>, argument <code>id</code> może przyjąć pojedynczą wartość z kolumny <code>wflow_id</code> dla którego modelu ma być wykreślony:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">grid_results</span>, id <span class="op">=</span> <span class="st">"Cubist"</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -799,7 +796,7 @@ Computational engine: kknn </code></pre>
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://media1.giphy.com/media/BPJmthQ3YRwD6QqcVD/giphy.gif" class="img-fluid figure-img" width="400"></p>
 </figure>
-</div></div><div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+</div></div><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-khun2013a" class="csl-entry" role="listitem">
 Khun, M., i K. Johnson. 2013. <em>Applied <span>Predictive Modeling</span></em>. <span>New York</span>: <span>Springer</span>.
 </div>

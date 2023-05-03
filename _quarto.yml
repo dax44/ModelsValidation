@@ -1,6 +1,7 @@
 project:
   type: book
   output-dir: docs
+  
 book:
   title: "Metody walidacji modeli statystycznych"
   reader-mode: true
@@ -10,10 +11,11 @@ book:
       Metody walidacji modeli statystycznych, Dariusz Majerek
     right: |
       Książka została napisana w <a href="https://quarto.org/">Quarto</a>
-  cover-image: images/logo2.png
-  favicon: images/logo2.png
+  cover-image: logo2.png
+  favicon: logo2.png
   repo-url: https://github.com/dax44/ModelsValidation/
   repo-actions: [issue]
+  sharing: [twitter]
   search: true
   author: 
   - name: Dariusz Majerek
@@ -23,6 +25,7 @@ book:
     tools: 
       - icon: twitter
         href: https://twitter.com
+    logo: images/logo.png
   chapters:
     - index.qmd
     - intro.qmd
@@ -58,6 +61,7 @@ format:
       dark: [darkly, mycss.scss]
     code-link: true
     code-fold: show
+    fig-align: center
 
 execute: 
   warning: false

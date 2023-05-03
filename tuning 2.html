@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./grid_search.html" rel="next">
 <link href="./comparison.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -290,7 +287,7 @@ div.csl-indent {
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://i.imgflip.com/38dyzf.jpg" class="img-fluid figure-img" width="400"></p>
 </figure>
-</div></div><p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
+</div></div><p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -393,7 +390,7 @@ Ostrzeżenie
 <p>To ćwiczenie pokazuje, że różne metryki mogą prowadzić do różnych decyzji dotyczących wyboru wartości parametrów. W tym przypadku jedna metryka wydaje się wyraźnie sortować modele, podczas gdy inna nie wykazuje żadnej różnicy.</p>
 </div>
 </div>
-<div class="page-columns page-full"><p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="references.html#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz “gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></li></div></div>
+<div class="page-columns page-full"><p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz “gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></li></div></div>
 <section id="konsekwencje-złego-oszacowania-parametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-oszacowania-parametrów">
 <span class="header-section-number">9.1</span> Konsekwencje złego oszacowania parametrów</h2>
 <p>Wiele parametrów dostrajania modyfikuje stopień złożoności modelu. Większa złożoność często oznacza większą plastyczność wzorców, które model może naśladować. Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność predykcji. Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych. Overfitting to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.</p>
@@ -403,7 +400,7 @@ Ostrzeżenie
 </figure>
 </div></div><div class="page-columns page-full"><p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji. Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></li></div></div>
 <p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli model ocenia siebie na podstawie wartości ROC zbioru treningowego, to preferuje wiele neuronów w warstwie ukrytej, tak aby mógł prawie wyeliminować błędy.</p>
-<p>Rozdziały wcześniejsze pokazały, że zwykłe ponowne przewidywanie wartości na zbiorze uczącyn jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3">Rysunek&nbsp;<span>9.3</span></a>.</p>
+<p>Rozdziały wcześniejsze pokazały, że zwykłe ponowne przewidywanie wartości na zbiorze uczącyn jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-tune3</span></a>.</p>
 <div id="fig-tune3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid figure-img" width="600"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej</figcaption><p></p>
@@ -656,7 +653,7 @@ Range: [1e-10, 1]</code></pre>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-friedman2001" class="csl-entry" role="listitem">
 Friedman, Jerome H. 2001. <span>„Greedy function approximation: A gradient boosting machine.”</span> <em>The Annals of Statistics</em> 29 (5). <a href="https://doi.org/10.1214/aos/1013203451">https://doi.org/10.1214/aos/1013203451</a>.
 </div>

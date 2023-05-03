@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./comparison.html" rel="next">
 <link href="./tidymodels.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -414,7 +411,7 @@ div.csl-indent {
 </figure>
 </div>
 </div></div><p>Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić fałszywie optymistyczne dopasowanie. A skoro zbiór testowy nie powinien być używany natychmiast, a repredykacja zbioru treningowego jest złym pomysłem, to co należy zrobić? Rozwiązaniem są metody ponownego próbkowania (ang. <em>resampling</em>), takie jak walidacja krzyżowa lub zestawy walidacyjne.</p>
-<p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1">Rysunek&nbsp;<span>7.1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
+<p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-resamp1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
 <div id="fig-resamp1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid figure-img" width="500"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu</figcaption><p></p>
@@ -441,8 +438,8 @@ div.csl-indent {
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.2: 3-krotny sprawdzian krzyżowy</figcaption><p></p>
 </figure>
 </div>
-<p>Kolor symboli na <a href="#fig-cross1">Rysunek&nbsp;<span>7.2</span></a> reprezentuje ich losowo przypisane foldy.</p>
-<p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2">Rysunek&nbsp;<span>7.3</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
+<p>Kolor symboli na <a href="#fig-cross1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-cross1</span></a> reprezentuje ich losowo przypisane foldy.</p>
+<p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-cross2</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
 <div id="fig-cross2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="img-fluid figure-img" width="500"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli</figcaption><p></p>
@@ -535,7 +532,7 @@ div.csl-indent {
 </div></div><p>Metody LOO są niedoskonałe w porównaniu z prawie każdą inną metodą. Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet <code>rsample</code> zawiera funkcję <code>loo_cv()</code>, obiekty te nie są mocno zintegrowane z pakietami <code>tidymodels</code>.</p>
 </section><section id="walidacja-metodą-monte-carlo" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="walidacja-metodą-monte-carlo">
 <span class="header-section-number">7.4</span> Walidacja metodą Monte-Carlo</h2>
-<p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="references.html#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
+<p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">mc_cv</span><span class="op">(</span><span class="va">ames_train</span>, prop <span class="op">=</span> <span class="fl">9</span><span class="op">/</span><span class="fl">10</span>, times <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
@@ -567,13 +564,13 @@ div.csl-indent {
 </div>
 </section><section id="zbiór-walidacyjny" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="zbiór-walidacyjny">
 <span class="header-section-number">7.5</span> Zbiór walidacyjny</h2>
-<p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1">Rysunek&nbsp;<span>7.5</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
+<p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-val1</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
 <div id="fig-val1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="img-fluid figure-img" width="400"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny</figcaption><p></p>
 </figure>
 </div>
-<p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2">Rysunek&nbsp;<span>7.6</span></a>).</p>
+<p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-val2</span></a>).</p>
 <div id="fig-val2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="img-fluid figure-img" width="400"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.6: Podział na trzy zbiory</figcaption><p></p>
@@ -594,9 +591,9 @@ div.csl-indent {
 </div>
 </section><section id="bootstrapping" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="bootstrapping">
 <span class="header-section-number">7.6</span> Bootstrapping</h2>
-<p><em>Bootstrap</em> został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane <span class="citation" data-cites="davison1997">(<a href="references.html#ref-davison1997" role="doc-biblioref">Davison i Hinkley 1997</a>)</span>. Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.</p>
+<p><em>Bootstrap</em> został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane <span class="citation" data-cites="davison1997">(<a href="#ref-davison1997" role="doc-biblioref">Davison i Hinkley 1997</a>)</span>. Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.</p>
 <p>Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co zbiór treningowy, ale jest losowana ze zwracaniem. Oznacza to, że niektóre obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru analitycznego. Każdy punkt danych ma 63,2% szans na włączenie do zbioru uczącego przynajmniej raz. Zestaw oceny zawiera wszystkie próbki zestawu treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8% zestawu treningowego). Podczas bootstrappingu zestaw oceny jest często nazywany próbką poza workiem (ang. <em>Out-Of-Bag)</em>.</p>
-<p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1">Rysunek&nbsp;<span>7.7</span></a></p>
+<p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-boot1</span></a></p>
 <div id="fig-boot1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="img-fluid figure-img" width="500"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.7: Trzy próby bootstrapowe</figcaption><p></p>
@@ -621,13 +618,13 @@ div.csl-indent {
 </section><section id="kroczące-próbkowanie-źródła" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="kroczące-próbkowanie-źródła">
 <span class="header-section-number">7.7</span> Kroczące próbkowanie źródła</h2>
 <p>Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w szeregach czasowych. Technika, która losowo próbkuje wartości ze zbioru treningowego, nie pozwoli na oszacowanie tych wzorców.</p>
-<p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, szacując model z danymi historycznymi i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="references.html#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
+<p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, szacując model z danymi historycznymi i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
 <div id="fig-rolling" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="img-fluid figure-img" width="500"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;7.8: Próbkowanie kroczące ze źródła</figcaption><p></p>
 </figure>
 </div>
-<p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling">Rysunek&nbsp;<span>7.8</span></a>.</p>
+<p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-rolling</span></a>.</p>
 <p>Istnieją dwie różne konfiguracje tej metody:</p>
 <ul>
 <li>Zestaw analiz może narastać narastająco (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych.</li>
@@ -784,7 +781,7 @@ Wskazówka
 <p>Jak widać wyniki te są zbliżone do otrzymanych z wykorzystaniem próby testowej.</p>
 </section><section id="przetwarzanie-równoległe" class="level2 page-columns page-full" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="przetwarzanie-równoległe">
 <span class="header-section-number">7.9</span> Przetwarzanie równoległe</h2>
-<p>Modele utworzone podczas ponownego próbkowania są niezależne od siebie. Obliczenia tego typu są czasami nazywane żenująco równoległymi (ang. <em>embarrassingly parallel</em>); każdy model mógłby być dopasowany jednocześnie bez problemów <span class="citation" data-cites="schmidberger2009">(<a href="references.html#ref-schmidberger2009" role="doc-biblioref">Schmidberger i in. 2009</a>)</span>. Pakiet <code>tune</code> używa pakietu <code>foreach</code> do przeprowadzenia obliczeń równoległych. Obliczenia te mogą być podzielone pomiędzy procesory na tym samym komputerze lub na różnych komputerach, w zależności od wybranej technologii.</p>
+<p>Modele utworzone podczas ponownego próbkowania są niezależne od siebie. Obliczenia tego typu są czasami nazywane żenująco równoległymi (ang. <em>embarrassingly parallel</em>); każdy model mógłby być dopasowany jednocześnie bez problemów <span class="citation" data-cites="schmidberger2009">(<a href="#ref-schmidberger2009" role="doc-biblioref">Schmidberger i in. 2009</a>)</span>. Pakiet <code>tune</code> używa pakietu <code>foreach</code> do przeprowadzenia obliczeń równoległych. Obliczenia te mogą być podzielone pomiędzy procesory na tym samym komputerze lub na różnych komputerach, w zależności od wybranej technologii.</p>
 <p>Liczbę dostępnych rdzeni można wykryć za pomocą:</p>
 <div class="cell" data-evel="false">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Liczba fizycznych rdzeni</span></span>
@@ -941,7 +938,7 @@ Wskazówka
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-davison1997" class="csl-entry" role="listitem">
 Davison, A. C., i D. V. Hinkley. 1997. <span>„Bootstrap Methods and their Application”</span>, październik. <a href="https://doi.org/10.1017/cbo9780511802843">https://doi.org/10.1017/cbo9780511802843</a>.
 </div>

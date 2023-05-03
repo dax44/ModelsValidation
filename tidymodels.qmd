@@ -138,7 +138,6 @@ rand_forest(trees = 1000, min_n = 5) %>%
   set_mode("regression") # parametr verbose = T przekazany został oddzielnie
 ```
 
-
 ## Użycie modelu
 
 Po utworzeniu i dopasowaniu modelu możemy wykorzystać wyniki na wiele sposobów; możemy chcieć narysować, podsumować lub w inny sposób zbadać model wyjściowy.
@@ -671,7 +670,7 @@ Inna powszechna metoda reprezentowania wielu cech jednocześnie nazywana jest ek
 Większość z tych technik tworzy nowe cechy z predyktorów, które wychwytują informacje w szerszym zestawie jako całości.
 Na przykład, analiza składowych głównych (PCA) próbuje wyodrębnić jak najwięcej oryginalnej informacji w zestawie predyktorów przy użyciu mniejszej liczby cech.
 PCA jest liniową metodą ekstrakcji, co oznacza, że każda nowa cecha jest liniową kombinacją oryginalnych predyktorów.
-Jednym z ciekawych aspektów PCA jest to, że każda z nowych cech, zwanych głównymi składowymi, jest nieskorelowana ze sobą.
+Jednym z ciekawych aspektów PCA jest to, że każda z nowych cech, zwanych głównymi składowymi, jest nieskorelowana z innymi.
 Z tego powodu PCA może być bardzo skuteczne w redukcji korelacji pomiędzy predyktorami.
 
 W danych `ames`, kilka predyktorów mierzy powierzchnię nieruchomości, takich jak całkowita powierzchnia piwnicy (`Total_Bsmt_SF`), powierzchnia pierwszego piętra (`First_Flr_SF`), powierzchnia mieszkalna (`Gr_Liv_Area`), i tak dalej.
@@ -801,4 +800,3 @@ W wielu przypadkach kolumny, na które wpływa krok, zachowują swoją dotychcza
 Na przykład, wywołania funkcji `step_log()` w naszym obiekcie `ames_rec` wpłynęły na kolumnę `Gr_Liv_Area`.
 Dla tego kroku, domyślnym zachowaniem jest zachowanie istniejącej roli dla tej kolumny, ponieważ nie jest tworzona żadna nowa kolumna.
 Jako przykład przeciwny, krok do tworzenia splajnów ustawia domyślnie nowe kolumny na rolę "predyktor", ponieważ jest to zwykle sposób, w jaki kolumny splajnów są używane w modelu.
-Większość kroków ma sensowne wartości domyślne, ale ponieważ wartości domyślne mogą być różne, upewnij się, że sprawdziłeś stronę dokumentacji, aby zrozumieć, jaka rola (role) zostanie przypisana.

@@ -32,7 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./intro.html" rel="next">
-<link href="./images/logo2.png" rel="icon" type="image/png">
+<link href="./logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -89,12 +89,16 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=|url|" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -256,7 +260,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Opublikowano</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2 maja 2023</p>
+      <p class="date">3 maja 2023</p>
     </div>
   </div>
   
@@ -268,7 +272,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <section id="wprowadzenie" class="level1 unnumbered page-columns page-full">
-<h1 class="unnumbered">Wprowadzenie</h1><p><img src="images/logo2.png" title="Metody walidacji modeli statystycznych" class="quarto-cover-image img-fluid"></p>
+<h1 class="unnumbered">Wprowadzenie</h1><p><img src="logo2.png" title="Metody walidacji modeli statystycznych" class="quarto-cover-image img-fluid"></p>
 <p>Niniejsza książka została przygotowana z myślą o studentach kierunków <em>Inżynierii i Analizy Danych</em> oraz <em>Matematyka</em>. Ma ona posłużyć w nauce szeroko rozumianej walidacji modeli statystycznych. Pojęcie zostanie dosyć szeroko potraktowane, dlatego w książce nawiązuję do metod próbkowania (ang. <em>resampling</em>), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli. Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie poszczególne czynniki (predyktory) i w jaki sposób wpływają na predykcję.</p>
 <p>W statystyce walidacja modelu jest zadaniem polegającym na ocenie, czy wybrany model statystyczny jest odpowiedni, czy nie. Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie poznają rzeczywistej wartości swojego modelu. Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw. zdolność generalizacji. Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjściowej nie tylko dla obserwacji ze zbioru uczącego, ale również z testowego, bez znaczącej straty jakości wspomnianej predykcji. Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami. Nadrzędnym celem walidacji modelu jest chęć poprawienia jego właściwości.</p>
 

@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./iterative.html" rel="next">
 <link href="./grid_search.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -130,15 +130,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -297,7 +294,7 @@ div.csl-indent {
 <li>Ogranicza osiągalne przyspieszenia, gdy preprocessing nie jest wymagający obliczeniowo.</li>
 <li>Liczba równoległych rdzeni jest ograniczona przez liczbę foldów. Na przykład przy 10-krotnej walidacji krzyżowej można użyć tylko 10 równoległych rdzeni, nawet jeśli komputer ma więcej.</li>
 </ul>
-<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1">Rysunek&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
+<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-parallel1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
 <div id="fig-parallel1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid figure-img" width="600"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;11.1: Paralelizacja w zewnętrznej pętli</figcaption><p></p>
@@ -306,7 +303,7 @@ div.csl-indent {
 <p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymaliby do przeliczenia kilka foldów.</p>
 <p>W funkcjach sterujących <code>tune_*()</code> argument <code>parallel_over</code> kontroluje sposób wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest <code>parallel_over = "resamples"</code>.</p>
 <p>Zamiast równoległego przetwarzania tylko nad zewnętrzną pętlą, alternatywny schemat łączy pętle nad foldami i modelami w jedną pętlę. W tym przypadku paralelizacja występuje teraz nad pojedynczą pętlą. Na przykład, jeśli używamy 5-krotnej walidacji krzyżowej z <span class="math inline">\(M\)</span> wartościami parametrów dostrajania, pętla jest wykonywana przez <span class="math inline">\(5 \times M\)</span> iteracji. Zwiększa to liczbę potencjalnych rdzeni, które można wykorzystać. Jednak praca związana ze wstępnym przetwarzaniem danych jest powtarzana wielokrotnie. Jeśli te kroki są wymagające obliczeniowo, to podejście to będzie nieefektywne. W <code>tidymodels</code>, zestawy walidacyjne są traktowane jako pojedynczy fold. W takich przypadkach ten schemat paralelizacji byłby najlepszy.</p>
-<p><a href="#fig-parallel2">Rysunek&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
+<p><a href="#fig-parallel2">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-parallel2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
 <div id="fig-parallel2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid figure-img" width="600"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;11.2: Paralelizacja nad foldami i parametrami</figcaption><p></p>
@@ -323,7 +320,7 @@ div.csl-indent {
 <li>To samo przetwarzanie wstępne za pomocą przepisów inżynierii cech (oznaczone jako “light” przetwarzanie wstępne).</li>
 <li>Dodano nowy krok, który ma wysoki koszt obliczeniowy (oznaczony jako “expensive”).</li>
 </ul>
-<p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3">Rysunek&nbsp;<span>11.3</span></a>.</p>
+<p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-parallel3</span></a>.</p>
 <div id="fig-parallel3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="img-fluid figure-img" width="600"></p>
 <p></p><figcaption class="figure-caption">Rysunek&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy</figcaption><p></p>
@@ -430,7 +427,7 @@ Computational engine: stan </code></pre>
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="img-fluid figure-img" width="400"></p>
 </figure>
-</div></div><p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="references.html#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
+</div></div><p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
 <p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na rysunku 13.9.</p>
 <div id="fig-parallel5" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid figure-img" width="600"></p>
@@ -514,7 +511,7 @@ Computational engine: stan </code></pre>
 <p>Istnieją również inne techniki analizy pośredniej do odrzucania pewnych konfiguracji parametrów.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-NIPS1993_02a32ad2" class="csl-entry" role="listitem">
 Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating</span> Model Selection Search for Classification and Function Approximation”</span>. W <em>Advances in Neural Information Processing Systems</em>, zredagowane przez J. Cowan, G. Tesauro, i J. Alspector. T. 6. <span>Morgan-Kaufmann</span>.
 </div>

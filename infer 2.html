@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./measures.html" rel="next">
 <link href="./modeling.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./images/logo2.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,15 +128,12 @@ div.csl-indent {
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -288,7 +285,7 @@ div.csl-indent {
 </figure>
 </div>
 <div class="page-columns page-full"><p>Niezależnie od stawianej hipotezy, badacz zadaje sobie ten sam rodzaj pytania podczas wnioskowania statystycznego: czy efekt/różnica w obserwowanych danych jest rzeczywista, czy wynika z przypadku? Aby odpowiedzieć na to pytanie, analityk zakłada, że efekt w obserwowanych danych był spowodowany przypadkiem i nazywa to założenie hipotezą zerową<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Analityk następnie oblicza statystykę testową z danych, która opisuje obserwowany efekt. Może użyć tej statystyki testowej do obliczenia wartości <span class="math inline">\(p\)</span> poprzez zestawienie jej z rozkładem wynikającym z hipotezy zerowej. Jeśli to prawdopodobieństwo jest poniżej jakiegoś wcześniej zdefiniowanego poziomu istotności <span class="math inline">\(\alpha\)</span>, to analityk powinien odrzucić hipotezę zerową.</p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że “coś się dzieje”</p></li></div></div>
-<p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="references.html#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="references.html#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
+<p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 3.1 </strong></span>W tym przykładzie przetestujemy hipotezę o równości średniej z wartością teoretyczną. Dane weźmiemy ze zbioru <code>gss</code> biblioteki <code>infer</code> zawierającego podzbiór wyników spisu powszechnego przeprowadzonego w 1972 r. w USA.</p>
 <div class="cell">
@@ -355,16 +352,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  40.4
- 2         2  40.0
- 3         3  40.7
- 4         4  40.2
- 5         5  39.0
- 6         6  40.9
- 7         7  39.5
- 8         8  40.8
- 9         9  40  
-10        10  39.5
+ 1         1  39.6
+ 2         2  39.0
+ 3         3  40.5
+ 4         4  40.3
+ 5         5  39.2
+ 6         6  40.2
+ 7         7  40.8
+ 8         8  40.3
+ 9         9  40.1
+10        10  39.8
 # ℹ 990 more rows</code></pre>
 </div>
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -403,7 +400,7 @@ Null Hypothesis: point
 <li>Następnie przesuwamy wszystkie obserwację o różnicę pomiędzy średnią teoretyczną a <span class="math inline">\(\bar{x}\)</span>, tak aby rozkład miał średnią teoretyczną.</li>
 <li>Losujemy próby bootstrapowe z nowej (przesuniętej) próby.</li>
 <li>Na podstawie prób bootstrapowych wyznaczamy rozkład średnich poszczególnych prób.</li>
-<li>Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż <span class="math inline">\(-\bar{x}\)</span> (patrz Rys. -<a href="#fig-hist4">Rysunek&nbsp;<span>3.3</span></a>)</li>
+<li>Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż <span class="math inline">\(-\bar{x}\)</span> (patrz Rys. -<a href="#fig-hist4">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-hist4</span></a>)</li>
 </ol>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
@@ -412,7 +409,7 @@ Null Hypothesis: point
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1    0.64</code></pre>
+1    0.67</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>
@@ -466,7 +463,7 @@ Wskazówka
 </div>
 </div>
 </div>
-<div class="page-columns page-full"><p>Jak widać na <a href="#fig-medians">Rysunek&nbsp;<span>3.4</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;tylko w przypadku jednakowych kształtów rozkładów test ten weryfikuje równość median</p></li></div></div>
+<div class="page-columns page-full"><p>Jak widać na <a href="#fig-medians">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-medians</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;tylko w przypadku jednakowych kształtów rozkładów test ten weryfikuje równość median</p></li></div></div>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
 <span><span class="va">sample_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
@@ -555,7 +552,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 </div>
 </div>
-<div class="page-columns page-full"><p>Jak widać z <a href="#fig-median3">Rysunek&nbsp;<span>3.6</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;co odzwierciedla warunek z hipotezy zerowej</p></li></div></div>
+<div class="page-columns page-full"><p>Jak widać z <a href="#fig-median3">Rysunek&nbsp;<span class="quarto-unresolved-ref">fig-median3</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;co odzwierciedla warunek z hipotezy zerowej</p></li></div></div>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -666,7 +663,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-infer" class="csl-entry" role="listitem">
 Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, i Mine Çetinkaya-Rundel. 2021. <span>„<span></span>infer<span></span>: An <span></span>R<span></span> package for tidyverse-friendly statistical inference”</span> 6: 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
 </div>
