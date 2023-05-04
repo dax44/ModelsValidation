@@ -155,7 +155,7 @@ Ostateczne oszacowanie wydajności dla modelu jest średnią z 20 powtórzeń st
 Walidacja krzyżowa (ang. *cross-validation*) jest dobrze ugruntowaną metodą próbkowania.
 Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa.
 Dane są losowo dzielone na $V$ zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami).
-Dla ilustracji, $V = 3$ jest pokazane na rysunku rys dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
+Dla ilustracji, $V = 3$ jest pokazane na rysunku -@fig-cross1 dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
 Liczba wewnątrz symboli to numer próbki.
 
 ![3-krotny sprawdzian krzyżowy](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.18.png){#fig-cross1 fig-align="center" width="400"}
@@ -193,7 +193,7 @@ lobstr::obj_size(ames_train)
 
 Kolumna o nazwie *splits* zawiera informacje o tym, jak podzielone zostaną dane (podobnie jak obiekt używany do tworzenia początkowej partycji trening/test).
 Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest na tyle inteligentny, że nie tworzy kopii danych w pamięci.
-Metoda print wewnątrz tybla pokazuje częstość występowania każdego z nich: \[2107/235\] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.
+Metoda `print` wewnątrz `tibble` pokazuje częstość występowania każdego z nich: \[2107/235\] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.
 
 ## Sprawdzian krzyżowy z powtórzeniami
 
@@ -210,7 +210,7 @@ Aby stworzyć $R$ powtórzeń $V$-krotnej walidacji krzyżowej, ten sam proces g
 Zamiast uśredniania $V$ statystyk, $V\times R$ wartości daje ostateczną estymację resamplingu.
 Ze względu na Centralne Twierdzenie Graniczne, statystyki zbiorcze z każdego modelu mają tendencję do rozkładu normalnego, tak długo jak mamy dużo danych w stosunku do $V\times R$.
 Rozważmy dane `ames`.
-Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 właściwości.
+Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 obserwacji.
 Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako $\sigma$.
 Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi $\sigma/\sqrt{10}$.
 Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do $\sigma/\sqrt{10R}$.
