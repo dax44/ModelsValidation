@@ -355,16 +355,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  40.7
+ 1         1  40.2
  2         2  39.8
- 3         3  40.2
- 4         4  39.6
- 5         5  39.8
- 6         6  39.7
- 7         7  39.0
- 8         8  38.5
- 9         9  40.3
-10        10  39.9
+ 3         3  39.3
+ 4         4  40.3
+ 5         5  39.9
+ 6         6  39.4
+ 7         7  41.4
+ 8         8  41.3
+ 9         9  40.2
+10        10  39.3
 # ℹ 990 more rows</code></pre>
 </div>
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -412,7 +412,7 @@ Null Hypothesis: point
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1   0.678</code></pre>
+1   0.632</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>

@@ -860,19 +860,19 @@ Prediction  No Yes
 <span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">.metric</span>, values_from <span class="op">=</span> <span class="va">.estimate</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="op">-</span><span class="va">j_index</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 100 × 6
-   .threshold .estimator  sens  spec j_index distance
-        &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
- 1       0.19 binary     0.722 0.838   0.560    0.103
- 2       0.17 binary     0.736 0.816   0.552    0.103
- 3       0.18 binary     0.722 0.824   0.547    0.108
- 4       0.16 binary     0.736 0.808   0.544    0.106
- 5       0.2  binary     0.694 0.846   0.540    0.117
- 6       0.22 binary     0.681 0.857   0.537    0.123
- 7       0.15 binary     0.736 0.797   0.533    0.111
- 8       0.21 binary     0.681 0.851   0.532    0.124
- 9       0.12 binary     0.75  0.773   0.523    0.114
-10       0.26 binary     0.639 0.884   0.523    0.144
+<pre><code># A tibble: 100 × 5
+   .threshold .estimator sensitivity specificity j_index
+        &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+ 1       0.19 binary           0.722       0.838   0.560
+ 2       0.17 binary           0.736       0.816   0.552
+ 3       0.18 binary           0.722       0.824   0.547
+ 4       0.16 binary           0.736       0.808   0.544
+ 5       0.2  binary           0.694       0.846   0.540
+ 6       0.22 binary           0.681       0.857   0.537
+ 7       0.15 binary           0.736       0.797   0.533
+ 8       0.21 binary           0.681       0.851   0.532
+ 9       0.12 binary           0.75        0.773   0.523
+10       0.26 binary           0.639       0.884   0.523
 # ℹ 90 more rows</code></pre>
 </div>
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykjca dla optymalnego progu</span></span>

@@ -431,7 +431,7 @@ Coefficients:
 <li>
 <code>trees</code> - liczba drzew;</li>
 <li>
-<code>min_n</code> - minimalna liczba obserwacji aby dokonać podziału.</li>
+<code>min_n</code> - minimalna liczba obserwacji aby dokonać podziału węzła.</li>
 </ul>
 <p>Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który nie koniecznie musi się znać na różnicach pomiędzy pakietami.</p>
 <p>Dla wspomnianego przykładu lasów losowych, model można zdefiniować następująco.</p>
@@ -1063,7 +1063,7 @@ Ostrzeżenie
 </div>
 </div></div><section id="kodowanie-faktorów" class="level3 page-columns page-full" data-number="6.5.1"><h3 data-number="6.5.1" class="anchored" data-anchor-id="kodowanie-faktorów">
 <span class="header-section-number">6.5.1</span> Kodowanie faktorów</h3>
-<p>Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (<code>step_nomalize()</code>), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (<code>step_holiday()</code>). W trakcie budowania modelu różne czynności będą wymagana, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor. Możemy to zrobić na kilka sposobów. Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory. Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym. Zamiana go na indykator powoduje powstanie stałej zmiennej, która jest bezużyteczna w uczeniu modelu. Można oczywiście przystąpić do imputacji takiej wartości, a sposobów na jej realizację jest bardzo wiele. Pomijając techniki korzystające z modeli pomocniczych, jak <code>step_impute_knn</code> czy <code>step_impute_bag</code>, można też zastąpić brak stałą wartością (<code>step_unknown</code>). Podobnie, jeśli przewidujemy, że w testowych danych może pojawić się nowy poziom czynnika, <code>step_novel()</code> może w tym celu przydzielić mu nowy poziom czynnika.</p>
+<p>Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (<code>step_nomalize()</code>), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (<code>step_holiday()</code>). W trakcie budowania modelu różne czynności będą wymagane, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor. Możemy to zrobić na kilka sposobów. Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory. Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym. Zamiana go na indykator powoduje powstanie stałej zmiennej, która jest bezużyteczna w uczeniu modelu. Można oczywiście przystąpić do imputacji takiej wartości, a sposobów na jej realizację jest bardzo wiele. Pomijając techniki korzystające z modeli pomocniczych, jak <code>step_impute_knn</code> czy <code>step_impute_bag</code>, można też zastąpić brak stałą wartością (<code>step_unknown</code>). Podobnie, jeśli przewidujemy, że w testowych danych może pojawić się nowy poziom czynnika, <code>step_novel()</code> może w tym celu przydzielić mu nowy poziom czynnika.</p>
 <p>Dodatkowo, funkcja <code>step_other()</code> może być użyta do przeanalizowania częstotliwości poziomów czynników w zbiorze treningowym i przekonwertowania rzadko występujących wartości do poziomu “inne”, z progiem, który można określić. Dobrym przykładem jest predyktor <code>Neighborhood</code> w naszych danych, pokazany na <a href="#fig-sasiad">Rysunek&nbsp;<span>6.2</span></a>.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb77"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_train</span> <span class="op">|&gt;</span> </span>
@@ -1189,7 +1189,7 @@ Ważne
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb83"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">step_pca</span><span class="op">(</span><span class="fu">matches</span><span class="op">(</span><span class="st">"(SF$)|(Gr_Liv)"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Zauważ, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali. W tym przypadku to prawda, ale często ten krok musi być poprzedzony przez <code>step_normalize()</code>.</p>
+<p>Zauważmy, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali. W tym przypadku to prawda, ale często ten krok musi być poprzedzony przez <code>step_normalize()</code>.</p>
 <p>Istnieją kroki przepisów dla innych metod ekstrakcji, takie jak: analiza składowych niezależnych (ICA), faktoryzacja macierzy nieujemnej (NNMF), skalowanie wielowymiarowe (MDS), jednolita aproksymacja i projekcja (UMAP) i inne.</p>
 </section><section id="przepisy-wierszowe" class="level3" data-number="6.5.5"><h3 data-number="6.5.5" class="anchored" data-anchor-id="przepisy-wierszowe">
 <span class="header-section-number">6.5.5</span> Przepisy wierszowe</h3>
@@ -1205,7 +1205,7 @@ Zagrożenie
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Tylko zestaw treningowy powinien być poddany wpływowi tych technik. Zbiór testowy lub inne próbki powinny być pozostawione w niezmienionym stanie, czyli ten krok przepisu nie powinien być do nich stosowany. Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument pomiń na wartość <code>TRUE.</code></p>
+<p>Tylko zestaw treningowy powinien być poddany wpływowi tych technik. Zbiór testowy lub inne próbki powinny być pozostawione w niezmienionym stanie, czyli ten krok przepisu nie powinien być do nich stosowany. Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument <code>skip</code> na wartość <code>TRUE.</code></p>
 </div>
 </div>
 </section><section id="przekształcenia-ogólne" class="level3" data-number="6.5.6"><h3 data-number="6.5.6" class="anchored" data-anchor-id="przekształcenia-ogólne">
@@ -1307,7 +1307,7 @@ Zagrożenie
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb89"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">update_role</span><span class="op">(</span><span class="va">address</span>, new_role <span class="op">=</span> <span class="st">"street address"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Po tej zmianie kolumna adresu w ramce danych nie będzie już predykatorem, ale “adresem ulicy” zgodnie z przepisem. Każdy ciąg znaków może być użyty jako rola. Również kolumny mogą mieć wiele ról (dodatkowe role są dodawane poprzez <code>add_role()</code>) tak, że mogą być nadane w więcej niż jednym kontekście.</p>
+<p>Po tej zmianie kolumna adresu w ramce danych nie będzie już predyktorem, ale “adresem ulicy” zgodnie z przepisem. Każdy ciąg znaków może być użyty jako rola. Również kolumny mogą mieć wiele ról (dodatkowe role są dodawane poprzez <code>add_role()</code>) tak, że mogą być nadane w więcej niż jednym kontekście.</p>
 <p>Może to być pomocne, gdy dane są próbkowane. Pomaga to utrzymać kolumny, które nie są zaangażowane w dopasowanie modelu w tej samej ramce danych (a nie w zewnętrznym wektorze). Próbkowanie, opisane nieco później, tworzy alternatywne wersje danych głównie poprzez podpróbkowanie wierszy. Gdyby adres ulicy znajdował się w innej kolumnie, wymagane byłoby dodatkowe podpróbkowanie, co mogłoby prowadzić do bardziej skomplikowanego kodu i większego prawdopodobieństwa wystąpienia błędów.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">

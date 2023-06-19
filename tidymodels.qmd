@@ -115,7 +115,7 @@ W przypadku budowy w `parsnip` nazwy parametrów zostały zunifikowane:
 
 -   `mtry` - liczba wybranych predyktorów;
 -   `trees` - liczba drzew;
--   `min_n` - minimalna liczba obserwacji aby dokonać podziału.
+-   `min_n` - minimalna liczba obserwacji aby dokonać podziału węzła.
 
 Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który nie koniecznie musi się znać na różnicach pomiędzy pakietami.
 
@@ -525,7 +525,7 @@ W przeciwnym razie wyciek informacji może negatywnie wpłynąć na wydajność 
 ### Kodowanie faktorów
 
 Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (`step_nomalize()`), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (`step_holiday()`).
-W trakcie budowania modelu różne czynności będą wymagana, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor.
+W trakcie budowania modelu różne czynności będą wymagane, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor.
 Możemy to zrobić na kilka sposobów.
 Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory.
 Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym.
@@ -682,7 +682,7 @@ Oprócz powierzchni mieszkalnej brutto, predyktory mają przyrostek SF w swoich 
 step_pca(matches("(SF$)|(Gr_Liv)"))
 ```
 
-Zauważ, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali.
+Zauważmy, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali.
 W tym przypadku to prawda, ale często ten krok musi być poprzedzony przez `step_normalize()`.
 
 Istnieją kroki przepisów dla innych metod ekstrakcji, takie jak: analiza składowych niezależnych (ICA), faktoryzacja macierzy nieujemnej (NNMF), skalowanie wielowymiarowe (MDS), jednolita aproksymacja i projekcja (UMAP) i inne.
@@ -698,7 +698,7 @@ Istnieją inne funkcje krokowe, które są również oparte na wierszach, jak: `
 ::: callout-caution
 Tylko zestaw treningowy powinien być poddany wpływowi tych technik.
 Zbiór testowy lub inne próbki powinny być pozostawione w niezmienionym stanie, czyli ten krok przepisu nie powinien być do nich stosowany.
-Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument pomiń na wartość `TRUE.`
+Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument `skip` na wartość `TRUE.`
 :::
 
 ### Przekształcenia ogólne
@@ -782,7 +782,7 @@ Na przykład, dla danych dotyczących cen domów, rola kolumny adresu ulicy moż
 ames_rec %>% update_role(address, new_role = "street address")
 ```
 
-Po tej zmianie kolumna adresu w ramce danych nie będzie już predykatorem, ale "adresem ulicy" zgodnie z przepisem.
+Po tej zmianie kolumna adresu w ramce danych nie będzie już predyktorem, ale "adresem ulicy" zgodnie z przepisem.
 Każdy ciąg znaków może być użyty jako rola.
 Również kolumny mogą mieć wiele ról (dodatkowe role są dodawane poprzez `add_role()`) tak, że mogą być nadane w więcej niż jednym kontekście.
 

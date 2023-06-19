@@ -337,8 +337,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 3 splines_lm  &lt;tibble [1 × 4]&gt; &lt;opts[2]&gt; &lt;rsmp[+]&gt;</code></pre>
 </div>
 </div>
-<p>Zauważ, że kolumny <code>option</code> i <code>result</code> są teraz wypełnione. Pierwsza zawiera opcje do <code>fit_resamples()</code>, które zostały podane (dla odtwarzalności), a druga kolumna zawiera wyniki uzyskane przez <code>fit_resamples()</code>.</p>
-<p>Istnieje kilka funkcji wygodnych dla zestawów przepływów pracy, w tym <code>collect_metrics()</code> do zestawiania statystyk wydajności. Możemy też <code>filtrować()</code> dowolną konkretną metrykę, która nas interesuje:</p>
+<p>Zauważmy, że kolumny <code>option</code> i <code>result</code> są teraz wypełnione. Pierwsza zawiera opcje do <code>fit_resamples()</code>, które zostały podane (dla odtwarzalności), a druga kolumna zawiera wyniki uzyskane przez <code>fit_resamples()</code>.</p>
+<p>Istnieje kilka wygodnych funkcji przeznaczonych do zestawów przepływów pracy, w tym <code>collect_metrics()</code> do zestawiania statystyk wydajności. Możemy też <code>filtrować()</code> dowolną konkretną metrykę, która nas interesuje:</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">lm_models</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"rmse"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -415,7 +415,7 @@ Zagrożenie
 <p>Przed dokonaniem porównań pomiędzy modelami, ważne jest, abyśmy omówili korelację wewnątrz-próbkową dla statystyk resamplingu. Każdy model był mierzony z tymi samymi foldami walidacji krzyżowej, a wyniki dla tej samej próby mają tendencję do bycia podobnymi.</p>
 </div>
 </div>
-<p>Innymi słowy, istnieją pewne próbki, dla których wydajność modeli jest niska i inne, w których jest wysoka. W statystyce nazywa się to składnikiem zmienności próbka do próbki.</p>
+<p>Innymi słowy, istnieją pewne próbki, dla których wydajność modeli jest niska i inne, w których jest wysoka. W statystyce nazywa się to składnikiem zmienności “próbka do próbki”.</p>
 <p>Dla zobrazowania tego problemu zbierzmy poszczególne statystyki resamplingu dla modeli liniowych i lasu losowego. Skupimy się na <span class="math inline">\(R^2\)</span> dla każdego modelu, która mierzy korelację pomiędzy obserwowanymi i przewidywanymi cenami sprzedaży dla każdego domu. Przefiltrujmy wyniki, aby zachować tylko statystyki <span class="math inline">\(R^2\)</span>, przekształćmy wyniki i obliczmy jak metryki są ze sobą skorelowane.</p>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rsq_indiv_estimates</span> <span class="op">&lt;-</span> </span>

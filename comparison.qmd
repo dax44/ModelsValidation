@@ -76,10 +76,10 @@ lm_models
 
 ```
 
-Zauważ, że kolumny `option` i `result` są teraz wypełnione.
+Zauważmy, że kolumny `option` i `result` są teraz wypełnione.
 Pierwsza zawiera opcje do `fit_resamples()`, które zostały podane (dla odtwarzalności), a druga kolumna zawiera wyniki uzyskane przez `fit_resamples()`.
 
-Istnieje kilka funkcji wygodnych dla zestawów przepływów pracy, w tym `collect_metrics()` do zestawiania statystyk wydajności.
+Istnieje kilka wygodnych funkcji przeznaczonych do zestawów przepływów pracy, w tym `collect_metrics()` do zestawiania statystyk wydajności.
 Możemy też `filtrować()` dowolną konkretną metrykę, która nas interesuje:
 
 ```{r}
@@ -142,7 +142,7 @@ Każdy model był mierzony z tymi samymi foldami walidacji krzyżowej, a wyniki 
 :::
 
 Innymi słowy, istnieją pewne próbki, dla których wydajność modeli jest niska i inne, w których jest wysoka.
-W statystyce nazywa się to składnikiem zmienności próbka do próbki.
+W statystyce nazywa się to składnikiem zmienności "próbka do próbki".
 
 Dla zobrazowania tego problemu zbierzmy poszczególne statystyki resamplingu dla modeli liniowych i lasu losowego.
 Skupimy się na $R^2$ dla każdego modelu, która mierzy korelację pomiędzy obserwowanymi i przewidywanymi cenami sprzedaży dla każdego domu.
