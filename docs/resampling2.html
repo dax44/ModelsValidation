@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.299">
+<meta name="generator" content="quarto-1.3.427">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 7&nbsp; Metody próbkowania</title>
 <style>
@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./comparison.html" rel="next">
 <link href="./tidymodels.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,8 @@ div.csl-indent {
     "search-more-matches-text": "więcej dopasowań w tym dokumencie",
     "search-clear-button-title": "Wyczyść",
     "search-detached-cancel-button-title": "Anuluj",
-    "search-submit-button-title": "Zatwierdź"
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
   }
 }</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
@@ -122,7 +123,7 @@ div.csl-indent {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./resampling2.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -134,9 +135,9 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
-    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" rel="" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -417,8 +418,7 @@ div.csl-indent {
 <p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1">Rysunek&nbsp;<span>7.1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
 <div id="fig-resamp1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid figure-img" width="500"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu</figcaption></figure>
 </div>
 <p><em>Resampling</em> jest przeprowadzany tylko na zbiorze treningowym. Zbiór testowy nie bierze w nim udziału. Dla każdej iteracji ponownego próbkowania dane są dzielone na dwie podpróbki, na których:</p>
 <ul>
@@ -438,15 +438,13 @@ div.csl-indent {
 <p>Walidacja krzyżowa (ang. <em>cross-validation</em>) jest dobrze ugruntowaną metodą próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa. Dane są losowo dzielone na <span class="math inline">\(V\)</span> zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami). Dla ilustracji, <span class="math inline">\(V = 3\)</span> jest pokazane na rysunku -<a href="#fig-cross1">Rysunek&nbsp;<span>7.2</span></a> dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów. Liczba wewnątrz symboli to numer próbki.</p>
 <div id="fig-cross1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="img-fluid figure-img" width="400"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.2: 3-krotny sprawdzian krzyżowy</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.2: 3-krotny sprawdzian krzyżowy</figcaption></figure>
 </div>
 <p>Kolory symboli na <a href="#fig-cross1">Rysunek&nbsp;<span>7.2</span></a> reprezentują ich losowo przypisane foldy.</p>
 <p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2">Rysunek&nbsp;<span>7.3</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
 <div id="fig-cross2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="img-fluid figure-img" width="500"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli</figcaption></figure>
 </div>
 <p>Gdy <span class="math inline">\(V = 3\)</span>, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór oceny stanowi odrębną 1/3. Końcowa estymacja resamplingu wydajności uśrednia każdą z <span class="math inline">\(V\)</span> replik.</p>
 
@@ -500,8 +498,7 @@ div.csl-indent {
 <p>Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 obserwacji. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na rysunku <a href="#fig-cross3">Rysunek&nbsp;<span>7.4</span></a> pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
 <div id="fig-cross3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych</figcaption></figure>
 </div>
 <p>Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd standardowy estymacji, chyba że bazowa wartość <span class="math inline">\(\sigma\)</span> jest duża, wówczas faktycznie warto zwiększać liczbę replikacji.</p>
 <div class="cell">
@@ -571,14 +568,12 @@ div.csl-indent {
 <p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1">Rysunek&nbsp;<span>7.5</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
 <div id="fig-val1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="img-fluid figure-img" width="400"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny</figcaption></figure>
 </div>
 <p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2">Rysunek&nbsp;<span>7.6</span></a>).</p>
 <div id="fig-val2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="img-fluid figure-img" width="400"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.6: Podział na trzy zbiory</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.6: Podział na trzy zbiory</figcaption></figure>
 </div>
 <p>Zbiory walidacyjne są często wykorzystywane, gdy pierwotna pula danych jest bardzo duża. W tym przypadku, pojedyncza duża partia danych jest wystarczająca do scharakteryzowania dopasowania modelu bez konieczności wykonywania wielu iteracji próbkowania.</p>
 <div class="cell">
@@ -600,8 +595,7 @@ div.csl-indent {
 <p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1">Rysunek&nbsp;<span>7.7</span></a></p>
 <div id="fig-boot1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="img-fluid figure-img" width="500"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.7: Trzy próby bootstrapowe</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.7: Trzy próby bootstrapowe</figcaption></figure>
 </div>
 <div class="cell">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bootstraps</span><span class="op">(</span><span class="va">ames_train</span>, times <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -625,8 +619,7 @@ div.csl-indent {
 <p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, estymując parametry modelu na danymych historycznych i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="references.html#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
 <div id="fig-rolling" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="img-fluid figure-img" width="500"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.8: Próbkowanie kroczące ze źródła</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.8: Próbkowanie kroczące ze źródła</figcaption></figure>
 </div>
 <p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling">Rysunek&nbsp;<span>7.8</span></a>.</p>
 <p>Istnieją dwie różne konfiguracje tej metody:</p>
@@ -728,8 +721,7 @@ Wskazówka
 </details><div class="cell-output-display">
 <div id="fig-pred-obs" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="resampling2_files/figure-html/fig-pred-obs-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu</figcaption></figure>
 </div>
 </div>
 </div>

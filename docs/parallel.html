@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.299">
+<meta name="generator" content="quarto-1.3.427">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 11&nbsp; Paralelizacja resamplingu</title>
 <style>
@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./iterative.html" rel="next">
 <link href="./grid_search.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -110,7 +110,8 @@ div.csl-indent {
     "search-more-matches-text": "więcej dopasowań w tym dokumencie",
     "search-clear-button-title": "Wyczyść",
     "search-detached-cancel-button-title": "Anuluj",
-    "search-submit-button-title": "Zatwierdź"
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
   }
 }</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
@@ -124,7 +125,7 @@ div.csl-indent {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parallel.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -136,9 +137,9 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
-    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" rel="" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -300,8 +301,7 @@ div.csl-indent {
 <p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1">Rysunek&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
 <div id="fig-parallel1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;11.1: Paralelizacja w zewnętrznej pętli</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;11.1: Paralelizacja w zewnętrznej pętli</figcaption></figure>
 </div>
 <p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymaliby do przeliczenia kilka foldów.</p>
 <p>W funkcjach sterujących <code>tune_*()</code> argument <code>parallel_over</code> kontroluje sposób wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest <code>parallel_over = "resamples"</code>.</p>
@@ -309,8 +309,7 @@ div.csl-indent {
 <p><a href="#fig-parallel2">Rysunek&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
 <div id="fig-parallel2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;11.2: Paralelizacja nad foldami i parametrami</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;11.2: Paralelizacja nad foldami i parametrami</figcaption></figure>
 </div>
 <p>Tutaj każdy proces roboczy obsługuje wiele foldów, a przetwarzanie wstępne jest niepotrzebnie powtarzane. Na przykład, dla pierwszego foldu, preprocessing został wykonany siedem razy zamiast raz. Dla tego schematu argumentem funkcji sterującej jest <code>parallel_over = "everything"</code>.</p>
 
@@ -326,8 +325,7 @@ div.csl-indent {
 <p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3">Rysunek&nbsp;<span>11.3</span></a>.</p>
 <div id="fig-parallel3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy</figcaption></figure>
 </div>
 <p>Ponieważ było tylko pięć foldów, liczba rdzeni używanych, gdy <code>parallel_over = "resamples"</code> jest ograniczona do pięciu. Porównanie krzywych w pierwszych dwóch panelach dla “none” i “light” daje następujące wnioski:</p>
 <ul>
@@ -338,8 +336,7 @@ div.csl-indent {
 <p>Na rysunku 13.8 możemy również obejrzeć te dane w kategoriach przyrostu prędkości.</p>
 <div id="fig-parallel4" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów</figcaption></figure>
 </div>
 <p>Najlepsze przyspieszenie pracy, dla tych danych, występują, gdy <code>parallel_over = "resamples"</code> i gdy obliczenia wstępne są drogie. Jednak w tym ostatnim przypadku należy pamiętać, że poprzednia analiza wskazuje, że ogólne dopasowanie modelu jest wolniejsze.</p>
 <p>Jaka jest korzyść z zastosowania metody optymalizacji submodelu w połączeniu z przetwarzaniem równoległym? Model klasyfikacyjny C5.0 został również uruchomiony równolegle przy użyciu dziesięciu rdzeni. Obliczenia równoległe zajęły 13,3 sekundy, co oznacza 7,5-krotne przyspieszenie (w obu przypadkach zastosowano sztuczkę optymalizacji submodelu). Dzięki sztuczce optymalizacji podmodelu i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w stosunku do najbardziej podstawowego kodu przeszukiwania siatki.</p>
@@ -434,8 +431,7 @@ Computational engine: stan </code></pre>
 <p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na rysunku 13.9.</p>
 <div id="fig-parallel5" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid figure-img" width="600"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;11.5: Przykład zastosowania metody wyścigowej</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;11.5: Przykład zastosowania metody wyścigowej</figcaption></figure>
 </div>
 <p>Każdy zestaw parametrów, którego przedział ufności zawiera zero, nie daje podstaw by twierdzić, że jego wydajność jest statystycznie różna od najlepszych wyników. Zachowujemy 6 najlepszych ustawień i są one ponownie próbkowane. Pozostałe 14 podmodeli nie jest już rozpatrywane.</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.tmwr.org/race_results.mp4"></video></div>

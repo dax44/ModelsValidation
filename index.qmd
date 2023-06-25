@@ -13,8 +13,6 @@ Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjści
 Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami.
 Nadrzędnym celem walidacji modelu jest chęć poprawienia jego właściwości.
 
-![](images/overfit2.jpeg){.column-margin fig-align="center"}
-
 Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym.
 Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu.
 Na przykład, jeśli badacz pracuje z bardzo ograniczonym zestawem danych, ale ma silne założenia wstępne dotyczące danych, może rozważyć walidację dopasowania swojego modelu poprzez zastosowanie metod bayesowskich i testowanie dopasowania modelu przy użyciu różnych rozkładów wstępnych.

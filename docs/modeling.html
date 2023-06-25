@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.299">
+<meta name="generator" content="quarto-1.3.427">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 2&nbsp; Modelowanie statystyczne</title>
 <style>
@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./infer.html" rel="next">
 <link href="./intro.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,8 @@ div.csl-indent {
     "search-more-matches-text": "więcej dopasowań w tym dokumencie",
     "search-clear-button-title": "Wyczyść",
     "search-detached-cancel-button-title": "Anuluj",
-    "search-submit-button-title": "Zatwierdź"
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
   }
 }</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 </head>
@@ -122,7 +123,7 @@ div.csl-indent {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./modeling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -134,9 +135,9 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
-    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" rel="" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -306,8 +307,7 @@ div.csl-indent {
 <p>Na przykład, pomiary RNA na dużą skalę są możliwe od pewnego czasu przy użyciu mikromacierzy. Wczesne metody laboratoryjne umieszczały próbkę biologiczną na małym mikrochipie. Bardzo małe miejsca na chipie mogą mierzyć sygnał oparty na bogactwie specyficznej sekwencji RNA. Chip zawierałby tysiące (lub więcej) wyników, z których każdy byłby kwantyfikacją RNA związanego z procesem biologicznym. Jednakże na chipie mogłyby wystąpić problemy z jakością, które mogłyby prowadzić do słabych wyników. Na przykład, odcisk palca przypadkowo pozostawiony na części chipa mógłby spowodować niedokładne pomiary podczas skanowania.</p>
 <div id="fig-chip" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;2.1: Ocena jakości odczytów z mikroczipa</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;2.1: Ocena jakości odczytów z mikroczipa</figcaption></figure>
 </div>
 <p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="references.html#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip">Rysunek&nbsp;<span>2.1</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="references.html#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
 </section><section id="modele-do-wnioskowania" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="modele-do-wnioskowania">
@@ -366,8 +366,7 @@ Ważne
 <p>Wreszcie, przed rozpoczęciem procesu analizy danych, powinny istnieć jasne oczekiwania co do celu modelu i sposobu oceny jego wydajności. Należy zidentyfikować przynajmniej jedną metrykę wydajności z realistycznymi celami dotyczącymi tego, co można osiągnąć. Typowe metryki statystyczne, to dokładność klasyfikacji (ang. <em>accuracy</em>), odsetek poprawnie i niepoprawnie zaklasyfikowanych sukcesów (przez sukces rozumiemy wyróżnioną klasę), pierwiastek błędu średniokwadratowego i tak dalej. Należy rozważyć względne korzyści i wady tych metryk. Ważne jest również, aby metryka była zgodna z szerszymi celami analizy danych.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Typowy przebieg budowy modelu</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Typowy przebieg budowy modelu</figcaption></figure>
 </div>
 <p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="references.html#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
 <p>W ramach czynności zaznaczonych na szarym polu możemy wyróżnić:</p>
@@ -379,8 +378,7 @@ Ważne
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Przykładowy przebieg budowy modelu</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Przykładowy przebieg budowy modelu</figcaption></figure>
 </div>
 <p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="references.html#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
 <div class="cell">
@@ -408,23 +406,23 @@ Ważne
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<div id="osuozkvroh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#osuozkvroh table {
+<div id="resnuftdzg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#resnuftdzg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#osuozkvroh thead, #osuozkvroh tbody, #osuozkvroh tfoot, #osuozkvroh tr, #osuozkvroh td, #osuozkvroh th {
+#resnuftdzg thead, #resnuftdzg tbody, #resnuftdzg tfoot, #resnuftdzg tr, #resnuftdzg td, #resnuftdzg th {
   border-style: none;
 }
 
-#osuozkvroh p {
+#resnuftdzg p {
   margin: 0;
   padding: 0;
 }
 
-#osuozkvroh .gt_table {
+#resnuftdzg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -450,12 +448,12 @@ Ważne
   border-left-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_caption {
+#resnuftdzg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#osuozkvroh .gt_title {
+#resnuftdzg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -467,7 +465,7 @@ Ważne
   border-bottom-width: 0;
 }
 
-#osuozkvroh .gt_subtitle {
+#resnuftdzg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -479,7 +477,7 @@ Ważne
   border-top-width: 0;
 }
 
-#osuozkvroh .gt_heading {
+#resnuftdzg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -491,13 +489,13 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_bottom_border {
+#resnuftdzg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_col_headings {
+#resnuftdzg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -512,7 +510,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_col_heading {
+#resnuftdzg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -532,7 +530,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#osuozkvroh .gt_column_spanner_outer {
+#resnuftdzg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -544,15 +542,15 @@ Ważne
   padding-right: 4px;
 }
 
-#osuozkvroh .gt_column_spanner_outer:first-child {
+#resnuftdzg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#osuozkvroh .gt_column_spanner_outer:last-child {
+#resnuftdzg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#osuozkvroh .gt_column_spanner {
+#resnuftdzg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -564,11 +562,11 @@ Ważne
   width: 100%;
 }
 
-#osuozkvroh .gt_spanner_row {
+#resnuftdzg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#osuozkvroh .gt_group_heading {
+#resnuftdzg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -594,7 +592,7 @@ Ważne
   text-align: left;
 }
 
-#osuozkvroh .gt_empty_group_heading {
+#resnuftdzg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -609,15 +607,15 @@ Ważne
   vertical-align: middle;
 }
 
-#osuozkvroh .gt_from_md > :first-child {
+#resnuftdzg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#osuozkvroh .gt_from_md > :last-child {
+#resnuftdzg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#osuozkvroh .gt_row {
+#resnuftdzg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -636,7 +634,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#osuozkvroh .gt_stub {
+#resnuftdzg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -649,7 +647,7 @@ Ważne
   padding-right: 5px;
 }
 
-#osuozkvroh .gt_stub_row_group {
+#resnuftdzg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -663,15 +661,15 @@ Ważne
   vertical-align: top;
 }
 
-#osuozkvroh .gt_row_group_first td {
+#resnuftdzg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#osuozkvroh .gt_row_group_first th {
+#resnuftdzg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#osuozkvroh .gt_summary_row {
+#resnuftdzg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -681,16 +679,16 @@ Ważne
   padding-right: 5px;
 }
 
-#osuozkvroh .gt_first_summary_row {
+#resnuftdzg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_first_summary_row.thick {
+#resnuftdzg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#osuozkvroh .gt_last_summary_row {
+#resnuftdzg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -700,7 +698,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_grand_summary_row {
+#resnuftdzg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -710,7 +708,7 @@ Ważne
   padding-right: 5px;
 }
 
-#osuozkvroh .gt_first_grand_summary_row {
+#resnuftdzg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -720,7 +718,7 @@ Ważne
   border-top-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_last_grand_summary_row_top {
+#resnuftdzg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -730,11 +728,11 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_striped {
+#resnuftdzg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#osuozkvroh .gt_table_body {
+#resnuftdzg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -743,7 +741,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_footnotes {
+#resnuftdzg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -757,7 +755,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_footnote {
+#resnuftdzg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -766,7 +764,7 @@ Ważne
   padding-right: 5px;
 }
 
-#osuozkvroh .gt_sourcenotes {
+#resnuftdzg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -780,7 +778,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#osuozkvroh .gt_sourcenote {
+#resnuftdzg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -788,63 +786,63 @@ Ważne
   padding-right: 5px;
 }
 
-#osuozkvroh .gt_left {
+#resnuftdzg .gt_left {
   text-align: left;
 }
 
-#osuozkvroh .gt_center {
+#resnuftdzg .gt_center {
   text-align: center;
 }
 
-#osuozkvroh .gt_right {
+#resnuftdzg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#osuozkvroh .gt_font_normal {
+#resnuftdzg .gt_font_normal {
   font-weight: normal;
 }
 
-#osuozkvroh .gt_font_bold {
+#resnuftdzg .gt_font_bold {
   font-weight: bold;
 }
 
-#osuozkvroh .gt_font_italic {
+#resnuftdzg .gt_font_italic {
   font-style: italic;
 }
 
-#osuozkvroh .gt_super {
+#resnuftdzg .gt_super {
   font-size: 65%;
 }
 
-#osuozkvroh .gt_footnote_marks {
+#resnuftdzg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#osuozkvroh .gt_asterisk {
+#resnuftdzg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#osuozkvroh .gt_indent_1 {
+#resnuftdzg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#osuozkvroh .gt_indent_2 {
+#resnuftdzg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#osuozkvroh .gt_indent_3 {
+#resnuftdzg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#osuozkvroh .gt_indent_4 {
+#resnuftdzg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#osuozkvroh .gt_indent_5 {
+#resnuftdzg .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

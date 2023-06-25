@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.299">
+<meta name="generator" content="quarto-1.3.427">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -32,7 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./intro.html" rel="next">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -60,14 +60,15 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "więcej dopasowań w tym dokumencie",
     "search-clear-button-title": "Wyczyść",
     "search-detached-cancel-button-title": "Anuluj",
-    "search-submit-button-title": "Zatwierdź"
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
   }
 }</script>
 
 
 </head>
 
-<body class="nav-sidebar floating slimcontent">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -79,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Wprowadzenie</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -96,9 +97,9 @@ ul.task-list li input[type="checkbox"] {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
-    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=|url|" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=|url|" rel="" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -232,7 +233,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action">Zgłoś problem</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -260,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Opublikowano</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">19 czerwca 2023</p>
+      <p class="date">25 czerwca 2023</p>
     </div>
   </div>
   
@@ -271,16 +272,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="wprowadzenie" class="level1 unnumbered page-columns page-full">
-<h1 class="unnumbered">Wprowadzenie</h1><p><img src="logo2.png" title="Metody walidacji modeli statystycznych" class="quarto-cover-image img-fluid"></p>
+<section id="wprowadzenie" class="level1 unnumbered">
+<h1 class="unnumbered">Wprowadzenie</h1><p><img src="cover.png" title="Metody walidacji modeli statystycznych" class="quarto-cover-image img-fluid"></p>
 <p>Niniejsza książka została przygotowana z myślą o studentach kierunków <em>Inżynierii i Analizy Danych</em> oraz <em>Matematyka</em>. Ma ona posłużyć w nauce szeroko rozumianej walidacji modeli statystycznych. Pojęcie zostanie dosyć szeroko potraktowane, dlatego w książce nawiązuję do metod próbkowania (ang. <em>resampling</em>), stosowanych do oceny jakości modelu oraz w procesie tuningowaniu modelu, jak również do miar stosowanych do oceny dopasowania modeli. Ponieważ książka ta ma stanowić przegląd metod używanych w ocenie jak dobrze model przewiduje nieznane wartości, to zostanie również uzupełniona o analizę wrażliwości pozwalającą na określenie jakie poszczególne czynniki (predyktory) i w jaki sposób wpływają na predykcję.</p>
 <p>W statystyce walidacja modelu jest zadaniem polegającym na ocenie, czy wybrany model statystyczny jest odpowiedni, czy nie. Często we wnioskowaniu statystycznym wnioski z modeli, które wydają się pasować do danych, mogą być błędne, co powoduje, że badacze nie poznają rzeczywistej wartości swojego modelu. Aby temu zapobiec, stosuje się walidację modelu, aby sprawdzić, czy model statystyczny posiada tzw. zdolność generalizacji. Owa zdolność polega na możliwości poprawnego przewidywania wartości wyjściowej nie tylko dla obserwacji ze zbioru uczącego, ale również z testowego, bez znaczącej straty jakości wspomnianej predykcji. Tego tematu nie należy mylić z blisko związanym zadaniem wyboru modelu, czyli procesem rozróżniania wielu modeli kandydujących: walidacja modelu nie dotyczy tak bardzo konceptualnej konstrukcji modeli, lecz testuje jedynie spójność pomiędzy wybranym modelem a jego deklarowanymi wynikami. Nadrzędnym celem walidacji modelu jest chęć poprawienia jego właściwości.</p>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/overfit2.jpeg" class="img-fluid figure-img"></p>
-</figure>
-</div></div><p>Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym. Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu. Na przykład, jeśli badacz pracuje z bardzo ograniczonym zestawem danych, ale ma silne założenia wstępne dotyczące danych, może rozważyć walidację dopasowania swojego modelu poprzez zastosowanie metod bayesowskich i testowanie dopasowania modelu przy użyciu różnych rozkładów wstępnych. Jeśli jednak badacz ma dużo danych i testuje wiele zagnieżdżonych modeli, warunki te mogą sprzyjać walidacji krzyżowej i ewentualnie testowi “leave one out”. Są to dwa abstrakcyjne przykłady i każda rzeczywista walidacja modelu będzie musiała rozważyć znacznie więcej zawiłości niż tu opisano, ale przykład ten ilustruje, że metody walidacji modelu zawsze będą miały charakter poszlakowy. Ogólnie rzecz biorąc, modele mogą być walidowane przy użyciu istniejących danych lub przy użyciu nowych danych, a obie metody są omówione w kolejnych rozdziałach.</p>
+<p>Walidacja modelu występuje w wielu odmianach, a konkretna metoda walidacji modelu stosowana przez badacza jest często uwarunkowana jego projektem badawczym. Oznacza to, że nie ma jednej uniwersalnej metody walidacji modelu. Na przykład, jeśli badacz pracuje z bardzo ograniczonym zestawem danych, ale ma silne założenia wstępne dotyczące danych, może rozważyć walidację dopasowania swojego modelu poprzez zastosowanie metod bayesowskich i testowanie dopasowania modelu przy użyciu różnych rozkładów wstępnych. Jeśli jednak badacz ma dużo danych i testuje wiele zagnieżdżonych modeli, warunki te mogą sprzyjać walidacji krzyżowej i ewentualnie testowi “leave one out”. Są to dwa abstrakcyjne przykłady i każda rzeczywista walidacja modelu będzie musiała rozważyć znacznie więcej zawiłości niż tu opisano, ale przykład ten ilustruje, że metody walidacji modelu zawsze będą miały charakter poszlakowy. Ogólnie rzecz biorąc, modele mogą być walidowane przy użyciu istniejących danych lub przy użyciu nowych danych, a obie metody są omówione w kolejnych rozdziałach.</p>
 <p>Niezbędnym narzędziem w ocenie jakości dopasowania modeli będą metryki, czy inne narzędzia stosowane w ocenie poprawności modelu jak wykresy diagnostyczne, czy macierze klasyfikacji (ang. <em>confusion matrix</em>). W zależności od realizowanego zadania inne metryki mogą być wykorzystywane. I tak w zadaniach klasyfikacyjnych, w zależności od liczby klas zmiennej wyjściowej, będziemy stosowali inne miary do oceny modelu. Również w modelach regresyjnych istnieje cała gama miar pomagających ocenić dopasowanie. Jeszcze inne miary służą do ewaluacji metod nienadzorowanego uczenia maszynowego. Istnieje bowiem wiele technik określenia stopnia jednorodności powstałych skupień, a jednocześnie odpowiedzi napytanie czy wybrana została właściwa liczba grup.</p>
 
 

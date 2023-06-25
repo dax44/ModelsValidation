@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.299">
+<meta name="generator" content="quarto-1.3.427">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 13&nbsp; Poszukiwanie optymalnego modelu</title>
 <style>
@@ -81,7 +81,7 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./dimensionality.html" rel="next">
 <link href="./iterative.html" rel="prev">
-<link href="./logo2.png" rel="icon" type="image/png">
+<link href="./cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,8 @@ div.csl-indent {
     "search-more-matches-text": "więcej dopasowań w tym dokumencie",
     "search-clear-button-title": "Wyczyść",
     "search-detached-cancel-button-title": "Anuluj",
-    "search-submit-button-title": "Zatwierdź"
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
   }
 }</script>
 </head>
@@ -122,7 +123,7 @@ div.csl-indent {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./example.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -134,9 +135,9 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
-    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" rel="" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
   <div class="quarto-reader-toggle-btn">
@@ -632,8 +633,7 @@ Computational engine: kknn </code></pre>
 </details><div class="cell-output-display">
 <div id="fig-mods1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="example_files/figure-html/fig-mods1-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;13.1: Oszacowany RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w każdym przepływie pracy</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;13.1: Oszacowany RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w każdym przepływie pracy</figcaption></figure>
 </div>
 </div>
 </div>
@@ -643,8 +643,7 @@ Computational engine: kknn </code></pre>
 </details><div class="cell-output-display">
 <div id="fig-mods2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="example_files/figure-html/fig-mods2-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;13.2: Wizualizacja RMSE w kontekście konfiguracji hiperparametrów modelu Cubist</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;13.2: Wizualizacja RMSE w kontekście konfiguracji hiperparametrów modelu Cubist</figcaption></figure>
 </div>
 </div>
 </div>
@@ -711,8 +710,7 @@ Computational engine: kknn </code></pre>
 </details><div class="cell-output-display">
 <div id="fig-mods3" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="example_files/figure-html/fig-mods3-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;13.3: Oszacowane RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w poszukiwaniu za pomocą metody wyścigowej.</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;13.3: Oszacowane RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w poszukiwaniu za pomocą metody wyścigowej.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -788,8 +786,7 @@ Computational engine: kknn </code></pre>
 </details><div class="cell-output-display">
 <div id="fig-mods4" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="example_files/figure-html/fig-mods4-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Rysunek&nbsp;13.4: Porównanie wartości obserwowanych i przewidywanych z modelu</figcaption><p></p>
-</figure>
+<figcaption class="figure-caption">Rysunek&nbsp;13.4: Porównanie wartości obserwowanych i przewidywanych z modelu</figcaption></figure>
 </div>
 </div>
 </div>
