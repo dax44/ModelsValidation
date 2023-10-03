@@ -18,7 +18,7 @@ Dane zostały zasymulowane i można je zaimportować do R za pomocą poniższego
 ```{r}
 library(tidymodels)
 imbal_data <- 
-  readr::read_csv("https://bit.ly/imbal_data") |>  
+  readr::read_csv("https://tidymodels.org/learn/models/sub-sampling/imbal_data.csv") |>  
   mutate(Class = factor(Class))
 
 dim(imbal_data)

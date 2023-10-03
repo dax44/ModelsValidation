@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.427">
+<meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 14&nbsp; Redukcja wymiarowości</title>
 <style>
@@ -591,7 +591,7 @@ Wskazówka
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://embed.tidymodels.org">embed</a></span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="dimensionality_cache/html/fig-umap1_3a1b2e553c65c791949efd8e41acc0ca">
+<div class="cell" data-hash="dimensionality_cache/html/fig-umap1_762095535c6cfa67c4029b7320b50774">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -605,7 +605,7 @@ Wskazówka
 </div>
 <p>Widać wyraźne przestrzenie pomiędzy skupieniami, choć te dalej mogą być heterogeniczne.</p>
 <p>Istnieje też odmiana UMAP nadzorowana, która zamiast używać podobieństwa do określenia skupień w wielowymiarowej przestrzeni, używa etykiet.</p>
-<div class="cell" data-hash="dimensionality_cache/html/fig-umap2_5462743abefaba9ef53389974f94767a">
+<div class="cell" data-hash="dimensionality_cache/html/fig-umap2_4014102830a023c283f387128ccad8ca">
 <details open=""><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
