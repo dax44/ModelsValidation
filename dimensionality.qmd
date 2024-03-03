@@ -5,64 +5,103 @@ bibliography: references.bib
 
 # Redukcja wymiarowości
 
-Redukcja wymiarowości (ang. *dimensionality reduction*) jest przekształceniem zbioru danych z przestrzeni wielowymiarowej w przestrzeń niskowymiarową i może być dobrym wyborem, gdy podejrzewamy, że jest "za dużo" zmiennych.
-Nadmiar zmiennych, zwykle predyktorów, może być problemem, ponieważ trudno jest zrozumieć lub wizualizować dane w wyższych wymiarach.
+Redukcja wymiarowości (ang. *dimensionality reduction*) jest przekształceniem
+zbioru danych z przestrzeni wielowymiarowej w przestrzeń niskowymiarową i może
+być dobrym wyborem, gdy podejrzewamy, że jest "za dużo" zmiennych. Nadmiar
+zmiennych, zwykle predyktorów, może być problemem, ponieważ trudno jest
+zrozumieć lub wizualizować dane w wyższych wymiarach.
 
-Redukcja wymiarowości może być stosowana zarówno w inżynierii cech, jak i w eksploracyjnej analizie danych.
-Na przykład, w wielowymiarowych eksperymentach biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty niezwiązane z interesującym nas zagadnieniem, takie jak różnice między laboratoriami).
-Eksploracja danych jest trudna, gdy istnieją setki tysięcy wymiarów, a redukcja wymiarowości może być pomocą w analizie danych.
+Redukcja wymiarowości może być stosowana zarówno w inżynierii cech, jak i w
+eksploracyjnej analizie danych. Na przykład, w wielowymiarowych eksperymentach
+biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest
+określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty
+niezwiązane z interesującym nas zagadnieniem, takie jak różnice między
+laboratoriami). Eksploracja danych jest trudna, gdy istnieją setki tysięcy
+wymiarów, a redukcja wymiarowości może być pomocą w analizie danych.
 
-![](https://thumbs.gfycat.com/SlimCreepyAmericanwarmblood-size_restricted.gif){.column-margin fig-align="center" width="400"}
+Inną potencjalną konsekwencją posiadania wielu predyktorów jest model
+nadmiarową liczbą predyktorów. Najprostszym przykładem jest regresja liniowa,
+gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do
+dopasowania modelu. Innym problemem jest współliniowość, gdzie korelacje między
+predyktorami mogą negatywnie wpływać na operacje matematyczne używane do
+oszacowania modelu. Jeśli istnieje bardzo duża liczba predyktorów, jest mało
+prawdopodobne, że istnieje taka sama liczba rzeczywistych efektów leżących u
+podstaw. Predyktory mogą mierzyć ten sam ukryty efekt (efekty), a zatem takie
+predyktory będą wysoko skorelowane. Wiele technik redukcji wymiarowości
+sprawdza się w tej sytuacji. W rzeczywistości większość z nich może być
+skuteczna tylko wtedy, gdy istnieją takie relacje między predyktorami, które
+można wykorzystać.
 
-Inną potencjalną konsekwencją posiadania wielu predyktorów jest model nadmiarową liczbą predyktorów.
-Najprostszym przykładem jest regresja liniowa, gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do dopasowania modelu.
-Innym problemem jest współliniowość, gdzie korelacje między predyktorami mogą negatywnie wpływać na operacje matematyczne używane do oszacowania modelu.
-Jeśli istnieje bardzo duża liczba predyktorów, jest mało prawdopodobne, że istnieje taka sama liczba rzeczywistych efektów leżących u podstaw.
-Predyktory mogą mierzyć ten sam ukryty efekt (efekty), a zatem takie predyktory będą wysoko skorelowane.
-Wiele technik redukcji wymiarowości sprawdza się w tej sytuacji.
-W rzeczywistości większość z nich może być skuteczna tylko wtedy, gdy istnieją takie relacje między predyktorami, które można wykorzystać.
+Analiza składowych głównych (PCA) jest jedną z najprostszych metod redukcji
+liczby zmiennych w zbiorze danych, ponieważ opiera się na metodach liniowych i
+jest nienadzorowana. W przypadku wielowymiarowego problemu klasyfikacji,
+początkowy wykres głównych komponentów PCA może pokazać wyraźny podział między
+klasami. Jeśli tak jest, to można bezpiecznie założyć, że klasyfikator liniowy
+może się sprawdzić w takim zadaniu. Jednak nie jest prawdą, że brak separacji
+nie oznacza, że problem jest nie do pokonania.
 
-Analiza składowych głównych (PCA) jest jedną z najprostszych metod redukcji liczby zmiennych w zbiorze danych, ponieważ opiera się na metodach liniowych i jest nienadzorowana.
-W przypadku wielowymiarowego problemu klasyfikacji, początkowy wykres głównych komponentów PCA może pokazać wyraźny podział między klasami.
-Jeśli tak jest, to można bezpiecznie założyć, że klasyfikator liniowy może się sprawdzić w takim zadaniu.
-Jednak nie jest prawdą, że brak separacji nie oznacza, że problem jest nie do pokonania.
-
-Metody redukcji wymiarowości omawiane w tym rozdziale nie są na ogół metodami selekcji cech.
-Metody takie jak PCA reprezentują oryginalne predyktory za pomocą mniejszego podzbioru nowych cech.
-Wszystkie oryginalne predyktory są wymagane do obliczenia tych nowych cech.
-Wyjątkiem są metody rzadkie, które mają zdolność do całkowitego usunięcia wpływu predyktorów podczas tworzenia nowych cech.
+Metody redukcji wymiarowości omawiane w tym rozdziale nie są na ogół metodami
+selekcji cech. Metody takie jak PCA reprezentują oryginalne predyktory za
+pomocą mniejszego podzbioru nowych cech. Wszystkie oryginalne predyktory są
+wymagane do obliczenia tych nowych cech. Wyjątkiem są metody rzadkie, które
+mają zdolność do całkowitego usunięcia wpływu predyktorów podczas tworzenia
+nowych cech.
 
 ## Opis danych
 
-Do celów ilustracji, jak używać redukcji wymiarowości z przepisami wykorzystamy przykładowy zestaw danych.
-@koklu2020 opublikowali zestaw danych dotyczących wizualnych cech suszonej fasoli i opisali metody określania odmian suszonej fasoli na obrazie.
-Chociaż wymiarowość tych danych nie jest bardzo duża w porównaniu z wieloma problemami modelowania w świecie rzeczywistym, zapewnia ładny przykład roboczy, aby zademonstrować, jak zmniejszyć liczbę cech.
-W swojej pracy napisali:
+Do celów ilustracji, jak używać redukcji wymiarowości z przepisami wykorzystamy
+przykładowy zestaw danych. @koklu2020 opublikowali zestaw danych dotyczących
+wizualnych cech suszonej fasoli i opisali metody określania odmian suszonej
+fasoli na obrazie. Chociaż wymiarowość tych danych nie jest bardzo duża w
+porównaniu z wieloma problemami modelowania w świecie rzeczywistym, zapewnia
+ładny przykład roboczy, aby zademonstrować, jak zmniejszyć liczbę cech. W
+swojej pracy napisali:
 
-> Podstawowym celem niniejszej pracy jest dostarczenie metody uzyskiwania jednolitych odmian nasion z produkcji roślinnej, która ma postać populacji, więc nasiona nie są certyfikowane jako jedyna odmiana.
-> W związku z tym opracowano system wizji komputerowej do rozróżniania siedmiu różnych zarejestrowanych odmian suchej fasoli o podobnych cechach w celu uzyskania jednolitej klasyfikacji nasion.
-> Dla modelu klasyfikacji wykonano obrazy 13 611 ziaren 7 różnych zarejestrowanych suchych odmian fasoli za pomocą kamery o wysokiej rozdzielczości.
+> Podstawowym celem niniejszej pracy jest dostarczenie metody uzyskiwania
+> jednolitych odmian nasion z produkcji roślinnej, która ma postać populacji,
+> więc nasiona nie są certyfikowane jako jedyna odmiana. W związku z tym
+> opracowano system wizji komputerowej do rozróżniania siedmiu różnych
+> zarejestrowanych odmian suchej fasoli o podobnych cechach w celu uzyskania
+> jednolitej klasyfikacji nasion. Dla modelu klasyfikacji wykonano obrazy 13
+> 611 ziaren 7 różnych zarejestrowanych suchych odmian fasoli za pomocą kamery
+> o wysokiej rozdzielczości.
 
-Każdy obraz zawiera wiele ziaren.
-Proces określania, które piksele odpowiadają konkretnej fasoli, nazywany jest segmentacją obrazu.
-Te piksele mogą być analizowane w celu uzyskania cech dla każdej fasoli, takich jak kolor i morfologia (tj. kształt).
-Cechy te są następnie wykorzystywane do modelowania wyniku (odmiany fasoli), ponieważ różne odmiany fasoli wyglądają inaczej.
-Dane treningowe pochodzą z zestawu ręcznie oznakowanych obrazów, a ten zestaw danych jest używany do tworzenia modelu predykcyjnego, który może rozróżnić siedem odmian fasoli: Cali, Horoz, Dermason, Seker, Bombay, Barbunya i Sira.
-Stworzenie skutecznego modelu może pomóc producentom w ilościowym określeniu jednorodności partii fasoli.
+Każdy obraz zawiera wiele ziaren. Proces określania, które piksele odpowiadają
+konkretnej fasoli, nazywany jest segmentacją obrazu. Te piksele mogą być
+analizowane w celu uzyskania cech dla każdej fasoli, takich jak kolor i
+morfologia (tj. kształt). Cechy te są następnie wykorzystywane do modelowania
+wyniku (odmiany fasoli), ponieważ różne odmiany fasoli wyglądają inaczej. Dane
+treningowe pochodzą z zestawu ręcznie oznakowanych obrazów, a ten zestaw danych
+jest używany do tworzenia modelu predykcyjnego, który może rozróżnić siedem
+odmian fasoli: Cali, Horoz, Dermason, Seker, Bombay, Barbunya i Sira.
+Stworzenie skutecznego modelu może pomóc producentom w ilościowym określeniu
+jednorodności partii fasoli.
 
-![](https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif){.column-margin fig-align="center" width="400"}
+![](https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif){.column-margin
+fig-align="center" width="400"}
 
-Istnieje wiele metod kwantyfikacji kształtów obiektów [@mingqiang2008].
-Wiele z nich dotyczy granic lub regionów interesującego nas obiektu.
-Przykładowe cechy obejmują:
+Istnieje wiele metod kwantyfikacji kształtów obiektów [@mingqiang2008]. Wiele z
+nich dotyczy granic lub regionów interesującego nas obiektu. Przykładowe cechy
+obejmują:
 
--   Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.
--   Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).
--   Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne części obiektu. Mała oś jest prostopadła do osi głównej.
--   Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu do pola powierzchni koła o tym samym obwodzie. Na przykład symbole $\bullet$ i $\times$ mają bardzo różną zwartość.
--   Istnieją również różne miary tego, jak bardzo obiekt jest podłużny. Na przykład statystyka ekscentryczności to stosunek osi głównej i małej. Istnieją również powiązane szacunki dla okrągłości i wypukłości.
+-   Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w
+    obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.
+-   Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również
+    prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).
+-   Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne
+    części obiektu. Mała oś jest prostopadła do osi głównej.
+-   Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu
+    do pola powierzchni koła o tym samym obwodzie. Na przykład symbole
+    $\bullet$ i $\times$ mają bardzo różną zwartość.
+-   Istnieją również różne miary tego, jak bardzo obiekt jest podłużny. Na
+    przykład statystyka ekscentryczności to stosunek osi głównej i małej.
+    Istnieją również powiązane szacunki dla okrągłości i wypukłości.
 
-W danych dotyczących fasoli obliczono 16 cech morfologicznych: powierzchnię, obwód, długość osi głównej, długość osi małej, współczynnik kształtu, ekscentryczność, powierzchnię wypukłą, średnicę równoważną, rozległość, zwartość, krągłość, zwięzłość, współczynnik kształtu 1, współczynnik kształtu 2, współczynnik kształtu 3 i współczynnik kształtu 4.
+W danych dotyczących fasoli obliczono 16 cech morfologicznych: powierzchnię,
+obwód, długość osi głównej, długość osi małej, współczynnik kształtu,
+ekscentryczność, powierzchnię wypukłą, średnicę równoważną, rozległość,
+zwartość, krągłość, zwięzłość, współczynnik kształtu 1, współczynnik kształtu
+2, współczynnik kształtu 3 i współczynnik kształtu 4.
 
 ```{r}
 library(tidymodels)
@@ -86,10 +125,14 @@ bean_val <- validation_split(bean_train, strata = class, prop = 4/5)
 bean_val$splits[[1]]
 ```
 
-Aby wizualnie ocenić, jak dobrze działają różne metody, możemy oszacować metody na zbiorze treningowym (n = 8163 ziaren) i wyświetlić wyniki przy użyciu zbioru walidacyjnego (n = 2043).
+Aby wizualnie ocenić, jak dobrze działają różne metody, możemy oszacować metody
+na zbiorze treningowym (n = 8163 ziaren) i wyświetlić wyniki przy użyciu zbioru
+walidacyjnego (n = 2043).
 
-Przed rozpoczęciem jakiejkolwiek redukcji wymiarowości możemy poświęcić trochę czasu na zbadanie naszych danych.
-Ponieważ wiemy, że wiele z tych cech kształtu prawdopodobnie mierzy podobne koncepcje, przyjrzyjmy się strukturze korelacyjnej danych na @fig-dim1.
+Przed rozpoczęciem jakiejkolwiek redukcji wymiarowości możemy poświęcić trochę
+czasu na zbadanie naszych danych. Ponieważ wiemy, że wiele z tych cech kształtu
+prawdopodobnie mierzy podobne koncepcje, przyjrzyjmy się strukturze
+korelacyjnej danych na @fig-dim1.
 
 ```{r}
 #| label: fig-dim1
@@ -102,16 +145,18 @@ bean_train %>%
   corrplot(col = tmwr_cols(200), tl.col = "black", method = "ellipse")
 ```
 
-Wiele z tych predyktorów jest silnie skorelowanych, jak np.
-powierzchnia i obwód lub współczynniki kształtu 2 i 3.
-Chociaż nie poświęcamy temu czasu tutaj, ważne jest również, aby zobaczyć, czy ta struktura korelacji znacząco zmienia się w różnych kategoriach wyników.
-Może to pomóc w stworzeniu lepszych modeli.
+Wiele z tych predyktorów jest silnie skorelowanych, jak np. powierzchnia i
+obwód lub współczynniki kształtu 2 i 3. Chociaż nie poświęcamy temu czasu
+tutaj, ważne jest również, aby zobaczyć, czy ta struktura korelacji znacząco
+zmienia się w różnych kategoriach wyników. Może to pomóc w stworzeniu lepszych
+modeli.
 
-Zacznijmy od podstawowego przepisu wstępnego przetwarzania danych, który często stosujemy przed jakimikolwiek krokami redukcji wymiarowości.
-Kilka predyktorów to współczynniki, a więc prawdopodobnie będą miały skośne rozkłady.
-Takie rozkłady mogą siać spustoszenie w obliczeniach wariancji (takich jak te używane w PCA).
-Pakiet `bestNormalize` posiada krok, który może wymusić symetryczny rozkład predyktorów.
-Użyjemy tego, aby złagodzić problem skośnych rozkładów:
+Zacznijmy od podstawowego przepisu wstępnego przetwarzania danych, który często
+stosujemy przed jakimikolwiek krokami redukcji wymiarowości. Kilka predyktorów
+to współczynniki, a więc prawdopodobnie będą miały skośne rozkłady. Takie
+rozkłady mogą siać spustoszenie w obliczeniach wariancji (takich jak te używane
+w PCA). Pakiet `bestNormalize` posiada krok, który może wymusić symetryczny
+rozkład predyktorów. Użyjemy tego, aby złagodzić problem skośnych rozkładów:
 
 ```{r}
 library(bestNormalize)
@@ -124,44 +169,57 @@ bean_rec <-
 ```
 
 ::: callout-warning
-Pamiętaj, że podczas wywoływania funkcji `recipe()` kroki nie są w żaden sposób szacowane ani wykonywane.
+Pamiętaj, że podczas wywoływania funkcji `recipe()` kroki nie są w żaden sposób
+szacowane ani wykonywane.
 :::
 
-Przepis ten zostanie rozszerzony o dodatkowe kroki dla analiz redukcji wymiarowości.
-Zanim to zrobimy, przejdźmy do tego, jak receptura może być używana poza przepływem pracy.
+Przepis ten zostanie rozszerzony o dodatkowe kroki dla analiz redukcji
+wymiarowości. Zanim to zrobimy, przejdźmy do tego, jak receptura może być
+używana poza przepływem pracy.
 
-![](https://media.tenor.com/tc9hmi0Hfs8AAAAM/cook-fail.gif){.column-margin fig-align="center" width="400"}
+![](https://media.tenor.com/tc9hmi0Hfs8AAAAM/cook-fail.gif){.column-margin
+fig-align="center" width="400"}
 
-Przepływ pracy zawierający recepturę wykorzystuje `fit()` do estymacji receptury i modelu, a następnie `predict()` do przetwarzania danych i tworzenia przewidywań modelu.
-W pakiecie `recipes` znajdują się analogiczne funkcje, które mogą być użyte do tego samego celu:
+Przepływ pracy zawierający recepturę wykorzystuje `fit()` do estymacji
+receptury i modelu, a następnie `predict()` do przetwarzania danych i tworzenia
+przewidywań modelu. W pakiecie `recipes` znajdują się analogiczne funkcje,
+które mogą być użyte do tego samego celu:
 
 -   `prep(recipe, training)` dopasowuje przepis do zbioru treningowego.
 -   `bake(recipe, new_data)` stosuje operacje receptury do `new_data`.
 
 Rysunek 16.3 podsumowuje to.
 
-![Zasada działania poszczególnych czasowników](images/Zrzut%20ekranu%202023-03-11%20o%2017.14.23.png){#fig-dim2 fig-align="center" width="600"}
+![Zasada działania poszczególnych
+czasowników](images/Zrzut%20ekranu%202023-03-11%20o%2017.14.23.png){#fig-dim2
+fig-align="center" width="600"}
 
 ```{r}
 bean_rec_trained <- prep(bean_rec)
 bean_rec_trained
 ```
 
-Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj. `all_numeric_predictors()`); teraz pokazują rzeczywiste kolumny, które zostały wybrane.
-Również, `prep(bean_rec)` nie wymaga argumentu `training`.
-Możesz przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte zostaną oryginalne dane z wywołania `recipe()`.
-W naszym przypadku były to dane ze zbioru treningowego.
+Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj.
+`all_numeric_predictors()`); teraz pokazują rzeczywiste kolumny, które zostały
+wybrane. Również, `prep(bean_rec)` nie wymaga argumentu `training`. Możesz
+przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte
+zostaną oryginalne dane z wywołania `recipe()`. W naszym przypadku były to dane
+ze zbioru treningowego.
 
-Jednym z ważnych argumentów funkcji `prep()` jest `retain`.
-Kiedy `retain = TRUE` (domyślnie), szacunkowa wersja zbioru treningowego jest przechowywana wewnątrz receptury.
-Ten zestaw danych został wstępnie przetworzony przy użyciu wszystkich kroków wymienionych w recepturze.
-Ponieważ funkcja `prep()` musi wykonywać recepturę w trakcie jej wykonywania, korzystne może być zachowanie tej wersji zbioru treningowego, tak że jeśli ten zbiór danych ma być użyty później, można uniknąć zbędnych obliczeń.
-Jednakże, jeśli zestaw treningowy jest duży, może być problematyczne przechowywanie tak dużej ilości danych w pamięci.
-Użyj wówczas `retain = FALSE`, aby tego uniknąć.
+Jednym z ważnych argumentów funkcji `prep()` jest `retain`. Kiedy
+`retain = TRUE` (domyślnie), szacunkowa wersja zbioru treningowego jest
+przechowywana wewnątrz receptury. Ten zestaw danych został wstępnie
+przetworzony przy użyciu wszystkich kroków wymienionych w recepturze. Ponieważ
+funkcja `prep()` musi wykonywać recepturę w trakcie jej wykonywania, korzystne
+może być zachowanie tej wersji zbioru treningowego, tak że jeśli ten zbiór
+danych ma być użyty później, można uniknąć zbędnych obliczeń. Jednakże, jeśli
+zestaw treningowy jest duży, może być problematyczne przechowywanie tak dużej
+ilości danych w pamięci. Użyj wówczas `retain = FALSE`, aby tego uniknąć.
 
-Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie `prep()` oszacuje tylko niewykształcone kroki.
-Przyda się to, gdy będziemy próbować różnych metod ekstrakcji cech.
-Inną opcją, która może pomóc zrozumieć, co dzieje się w analizie, jest `log_changes`:
+Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie
+`prep()` oszacuje tylko niewykształcone kroki. Przyda się to, gdy będziemy
+próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć,
+co dzieje się w analizie, jest `log_changes`:
 
 ```{r}
 show_variables <- 
@@ -170,7 +228,9 @@ show_variables <-
 ```
 
 ::: callout-tip
-Używanie `bake()` z recepturą jest bardzo podobne do używania `predict()` z modelem; operacje oszacowane na zbiorze treningowym są stosowane do dowolnych danych, jak dane testowe lub nowe dane w czasie predykcji.
+Używanie `bake()` z recepturą jest bardzo podobne do używania `predict()` z
+modelem; operacje oszacowane na zbiorze treningowym są stosowane do dowolnych
+danych, jak dane testowe lub nowe dane w czasie predykcji.
 :::
 
 Na przykład, próbki zbioru walidacyjnego mogą być przetwarzane następująco:
@@ -180,7 +240,8 @@ bean_validation <- bean_val$splits %>% pluck(1) %>% assessment()
 bean_val_processed <- bake(bean_rec_trained, new_data = bean_validation)
 ```
 
-@fig-dim3 przedstawia histogramy predyktora powierzchni przed i po przygotowaniu receptury.
+@fig-dim3 przedstawia histogramy predyktora powierzchni przed i po
+przygotowaniu receptury.
 
 ```{r}
 #| label: fig-dim3
@@ -201,24 +262,31 @@ p2 <-
 p1 + p2
 ```
 
-Warto tutaj zwrócić uwagę na dwa ważne aspekty `bake().` Po pierwsze, jak wcześniej wspomniano, użycie `prep(recipe, retain = TRUE)` zachowuje istniejącą przetworzoną wersję zbioru treningowego w recepturze.
-Dzięki temu użytkownik może użyć `bake(recipe, new_data = NULL)`, która zwraca ten zestaw danych bez dalszych obliczeń.
-Na przykład:
+Warto tutaj zwrócić uwagę na dwa ważne aspekty `bake().` Po pierwsze, jak
+wcześniej wspomniano, użycie `prep(recipe, retain = TRUE)` zachowuje istniejącą
+przetworzoną wersję zbioru treningowego w recepturze. Dzięki temu użytkownik
+może użyć `bake(recipe, new_data = NULL)`, która zwraca ten zestaw danych bez
+dalszych obliczeń. Na przykład:
 
 ```{r}
 bake(bean_rec_trained, new_data = NULL) %>% nrow()
 bean_val$splits %>% pluck(1) %>% analysis() %>% nrow()
 ```
 
-Jeśli zestaw treningowy nie jest patologicznie duży, użycie `retain` może zaoszczędzić dużo czasu obliczeniowego.
-Po drugie, w wywołaniu można użyć dodatkowych selektorów, aby określić, które kolumny mają zostać zwrócone.
-Domyślnym selektorem jest `everything()`, ale można dokonać bardziej szczegółowych wyborów.
+Jeśli zestaw treningowy nie jest patologicznie duży, użycie `retain` może
+zaoszczędzić dużo czasu obliczeniowego. Po drugie, w wywołaniu można użyć
+dodatkowych selektorów, aby określić, które kolumny mają zostać zwrócone.
+Domyślnym selektorem jest `everything()`, ale można dokonać bardziej
+szczegółowych wyborów.
 
 ## Ekstrakcja cech
 
-Ponieważ receptury są podstawową opcją w `tidymodels` do redukcji wymiarowości, napiszmy funkcję, która oszacuje transformację i wykreśli wynikowe dane w postaci macierzy wykresów za pośrednictwem pakietu `ggforce`:
+Ponieważ receptury są podstawową opcją w `tidymodels` do redukcji wymiarowości,
+napiszmy funkcję, która oszacuje transformację i wykreśli wynikowe dane w
+postaci macierzy wykresów za pośrednictwem pakietu `ggforce`:
 
-![](http://2.bp.blogspot.com/-lhU1CX7za18/Vqd2ZTeMK5I/AAAAAAAEQi0/MX3n8m60ZdE/s1600/pulp_fictions_confused_travolta_is_popping_up_in_gifs_across_the_web_and_theyre_hil%252B%25252814%252529.gif){.column-margin fig-align="center" width="400"}
+![](http://2.bp.blogspot.com/-lhU1CX7za18/Vqd2ZTeMK5I/AAAAAAAEQi0/MX3n8m60ZdE/s1600/pulp_fictions_confused_travolta_is_popping_up_in_gifs_across_the_web_and_theyre_hil%252B%25252814%252529.gif){.column-margin
+fig-align="center" width="400"}
 
 ```{r}
 library(ggforce)
@@ -238,13 +306,16 @@ plot_validation_results <- function(recipe, dat = assessment(bean_val$splits[[1]
 }
 ```
 
-Funkcji tej użyjemy wielokrotnie do wizualizacji wyników po zastosowaniu różnych metod ekstrakcji cech.
+Funkcji tej użyjemy wielokrotnie do wizualizacji wyników po zastosowaniu
+różnych metod ekstrakcji cech.
 
 ### PCA
 
-PCA jest metodą bez nadzoru, która wykorzystuje liniowe kombinacje predyktorów do określenia nowych cech.
-Cechy te starają się uwzględnić jak najwięcej zmienności w oryginalnych danych.
-Dodajemy `step_pca()` do oryginalnego przepisu i wykorzystujemy naszą funkcję do wizualizacji wyników na zbiorze walidacyjnym na @fig-dim4 za pomocą:
+PCA jest metodą bez nadzoru, która wykorzystuje liniowe kombinacje predyktorów
+do określenia nowych cech. Cechy te starają się uwzględnić jak najwięcej
+zmienności w oryginalnych danych. Dodajemy `step_pca()` do oryginalnego
+przepisu i wykorzystujemy naszą funkcję do wizualizacji wyników na zbiorze
+walidacyjnym na @fig-dim4 za pomocą:
 
 ```{r}
 #| label: fig-dim4
@@ -255,14 +326,17 @@ bean_rec_trained %>%
   ggtitle("Principal Component Analysis")
 ```
 
-Widzimy, że pierwsze dwie składowe PC1 i PC2, zwłaszcza gdy są używane razem, skutecznie rozróżniają lub oddzielają klasy.
-To może nas skłonić do oczekiwania, że ogólny problem klasyfikacji tych ziaren nie będzie szczególnie trudny.
+Widzimy, że pierwsze dwie składowe PC1 i PC2, zwłaszcza gdy są używane razem,
+skutecznie rozróżniają lub oddzielają klasy. To może nas skłonić do
+oczekiwania, że ogólny problem klasyfikacji tych ziaren nie będzie szczególnie
+trudny.
 
-Przypomnijmy, że PCA jest metodą bez nadzoru.
-Dla tych danych okazuje się, że składowe PCA, które wyjaśniają największe różnice w predyktorach, są również predyktorami klas.
-Jakie cechy wpływają na wydajność?
-Pakiet `learntidymodels` posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla każdego komponentu.
-Będziemy potrzebowali przygotowanego przepisu; krok PCA jest dodany w poniższym kodzie wraz z wywołaniem `prep()`:
+Przypomnijmy, że PCA jest metodą bez nadzoru. Dla tych danych okazuje się, że
+składowe PCA, które wyjaśniają największe różnice w predyktorach, są również
+predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet `learntidymodels`
+posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla
+każdego komponentu. Będziemy potrzebowali przygotowanego przepisu; krok PCA
+jest dodany w poniższym kodzie wraz z wywołaniem `prep()`:
 
 ```{r}
 #| label: fig-pca1
@@ -276,15 +350,18 @@ bean_rec_trained %>%
   ggtitle("Principal Component Analysis")
 ```
 
-Najwyższe ładunki są w większości związane z grupą skorelowanych predyktorów pokazanych w lewej górnej części poprzedniego wykresu korelacji: obwód, powierzchnia, długość osi głównej i powierzchnia wypukła.
-Wszystkie one są związane z wielkością fasoli.
-Miary wydłużenia wydają się dominować w drugim komponencie PCA.
+Najwyższe ładunki są w większości związane z grupą skorelowanych predyktorów
+pokazanych w lewej górnej części poprzedniego wykresu korelacji: obwód,
+powierzchnia, długość osi głównej i powierzchnia wypukła. Wszystkie one są
+związane z wielkością fasoli. Miary wydłużenia wydają się dominować w drugim
+komponencie PCA.
 
 ### PLS
 
-*Partial Least Squares* jest nadzorowaną wersją PCA.
-Próbuje znaleźć składowe, które jednocześnie maksymalizują zmienność predyktorów, a jednocześnie maksymalizują związek między tymi składowymi a wynikiem.
-@fig-pls1 przedstawia wyniki tej nieco zmodyfikowanej wersji kodu PCA:
+*Partial Least Squares* jest nadzorowaną wersją PCA. Próbuje znaleźć składowe,
+które jednocześnie maksymalizują zmienność predyktorów, a jednocześnie
+maksymalizują związek między tymi składowymi a wynikiem. @fig-pls1 przedstawia
+wyniki tej nieco zmodyfikowanej wersji kodu PCA:
 
 ```{r}
 #| label: fig-pls1
@@ -295,8 +372,8 @@ bean_rec_trained %>%
   ggtitle("Partial Least Squares")
 ```
 
-Pierwsze dwie składowe PLS wykreślone na @fig-pls1 są niemal identyczne z pierwszymi dwiema składowymi PCA!
-Pozostałe składowe różnią się nieco od PCA.
+Pierwsze dwie składowe PLS wykreślone na @fig-pls1 są niemal identyczne z
+pierwszymi dwiema składowymi PCA! Pozostałe składowe różnią się nieco od PCA.
 @fig-pls2 wizualizuje ładunki, czyli najwyższe cechy dla każdej składowej.
 
 ```{r}
@@ -312,9 +389,11 @@ bean_rec_trained %>%
 
 ### ICA
 
-Metoda składowych niezależnych różni się nieco od PCA tym, że znajduje składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe (w przeciwieństwie do bycia nieskorelowanym).
-Można o tym myśleć jako o rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA.
-Użyjmy funkcji `step_ica()` do wykonania dekompozycji (patrz rysunku 16.9):
+Metoda składowych niezależnych różni się nieco od PCA tym, że znajduje
+składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe
+(w przeciwieństwie do bycia nieskorelowanym). Można o tym myśleć jako o
+rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA.
+Użyjmy funkcji `step_ica()` do wykonania dekompozycji (patrz @fig-ica1):
 
 ```{r}
 #| label: fig-ica1
@@ -325,18 +404,25 @@ bean_rec_trained %>%
   ggtitle("Independent Component Analysis")
 ```
 
-Analiza wyników nie wskazuje na wyraźne różnice między klasami w pierwszych kilku komponentach ICA.
-Te niezależne (lub tak niezależne, jak to możliwe) komponenty nie separują typów fasoli.
+Analiza wyników nie wskazuje na wyraźne różnice między klasami w pierwszych
+kilku komponentach ICA. Te niezależne (lub tak niezależne, jak to możliwe)
+komponenty nie separują typów fasoli.
 
 ### UMAP
 
-*Uniform manifold approximation and projection* jest podobna do innej znanej metody t-SNE służącej do nieliniowej redukcji wymiarów.
-W oryginalnej przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z dużym prawdopodobieństwem są powiązane.
-Relacje między punktami danych są zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest połączona.
-Stąd UMAP tłumaczy punkty w grafie na przestrzeń o zmniejszonym wymiarze.
-Aby to zrobić, algorytm posiada proces optymalizacji, który wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego zestawu cech, tak aby graf był dobrze przybliżony.
+*Uniform manifold approximation and projection* jest podobna do innej znanej
+metody t-SNE służącej do nieliniowej redukcji wymiarów. W oryginalnej
+przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę
+najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z
+dużym prawdopodobieństwem są powiązane. Relacje między punktami danych są
+zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest
+połączona. Stąd UMAP tłumaczy punkty w grafie na przestrzeń o zmniejszonym
+wymiarze. Aby to zrobić, algorytm posiada proces optymalizacji, który
+wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego
+zestawu cech, tak aby graf był dobrze przybliżony.
 
-Pakiet `embed` zawiera funkcję krokową dla tej metody, zwizualizowaną na @fig-umap1.
+Pakiet `embed` zawiera funkcję krokową dla tej metody, zwizualizowaną na
+@fig-umap1.
 
 ```{r}
 library(embed)
@@ -352,9 +438,11 @@ bean_rec_trained %>%
   ggtitle("UMAP")
 ```
 
-Widać wyraźne przestrzenie pomiędzy skupieniami, choć te dalej mogą być heterogeniczne.
+Widać wyraźne przestrzenie pomiędzy skupieniami, choć te dalej mogą być
+heterogeniczne.
 
-Istnieje też odmiana UMAP nadzorowana, która zamiast używać podobieństwa do określenia skupień w wielowymiarowej przestrzeni, używa etykiet.
+Istnieje też odmiana UMAP nadzorowana, która zamiast używać podobieństwa do
+określenia skupień w wielowymiarowej przestrzeni, używa etykiet.
 
 ```{r}
 #| cache: true
@@ -366,19 +454,26 @@ bean_rec_trained %>%
   ggtitle("UMAP (supervised)")
 ```
 
-UMAP jest wydajną metodą redukcji przestrzeni cech.
-Jednak może być bardzo wrażliwa na dostrajanie parametrów (np. liczba sąsiadów).
-Z tego powodu pomocne byłoby eksperymentowanie z kilkoma parametrami, aby ocenić, jak wiarygodne są wyniki dla tych danych.
+UMAP jest wydajną metodą redukcji przestrzeni cech. Jednak może być bardzo
+wrażliwa na dostrajanie parametrów (np. liczba sąsiadów). Z tego powodu pomocne
+byłoby eksperymentowanie z kilkoma parametrami, aby ocenić, jak wiarygodne są
+wyniki dla tych danych.
 
 ## Modelowanie ze wstępną ekstrakcją cech
 
-Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi modelami.
-Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa, *bagged trees*, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i regularyzowana analiza dyskryminacyjna (RDA).
+Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi
+modelami. Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości
+(wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa,
+*bagged trees*, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i
+regularyzowana analiza dyskryminacyjna (RDA).
 
-![](https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif){.column-margin fig-align="center" width="400"}
+![](https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif){.column-margin
+fig-align="center" width="400"}
 
-Stworzymy serię specyfikacji modeli, a następnie użyjemy zestawu przepływów pracy do dostrojenia modeli w poniższym kodzie.
-Zauważ, że parametry modelu są dostrajane w połączeniu z parametrami receptury (np. rozmiar zredukowanego wymiaru, parametry UMAP).
+Stworzymy serię specyfikacji modeli, a następnie użyjemy zestawu przepływów
+pracy do dostrojenia modeli w poniższym kodzie. Zauważ, że parametry modelu są
+dostrajane w połączeniu z parametrami receptury (np. rozmiar zredukowanego
+wymiaru, parametry UMAP).
 
 ```{r}
 library(baguette)
@@ -409,8 +504,9 @@ bayes_spec <-
   set_engine('klaR')
 ```
 
-Potrzebujemy również receptur dla metod redukcji wymiarowości, które będziemy testować.
-Zacznijmy od bazowego przepisu `bean_rec`, a następnie rozszerzmy go o różne kroki redukcji wymiarowości:
+Potrzebujemy również receptur dla metod redukcji wymiarowości, które będziemy
+testować. Zacznijmy od bazowego przepisu `bean_rec`, a następnie rozszerzmy go
+o różne kroki redukcji wymiarowości:
 
 ```{r}
 bean_rec <-
@@ -434,10 +530,13 @@ umap_rec <-
   )
 ```
 
-Po raz kolejny pakiet `workflowsets` bierze reguły wstępnego przetwarzani oraz modele i krzyżuje je.
-Opcja kontrolna `parallel_over` jest ustawiona tak, aby przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach dostrajania parametrów.
-Funkcja `workflow_map()` stosuje przeszukiwanie siatki w celu optymalizacji parametrów modelu/przetwarzania wstępnego (jeśli istnieją) w 10 kombinacjach parametrów.
-Obszar pod krzywą ROC jest szacowany na zbiorze walidacyjnym.
+Po raz kolejny pakiet `workflowsets` bierze reguły wstępnego przetwarzani oraz
+modele i krzyżuje je. Opcja kontrolna `parallel_over` jest ustawiona tak, aby
+przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach
+dostrajania parametrów. Funkcja `workflow_map()` stosuje przeszukiwanie siatki
+w celu optymalizacji parametrów modelu/przetwarzania wstępnego (jeśli istnieją)
+w 10 kombinacjach parametrów. Obszar pod krzywą ROC jest szacowany na zbiorze
+walidacyjnym.
 
 ```{r}
 #| eval: false
@@ -464,7 +563,7 @@ bean_res <-
 #| label: fig-all-models1
 #| fig-cap: Obszar pod krzywą ROC ze zbioru walidacyjnego
 
-load("models/bean_res.rda")
+bean_res <- readRDS("models/bean_res.rds")
 autoplot(
 bean_res,
 rank_metric = "roc_auc",  # <- how to order models
@@ -475,7 +574,8 @@ geom_text(aes(y = mean - 0.02, label = wflow_id), angle = 90, hjust = 0.1) +
 lims(y = c(0.9, 1))
 ```
 
-Możemy uszeregować modele według ich oszacowań obszaru pod krzywą ROC w zbiorze walidacyjnym:
+Możemy uszeregować modele według ich oszacowań obszaru pod krzywą ROC w zbiorze
+walidacyjnym:
 
 ```{r}
 rankings <- 
@@ -486,8 +586,9 @@ tidymodels_prefer()
 filter(rankings, rank <= 5) %>% dplyr::select(rank, mean, model, method)
 ```
 
-Z tych wyników jasno wynika, że większość modeli daje bardzo dobre wyniki; niewiele jest tu złych wyborów.
-Dla demonstracji użyjemy modelu RDA z cechami PLS jako modelu końcowego.
+Z tych wyników jasno wynika, że większość modeli daje bardzo dobre wyniki;
+niewiele jest tu złych wyborów. Dla demonstracji użyjemy modelu RDA z cechami
+PLS jako modelu końcowego.
 
 ```{r}
 rda_res <- 

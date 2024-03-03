@@ -7,10 +7,10 @@ editor_options:
 
 # Metody próbkowania
 
-W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych `ames`, na którym dokonywaliśmy już modelowania (regresja liniowa)[^resampling2-1].
-Oprócz modelu liniowego zbudujemy również las losowy, który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.
-
-[^resampling2-1]: z przykładu w poprzednim rozdziale
+W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych
+`ames`, na którym dokonywaliśmy już modelowania (regresja
+liniowa)[^resampling2-1]. Oprócz modelu liniowego zbudujemy również las losowy,
+który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.
 
 ::: {#exm-1}
 ```{r}
@@ -58,7 +58,8 @@ rf_wflow <-
 rf_fit <- rf_wflow |> fit(data = ames_train)
 ```
 
-Ponieważ kilkukrotnie będziemy wywoływać podsumowanie modeli za pomocą metryk, to stworzymy funkcję, którą będziemy mogli stosować wielokrotnie.
+Ponieważ kilkukrotnie będziemy wywoływać podsumowanie modeli za pomocą metryk,
+to stworzymy funkcję, którą będziemy mogli stosować wielokrotnie.
 
 ```{r}
 estimate_perf <- function(model, dat) {
@@ -80,16 +81,19 @@ estimate_perf <- function(model, dat) {
 }
 ```
 
-Aby porównać modele zostaną obliczone miary RMSE i $R^2$ dla obu modeli na zbiorze uczącym.
+Aby porównać modele zostaną obliczone miary RMSE i $R^2$ dla obu modeli na
+zbiorze uczącym.
 
 ```{r}
 estimate_perf(rf_fit, ames_train)
 estimate_perf(lm_fit, ames_train)
 ```
 
-Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym przypadku.
-W taką pułapkę łapie się większość osób stawiających pierwsze kroki w ML.
-Ale już porównując te modele na próbie testowej widzimy, że różnice pomiędzy modelami się zacierają.
+Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu
+losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym
+przypadku. W taką pułapkę łapie się większość osób stawiających pierwsze kroki
+w ML. Ale już porównując te modele na próbie testowej widzimy, że różnice
+pomiędzy modelami się zacierają.
 
 ::: column-margin
 ![](images/chap_46.png){width="400"}
@@ -102,86 +106,118 @@ estimate_perf(lm_fit, ames_test)
 
 Skąd takie różnice?
 
-Wiele modeli predykcyjnych jest w stanie uczyć się złożonych zależności.
-W statystyce są one powszechnie określane jako *low bias models*.
-Wiele modeli uczenia maszynowego typu *black-box* ma niski poziom błędu systematycznego, co oznacza, że mogą one odtwarzać złożone relacje.
-Inne modele (takie jak regresja liniowa/logistyczna, analiza dyskryminacyjna i inne) nie są tak elastyczne i są uważane za modele o wysokim współczynniku błędu (ang. *high bias models*).
+Wiele modeli predykcyjnych jest w stanie uczyć się złożonych zależności. W
+statystyce są one powszechnie określane jako *low bias models*. Wiele modeli
+uczenia maszynowego typu *black-box* ma niski poziom błędu systematycznego, co
+oznacza, że mogą one odtwarzać złożone relacje. Inne modele (takie jak regresja
+liniowa/logistyczna, analiza dyskryminacyjna i inne) nie są tak elastyczne i są
+uważane za modele o wysokim współczynniku błędu (ang. *high bias models*).
 
-W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej może czasami spowodować, że model prawie zapamiętuje dane ze zbioru treningowego.
-Jako oczywisty przykład, można rozważyć model 1-najbliższego sąsiada.
-Zawsze będzie zapewniał doskonałe przewidywania dla zestawu treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych zestawów danych.
-Modele losowego lasu są podobne; predykcja na zbiorze uczącym zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.
+W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej
+może czasami spowodować, że model prawie zapamiętuje dane ze zbioru
+treningowego. Jako oczywisty przykład, można rozważyć model 1-najbliższego
+sąsiada. Zawsze będzie zapewniał doskonałe przewidywania dla zestawu
+treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych
+zestawów danych. Modele losowego lasu są podobne; predykcja na zbiorze uczącym
+zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.
 
-Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.
+Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z
+małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.
 :::
 
 ::: column-margin
 ![](images/chap_38.png){fig-align="center" width="400"}
 :::
 
-Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić zbyt optymistyczny poziom dopasowania.
-A skoro zbiór testowy nie powinien być używany natychmiast, a predykcja na zbiorze treningowym jest złym pomysłem, to co należy zrobić?
-Rozwiązaniem są metody ponownego próbkowania (ang. *resampling*), takie jak walidacja krzyżowa lub zestawy walidacyjne.
+Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest
+właściwym podejściem, ponieważ może zwrócić zbyt optymistyczny poziom
+dopasowania. A skoro zbiór testowy nie powinien być używany natychmiast, a
+predykcja na zbiorze treningowym jest złym pomysłem, to co należy zrobić?
+Rozwiązaniem są metody ponownego próbkowania (ang. *resampling*), takie jak
+walidacja krzyżowa lub zestawy walidacyjne.
 
-Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny.
-Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie.
-Schemat na @fig-resamp1 ilustruje, jak generalnie działają metody resamplingu.
+Metody resamplingu są empirycznymi systemami symulacji, które emulują proces
+używania pewnych danych do modelowania i innych danych do oceny. Większość
+metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany
+wielokrotnie. Schemat na @fig-resamp1 ilustruje, jak generalnie działają metody
+resamplingu.
 
-![Przykład podziału zbioru danych z wykorzystaniem resamplingu](images/Zrzut%20ekranu%202023-02-20%20o%2019.54.34.png){#fig-resamp1 fig-align="center" width="500"}
+![Przykład podziału zbioru danych z wykorzystaniem
+resamplingu](images/Zrzut%20ekranu%202023-02-20%20o%2019.54.34.png){#fig-resamp1
+fig-align="center" width="500"}
 
-*Resampling* jest przeprowadzany tylko na zbiorze treningowym.
-Zbiór testowy nie bierze w nim udziału.
-Dla każdej iteracji ponownego próbkowania dane są dzielone na dwie podpróbki, na których:
+*Resampling* jest przeprowadzany tylko na zbiorze treningowym. Zbiór testowy
+nie bierze w nim udziału. Dla każdej iteracji ponownego próbkowania dane są
+dzielone na dwie podpróbki, na których:
 
--   Model jest dopasowywany za pomocą zbioru analitycznego (ang. *analysis set*).
+-   Model jest dopasowywany za pomocą zbioru analitycznego (ang. *analysis
+    set*).
 -   Model jest oceniany za pomocą zbioru do oceny (ang. *assessment set*).
 
-Te dwie próby danych są w pewnym sensie analogiczne do zestawów treningowych i testowych.
-Używany przez nas język analizy i oceny pozwala uniknąć pomyłek związanych z początkowym podziałem danych.
-Te zbiory danych wzajemnie się wykluczają.
-Schemat podziału stosowany do tworzenia zbiorów analizy i oceny jest zazwyczaj cechą definiującą metodę.
+Te dwie próby danych są w pewnym sensie analogiczne do zestawów treningowych i
+testowych. Używany przez nas język analizy i oceny pozwala uniknąć pomyłek
+związanych z początkowym podziałem danych. Te zbiory danych wzajemnie się
+wykluczają. Schemat podziału stosowany do tworzenia zbiorów analizy i oceny
+jest zazwyczaj cechą definiującą metodę.
 
-Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania.
-Oznacza to, że 20 oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im zbiory oceny dają 20 zbiorów statystyk wydajności.
-Ostateczne oszacowanie wydajności dla modelu jest średnią z 20 powtórzeń statystyki.
-Średnia ta ma bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na zbiorze uczącym.
+Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania. Oznacza to, że 20
+oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im
+zbiory oceny dają 20 zbiorów statystyk wydajności. Ostateczne oszacowanie
+wydajności dla modelu jest średnią z 20 powtórzeń statystyki. Średnia ta ma
+bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na
+zbiorze uczącym.
 
 ::: column-margin
-![](https://i.pinimg.com/564x/5d/40/fe/5d40febb383da04ada236afede0ab996.jpg){fig-align="center" width="400"}
+![](https://i.pinimg.com/564x/5d/40/fe/5d40febb383da04ada236afede0ab996.jpg){fig-align="center"
+width="400"}
 :::
+
+[^resampling2-1]: z przykładu w poprzednim rozdziale
 
 ## Walidacja krzyżowa
 
-Walidacja krzyżowa (ang. *cross-validation*) jest dobrze ugruntowaną metodą próbkowania.
-Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa.
-Dane są losowo dzielone na $V$ zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami).
-Dla ilustracji, $V = 3$ jest pokazane na rysunku -@fig-cross1 dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
+Walidacja krzyżowa (ang. *cross-validation*) jest dobrze ugruntowaną metodą
+próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą
+walidacji krzyżowej jest $V$-krotna walidacja krzyżowa. Dane są losowo dzielone
+na $V$ zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami).
+Dla ilustracji, $V = 3$ jest pokazane na @fig-cross1 dla zbioru danych
+składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
 Liczba wewnątrz symboli to numer próbki.
 
-![3-krotny sprawdzian krzyżowy](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.18.png){#fig-cross1 fig-align="center" width="400"}
+![3-krotny sprawdzian
+krzyżowy](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.18.png){#fig-cross1
+fig-align="center" width="400"}
 
 Kolory symboli na @fig-cross1 reprezentują ich losowo przypisane foldy.
 
-W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na @fig-cross2.
-Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu.
-Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.
+W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania
+przedstawiono na @fig-cross2. Dla każdej iteracji jeden fold jest zatrzymywany
+do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten
+jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy
+statystyk dopasowania.
 
-![Zastosowanie foldów w uczeniu i ocenie dopasowania modeli](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.30.png){#fig-cross2 fig-align="center" width="500"}
+![Zastosowanie foldów w uczeniu i ocenie dopasowania
+modeli](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.30.png){#fig-cross2
+fig-align="center" width="500"}
 
-Gdy $V = 3$, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór oceny stanowi odrębną 1/3.
-Końcowa estymacja resamplingu wydajności uśrednia każdą z $V$ replik.
+Gdy $V = 3$, zbiory analiz stanowią 2/3 zbioru treningowego, a każdy zbiór
+oceny stanowi odrębną 1/3. Końcowa estymacja resamplingu wydajności uśrednia
+każdą z $V$ replik.
 
 ::: column-margin
 ![](images/chap_11.png){fig-align="center" width="400"}
 :::
 
-Użycie $V = 3$ jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować wiarygodne szacunki.
-W praktyce wartości $V$ to najczęściej 5 lub 10; raczej preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.
+Użycie $V = 3$ jest dobrym wyborem do zilustrowania walidacji krzyżowej, ale
+jest to zły wybór w praktyce, ponieważ jest zbyt mało foldów, aby wygenerować
+wiarygodne szacunki. W praktyce wartości $V$ to najczęściej 5 lub 10; raczej
+preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona
+wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.
 
-Jakie są skutki zmiany $V$?
-Większe wartości powodują, że szacunki z próbkowania mają mały błąd/obciążenie, ale znaczną wariancję.
-Mniejsze wartości $V$ mają duży błąd, ale niską wariancję.
-Preferujemy 10-krotne, ponieważ szum jest zmniejszony przez replikacje, ale obciążenie już nie.
+Jakie są skutki zmiany $V$? Większe wartości powodują, że szacunki z
+próbkowania mają mały błąd/obciążenie, ale znaczną wariancję. Mniejsze wartości
+$V$ mają duży błąd, ale niską wariancję. Preferujemy 10-krotne, ponieważ szum
+jest zmniejszony przez replikacje, ale obciążenie już nie.
 
 ```{r}
 set.seed(1001)
@@ -191,34 +227,50 @@ lobstr::obj_size(ames_folds)
 lobstr::obj_size(ames_train)
 ```
 
-Kolumna o nazwie *splits* zawiera informacje o tym, jak podzielone zostaną dane (podobnie jak obiekt używany do tworzenia początkowej partycji trening/test).
-Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest na tyle inteligentny, że nie tworzy kopii danych w pamięci.
-Metoda `print` wewnątrz `tibble` pokazuje częstość występowania każdego z nich: \[2107/235\] wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a 235 w tym konkretnym zbiorze oceniającym.
+Kolumna o nazwie *splits* zawiera informacje o tym, jak podzielone zostaną dane
+(podobnie jak obiekt używany do tworzenia początkowej partycji trening/test).
+Chociaż każdy podział ma zagnieżdżoną kopię całego zbioru treningowego, R jest
+na tyle inteligentny, że nie tworzy kopii danych w pamięci. Metoda `print`
+wewnątrz `tibble` pokazuje częstość występowania każdego z nich: \[2107/235\]
+wskazuje, że około dwóch tysięcy próbek znajduje się w zbiorze analitycznym, a
+235 w tym konkretnym zbiorze oceniającym.
 
 ## Sprawdzian krzyżowy z powtórzeniami
 
-Najważniejszą odmianą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa z powtórzeniami.
-W zależności od rozmiaru danych i innych cech, ocena modelu uzyskana w wyniku $V$-krotnej walidacji krzyżowej może być nadmiernie zaszumiona.
-Podobnie jak w przypadku wielu problemów statystycznych, jednym ze sposobów zmniejszenia szumu jest zebranie większej ilości danych.
-W przypadku walidacji krzyżowej oznacza to uśrednienie więcej niż $V$ statystyk.
+Najważniejszą odmianą walidacji krzyżowej jest $V$-krotna walidacja krzyżowa z
+powtórzeniami. W zależności od rozmiaru danych i innych cech, ocena modelu
+uzyskana w wyniku $V$-krotnej walidacji krzyżowej może być nadmiernie
+zaszumiona. Podobnie jak w przypadku wielu problemów statystycznych, jednym ze
+sposobów zmniejszenia szumu jest zebranie większej ilości danych. W przypadku
+walidacji krzyżowej oznacza to uśrednienie więcej niż $V$ statystyk.
 
 ::: column-margin
 ![](images/chap_20.png){fig-align="center" width="400"}
 :::
 
-Aby stworzyć $R$ powtórzeń $V$-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany $R$ razy, aby wygenerować $R$ zbiorów złożonych z $V$ podzbiorów.
-Zamiast uśredniania $V$ statystyk, $V\times R$ wartości daje ostateczną estymację resamplingu.
+Aby stworzyć $R$ powtórzeń $V$-krotnej walidacji krzyżowej, ten sam proces
+generowania foldów jest wykonywany $R$ razy, aby wygenerować $R$ zbiorów
+złożonych z $V$ podzbiorów. Zamiast uśredniania $V$ statystyk, $V\times R$
+wartości daje ostateczną estymację resamplingu.
 
-Rozważmy dane `ames`.
-Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 obserwacji.
-Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako $\sigma$.
-Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi $\sigma/\sqrt{10}$.
-Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do $\sigma/\sqrt{10R}$.
-Dla 10-krotnej walidacji krzyżowej z $R$ powtórzeniami, wykres na rysunku @fig-cross3 pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.
+Rozważmy dane `ames`. Średnio, 10-krotna walidacja krzyżowa używa zestawów
+oceny, które zawierają około 234 obserwacji. Jeśli RMSE jest wybraną
+statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako
+$\sigma$. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE
+wynosi $\sigma/\sqrt{10}$. Podczas gdy ta wielkość może charakteryzować się
+jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do
+$\sigma/\sqrt{10R}$. Dla 10-krotnej walidacji krzyżowej z $R$ powtórzeniami,
+wykres na @fig-cross3 pokazuje, jak szybko błąd standardowy maleje wraz
+z liczbą powtórzeń.
 
-![Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych](images/Zrzut%20ekranu%202023-02-20%20o%2021.09.46.png){#fig-cross3 fig-align="center" width="600"}
+![Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń
+walidacji
+krzyżowych](images/Zrzut%20ekranu%202023-02-20%20o%2021.09.46.png){#fig-cross3
+fig-align="center" width="600"}
 
-Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd standardowy estymacji, chyba że bazowa wartość $\sigma$ jest duża, wówczas faktycznie warto zwiększać liczbę replikacji.
+Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd
+standardowy estymacji, chyba że bazowa wartość $\sigma$ jest duża, wówczas
+faktycznie warto zwiększać liczbę replikacji.
 
 ```{r}
 vfold_cv(ames_train, v = 10, repeats = 5)
@@ -226,25 +278,30 @@ vfold_cv(ames_train, v = 10, repeats = 5)
 
 ## Leave-One-Out
 
-Jedną z odmian walidacji krzyżowej jest walidacja krzyżowa typu *Leave-One-Out* (LOO).
-Jeśli mamy $n$ próbek zbioru treningowego, $n$ modeli jest dopasowywanych przy użyciu $n - 1$ wierszy zbioru treningowego.
-Każdy model przewiduje pojedynczy wykluczony punkt danych.
-Na koniec próbkowania $n$ prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania
+Jedną z odmian walidacji krzyżowej jest walidacja krzyżowa typu *Leave-One-Out*
+(LOO). Jeśli mamy $n$ próbek zbioru treningowego, $n$ modeli jest
+dopasowywanych przy użyciu $n - 1$ wierszy zbioru treningowego. Każdy model
+przewiduje pojedynczy wykluczony punkt danych. Na koniec próbkowania $n$
+prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania
 
 ::: column-margin
 ![](images/chap_41.png){fig-align="center" width="400"}
 :::
 
 Metody LOO są gorsza w porównaniu z prawie każdą inną metodą oceny dopasowania.
-Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych.
-Chociaż pakiet `rsample` zawiera funkcję `loo_cv()`, obiekty te nie są mocno zintegrowane z pakietami `tidymodels`.
+Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo
+złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet
+`rsample` zawiera funkcję `loo_cv()`, obiekty te nie są mocno zintegrowane z
+pakietami `tidymodels`.
 
 ## Walidacja metodą Monte-Carlo
 
-Innym wariantem $V$-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. *Monte-Carlo Cross-Validation* - MCCV) [@xu2001].
-Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny.
-Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo.
-Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.
+Innym wariantem $V$-krotnej walidacji krzyżowej jest walidacja krzyżowa
+Monte-Carlo (ang. *Monte-Carlo Cross-Validation* - MCCV) [@xu2001]. Podobnie
+jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów
+oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w
+przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to
+powstają zestawy oceny, które nie wykluczają się wzajemnie.
 
 ```{r}
 mc_cv(ames_train, prop = 9/10, times = 20)
@@ -252,19 +309,27 @@ mc_cv(ames_train, prop = 9/10, times = 20)
 
 ## Zbiór walidacyjny
 
-We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego.
-Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz @fig-val1).
-Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np.
-w procesie optymalizacji hiperparametrów modelu.
+We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru
+walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i
+testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny
+(patrz @fig-val1). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania
+modelu, np. w procesie optymalizacji hiperparametrów modelu.
 
-![Podział zbiorów na uczący, testowy i walidacyjny](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.37.png){#fig-val1 fig-align="center" width="400"}
+![Podział zbiorów na uczący, testowy i
+walidacyjny](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.37.png){#fig-val1
+fig-align="center" width="400"}
 
-Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz @fig-val2).
+Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części
+(patrz @fig-val2).
 
-![Podział na trzy zbiory](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.11.png){#fig-val2 fig-align="center" width="400"}
+![Podział na trzy
+zbiory](images/Zrzut%20ekranu%202023-02-20%20o%2021.32.11.png){#fig-val2
+fig-align="center" width="400"}
 
-Zbiory walidacyjne są często wykorzystywane, gdy pierwotna pula danych jest bardzo duża.
-W tym przypadku, pojedyncza duża partia danych jest wystarczająca do scharakteryzowania dopasowania modelu bez konieczności wykonywania wielu iteracji próbkowania.
+Zbiory walidacyjne są często wykorzystywane, gdy pierwotna pula danych jest
+bardzo duża. W tym przypadku, pojedyncza duża partia danych jest wystarczająca
+do scharakteryzowania dopasowania modelu bez konieczności wykonywania wielu
+iteracji próbkowania.
 
 ```{r}
 set.seed(1002)
@@ -274,67 +339,101 @@ val_set
 
 ## Bootstrapping
 
-*Bootstrap* został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane [@davison1997].
-Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.
+*Bootstrap* został pierwotnie wynaleziony jako metoda aproksymacji próbkowego
+rozkładu statystyki, którego własności teoretyczne są nieznane [@davison1997].
+Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem
+tej metody.
 
-Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co zbiór treningowy, ale jest losowana ze zwracaniem.
-Oznacza to, że niektóre obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru analitycznego.
-Każdy punkt danych ma 63,2% szans na włączenie do zbioru uczącego przynajmniej raz.
-Zestaw oceny zawiera wszystkie próbki zestawu treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8% zestawu treningowego).
-Podczas *bootstrappingu* zestaw oceny jest często nazywany próbką poza workiem (ang. *Out-Of-Bag)*.
+Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co
+zbiór treningowy, ale jest losowana ze zwracaniem. Oznacza to, że niektóre
+obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru
+analitycznego. Każdy punkt danych ma 63,2% szans na włączenie do zbioru
+uczącego przynajmniej raz. Zestaw oceny zawiera wszystkie próbki zestawu
+treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8%
+zestawu treningowego). Podczas *bootstrappingu* zestaw oceny jest często
+nazywany próbką poza workiem (ang. *Out-Of-Bag)*.
 
-Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na @fig-boot1
+Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek
+bootstrapowych przedstawiono na @fig-boot1
 
-![Trzy próby bootstrapowe](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.08.png){#fig-boot1 fig-align="center" width="500"}
+![Trzy próby
+bootstrapowe](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.08.png){#fig-boot1
+fig-align="center" width="500"}
 
 ```{r}
 bootstraps(ames_train, times = 5)
 ```
 
-Próbki bootstrapowe dają oszacowania dopasowania, które mają bardzo niską wariancję (w przeciwieństwie do walidacji krzyżowej), ale są pesymistyczne w ocenie obciążenia.
-Oznacza to, że jeśli prawdziwa dokładność modelu wynosi 90%, bootstrap będzie miał tendencję do oszacowania wartości mniejszej niż 90%.
-Wielkość błędu systematycznego nie może być określona empirycznie z wystarczającą dokładnością.
-Dodatkowo, wielkość błędu systematycznego zmienia się w zależności od skali dopasowania.
-Na przykład obciążenie będzie prawdopodobnie inne, gdy dokładność wynosi 90% w porównaniu z 70%.
+Próbki bootstrapowe dają oszacowania dopasowania, które mają bardzo niską
+wariancję (w przeciwieństwie do walidacji krzyżowej), ale są pesymistyczne w
+ocenie obciążenia. Oznacza to, że jeśli prawdziwa dokładność modelu wynosi 90%,
+bootstrap będzie miał tendencję do oszacowania wartości mniejszej niż 90%.
+Wielkość błędu systematycznego nie może być określona empirycznie z
+wystarczającą dokładnością. Dodatkowo, wielkość błędu systematycznego zmienia
+się w zależności od skali dopasowania. Na przykład obciążenie będzie
+prawdopodobnie inne, gdy dokładność wynosi 90% w porównaniu z 70%.
 
-*Bootstrap* jest również wykorzystywany wewnątrz wielu modeli.
-Na przykład, wspomniany wcześniej model lasu losowego zawierał 1000 indywidualnych drzew decyzyjnych.
-Każde drzewo było produktem innej próbki bootstrapowej zbioru treningowego.
+*Bootstrap* jest również wykorzystywany wewnątrz wielu modeli. Na przykład,
+wspomniany wcześniej model lasu losowego zawierał 1000 indywidualnych drzew
+decyzyjnych. Każde drzewo było produktem innej próbki bootstrapowej zbioru
+treningowego.
 
 ## Kroczące próbkowanie źródła
 
-Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w szeregach czasowych.
-Technika, która losowo próbkuje wartości ze zbioru treningowego, nie pozwoli na oszacowanie tych wzorców.
+Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda
+próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w
+szeregach czasowych. Technika, która losowo próbkuje wartości ze zbioru
+treningowego, nie pozwoli na oszacowanie tych wzorców.
 
-Kroczące próbkowanie źródła (ang. *rolling forecast origin resampling*) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, estymując parametry modelu na danymych historycznych i oceniając go z najnowszymi danymi [@hyndman].
-Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen.
-Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii.
-Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.
+Kroczące próbkowanie źródła (ang. *rolling forecast origin resampling*) jest
+metodą, która emuluje sposób, w jaki dane szeregów czasowych są często
+partycjonowane w praktyce, estymując parametry modelu na danymych historycznych
+i oceniając go z najnowszymi danymi [@hyndman]. Dla tego typu resamplingu
+określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu
+wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja
+wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę
+próbek.
 
-![Próbkowanie kroczące ze źródła](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.23.png){#fig-rolling fig-align="center" width="500"}
+![Próbkowanie kroczące ze
+źródła](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.23.png){#fig-rolling
+fig-align="center" width="500"}
 
-Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy.
-W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden.
-W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na @fig-rolling.
+Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został
+ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru
+oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru
+uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji
+uzyskuje się pięć próbek, jak pokazano na @fig-rolling.
 
 Istnieją dwie różne konfiguracje tej metody:
 
--   Zestaw analiz może narastać (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych. W rezultacie oznacza to, że po nauczeniu i ocenie dopasowania modelu na *Resample 1,* model jest uczony na zbiorze rozszerzonym o obserwację 9, czyli na danych od 1 do 9. Następnie oceniany na obserwacjach od 10 do 12, itd.
--   Próbki nie muszą być zwiększane o jeden. Na przykład, w przypadku dużych zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast dnia.
+-   Zestaw analiz może narastać (w przeciwieństwie do utrzymywania tego samego
+    rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą
+    narastać bez odrzucania wcześniejszych danych. W rezultacie oznacza to, że
+    po nauczeniu i ocenie dopasowania modelu na *Resample 1,* model jest uczony
+    na zbiorze rozszerzonym o obserwację 9, czyli na danych od 1 do 9.
+    Następnie oceniany na obserwacjach od 10 do 12, itd.
+-   Próbki nie muszą być zwiększane o jeden. Na przykład, w przypadku dużych
+    zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast
+    dnia.
 
 ## Oszacowanie dopasowania z wykorzystaniem resamplingu
 
-Każda z metod *resamplingu* omówionych w tym rozdziale może być wykorzystana do oceny procesu modelowania (w tym przetwarzania wstępnego, dopasowania modelu itp.).
-Metody te są skuteczne, ponieważ do trenowania modelu i oceny modelu wykorzystywane są różne grupy danych.
-Przebiega on w następujący sposób:
+Każda z metod *resamplingu* omówionych w tym rozdziale może być wykorzystana do
+oceny procesu modelowania (w tym przetwarzania wstępnego, dopasowania modelu
+itp.). Metody te są skuteczne, ponieważ do trenowania modelu i oceny modelu
+wykorzystywane są różne grupy danych. Przebiega on w następujący sposób:
 
-1.  Podczas *resamplingu* zbiór analityczny jest używany do wstępnego przetwarzania danych, a następnie przetworzonych danych używa do dopasowania modelu.
-2.  Statystyki przetwarzania wstępnego opracowane przez zbiór analiz są stosowane do zbioru oceny. Prognozy ze zbioru oceny wskazują wydajność modelu na nowych danych.
+1.  Podczas *resamplingu* zbiór analityczny jest używany do wstępnego
+    przetwarzania danych, a następnie przetworzonych danych używa do
+    dopasowania modelu.
+2.  Statystyki przetwarzania wstępnego opracowane przez zbiór analiz są
+    stosowane do zbioru oceny. Prognozy ze zbioru oceny wskazują wydajność
+    modelu na nowych danych.
 
-Ta sekwencja powtarza się dla każdej próby.
-Jeśli istnieje $B$ prób, wówczas mamy $B$ powtórzeń każdej z metryk dopasowania.
-Ostateczna ocena jest średnią tych $B$ statystyk.
-Jeśli $B = 1$, jak w przypadku zbioru walidacyjnego, pojedyncze statystyki reprezentują ogólne dopasowanie.
+Ta sekwencja powtarza się dla każdej próby. Jeśli istnieje $B$ prób, wówczas
+mamy $B$ powtórzeń każdej z metryk dopasowania. Ostateczna ocena jest średnią
+tych $B$ statystyk. Jeśli $B = 1$, jak w przypadku zbioru walidacyjnego,
+pojedyncze statystyki reprezentują ogólne dopasowanie.
 
 ::: column-margin
 ![](https://media4.giphy.com/media/IfFN6NwhaUl3CI4mgG/giphy.gif?cid=ecf05e479vdinrjf0nel53vw654p1yc1bgr3ey8fkbw1o74t&rid=giphy.gif&ct=g)
@@ -353,8 +452,9 @@ rf_res <-
 rf_res
 ```
 
-Chociaż te kolumny listy mogą wyglądać zniechęcająco, można je łatwo przekonfigurować za pomocą `tidymodels`.
-Na przykład, aby zwrócić metryki wydajności w bardziej użytecznym formacie:
+Chociaż te kolumny listy mogą wyglądać zniechęcająco, można je łatwo
+przekonfigurować za pomocą `tidymodels`. Na przykład, aby zwrócić metryki
+wydajności w bardziej użytecznym formacie:
 
 ```{r}
 collect_metrics(rf_res)
@@ -368,11 +468,15 @@ assess_res <- collect_predictions(rf_res)
 assess_res
 ```
 
-Kolumna `.row` jest liczbą całkowitą, która odpowiada numerowi wiersza oryginalnego zestawu treningowego, tak aby te wyniki mogły być odpowiednio połączone z oryginalnymi danymi.
+Kolumna `.row` jest liczbą całkowitą, która odpowiada numerowi wiersza
+oryginalnego zestawu treningowego, tak aby te wyniki mogły być odpowiednio
+połączone z oryginalnymi danymi.
 
 ::: callout-tip
-Dla niektórych metod resamplingu, takich jak *bootstrap* lub walidacja krzyżowa z powtórzeniami, otrzymamy wiele predykcji na wiersz oryginalnego zestawu treningowego.
-Aby uzyskać jedną statystykę (średnią z predykcji) użyj `collect_predictions(object, summarize = TRUE)`.
+Dla niektórych metod resamplingu, takich jak *bootstrap* lub walidacja krzyżowa
+z powtórzeniami, otrzymamy wiele predykcji na wiersz oryginalnego zestawu
+treningowego. Aby uzyskać jedną statystykę (średnią z predykcji) użyj
+`collect_predictions(object, summarize = TRUE)`.
 :::
 
 ```{r}
@@ -386,8 +490,8 @@ assess_res |>
   ylab("Predicted")
 ```
 
-W zbiorze treningowym znajdują się dwa domy o niskiej zaobserwowanej cenie sprzedaży, których cena jest znacznie zawyżona przez model.
-Które to domy?
+W zbiorze treningowym znajdują się dwa domy o niskiej zaobserwowanej cenie
+sprzedaży, których cena jest znacznie zawyżona przez model. Które to domy?
 Dowiedzmy się tego z wyniku `assess_res`:
 
 ```{r}
@@ -403,7 +507,8 @@ ames_train |>
   select(Gr_Liv_Area, Neighborhood, Year_Built, Bedroom_AbvGr, Full_Bath)
 ```
 
-Identyfikacja takich przykładów ze szczególnie słabym dopasowaniem może pomóc nam śledzić i badać, dlaczego te konkretne przewidywania są tak słabe.
+Identyfikacja takich przykładów ze szczególnie słabym dopasowaniem może pomóc
+nam śledzić i badać, dlaczego te konkretne przewidywania są tak słabe.
 
 Jeśli chcielibyśmy użyć zbioru walidacyjnego do oceny modelu, użyjemy:
 
@@ -420,7 +525,8 @@ Jak widać wyniki te są zbliżone do otrzymanych z wykorzystaniem próby testow
 ## Przetwarzanie równoległe
 
 Pakiet `tune` używa pakietu `foreach` do przeprowadzenia obliczeń równoległych.
-Obliczenia te mogą być podzielone pomiędzy rdzenie procesora na tym samym komputerze lub na różnych komputerach, w zależności od wybranej technologii.
+Obliczenia te mogą być podzielone pomiędzy rdzenie procesora na tym samym
+komputerze lub na różnych komputerach, w zależności od wybranej technologii.
 
 Liczbę dostępnych rdzeni można wykryć za pomocą:
 
@@ -434,16 +540,19 @@ parallel::detectCores(logical = FALSE)
 parallel::detectCores(logical = TRUE)
 ```
 
-Różnica między tymi dwoma wartościami jest związana z typem procesora.
-Na przykład większość procesorów Intela wykorzystuje *hyperthreading*[^resampling2-2], który tworzy dwa wirtualne rdzenie dla każdego fizycznego rdzenia.
-Dodatkowe zasoby mogą poprawić wydajność, jednak rzadko można je stosować na wszystkich rdzeniach fizycznych, ponieważ pewne zasoby są potrzebne do obsługi *hyperthreadingu*.
+Różnica między tymi dwoma wartościami jest związana z typem procesora. Na
+przykład większość procesorów Intela wykorzystuje
+*hyperthreading*[^resampling2-2], który tworzy dwa wirtualne rdzenie dla
+każdego fizycznego rdzenia. Dodatkowe zasoby mogą poprawić wydajność, jednak
+rzadko można je stosować na wszystkich rdzeniach fizycznych, ponieważ pewne
+zasoby są potrzebne do obsługi *hyperthreadingu*.
 
-[^resampling2-2]: wielowątkowość współbieżna
-
-W przypadku `fit_resamples()` i innych funkcji w pakiecie `tune`, przetwarzanie równoległe występuje, gdy użytkownik zarejestruje pakiet równoległego przetwarzania.
-Owe pakiety definiują sposób wykonywania przetwarzania równoległego.
-W systemach operacyjnych Unix i macOS jedną z metod podziału obliczeń jest rozgałęzienie wątków.
-Aby to umożliwić, załaduj pakiet `doMC` i zarejestruj liczbę równoległych rdzeni dla `foreach`:
+W przypadku `fit_resamples()` i innych funkcji w pakiecie `tune`, przetwarzanie
+równoległe występuje, gdy użytkownik zarejestruje pakiet równoległego
+przetwarzania. Owe pakiety definiują sposób wykonywania przetwarzania
+równoległego. W systemach operacyjnych Unix i macOS jedną z metod podziału
+obliczeń jest rozgałęzienie wątków. Aby to umożliwić, załaduj pakiet `doMC` i
+zarejestruj liczbę równoległych rdzeni dla `foreach`:
 
 ```{r}
 #| eval: false
@@ -452,16 +561,17 @@ library(doMC)
 registerDoMC(cores = 4)
 ```
 
-To daje instrukcje dla `fit_resamples()`, aby uruchomić 1/4 obliczeń na każdym z czterech rdzeni.
-Aby zresetować obliczenia do przetwarzania sekwencyjnego:
+To daje instrukcje dla `fit_resamples()`, aby uruchomić 1/4 obliczeń na każdym
+z czterech rdzeni. Aby zresetować obliczenia do przetwarzania sekwencyjnego:
 
 ```{r}
 #| eval: false
 registerDoSEQ()
 ```
 
-Alternatywnie, inne podejście do paralelizacji obliczeń wykorzystuje gniazda sieciowe.
-Pakiet `doParallel` umożliwia tę metodę (możliwą do wykorzystania przez wszystkie systemy operacyjne):
+Alternatywnie, inne podejście do paralelizacji obliczeń wykorzystuje gniazda
+sieciowe. Pakiet `doParallel` umożliwia tę metodę (możliwą do wykorzystania
+przez wszystkie systemy operacyjne):
 
 ```{r}
 #| eval: false
@@ -475,30 +585,44 @@ registerDoParallel(cl)
 stopCluster(cl)
 ```
 
-Jeszcze innym pakietem R, który ułatwia przetwarzanie równoległe, jest pakiet `future`.
-Podobnie jak `foreach`, zapewnia on wykonywanie równoległych obliczeń na wybranej liczbie rdzeni.
-Pakiet ten jest używany w połączeniu z `foreach` poprzez pakiet `doFuture`.
+Jeszcze innym pakietem R, który ułatwia przetwarzanie równoległe, jest pakiet
+`future`. Podobnie jak `foreach`, zapewnia on wykonywanie równoległych obliczeń
+na wybranej liczbie rdzeni. Pakiet ten jest używany w połączeniu z `foreach`
+poprzez pakiet `doFuture`.
 
-Przetwarzanie równoległe z pakietem `tune` ma tendencję do zapewnienia liniowego przyspieszenia dla pierwszych kilku rdzeni.
-Oznacza to, że przy dwóch rdzeniach obliczenia są dwukrotnie szybsze.
-W zależności od typu danych i modelu, wzrost prędkości spada, tak że po włączeniu czterech czy pięciu rdzeni prędkość nie wzrośnie 4- czy 5-krotnie.
-Użycie większej liczby rdzeni nadal będzie skracać czas potrzebny do wykonania zadania; po prostu ich efektywność spada wraz z włączeniem dodatkowych rdzeni.
+Przetwarzanie równoległe z pakietem `tune` ma tendencję do zapewnienia
+liniowego przyspieszenia dla pierwszych kilku rdzeni. Oznacza to, że przy dwóch
+rdzeniach obliczenia są dwukrotnie szybsze. W zależności od typu danych i
+modelu, wzrost prędkości spada, tak że po włączeniu czterech czy pięciu rdzeni
+prędkość nie wzrośnie 4- czy 5-krotnie. Użycie większej liczby rdzeni nadal
+będzie skracać czas potrzebny do wykonania zadania; po prostu ich efektywność
+spada wraz z włączeniem dodatkowych rdzeni.
 
-Zakończmy ostatnią uwagą na temat obliczeń równoległych.
-Dla każdej z tych technologii, wymagania dotyczące pamięci wzrastają z każdym dodatkowym rdzeniem.
-Na przykład, jeśli bieżący zestaw danych zajmuje 2 GB pamięci i używane są trzy rdzenie, całkowite zapotrzebowanie na pamięć wyniesie 8 GB (2 dla każdego procesu roboczego plus oryginał).
-Użycie zbyt wielu rdzeni może spowodować znaczne spowolnienie obliczeń (i komputera).
+Zakończmy ostatnią uwagą na temat obliczeń równoległych. Dla każdej z tych
+technologii, wymagania dotyczące pamięci wzrastają z każdym dodatkowym
+rdzeniem. Na przykład, jeśli bieżący zestaw danych zajmuje 2 GB pamięci i
+używane są trzy rdzenie, całkowite zapotrzebowanie na pamięć wyniesie 8 GB (2
+dla każdego procesu roboczego plus oryginał). Użycie zbyt wielu rdzeni może
+spowodować znaczne spowolnienie obliczeń (i komputera).
+
+[^resampling2-2]: wielowątkowość współbieżna
 
 ## Przechowywanie wyników resamplingu
 
-Modele utworzone podczas próbkowania nie są zapisywane.
-Modele te są trenowane w celu oceny dopasowania i zazwyczaj nie potrzebujemy ich po obliczeniu miar dopasowania.
-Jeśli określone podejście do modelowania okaże się najlepszą opcją dla naszego zestawu danych, wtedy najlepszym wyborem jest ponowne dopasowanie modelu do całego zestawu uczącego, aby parametry modelu mogły być oszacowane przy użyciu większej ilości danych.
+Modele utworzone podczas próbkowania nie są zapisywane. Modele te są trenowane
+w celu oceny dopasowania i zazwyczaj nie potrzebujemy ich po obliczeniu miar
+dopasowania. Jeśli określone podejście do modelowania okaże się najlepszą opcją
+dla naszego zestawu danych, wtedy najlepszym wyborem jest ponowne dopasowanie
+modelu do całego zestawu uczącego, aby parametry modelu mogły być oszacowane
+przy użyciu większej ilości danych.
 
-Podczas gdy te modele utworzone podczas resamplingu nie są zachowywane, istnieje metoda na zapisanie ich lub części składników.
-Opcja `extract` funkcji `control_resamples()` określa funkcję, która przyjmuje pojedynczy argument; my użyjemy `x`.
-Gdy zostanie wykonana, `x` przekazuje w wyniku dopasowany obiekt przepływu, niezależnie od tego, czy przekazałeś `fit_resamples()` z przepływem.
-Przypomnijmy, że pakiet `workflows` posiada funkcje, które mogą wyciągać różne składniki obiektów (np. model, recepturę itp.).
+Podczas gdy te modele utworzone podczas resamplingu nie są zachowywane,
+istnieje metoda na zapisanie ich lub części składników. Opcja `extract` funkcji
+`control_resamples()` określa funkcję, która przyjmuje pojedynczy argument; my
+użyjemy `x`. Gdy zostanie wykonana, `x` przekazuje w wyniku dopasowany obiekt
+przepływu, niezależnie od tego, czy przekazałeś `fit_resamples()` z przepływem.
+Przypomnijmy, że pakiet `workflows` posiada funkcje, które mogą wyciągać różne
+składniki obiektów (np. model, recepturę itp.).
 
 ```{r}
 ames_rec <- 
@@ -543,10 +667,11 @@ Teraz z każdego folda możemy wyciągnąć szczegóły modelu.
 lm_res$.extracts[[1]][[1]]
 ```
 
-Może się to wydawać zawiłą metodą zapisywania wyników modelu.
-Jednakże, `extract` jest elastyczna i nie zakłada, że użytkownik będzie zapisywał tylko jedną `tibble` dla każdej próbki.
-Na przykład, metoda `tidy()` może być uruchomiona zarówno na przepisie jak i na modelu.
-W tym przypadku zwrócona zostanie lista dwóch `tibble`.
+Może się to wydawać zawiłą metodą zapisywania wyników modelu. Jednakże,
+`extract` jest elastyczna i nie zakłada, że użytkownik będzie zapisywał tylko
+jedną `tibble` dla każdej próbki. Na przykład, metoda `tidy()` może być
+uruchomiona zarówno na przepisie jak i na modelu. W tym przypadku zwrócona
+zostanie lista dwóch `tibble`.
 
 ```{r}
 all_coef <- map_dfr(lm_res$.extracts, ~ .x[[1]][[1]])

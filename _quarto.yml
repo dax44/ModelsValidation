@@ -47,6 +47,7 @@ book:
 
 bibliography: references.bib
 reference-location: margin
+lightbox: true
 
 format:
   html:
@@ -62,6 +63,11 @@ format:
     code-link: true
     code-fold: show
     fig-align: center
+    crossref:
+      fig-title: Rys.     # (default is "Figure")
+      tbl-title: Tab.     # (default is "Table")
+      fig-prefix: Rys.
+      tbl-prefix: Tab.
 
 execute: 
   warning: false

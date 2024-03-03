@@ -7,18 +7,24 @@ editor_options:
 
 # Porównanie modeli
 
-Po zbudowaniu dwóch lub więcej modeli, kolejnym krokiem jest ich porównanie, aby zrozumieć, który z nich jest najlepszy.
-W niektórych przypadkach, porównania mogą dotyczyć modelu, gdzie ten sam model może być oceniany z różnymi cechami lub metodami wstępnego przetwarzania.
-Alternatywnie, porównania między modelami, takie jak porównanie modeli regresji liniowej i lasu losowego, są bardziej powszechnym scenariuszem.
+Po zbudowaniu dwóch lub więcej modeli, kolejnym krokiem jest ich porównanie,
+aby zrozumieć, który z nich jest najlepszy. W niektórych przypadkach,
+porównania mogą dotyczyć modelu, gdzie ten sam model może być oceniany z
+różnymi cechami lub metodami wstępnego przetwarzania. Alternatywnie, porównania
+między modelami, takie jak porównanie modeli regresji liniowej i lasu losowego,
+są bardziej powszechnym scenariuszem.
 
-W każdym przypadku wynikiem jest zbiór próbkowanych statystyk zbiorczych (np. RMSE, dokładność itp.) dla każdego modelu.
-W tym rozdziale zademonstrujemy najpierw, jak można wykorzystać zbiory przepływów pracy do dopasowania wielu modeli.
-Następnie omówimy ważne aspekty statystyki resamplingu.
-Na koniec przyjrzymy się, jak formalnie porównać modele (używając testowania hipotez lub podejścia bayesowskiego).
+W każdym przypadku wynikiem jest zbiór próbkowanych statystyk zbiorczych (np.
+RMSE, dokładność itp.) dla każdego modelu. W tym rozdziale zademonstrujemy
+najpierw, jak można wykorzystać zbiory przepływów pracy do dopasowania wielu
+modeli. Następnie omówimy ważne aspekty statystyki resamplingu. Na koniec
+przyjrzymy się, jak formalnie porównać modele (używając testowania hipotez lub
+podejścia bayesowskiego).
 
 ## Tworzenie przepływów pracy do porównania modeli
 
-Do porównania zbudujemy trzy modele regresji liniowej ale z innymi procedurami przygotowania danych.
+Do porównania zbudujemy trzy modele regresji liniowej ale z innymi procedurami
+przygotowania danych.
 
 ```{r}
 library(tidymodels)
@@ -55,7 +61,8 @@ lm_models <- workflow_set(preproc, list(lm = linear_reg()), cross = FALSE)
 lm_models
 ```
 
-Aby je porównać zastosujemy resampling do każdego modelu stosując funkcję `workflow_map` pakietu `purrr`.
+Aby je porównać zastosujemy resampling do każdego modelu stosując funkcję
+`workflow_map` pakietu `purrr`.
 
 ```{r}
 #| cache: true
@@ -76,20 +83,23 @@ lm_models
 
 ```
 
-Zauważmy, że kolumny `option` i `result` są teraz wypełnione.
-Pierwsza zawiera opcje do `fit_resamples()`, które zostały podane (dla odtwarzalności), a druga kolumna zawiera wyniki uzyskane przez `fit_resamples()`.
+Zauważmy, że kolumny `option` i `result` są teraz wypełnione. Pierwsza zawiera
+opcje do `fit_resamples()`, które zostały podane (dla odtwarzalności), a druga
+kolumna zawiera wyniki uzyskane przez `fit_resamples()`.
 
-Istnieje kilka wygodnych funkcji przeznaczonych do zestawów przepływów pracy, w tym `collect_metrics()` do zestawiania statystyk wydajności.
-Możemy też `filtrować()` dowolną konkretną metrykę, która nas interesuje:
+Istnieje kilka wygodnych funkcji przeznaczonych do zestawów przepływów pracy, w
+tym `collect_metrics()` do zestawiania statystyk wydajności. Możemy też
+`filtrować()` dowolną konkretną metrykę, która nas interesuje:
 
 ```{r}
 collect_metrics(lm_models) %>% 
   filter(.metric == "rmse")
 ```
 
-A co z modelem lasu losowego z poprzedniego rozdziału?
-Możemy go dodać do zestawu, najpierw konwertując go do własnego zestawu przepływów pracy, a następnie wiążąc wiersze.
-Wymaga to, aby podczas ponownego próbkowania modelu w funkcji sterującej ustawiona była opcja `save_workflow = TRUE`.
+A co z modelem lasu losowego z poprzedniego rozdziału? Możemy go dodać do
+zestawu, najpierw konwertując go do własnego zestawu przepływów pracy, a
+następnie wiążąc wiersze. Wymaga to, aby podczas ponownego próbkowania modelu w
+funkcji sterującej ustawiona była opcja `save_workflow = TRUE`.
 
 ```{r}
 #| cache: true
@@ -116,8 +126,10 @@ four_models <-
 four_models
 ```
 
-Funkcja `autoplot()`, której wyniki przedstawiono na @fig-comp1, pokazuje przedziały ufności dla każdego modelu w kolejności od najlepszego do najgorszego.
-Jeśli chcemy się skupić na konkretnej mierze wybieramy `metric = 'rsq'`, inaczej funkcja dobierze domyślną metrykę.
+Funkcja `autoplot()`, której wyniki przedstawiono na @fig-comp1, pokazuje
+przedziały ufności dla każdego modelu w kolejności od najlepszego do
+najgorszego. Jeśli chcemy się skupić na konkretnej mierze wybieramy
+`metric = 'rsq'`, inaczej funkcja dobierze domyślną metrykę.
 
 ```{r}
 #| label: fig-comp1
@@ -128,25 +140,32 @@ autoplot(four_models, metric = "rsq") +
   theme(legend.position = "none")
 ```
 
-Z powyższego porównania widać, że model lasu losowego najlepiej radzi sobie z przewidywaniem wartości wynikowej.
-Jednocześnie widzimy, że kolejne czynności preprocessingu tylko nieznacznie poprawiają dopasowanie.
+Z powyższego porównania widać, że model lasu losowego najlepiej radzi sobie z
+przewidywaniem wartości wynikowej. Jednocześnie widzimy, że kolejne czynności
+preprocessingu tylko nieznacznie poprawiają dopasowanie.
 
 ## Porównanie próbkowań
 
-Stwierdzony powyżej niewielki wpływ kolejnych czynności preprocessingu jest określeniem niejasnym.
-Można to uściślić stosując test statystyczny do porównania analizowanych wielkości.
+Stwierdzony powyżej niewielki wpływ kolejnych czynności preprocessingu jest
+określeniem niejasnym. Można to uściślić stosując test statystyczny do
+porównania analizowanych wielkości.
 
 ::: callout-caution
-Przed dokonaniem porównań pomiędzy modelami, ważne jest, abyśmy omówili korelację wewnątrz-próbkową dla statystyk resamplingu.
-Każdy model był mierzony z tymi samymi foldami walidacji krzyżowej, a wyniki dla tej samej próby mają tendencję do bycia podobnymi.
+Przed dokonaniem porównań pomiędzy modelami, ważne jest, abyśmy omówili
+korelację wewnątrz-próbkową dla statystyk resamplingu. Każdy model był mierzony
+z tymi samymi foldami walidacji krzyżowej, a wyniki dla tej samej próby mają
+tendencję do bycia podobnymi.
 :::
 
-Innymi słowy, istnieją pewne próbki, dla których wydajność modeli jest niska i inne, w których jest wysoka.
-W statystyce nazywa się to składnikiem zmienności "próbka do próbki".
+Innymi słowy, istnieją pewne próbki, dla których wydajność modeli jest niska i
+inne, w których jest wysoka. W statystyce nazywa się to składnikiem zmienności
+"próbka do próbki".
 
-Dla zobrazowania tego problemu zbierzmy poszczególne statystyki resamplingu dla modeli liniowych i lasu losowego.
-Skupimy się na $R^2$ dla każdego modelu, która mierzy korelację pomiędzy obserwowanymi i przewidywanymi cenami sprzedaży dla każdego domu.
-Przefiltrujmy wyniki, aby zachować tylko statystyki $R^2$, przekształćmy wyniki i obliczmy jak metryki są ze sobą skorelowane.
+Dla zobrazowania tego problemu zbierzmy poszczególne statystyki resamplingu dla
+modeli liniowych i lasu losowego. Skupimy się na $R^2$ dla każdego modelu,
+która mierzy korelację pomiędzy obserwowanymi i przewidywanymi cenami sprzedaży
+dla każdego domu. Przefiltrujmy wyniki, aby zachować tylko statystyki $R^2$,
+przekształćmy wyniki i obliczmy jak metryki są ze sobą skorelowane.
 
 ```{r}
 rsq_indiv_estimates <- 
@@ -161,7 +180,8 @@ rsq_wider <-
 corrr::correlate(rsq_wider %>% select(-id), quiet = TRUE)
 ```
 
-Korelacje te są wysokie, co można też zauważyć wykreślając poziomy $R^2$ dla różnych modeli i różnych foldów.
+Korelacje te są wysokie, co można też zauważyć wykreślając poziomy $R^2$ dla
+różnych modeli i różnych foldów.
 
 ```{r}
 rsq_indiv_estimates %>% 
@@ -171,8 +191,9 @@ rsq_indiv_estimates %>%
   theme(legend.position = "none")
 ```
 
-Gdyby efektu podobieństwa pomiędzy miarami dla poszczególnych foldów by nie było, wówczas linie nie byłyby równoległe.
-Można to stwierdzić również na podstawie testów współczynnika korelacji.
+Gdyby efektu podobieństwa pomiędzy miarami dla poszczególnych foldów by nie
+było, wówczas linie nie byłyby równoległe. Można to stwierdzić również na
+podstawie testów współczynnika korelacji.
 
 ```{r}
 rsq_wider %>% 
@@ -181,10 +202,11 @@ rsq_wider %>%
   select(estimate, starts_with("conf"))
 ```
 
-Jak widać korelacje te nie są przypadkowe.
-Stąd wniosek, że korelacje pomiędzy wynikami foldów występują.
-Będziemy to musieli uwzględnić porównując statystyki $R^2$.
-Ponieważ nie interesuje nas efekt foldów a jedynie różnica pomiędzy statystykami poszczególnych modeli, to porównamy je za pomocą modelu liniowego (ANOVA z powtarzanymi pomiarami).
+Jak widać korelacje te nie są przypadkowe. Stąd wniosek, że korelacje pomiędzy
+wynikami foldów występują. Będziemy to musieli uwzględnić porównując statystyki
+$R^2$. Ponieważ nie interesuje nas efekt foldów a jedynie różnica pomiędzy
+statystykami poszczególnych modeli, to porównamy je za pomocą modelu liniowego
+(ANOVA z powtarzanymi pomiarami).
 
 ```{r}
 library(rstatix)
@@ -193,7 +215,8 @@ rsq_indiv_estimates |>
   anova_test(dv = .estimate, wid = id, within = wflow_id)
 ```
 
-Gdyby chcieć porównać jedynie model lasu losowego i najgorszego modelu liniowego, można użyć statystyki różnicy.
+Gdyby chcieć porównać jedynie model lasu losowego i najgorszego modelu
+liniowego, można użyć statystyki różnicy.
 
 ```{r}
 compare_lm <- 

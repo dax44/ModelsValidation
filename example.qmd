@@ -5,14 +5,22 @@ bibliography: references.bib
 
 # Poszukiwanie optymalnego modelu
 
-W przypadku projektów z nowymi zbiorami danych, które nie zostały jeszcze dobrze poznane, osoba zajmująca się danymi może być zmuszona do sprawdzenia wielu kombinacji modeli i różnych kombinacji metod przygotowania danych.
-Powszechne jest to, że nie posiadamy wiedzy a priori na temat tego, która metoda będzie działać najlepiej z nowym zestawem danych.
+W przypadku projektów z nowymi zbiorami danych, które nie zostały jeszcze
+dobrze poznane, osoba zajmująca się danymi może być zmuszona do sprawdzenia
+wielu kombinacji modeli i różnych kombinacji metod przygotowania danych.
+Powszechne jest to, że nie posiadamy wiedzy a priori na temat tego, która
+metoda będzie działać najlepiej z nowym zestawem danych.
 
-Dobrą strategią jest poświęcenie trochę uwagi na wypróbowanie różnych podejść do modelowania, określenie, co działa najlepiej, a następnie zainwestowanie dodatkowego czasu na dostosowanie / optymalizację małego zestawu modeli.
+Dobrą strategią jest poświęcenie trochę uwagi na wypróbowanie różnych podejść
+do modelowania, określenie, co działa najlepiej, a następnie zainwestowanie
+dodatkowego czasu na dostosowanie / optymalizację małego zestawu modeli.
 
-Aby zademonstrować, jak przesiewać zestaw wielu modeli, użyjemy jako przykładu danych mieszanki betonowej z książki *Applied Predictive Modeling* [@khun2013a].
-W rozdziale 10 tej książki zademonstrowano modele do przewidywania wytrzymałości na ściskanie mieszanek betonowych z wykorzystaniem składników jako zmiennych niezależnych.
-Oceniono wiele różnych modeli z różnymi zestawami predyktorów i typami metod wstępnego przetwarzania.
+Aby zademonstrować, jak przesiewać zestaw wielu modeli, użyjemy jako przykładu
+danych mieszanki betonowej z książki *Applied Predictive Modeling*
+[@khun2013a]. W rozdziale 10 tej książki zademonstrowano modele do
+przewidywania wytrzymałości na ściskanie mieszanek betonowych z wykorzystaniem
+składników jako zmiennych niezależnych. Oceniono wiele różnych modeli z różnymi
+zestawami predyktorów i typami metod wstępnego przetwarzania.
 
 ## Przygotowanie danych
 
@@ -24,12 +32,15 @@ data(concrete, package = "modeldata")
 glimpse(concrete)
 ```
 
-Zmienna `compressive_strength` jest zmienną zależną, przewidywaną w tym zadaniu.
-W kilku przypadkach w tym zestawie danych, ta sama formuła betonu była testowana wielokrotnie.
-Wolimy nie uwzględniać tych replikowanych mieszanek jako pojedynczych punktów danych, ponieważ mogą one być rozmieszczone zarówno w zbiorze treningowym, jak i testowym.
-Może to sztucznie zawyżyć nasze szacunki wydajności.
+Zmienna `compressive_strength` jest zmienną zależną, przewidywaną w tym
+zadaniu. W kilku przypadkach w tym zestawie danych, ta sama formuła betonu była
+testowana wielokrotnie. Wolimy nie uwzględniać tych replikowanych mieszanek
+jako pojedynczych punktów danych, ponieważ mogą one być rozmieszczone zarówno w
+zbiorze treningowym, jak i testowym. Może to sztucznie zawyżyć nasze szacunki
+wydajności.
 
-![](https://media.tenor.com/6o6fbn1EposAAAAM/fml-wtf.gif){.column-margin fig-align="center" width="400"}
+![](https://media.tenor.com/6o6fbn1EposAAAAM/fml-wtf.gif){.column-margin
+fig-align="center" width="400"}
 
 ```{r}
 concrete <- 
@@ -40,7 +51,9 @@ concrete <-
 nrow(concrete)
 ```
 
-Podzielmy dane przy użyciu domyślnego stosunku 3:1 treningu do testu i ponownie wypróbujmy zestaw treningowy przy użyciu pięciu powtórzeń 10-krotnej walidacji krzyżowej:
+Podzielmy dane przy użyciu domyślnego stosunku 3:1 treningu do testu i ponownie
+wypróbujmy zestaw treningowy przy użyciu pięciu powtórzeń 10-krotnej walidacji
+krzyżowej:
 
 ```{r}
 set.seed(1501)
@@ -53,9 +66,12 @@ concrete_folds <-
    vfold_cv(concrete_train, strata = compressive_strength, repeats = 5)
 ```
 
-Niektóre modele (zwłaszcza sieci neuronowe, KNN i SVM) wymagają predyktorów, które zostały wyśrodkowane i przeskalowane, więc niektóre przepływy pracy modelu będą wymagały przepisów z tymi krokami przetwarzania wstępnego.
-Dla innych modeli, tradycyjne rozwinięcie modelu powierzchni odpowiedzi (tj. interakcje kwadratowe i dwukierunkowe) jest dobrym pomysłem.
-Dla tych celów tworzymy dwie receptury:
+Niektóre modele (zwłaszcza sieci neuronowe, KNN i SVM) wymagają predyktorów,
+które zostały wyśrodkowane i przeskalowane, więc niektóre przepływy pracy
+modelu będą wymagały przepisów z tymi krokami przetwarzania wstępnego. Dla
+innych modeli, tradycyjne rozwinięcie modelu powierzchni odpowiedzi (tj.
+interakcje kwadratowe i dwukierunkowe) jest dobrym pomysłem. Dla tych celów
+tworzymy dwie receptury:
 
 ```{r}
 normalized_rec <- 
@@ -131,8 +147,9 @@ cubist_spec <-
    set_engine("Cubist") 
 ```
 
-Autorzy w @khun2013a określa, że sieć neuronowa powinna mieć do 27 jednostek ukrytych w warstwie.
-Funkcja `extract_parameter_set_dials()` wyodrębnia zbiór parametrów, który modyfikujemy, aby miał prawidłowy zakres parametrów:
+Autorzy w @khun2013a określa, że sieć neuronowa powinna mieć do 27 jednostek
+ukrytych w warstwie. Funkcja `extract_parameter_set_dials()` wyodrębnia zbiór
+parametrów, który modyfikujemy, aby miał prawidłowy zakres parametrów:
 
 ```{r}
 nnet_param <- 
@@ -153,19 +170,23 @@ normalized <-
 normalized
 ```
 
-Ponieważ zastosowaliśmy tylko jedna funkcję wstępnej obróbki danych (`normalized_rec`), to w podsumowaniu występują tylko kombinacje tego preprocesora i modeli.
-Kolumna `wflow_id` tworzona jest automatycznie, ale może być modyfikowana poprzez wywołanie `mutate()`.
-Kolumna info zawiera `tibble` z pewnymi identyfikatorami i obiektem przepływu pracy.
-Przepływ pracy może zostać wyodrębniony:
+Ponieważ zastosowaliśmy tylko jedna funkcję wstępnej obróbki danych
+(`normalized_rec`), to w podsumowaniu występują tylko kombinacje tego
+preprocesora i modeli. Kolumna `wflow_id` tworzona jest automatycznie, ale może
+być modyfikowana poprzez wywołanie `mutate()`. Kolumna info zawiera `tibble` z
+pewnymi identyfikatorami i obiektem przepływu pracy. Przepływ pracy może zostać
+wyodrębniony:
 
 ```{r}
 normalized %>% extract_workflow(id = "normalized_KNN")
 ```
 
-Kolumna `option` to miejsce na dowolne argumenty, których należy użyć, gdy oceniamy przepływ pracy.
-Na przykład, aby dodać obiekt parametrów sieci neuronowej:
+Kolumna `option` to miejsce na dowolne argumenty, których należy użyć, gdy
+oceniamy przepływ pracy. Na przykład, aby dodać obiekt parametrów sieci
+neuronowej:
 
-![](https://media.tenor.com/HLDX3w3zk9YAAAAM/we-are-here-to-normalize-mental-health-tyler-oakley.gif){.column-margin fig-align="center"}
+![](https://media.tenor.com/HLDX3w3zk9YAAAAM/we-are-here-to-normalize-mental-health-tyler-oakley.gif){.column-margin
+fig-align="center"}
 
 ```{r}
 normalized <- 
@@ -191,7 +212,8 @@ no_pre_proc <-
 no_pre_proc
 ```
 
-Na koniec składamy zestaw wykorzystujący warunki nieliniowe i interakcje z odpowiednimi modelami:
+Na koniec składamy zestaw wykorzystujący warunki nieliniowe i interakcje z
+odpowiednimi modelami:
 
 ```{r}
 with_features <- 
@@ -201,8 +223,8 @@ with_features <-
    )
 ```
 
-Te obiekty to `tibble` z dodatkową klasą `workflow_set`.
-Łączenie wierszy nie wpływa na stan zestawów, a wynik jest sam w sobie zestawem przepływów pracy:
+Te obiekty to `tibble` z dodatkową klasą `workflow_set`. Łączenie wierszy nie
+wpływa na stan zestawów, a wynik jest sam w sobie zestawem przepływów pracy:
 
 ```{r}
 all_workflows <- 
@@ -214,16 +236,23 @@ all_workflows
 
 ## Tuning modeli
 
-Prawie wszystkie modele ujęte w `all_workflows` zawierają parametry dostrajania.
-Aby ocenić ich wydajność, możemy użyć standardowych funkcji strojenia lub resamplingu (np. `tune_grid()` i tak dalej).
-Funkcja `workflow_map()` zastosuje tę samą funkcję do wszystkich przepływów w zestawie; domyślnie jest to `tune_grid()`.
+Prawie wszystkie modele ujęte w `all_workflows` zawierają parametry
+dostrajania. Aby ocenić ich wydajność, możemy użyć standardowych funkcji
+strojenia lub resamplingu (np. `tune_grid()` i tak dalej). Funkcja
+`workflow_map()` zastosuje tę samą funkcję do wszystkich przepływów w zestawie;
+domyślnie jest to `tune_grid()`.
 
-![](http://kuvaton.com/kuvei/noniin_shit.gif){.column-margin fig-align="center" width="400"}
+![](http://kuvaton.com/kuvei/noniin_shit.gif){.column-margin fig-align="center"
+width="400"}
 
-Dla tego przykładu, wyszukiwanie w oparciu o siatkę jest stosowane do każdego przepływu pracy, stosując jednocześnie 25 różnych kandydatów na parametry.
-Istnieje zestaw wspólnych opcji do wykorzystania przy każdym wykonaniu `tune_grid()`.
-Na przykład, w poniższym kodzie użyjemy tego samego próbkowania i obiektów kontrolnych dla każdego przepływu pracy, wraz z rozmiarem siatki równym 25.
-Funkcja `workflow_map()` posiada dodatkowy argument o nazwie `seed`, który służy do zapewnienia, że każde wykonanie `tune_grid()` zużywa tych samych liczb losowych.
+Dla tego przykładu, wyszukiwanie w oparciu o siatkę jest stosowane do każdego
+przepływu pracy, stosując jednocześnie 25 różnych kandydatów na parametry.
+Istnieje zestaw wspólnych opcji do wykorzystania przy każdym wykonaniu
+`tune_grid()`. Na przykład, w poniższym kodzie użyjemy tego samego próbkowania
+i obiektów kontrolnych dla każdego przepływu pracy, wraz z rozmiarem siatki
+równym 25. Funkcja `workflow_map()` posiada dodatkowy argument o nazwie `seed`,
+który służy do zapewnienia, że każde wykonanie `tune_grid()` zużywa tych samych
+liczb losowych.
 
 ```{r}
 #| eval: false
@@ -253,13 +282,15 @@ W podsumowaniu widać, że kolumny `option` i `result` zostały zaktualizowane:
 ```{r}
 #| echo: false
 
-load("models/grid_results.rda")
+grid_results <- readRDS("models/grid_results.rds")
 grid_results
 ```
 
-Kolumna `option` zawiera teraz wszystkie opcje, których użyliśmy w wywołaniu `workflow_map()`.
-W kolumnach `result`, notacje `tune[+]` i `rsmp[+]` oznaczają, że obiekt nie miał żadnych problemów w procesie optymalizacji.
-Wartość taka jak `tune[x]` pojawia się, gdy wszystkie modele z jakiegoś powodu zawiodły.
+Kolumna `option` zawiera teraz wszystkie opcje, których użyliśmy w wywołaniu
+`workflow_map()`. W kolumnach `result`, notacje `tune[+]` i `rsmp[+]`
+oznaczają, że obiekt nie miał żadnych problemów w procesie optymalizacji.
+Wartość taka jak `tune[x]` pojawia się, gdy wszystkie modele z jakiegoś powodu
+zawiodły.
 
 Istnieje kilka wygodnych funkcji do badania wyników, takich jak `grid_results`.
 Funkcja `rank_results()` uporządkuje modele według wybranej metryki wydajności.
@@ -273,10 +304,12 @@ grid_results %>%
    select(model, .config, rmse = mean, rank)
 ```
 
-Domyślnie funkcja szereguje wszystkie zestawy kandydatów, dlatego ten sam model może pojawić się wielokrotnie na wyjściu.
-Opcja `select_best` może być użyta do uszeregowania modeli przy użyciu najlepszej kombinacji dostrajania parametrów.
-Metoda `autoplot()` tworzy wykresy rankingowy; posiada ona również argument `select_best`.
-Wykres na @fig-mods1 wizualizuje najlepsze wyniki dla każdego modelu i jest generowany za pomocą:
+Domyślnie funkcja szereguje wszystkie zestawy kandydatów, dlatego ten sam model
+może pojawić się wielokrotnie na wyjściu. Opcja `select_best` może być użyta do
+uszeregowania modeli przy użyciu najlepszej kombinacji dostrajania parametrów.
+Metoda `autoplot()` tworzy wykresy rankingowy; posiada ona również argument
+`select_best`. Wykres na @fig-mods1 wizualizuje najlepsze wyniki dla każdego
+modelu i jest generowany za pomocą:
 
 ```{r}
 #| label: fig-mods1
@@ -292,7 +325,9 @@ autoplot(
    theme(legend.position = "none")
 ```
 
-W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego modelu, tak jak na @fig-mods2, argument `id` może przyjąć pojedynczą wartość z kolumny `wflow_id` dla którego modelu ma być wykreślony:
+W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego
+modelu, tak jak na @fig-mods2, argument `id` może przyjąć pojedynczą wartość z
+kolumny `wflow_id` dla którego modelu ma być wykreślony:
 
 ```{r}
 #| label: fig-mods2
@@ -300,17 +335,21 @@ W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego
 autoplot(grid_results, id = "Cubist", metric = "rmse")
 ```
 
-Funkcje `collect_metrics()` i `collect_predictions()` również pozwalają przejrzenie wyników optymalizacji.
+Funkcje `collect_metrics()` i `collect_predictions()` również pozwalają
+przejrzenie wyników optymalizacji.
 
-W powyższym procesie optymalizacji przeuczono 12600 modeli, co zajęło około 2 godzin przy wykorzystaniu 4 rdzeni procesora.
-Pokazuje to, że zagadnienie tuningu nawet kilku kandydackich modeli zajmuje sporo czasu.
+W powyższym procesie optymalizacji przeuczono 12600 modeli, co zajęło około 2
+godzin przy wykorzystaniu 4 rdzeni procesora. Pokazuje to, że zagadnienie
+tuningu nawet kilku kandydackich modeli zajmuje sporo czasu.
 
 ## Efektywna filtracja modeli
 
-Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie podejścia wyścigowego opisanego wcześniej.
-Mając zestaw przepływów pracy, możemy użyć funkcji `workflow_map()` do podejścia wyścigowego.
+Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie
+podejścia wyścigowego opisanego wcześniej. Mając zestaw przepływów pracy,
+możemy użyć funkcji `workflow_map()` do podejścia wyścigowego.
 
-![](https://www.eatliver.com/wp-content/uploads/2021/03/art-gifs7.gif){.column-margin fig-align="center" width="400"}
+![](https://www.eatliver.com/wp-content/uploads/2021/03/art-gifs7.gif){.column-margin
+fig-align="center" width="400"}
 
 ```{r}
 #| eval: false
@@ -332,10 +371,11 @@ race_results <-
    )
 ```
 
-Nowy obiekt wygląda bardzo podobnie, choć elementy kolumny wyników wykazują wartość `race[+]`, co wskazuje na inny typ obiektu:
+Nowy obiekt wygląda bardzo podobnie, choć elementy kolumny wyników wykazują
+wartość `race[+]`, co wskazuje na inny typ obiektu:
 
 ```{r}
-load("models/race_results.rda")
+race_results <- readRDS("models/race_results.rds")
 race_results
 ```
 
@@ -353,10 +393,9 @@ autoplot(
    theme(legend.position = "none")
 ```
 
-Podejście wyścigowe oszacowało łącznie 1050 modeli, 8,33% z pełnego zestawu 12600 modeli w pełnej siatce.
-W rezultacie podejście wyścigowe trwało nieco ponad 17 min., więc było 7-krotnie szybsze[^example-1].
-
-[^example-1]: Wartości te będą zależały od sprzętu na jakim wykonuje się obliczenia
+Podejście wyścigowe oszacowało łącznie 1050 modeli, 8,33% z pełnego zestawu
+12600 modeli w pełnej siatce. W rezultacie podejście wyścigowe trwało nieco
+ponad 17 min., więc było 7-krotnie szybsze[^example-1].
 
 Na ile zbliżone wyniki otrzymaliśmy stosując obie metody tuningu?
 
@@ -383,17 +422,26 @@ matched_results %>%
    labs(x = "Complete Grid RMSE", y = "Racing RMSE") 
 ```
 
-Podczas gdy podejście wyścigowe wybrało te same parametry kandydata co kompletna siatka tylko dla 41,67% modeli, metryki wydajności modeli wybranych przez wyścig były prawie równe.
-Korelacja wartości RMSE wyniosła 0,968, a korelacja rangowa 0,951.
-Wskazuje to, że w obrębie modelu istniało wiele kombinacji dostrajania parametrów, które dawały niemal identyczne wyniki.
+Podczas gdy podejście wyścigowe wybrało te same parametry kandydata co
+kompletna siatka tylko dla 41,67% modeli, metryki wydajności modeli wybranych
+przez wyścig były prawie równe. Korelacja wartości RMSE wyniosła 0,968, a
+korelacja rangowa 0,951. Wskazuje to, że w obrębie modelu istniało wiele
+kombinacji dostrajania parametrów, które dawały niemal identyczne wyniki.
+
+[^example-1]: Wartości te będą zależały od sprzętu na jakim wykonuje się
+    obliczenia
 
 ## Finalizacja modelu
 
-Podobnie do tego, co pokazaliśmy w poprzednich rozdziałach, proces wyboru ostatecznego modelu i dopasowania go na zbiorze treningowym jest prosty.
-Pierwszym krokiem jest wybranie zbioru treningowego do sfinalizowania.
-Ponieważ model `boosted tree` działał dobrze, wyodrębnimy go ze zbioru, zaktualizujemy parametry o numerycznie najlepsze ustawienia i dopasujemy do zbioru treningowego.
-W przypadku gdy mamy wątpliwości dotyczące siatki hiperparametrów dobranych podczas filtrowania modeli, np.
-że pomija ona ważne kombinacje, możemy zastosować do wybranego modelu metody `finetune` przedstawione w poprzednim rozdziale.
+Podobnie do tego, co pokazaliśmy w poprzednich rozdziałach, proces wyboru
+ostatecznego modelu i dopasowania go na zbiorze treningowym jest prosty.
+Pierwszym krokiem jest wybranie zbioru treningowego do sfinalizowania. Ponieważ
+model `boosted tree` działał dobrze, wyodrębnimy go ze zbioru, zaktualizujemy
+parametry o numerycznie najlepsze ustawienia i dopasujemy do zbioru
+treningowego. W przypadku gdy mamy wątpliwości dotyczące siatki hiperparametrów
+dobranych podczas filtrowania modeli, np. że pomija ona ważne kombinacje,
+możemy zastosować do wybranego modelu metody `finetune` przedstawione w
+poprzednim rozdziale.
 
 ```{r}
 best_results <- 
@@ -409,7 +457,8 @@ boosting_test_results <-
    last_fit(split = concrete_split)
 ```
 
-Wyniki metryki dla zbioru testowego oraz wizualizację predykcji możemy zobaczyć stosując.
+Wyniki metryki dla zbioru testowego oraz wizualizację predykcji możemy zobaczyć
+stosując.
 
 ```{r}
 collect_metrics(boosting_test_results)
@@ -427,4 +476,5 @@ boosting_test_results %>%
    labs(x = "observed", y = "predicted")
 ```
 
-![](https://media1.giphy.com/media/BPJmthQ3YRwD6QqcVD/giphy.gif){.column-margin fig-align="center" width="400"}
+![](https://media1.giphy.com/media/BPJmthQ3YRwD6QqcVD/giphy.gif){.column-margin
+fig-align="center" width="400"}

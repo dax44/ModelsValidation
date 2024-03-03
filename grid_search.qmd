@@ -8,14 +8,16 @@ bibliography: references.bib
 
 # Dostrajanie z przeszukiwaniem siatki
 
-W tym rozdziale opisano metody przeszukiwania siatki (ang. *grid search*), które określają możliwe wartości parametrów a priori.
-Istnieją dwa główne rodzaje siatek.
-Siatka regularna łączy każdy parametr (z odpowiadającym mu zbiorem możliwych wartości) czynnikowo, tj.
-poprzez wykorzystanie wszystkich kombinacji zbiorów.
-Alternatywnie, siatka nieregularna to taka, w której kombinacje parametrów nie są tworzone regularnie.
+W tym rozdziale opisano metody przeszukiwania siatki (ang. *grid search*),
+które określają możliwe wartości parametrów a priori. Istnieją dwa główne
+rodzaje siatek. Siatka regularna łączy każdy parametr (z odpowiadającym mu
+zbiorem możliwych wartości) czynnikowo, tj. poprzez wykorzystanie wszystkich
+kombinacji zbiorów. Alternatywnie, siatka nieregularna to taka, w której
+kombinacje parametrów nie są tworzone regularnie.
 
-Zanim przyjrzymy się każdemu z typów bardziej szczegółowo, rozważmy przykładowy model: model perceptronu wielowarstwowego (czyli jednowarstwowej sieci neuronowej).
-Parametry oznaczone do dostrojenia to:
+Zanim przyjrzymy się każdemu z typów bardziej szczegółowo, rozważmy przykładowy
+model: model perceptronu wielowarstwowego (czyli jednowarstwowej sieci
+neuronowej). Parametry oznaczone do dostrojenia to:
 
 -   liczba jednostek ukrytych,
 -   liczba epok/iteracji,
@@ -32,7 +34,8 @@ mlp_spec <-
 ```
 
 Argument `trace = 0` zapobiega dodatkowemu rejestrowaniu procesu szkolenia.
-Funkcja `extract_parameter_set_dials()` może wyodrębnić zbiór argumentów o nieznanych wartościach i ustawia ich obiekty `dials`:
+Funkcja `extract_parameter_set_dials()` może wyodrębnić zbiór argumentów o
+nieznanych wartościach i ustawia ich obiekty `dials`:
 
 ```{r}
 mlp_param <- extract_parameter_set_dials(mlp_spec)
@@ -41,15 +44,16 @@ mlp_param %>% extract_parameter_dials("penalty")
 mlp_param %>% extract_parameter_dials("epochs")
 ```
 
-To wyjście wskazuje, że obiekty parametrów są kompletne i wyświetla ich domyślne zakresy.
-Wartości te zostaną wykorzystane do zademonstrowania, jak tworzyć różne typy siatek parametrów.
+To wyjście wskazuje, że obiekty parametrów są kompletne i wyświetla ich
+domyślne zakresy. Wartości te zostaną wykorzystane do zademonstrowania, jak
+tworzyć różne typy siatek parametrów.
 
 ## Siatki regularne
 
 Regularne siatki są kombinacjami oddzielnych zestawów wartości parametrów.
 Najpierw użytkownik tworzy odrębny zestaw wartości dla każdego parametru.
-Liczba możliwych wartości nie musi być taka sama dla każdego parametru.
-Funkcja `tidyr` `crossing()` jest jednym ze sposobów tworzenia siatki regularnej:
+Liczba możliwych wartości nie musi być taka sama dla każdego parametru. Funkcja
+`tidyr` `crossing()` jest jednym ze sposobów tworzenia siatki regularnej:
 
 ```{r}
 crossing(
@@ -59,35 +63,39 @@ crossing(
 )
 ```
 
-Obiekt parametru zna zakresy parametrów.
-Pakiet `dials` zawiera zestaw funkcji `grid_*()`, które przyjmują obiekt parametru jako dane wejściowe, aby wytworzyć różne rodzaje siatek.
-Na przykład:
+Obiekt parametru zna zakresy parametrów. Pakiet `dials` zawiera zestaw funkcji
+`grid_*()`, które przyjmują obiekt parametru jako dane wejściowe, aby wytworzyć
+różne rodzaje siatek. Na przykład:
 
 ```{r}
 grid_regular(mlp_param, levels = 2)
 ```
 
-Argument `levels` to liczba poziomów na parametr do utworzenia.
-Może również przyjąć uszczegółowiony wektor wartości:
+Argument `levels` to liczba poziomów na parametr do utworzenia. Może również
+przyjąć uszczegółowiony wektor wartości:
 
 ```{r}
 mlp_param %>% 
   grid_regular(levels = c(hidden_units = 3, penalty = 2, epochs = 2))
 ```
 
-Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują wszystkich możliwych wartości każdego zestawu parametrów.
-Można również wykorzystać te konstrukcje czynnikowe ułamkowe [@booth1979].
+Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują
+wszystkich możliwych wartości każdego zestawu parametrów. Można również
+wykorzystać te konstrukcje czynnikowe ułamkowe [@booth1979].
 
-Jedną z zalet stosowania regularnej siatki jest to, że związki i wzorce między dostrajaniem parametrów i metrykami modelu są łatwo zrozumiałe.
-Czynnikowa natura tych planów pozwala na zbadanie każdego parametru osobno z niewielką współzależnością między parametrami.
+Jedną z zalet stosowania regularnej siatki jest to, że związki i wzorce między
+dostrajaniem parametrów i metrykami modelu są łatwo zrozumiałe. Czynnikowa
+natura tych planów pozwala na zbadanie każdego parametru osobno z niewielką
+współzależnością między parametrami.
 
 ## Siatki nieregularne
 
-Istnieje kilka możliwości tworzenia nieregularnych siatek.
-Pierwszą z nich jest użycie losowego próbkowania w całym zakresie parametrów.
-Funkcja `grid_random()` generuje niezależne rozkłady jednostajne wartości w całym zakresie parametrów.
-Jeśli parametr ma powiązane przekształcenie (takie jak mamy dla kary), liczby losowe są generowane w przekształconej skali.
-Utwórzmy siatkę losową dla parametrów z naszej przykładowej sieci neuronowej:
+Istnieje kilka możliwości tworzenia nieregularnych siatek. Pierwszą z nich jest
+użycie losowego próbkowania w całym zakresie parametrów. Funkcja
+`grid_random()` generuje niezależne rozkłady jednostajne wartości w całym
+zakresie parametrów. Jeśli parametr ma powiązane przekształcenie (takie jak
+mamy dla kary), liczby losowe są generowane w przekształconej skali. Utwórzmy
+siatkę losową dla parametrów z naszej przykładowej sieci neuronowej:
 
 ```{r}
 set.seed(1301)
@@ -96,11 +104,15 @@ mlp_param %>%
   summary()
 ```
 
-Dla `penalty()` liczby losowe są jednostajne w skali logarytmicznej ale wartości w siatce są w jednostkach naturalnych.
+Dla `penalty()` liczby losowe są jednostajne w skali logarytmicznej ale
+wartości w siatce są w jednostkach naturalnych.
 
-Problem z siatkami losowymi polega na tym, że przy małych i średnich siatkach wartości losowe mogą powodować nakładanie się kombinacji parametrów.
-Ponadto siatka losowa musi pokryć całą przestrzeń parametrów, a prawdopodobieństwo dobrego pokrycia rośnie wraz z liczbą wartości siatki.
-Nawet dla próbki 20 obserwacji, na rysunku 13.1 widać pewne nakładanie się punktów dla naszego przykładowego perceptronu wielowarstwowego.
+Problem z siatkami losowymi polega na tym, że przy małych i średnich siatkach
+wartości losowe mogą powodować nakładanie się kombinacji parametrów. Ponadto
+siatka losowa musi pokryć całą przestrzeń parametrów, a prawdopodobieństwo
+dobrego pokrycia rośnie wraz z liczbą wartości siatki. Nawet dla próbki 20
+obserwacji, na @fig-grid1 widać pewne nakładanie się punktów dla naszego
+przykładowego perceptronu wielowarstwowego.
 
 ```{r}
 #| label: fig-grid1
@@ -117,9 +129,15 @@ mlp_param %>%
   labs(title = "Random design with 20 candidates")
 ```
 
-Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych zwanych planami wypełniającymi przestrzeń.
-Chociaż różne metody projektowania mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia nakładających się lub nadmiarowych wartości.
-Przykładami takich planów są hipersześciany łacińskie (ang. *Latin hypercube*) [@mckay1979], plany maksymalnej entropii (ang. *maximum entropy*) [@shewryMaximumEntropySampling1987a], plany maksymalnej projekcji (ang. *maximum projection*) [@joseph2015]i inne.
+Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych
+zwanych planami wypełniającymi przestrzeń. Chociaż różne metody projektowania
+mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które
+pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia
+nakładających się lub nadmiarowych wartości. Przykładami takich planów są
+hipersześciany łacińskie (ang. *Latin hypercube*) [@mckay1979], plany
+maksymalnej entropii (ang. *maximum entropy*)
+[@shewryMaximumEntropySampling1987a], plany maksymalnej projekcji (ang.
+*maximum projection*) [@joseph2015]i inne.
 
 ```{r}
 #| label: fig-grid2
@@ -134,30 +152,41 @@ mlp_param %>%
   labs(title = "Latin Hypercube design with 20 candidates")
 ```
 
-Chociaż nie jest to idealne rozwiązanie, hipersześcian łaciński umieszcza punkty dalej od siebie i pozwala na lepszą eksplorację przestrzeni hiperparametrów.
+Chociaż nie jest to idealne rozwiązanie, hipersześcian łaciński umieszcza
+punkty dalej od siebie i pozwala na lepszą eksplorację przestrzeni
+hiperparametrów.
 
-Konstrukcje wypełniające przestrzeń mogą być bardzo skuteczne w reprezentowaniu przestrzeni parametrów.
-Domyślnym wzorem używanym przez pakiet `tune` jest plan kwadratu łacińskiego.
-Ma on tendencję do tworzenia siatek, które dobrze pokrywają przestrzeń kandydatów i drastycznie zwiększają szanse na znalezienie dobrych wyników.
+Konstrukcje wypełniające przestrzeń mogą być bardzo skuteczne w reprezentowaniu
+przestrzeni parametrów. Domyślnym wzorem używanym przez pakiet `tune` jest plan
+kwadratu łacińskiego. Ma on tendencję do tworzenia siatek, które dobrze
+pokrywają przestrzeń kandydatów i drastycznie zwiększają szanse na znalezienie
+dobrych wyników.
 
 ## Ocena hiperparametrów sieci
 
-Aby wybrać najlepszą kombinację parametrów dostrajania, każdy zestaw kandydatów jest oceniany przy użyciu danych, które nie były używane do szkolenia tego modelu.
-Metody ponownego próbkowania lub pojedynczy zestaw walidacyjny dobrze sprawdzają się w tym celu.
+Aby wybrać najlepszą kombinację parametrów dostrajania, każdy zestaw kandydatów
+jest oceniany przy użyciu danych, które nie były używane do szkolenia tego
+modelu. Metody ponownego próbkowania lub pojedynczy zestaw walidacyjny dobrze
+sprawdzają się w tym celu.
 
 Po resamplingu, użytkownik wybiera najbardziej odpowiedni zestaw parametrów.
-Sensowne może być wybranie empirycznie najlepszej kombinacji parametrów lub ukierunkowanie wyboru na inne aspekty dopasowania modelu, takie jak prostota modelu.
+Sensowne może być wybranie empirycznie najlepszej kombinacji parametrów lub
+ukierunkowanie wyboru na inne aspekty dopasowania modelu, takie jak prostota
+modelu.
 
-W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do demonstracji tuningu modelu.
-Dane pochodzą od @Hill2007, którzy opracowali zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad nowotworami.
-Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich komórkach raka piersi.
-Predyktory te reprezentują cechy kształtu i intensywności różnych części komórek (np. jądro, granica komórki itp.).
-Istnieje wysoki stopień korelacji między predyktorami.
-Na przykład, istnieje kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę komórki.
-Wiele predyktorów ma rozkłady skośne.
+W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do
+demonstracji tuningu modelu. Dane pochodzą od @Hill2007, którzy opracowali
+zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad
+nowotworami. Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich
+komórkach raka piersi. Predyktory te reprezentują cechy kształtu i
+intensywności różnych części komórek (np. jądro, granica komórki itp.).
+Istnieje wysoki stopień korelacji między predyktorami. Na przykład, istnieje
+kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę
+komórki. Wiele predyktorów ma rozkłady skośne.
 
-Każda komórka należy do jednej z dwóch klas.
-Ponieważ jest to część zautomatyzowanego testu laboratoryjnego, skupiliśmy się na zdolności przewidywania, a nie wnioskowania.
+Każda komórka należy do jednej z dwóch klas. Ponieważ jest to część
+zautomatyzowanego testu laboratoryjnego, skupiliśmy się na zdolności
+przewidywania, a nie wnioskowania.
 
 ```{r}
 library(tidymodels)
@@ -165,21 +194,26 @@ data(cells)
 cells <- cells %>% select(-case)
 ```
 
-Biorąc pod uwagę wymiary danych, możemy obliczyć metryki wydajności przy użyciu 10-krotnej walidacji krzyżowej:
+Biorąc pod uwagę wymiary danych, możemy obliczyć metryki wydajności przy użyciu
+10-krotnej walidacji krzyżowej:
 
 ```{r}
 set.seed(1304)
 cell_folds <- vfold_cv(cells)
 ```
 
-Ze względu na wysoki stopień korelacji pomiędzy predyktorami, sensowne jest użycie ekstrakcji cech PCA do usunięcia efektu współliniowości predyktorów.
-Poniższy przepis zawiera kroki przekształcenia predyktorów w celu zwiększenia symetrii, znormalizowania ich, aby były w tej samej skali, a następnie przeprowadzenia ekstrakcji cech.
-Liczba komponentów PCA, które mają być zachowane, jest również dostrajana wraz z parametrami modelu.
-Wiele predyktorów ma rozkłady skośne.
-Ponieważ PCA opiera się na wariancji, wartości ekstremalne mogą mieć szkodliwy wpływ na te obliczenia.
-Aby temu zapobiec, dodajmy krok przepisu polegający na oszacowaniu transformacji Yeo-Johnsona dla każdego predyktora.
-Krok `step_YeoJohnson()` występuje w recepturze tuż przed wstępną normalizacją poprzez `step_normalize()`.
-Następnie, połączmy recepturę transformacji cech z naszą specyfikacją modelu sieci neuronowej `mlp_spec`.
+Ze względu na wysoki stopień korelacji pomiędzy predyktorami, sensowne jest
+użycie ekstrakcji cech PCA do usunięcia efektu współliniowości predyktorów.
+Poniższy przepis zawiera kroki przekształcenia predyktorów w celu zwiększenia
+symetrii, znormalizowania ich, aby były w tej samej skali, a następnie
+przeprowadzenia ekstrakcji cech. Liczba komponentów PCA, które mają być
+zachowane, jest również dostrajana wraz z parametrami modelu. Wiele predyktorów
+ma rozkłady skośne. Ponieważ PCA opiera się na wariancji, wartości ekstremalne
+mogą mieć szkodliwy wpływ na te obliczenia. Aby temu zapobiec, dodajmy krok
+przepisu polegający na oszacowaniu transformacji Yeo-Johnsona dla każdego
+predyktora. Krok `step_YeoJohnson()` występuje w recepturze tuż przed wstępną
+normalizacją poprzez `step_normalize()`. Następnie, połączmy recepturę
+transformacji cech z naszą specyfikacją modelu sieci neuronowej `mlp_spec`.
 
 ```{r}
 mlp_rec <-
@@ -195,9 +229,10 @@ mlp_wflow <-
   add_recipe(mlp_rec)
 ```
 
-Utwórzmy obiekt parametrów `mlp_param`, aby dostosować kilka domyślnych zakresów.
-Możemy zmienić liczbę epok (50 do 200 epok).
-Również domyślny zakres dla `num_comp()` jest bardzo wąski (od jednej do czterech składowych); możemy zwiększyć zakres do 40 składowych i ustawić wartość minimalną na zero:
+Utwórzmy obiekt parametrów `mlp_param`, aby dostosować kilka domyślnych
+zakresów. Możemy zmienić liczbę epok (50 do 200 epok). Również domyślny zakres
+dla `num_comp()` jest bardzo wąski (od jednej do czterech składowych); możemy
+zwiększyć zakres do 40 składowych i ustawić wartość minimalną na zero:
 
 ```{r}
 mlp_param <- 
@@ -210,21 +245,29 @@ mlp_param <-
 ```
 
 ::: callout-tip
-W `step_pca()`, użycie zerowej liczby komponentów PCA oznazca pominięcie ekstrakcji cech.
-W ten sposób oryginalne predyktory mogą być bezpośrednio porównywane z wynikami, które zawierają komponenty PCA.
+W `step_pca()`, użycie zerowej liczby komponentów PCA oznazca pominięcie
+ekstrakcji cech. W ten sposób oryginalne predyktory mogą być bezpośrednio
+porównywane z wynikami, które zawierają komponenty PCA.
 :::
 
-Funkcja `tune_grid()` jest podstawową funkcją do przeprowadzania przeszukiwania siatki.
-Jej funkcjonalność jest bardzo podobna do `fit_resamples()`, choć posiada dodatkowe argumenty związane z siatką:
+Funkcja `tune_grid()` jest podstawową funkcją do przeprowadzania przeszukiwania
+siatki. Jej funkcjonalność jest bardzo podobna do `fit_resamples()`, choć
+posiada dodatkowe argumenty związane z siatką:
 
--   `grid` - liczba całkowita lub ramka danych. Gdy użyta jest liczba całkowita, funkcja tworzy wypełniający przestrzeń wzór z siatką liczby kandydujących kombinacji parametrów. Jeśli istnieją konkretne kombinacje parametrów, parametr `grid` jest używany do przekazania ich do funkcji.
--   `param_info` - opcjonalny argument służący do definiowania zakresów parametrów. Argument jest najbardziej przydatny, gdy `grid` jest liczbą całkowitą.
+-   `grid` - liczba całkowita lub ramka danych. Gdy użyta jest liczba
+    całkowita, funkcja tworzy wypełniający przestrzeń wzór z siatką liczby
+    kandydujących kombinacji parametrów. Jeśli istnieją konkretne kombinacje
+    parametrów, parametr `grid` jest używany do przekazania ich do funkcji.
+-   `param_info` - opcjonalny argument służący do definiowania zakresów
+    parametrów. Argument jest najbardziej przydatny, gdy `grid` jest liczbą
+    całkowitą.
 
-W przeciwnym razie, interfejs `tune_grid()` jest taki sam jak `fit_resamples()`.
-Pierwszym argumentem jest albo specyfikacja modelu, albo przepływ pracy.
-Gdy podany jest model, drugim argumentem może być receptura lub wzór.
-Drugim wymaganym argumentem jest obiekt `rsample` (taki jak np. `cell_folds`).
-Poniższe wywołanie przekazuje również zestaw metryk, tak aby obszar pod krzywą ROC był mierzony podczas ponownego próbkowania.
+W przeciwnym razie, interfejs `tune_grid()` jest taki sam jak
+`fit_resamples()`. Pierwszym argumentem jest albo specyfikacja modelu, albo
+przepływ pracy. Gdy podany jest model, drugim argumentem może być receptura lub
+wzór. Drugim wymaganym argumentem jest obiekt `rsample` (taki jak np.
+`cell_folds`). Poniższe wywołanie przekazuje również zestaw metryk, tak aby
+obszar pod krzywą ROC był mierzony podczas ponownego próbkowania.
 
 ```{r}
 #| cache: true
@@ -251,18 +294,22 @@ autoplot(mlp_reg_tune) +
 ```
 
 Dla tych danych, wielkość kary ma największy wpływ na obszar pod krzywą ROC.
-Liczba epok nie wydaje się mieć wyraźnego wpływu na wydajność.
-Zmiana liczby ukrytych jednostek wydaje się mieć największe znaczenie, gdy współczynnik regularyzacji (kara) jest niski (i szkodzi dopasowaniu).
-Istnieje kilka konfiguracji parametrów, które mają z grubsza podobną wydajność, jak widać przy użyciu funkcji `show_best()`:
+Liczba epok nie wydaje się mieć wyraźnego wpływu na wydajność. Zmiana liczby
+ukrytych jednostek wydaje się mieć największe znaczenie, gdy współczynnik
+regularyzacji (kara) jest niski (i szkodzi dopasowaniu). Istnieje kilka
+konfiguracji parametrów, które mają z grubsza podobną wydajność, jak widać przy
+użyciu funkcji `show_best()`:
 
 ```{r}
 show_best(mlp_reg_tune) %>% 
   select(-.estimator)
 ```
 
-Bazując na tych wynikach, sensowne byłoby przeprowadzenie kolejnego przebiegu przeszukiwania siatki z większymi wartościami kary.
-Aby użyć konstrukcji wypełniającej przestrzeń, można podać argument `grid` jako liczbę całkowitą lub za pomocą jednej z funkcji `grid_*()` stworzyć ramkę danych.
-Aby ocenić ten sam zakres przy użyciu planu kwadratu łacińskiego z 20 zestawami parametrów:
+Bazując na tych wynikach, sensowne byłoby przeprowadzenie kolejnego przebiegu
+przeszukiwania siatki z większymi wartościami kary. Aby użyć konstrukcji
+wypełniającej przestrzeń, można podać argument `grid` jako liczbę całkowitą lub
+za pomocą jednej z funkcji `grid_*()` stworzyć ramkę danych. Aby ocenić ten sam
+zakres przy użyciu planu kwadratu łacińskiego z 20 zestawami parametrów:
 
 ```{r}
 #| cache: true
@@ -279,8 +326,10 @@ mlp_sfd_tune <-
 mlp_sfd_tune
 ```
 
-Tym razem funkcja `autoplot` przedstawia wyniki efektów brzegowych poszczególnych parametrów.
-Należy zachować ostrożność podczas badania tego wykresu; ponieważ nie jest używana siatka regularna, wartości pozostałych parametrów dostrajania mogą wpływać na każdy panel.
+Tym razem funkcja `autoplot` przedstawia wyniki efektów brzegowych
+poszczególnych parametrów. Należy zachować ostrożność podczas badania tego
+wykresu; ponieważ nie jest używana siatka regularna, wartości pozostałych
+parametrów dostrajania mogą wpływać na każdy panel.
 
 ```{r}
 #| label: fig-grid4
@@ -288,44 +337,57 @@ Należy zachować ostrożność podczas badania tego wykresu; ponieważ nie jest
 autoplot(mlp_sfd_tune)
 ```
 
-Parametr kary wydaje się skutkować lepszą wydajnością przy mniejszych wartościach.
-Jest to sprzeczne z wynikami z regularnej siatki.
-Ponieważ każdy punkt w każdym panelu jest współdzielony z pozostałymi trzema parametrami dostrajania, na trendy w jednym panelu mogą wpływać pozostałe.
-Przy użyciu siatki regularnej każdy punkt w każdym panelu jest uśredniony względem pozostałych parametrów.
-Z tego powodu efekt każdego parametru jest lepiej izolowany przy użyciu regularnych siatek.
+Parametr kary wydaje się skutkować lepszą wydajnością przy mniejszych
+wartościach. Jest to sprzeczne z wynikami z regularnej siatki. Ponieważ każdy
+punkt w każdym panelu jest współdzielony z pozostałymi trzema parametrami
+dostrajania, na trendy w jednym panelu mogą wpływać pozostałe. Przy użyciu
+siatki regularnej każdy punkt w każdym panelu jest uśredniony względem
+pozostałych parametrów. Z tego powodu efekt każdego parametru jest lepiej
+izolowany przy użyciu regularnych siatek.
 
 ```{r}
 show_best(mlp_sfd_tune) %>% 
   select(-.estimator)
 ```
 
-Jak to sygnalizowaliśmy wcześniej, dobrym pomysłem jest ocena modeli za pomocą wielu metryk, tak aby uwzględnione zostały różne aspekty dopasowania modelu.
-Ponadto, często sensowne jest wybranie nieco suboptymalnej kombinacji parametrów, która jest związana z prostszym modelem.
-W przypadku tego modelu prostota odpowiada większym wartościom kar i/lub mniejszej liczbie neuronów w warstwie ukrytej.
+Jak to sygnalizowaliśmy wcześniej, dobrym pomysłem jest ocena modeli za pomocą
+wielu metryk, tak aby uwzględnione zostały różne aspekty dopasowania modelu.
+Ponadto, często sensowne jest wybranie nieco suboptymalnej kombinacji
+parametrów, która jest związana z prostszym modelem. W przypadku tego modelu
+prostota odpowiada większym wartościom kar i/lub mniejszej liczbie neuronów w
+warstwie ukrytej.
 
 ## Finalizowanie modelu
 
-![](https://media1.giphy.com/media/xBqg5gAf1xINizpek6/giphy.gif){.column-margin fig-align="center"}
+![](https://media1.giphy.com/media/xBqg5gAf1xINizpek6/giphy.gif){.column-margin
+fig-align="center"}
 
-Jeśli jeden z zestawów możliwych parametrów modelu znalezionych poprzez show_best() byłby atrakcyjną opcją końcową dla tych danych, moglibyśmy chcieć ocenić jak dobrze radzi sobie na zestawie testowym.
-Jednakże, wyniki funkcji `tune_grid()` dostarczają jedynie podłoża do wyboru odpowiednich parametrów.
-Funkcja ta nie dopasowuje modelu końcowego.
-Aby dopasować model końcowy, należy określić ostateczny zestaw wartości parametrów.
-Istnieją dwie metody, aby to zrobić:
+Jeśli jeden z zestawów możliwych parametrów modelu znalezionych poprzez
+show_best() byłby atrakcyjną opcją końcową dla tych danych, moglibyśmy chcieć
+ocenić jak dobrze radzi sobie na zestawie testowym. Jednakże, wyniki funkcji
+`tune_grid()` dostarczają jedynie podłoża do wyboru odpowiednich parametrów.
+Funkcja ta nie dopasowuje modelu końcowego. Aby dopasować model końcowy, należy
+określić ostateczny zestaw wartości parametrów. Istnieją dwie metody, aby to
+zrobić:
 
 -   ręcznie wybrać wartości, które wydają się odpowiednie,
 -   użyć funkcji `select_*().`
 
-Na przykład `select_best()` wybierze parametry o numerycznie najlepszych wynikach dopasowania.
-Wróćmy do naszych zwykłych wyników siatki i zobaczmy, który z nich jest najlepszy:
+Na przykład `select_best()` wybierze parametry o numerycznie najlepszych
+wynikach dopasowania. Wróćmy do naszych zwykłych wyników siatki i zobaczmy,
+który z nich jest najlepszy:
 
 ```{r}
 select_best(mlp_reg_tune, metric = "roc_auc")
 ```
 
-Patrząc na @fig-grid3, widzimy, że model z pojedynczym neuronem w warstwie ukrytej trenowany przez 125 epok na oryginalnych predyktorach z dużą wartością kary ma wydajność konkurencyjną do modelu otrzymanego z zagęszczeniem wartości parametrów, a jest prostszy.
-Jest to w zasadzie regularyzowana regresja logistyczna!
-Aby ręcznie określić te parametry, możemy utworzyć `tibble` z tymi wartościami, a następnie użyć funkcji finalizacji, aby spleść wartości z powrotem do przepływu pracy:
+Patrząc na @fig-grid3, widzimy, że model z pojedynczym neuronem w warstwie
+ukrytej trenowany przez 125 epok na oryginalnych predyktorach z dużą wartością
+kary ma wydajność konkurencyjną do modelu otrzymanego z zagęszczeniem wartości
+parametrów, a jest prostszy. Jest to w zasadzie regularyzowana regresja
+logistyczna! Aby ręcznie określić te parametry, możemy utworzyć `tibble` z tymi
+wartościami, a następnie użyć funkcji finalizacji, aby spleść wartości z
+powrotem do przepływu pracy:
 
 ```{r}
 #| cache: true
@@ -343,8 +405,8 @@ final_mlp_wflow <-
 final_mlp_wflow
 ```
 
-Żadne inne wartości funkcji tune() nie są uwzględniane w sfinalizowanym procesie pracy.
-Teraz model może być dopasowany do całego zestawu treningowego:
+Żadne inne wartości funkcji tune() nie są uwzględniane w sfinalizowanym
+procesie pracy. Teraz model może być dopasowany do całego zestawu treningowego:
 
 ```{r}
 #| cache: true
@@ -355,9 +417,11 @@ final_mlp_fit <-
 
 Obiekt ten może być teraz użyty do przyszłych predykcji na nowych danych.
 
-Jeśli nie użyłeś przepływu pracy, finalizacja modelu i/lub receptury odbywa się za pomocą `finalize_model()` i `finalize_recipe()`.
+Jeśli nie użyłeś przepływu pracy, finalizacja modelu i/lub receptury odbywa się
+za pomocą `finalize_model()` i `finalize_recipe()`.
 
-Aby automatycznie stworzyć specyfikację modelu do tuningu, wystarczy wykorzystać odpowiednią funkcję pakietu `usemodels`.
+Aby automatycznie stworzyć specyfikację modelu do tuningu, wystarczy
+wykorzystać odpowiednią funkcję pakietu `usemodels`.
 
 ```{r}
 set.seed(1001)
