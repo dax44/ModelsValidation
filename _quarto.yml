@@ -1,0 +1,76 @@
+project:
+  type: book
+  output-dir: docs
+  
+book:
+  title: "Metody walidacji modeli statystycznych"
+  reader-mode: true
+  language: setup/polski.yml
+  page-footer:
+    left: |
+      Metody walidacji modeli statystycznych, Dariusz Majerek
+    right: |
+      Książka została napisana w <a href="https://quarto.org/">Quarto</a>
+  favicon: cover.png
+  cover-image: cover.png  
+  repo-url: https://github.com/dax44/ModelsValidation/
+  repo-actions: [issue]
+  sharing: [twitter]
+  search: true
+  author: 
+  - name: Dariusz Majerek
+    affiliation: Politechnika Lubelska
+  date: last-modified
+  sidebar: 
+    tools: 
+      - icon: twitter
+        href: https://twitter.com
+    logo: images/logo.png
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - modeling.qmd
+    - infer.qmd
+    - measures.qmd
+    - resampling.qmd
+    - tidymodels.qmd
+    - resampling2.qmd
+    - comparison.qmd
+    - tuning.qmd
+    - grid_search.qmd
+    - parallel.qmd
+    - iterative.qmd
+    - example.qmd
+    - dimensionality.qmd
+    - imbalance.qmd
+    - references.qmd
+
+bibliography: references.bib
+reference-location: margin
+lightbox: true
+
+format:
+  html:
+    grid:
+      sidebar-width: 300px
+      body-width: 1400px
+      margin-width: 300px
+      gutter-width: 1.5rem
+    lang: pl
+    theme:
+      light: [flatly, mycss.scss]
+      dark: [darkly, mycss.scss]
+    code-link: true
+    code-fold: show
+    fig-align: center
+    crossref:
+      fig-title: Rys.     # (default is "Figure")
+      tbl-title: Tab.     # (default is "Table")
+      fig-prefix: Rys.
+      tbl-prefix: Tab.
+
+execute: 
+  warning: false
+
+editor: visual
+

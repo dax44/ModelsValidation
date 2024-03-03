@@ -1,0 +1,39 @@
+---
+format: pdf
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+**Zagadnienia na egzamin ustny z *Metod walidacji modeli statystycznych***
+
+1.  Opisz typy modeli statystycznych w podziale na przeznaczenie. Wymień po jednym przykładzie dla każdego typu.
+2.  Opisz proces tworzenia modelu statystycznego.
+3.  Opisz zasadę działania testów bootstrapowych.
+4.  Opisz zasadę działania testów permutacyjnych.
+5.  Podaj podział miar dopasowania modeli predykcyjnych oraz wymień po trzy miary dedykowane do modeli regresyjnych.
+6.  Podaj podział miar dopasowania modeli predykcyjnych oraz wymień po trzy miary dedykowane do modeli klasyfikacyjnych.
+7.  Podaj miary dopasowania modeli ze zmienną zależną wieloklasową.
+8.  Opisz czym jest krzywa ROC i miara AUC.
+9.  Opisz do czego jest stosowany podział na próbę uczącą i testową oraz opisz jak można przeprowadzić podział, na co wpływa proporcja podziału, jak ją można ustalić.
+10. Na czym polega ekstrakcja cech? Podaj przykłady dwóch technik z tego zakresu.
+11. Czym jest walidacja krzyżowa i walidacja krzyżowa z powtórzeniami?
+12. Czym jest metoda *Leave-One-Out*?
+13. Czym jest walidacja metodą *Monte-Carlo?*
+14. Jak stosujemy *bootstraping* do walidacji modeli?
+15. Czym jest i do czego stosujemy próbkowanie kroczące?
+16. Na czym polega optymalizacja modeli predykcyjnych?
+17. Przedstaw zasadę działania dwóch sposobów podejścia do tuningu modeli.
+18. Opisz przeszukiwanie z wykorzystaniem siatki regularnej i nieregularnej.
+19. Opisz zasadę wykorzystania wielu rdzeni procesora w optymalizacji modelu.
+20. Czym jest metoda wyścigów?
+21. Czym jest przeszukiwanie iteracyjne?
+22. Opisz optymalizację bayesowską.
+23. Czym są procesu gaussowskie?
+24. Co to jest funkcja akwizycji?
+25. Opisz zasadę działania metody symulowanego wyżarzania.
+26. Przedstaw powody stosowania redukcji wymiarowości.
+27. Jakie są powody stosowania podpróbkowania i nadpróbkowania w modelowaniu predykcyjnym?
+28. Jakie są korzyści ze stosowania próbkowania zaniżającego liczebność klasy większościowej?
+29. Jakie są zalety próbkowania zawyżającego liczebność klasy mniejszościowej?
+30. Jak należy stosować poszczególne kroki przygotowania danych w procesie uczenia i walidacji modelu?

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Metody walidacji modeli statystycznych - 3&nbsp; Modele inferencyjne</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./measures.html" rel="next">
+<link href="./modeling.html" rel="prev">
+<link href="./cover.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Brak wyników",
+    "search-matching-documents-text": "dopasowane dokumenty",
+    "search-copy-link-title": "Kopiuj link do wyszukiwania",
+    "search-hide-matches-text": "Ukryj dodatkowe dopasowania",
+    "search-more-match-text": "więcej dopasowań w tym dokumencie",
+    "search-more-matches-text": "więcej dopasowań w tym dokumencie",
+    "search-clear-button-title": "Wyczyść",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Anuluj",
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./infer.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Metody walidacji modeli statystycznych</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Szukaj"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infer.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./measures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tuning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imbalance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Jak to zostało wspomniane w poprzednim rozdziale modele inferencyjne służą do wyciągania wniosków na podstawie modelu. W większości przypadków dotyczy to przedziałów ufności pewnych charakterystyk, czy weryfikacji hipotez. Pod pojęciem modeli inferencyjnych będziemy rozumieli wszelkie modele stosowane w procedurze wnioskowania.</p>
+<p>W tym rozdziale zostanie przedstawiona procedura weryfikacyjna mająca na celu ocenę jakości przedstawionych rozwiązań w klasycznym podejściu do przedziałów ufności i weryfikacji hipotez. Największa trudnością w szacowaniu parametrów rozkładu za pomocą przedziałów ufności oraz w weryfikacji hipotez jest konieczność spełnienia założeń stosowalności tych metod. Bardzo często badacz nie posiada wystarczającej wiedzy o konsekwencji naruszenia tych założeń, a czasem nawet o ich istnieniu. Nawet wówczas, gdy badacz jest świadom konieczności spełnienia założeń w estymacji przedziałowej i weryfikacji hipotez, wymagania te mogą się okazać trudne do wypełnienia. W wielu przypadkach podczas weryfikacji hipotez za pomocą testu t-Studenta, weryfikując hipotezę o normalności rozkładu badanej cechy pojawiają się pewne wątpliwości. Po pierwsze, czy wybrany test mogę stosować do weryfikacji hipotezy o normalności w przypadku tak mało licznej próby lub tak licznej próby. Wiemy bowiem, że często stosowany test Shapiro-Wilka do weryfikacji hipotezy o zgodności populacji z rozkładem normalnym, może zbyt często odrzucać hipotezę o zgodności z rozkładem jeśli test jest wykonywany na dużej próbie<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Z drugiej strony dla prób o małej liczności test w większości nie odrzuca hipotezy o normalności, a to dlatego, że nie sposób jej odrzucić np. na podstawie 5 obserwacji. Podniesiony problem normalności rozkładu badanej cechy nie jest jedynym z jakim badacz może się spotkać chcąc spełnić wszystkie założenia modelu<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> . Założenia o równości wariancji badanej cechy pomiędzy grupami, czy brak nadmiarowości<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, to kolejne przykłady problemów z jakimi może spotkać się badac z.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;moc tego testu rośnie bardzo szybko wraz ze wzrostem liczebności próby</p><p><sup>2</sup>&nbsp;mam na myśli zarówno modele przedziałów ufności, jaki i modele statystyczne do testowania hipotez</p><p><sup>3</sup>&nbsp;w przypadku badania efektu za pomocą modelu liniowego</p><p><sup>4</sup>&nbsp;czy wniosek wyciągnięty na podstawie modelu jest właściwy</p></div><p>Konieczność spełnienia wymienionych w stosowanej metodzie wnioskowania założeń jest wymagana, ponieważ w przeciwnym przypadku nie możemy być pewni czy wyniki zastosowanej metody są trafne<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Konsekwencją niespełnienia warunków początkowych metody jest to, że nie możemy być pewni czy rozkład statystyki testowej jest taki jak głosi metoda. I choć istnieją prace, które wyraźnie wskazują na odporność pewnych metod statystycznych na niespełnienie założeń, to nie zwalniają nas z weryfikacji tychże, ponieważ w przypadku niektórych z nich nie znamy konsekwencji ich naruszenia.</p>
+<p>W przypadku wspomnianych wyżej wątpliwości co do stosowalności poszczególnych metod weryfikacyjnych należy poszukać rozwiązań, które uprawdopodobnią wyniki uzyskane metodami klasycznymi. Powszechnie polecane w takiej sytuacji są rozwiązania opierające się na próbkowaniu (ang. <em>resampling</em>), wśród których najbardziej znane, to bootstrap i metody permutacyjne.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-02-2 o 18.47.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/Zrzut ekranu 2023-02-2 o 18.47.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+<p>Niezależnie od stawianej hipotezy, badacz zadaje sobie ten sam rodzaj pytania podczas wnioskowania statystycznego: czy efekt/różnica w obserwowanych danych jest rzeczywista, czy wynika z przypadku? Aby odpowiedzieć na to pytanie, analityk zakłada, że efekt w obserwowanych danych był spowodowany przypadkiem i nazywa to założenie hipotezą zerową<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Analityk następnie oblicza statystykę testową z danych, która opisuje obserwowany efekt. Może użyć tej statystyki testowej do obliczenia wartości <span class="math inline">\(p\)</span> poprzez zestawienie jej z rozkładem wynikającym z hipotezy zerowej. Jeśli to prawdopodobieństwo jest poniżej jakiegoś wcześniej zdefiniowanego poziomu istotności <span class="math inline">\(\alpha\)</span>, to analityk powinien odrzucić hipotezę zerową.</p>
+<div class="no-row-height column-margin column-container"><p><sup>5</sup>&nbsp;W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że “coś się dzieje”</p></div><p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="references.html#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="references.html#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
+<div id="exm-1" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 3.1</strong></span> W tym przykładzie przetestujemy hipotezę o równości średniej z wartością teoretyczną. Dane weźmiemy ze zbioru <code>gss</code> biblioteki <code>infer</code> zawierającego podzbiór wyników spisu powszechnego przeprowadzonego w 1972 r. w USA.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">nord</span><span class="op">)</span> <span class="co"># palettes</span></span>
+<span><span class="fu">glimpse</span><span class="op">(</span><span class="va">gss</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Rows: 500
+Columns: 11
+$ year    &lt;dbl&gt; 2014, 1994, 1998, 1996, 1994, 1996, 1990, 2016, 2000, 1998, 20…
+$ age     &lt;dbl&gt; 36, 34, 24, 42, 31, 32, 48, 36, 30, 33, 21, 30, 38, 49, 25, 56…
+$ sex     &lt;fct&gt; male, female, male, male, male, female, female, female, female…
+$ college &lt;fct&gt; degree, no degree, degree, no degree, degree, no degree, no de…
+$ partyid &lt;fct&gt; ind, rep, ind, ind, rep, rep, dem, ind, rep, dem, dem, ind, de…
+$ hompop  &lt;dbl&gt; 3, 4, 1, 4, 2, 4, 2, 1, 5, 2, 4, 3, 4, 4, 2, 2, 3, 2, 1, 2, 5,…
+$ hours   &lt;dbl&gt; 50, 31, 40, 40, 40, 53, 32, 20, 40, 40, 23, 52, 38, 72, 48, 40…
+$ income  &lt;ord&gt; $25000 or more, $20000 - 24999, $25000 or more, $25000 or more…
+$ class   &lt;fct&gt; middle class, working class, working class, working class, mid…
+$ finrela &lt;fct&gt; below average, below average, below average, above average, ab…
+$ weight  &lt;dbl&gt; 0.8960034, 1.0825000, 0.5501000, 1.0864000, 1.0825000, 1.08640…</code></pre>
+</div>
+</div>
+<p>Przetestujmy hipotezę, że średnia wieku wynosi 40 lat. Zacznijmy od sprawdzenia jak wygląda rozkład badanej cechy.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">age</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, bins <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-hist1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-hist1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="infer_files/figure-html/fig-hist1-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.1: Histogram wieku
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Można mieć pewne wątpliwości co do normalności rozkładu, ponieważ zarysowuje się delikatna asymetria prawostronna. Nie będziemy jednak weryfikować hipotezy o normalności, tylko przeprowadzimy klasyczny test, nie mając pewności czy może on być stosowany w tej sytuacji.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">gss</span><span class="op">$</span><span class="va">age</span>, mu <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  gss$age
+t = 0.44656, df = 499, p-value = 0.6554
+alternative hypothesis: true mean is not equal to 40
+95 percent confidence interval:
+ 39.09567 41.43633
+sample estimates:
+mean of x 
+   40.266 </code></pre>
+</div>
+</div>
+<p>Wynik testu nie daje podstaw do odrzucenia hipotezy o tym, że przeciętny wiek w badanej populacji wynosi 40 lat. Przeprowadzimy teraz wnioskowanie w oparciu o techniki bootstrap i permutacyjną.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span>response <span class="op">=</span> <span class="va">age</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># określenie zmiennej</span></span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"point"</span>, mu <span class="op">=</span> <span class="fl">40</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># ustalienie hipotezy</span></span>
+<span>  <span class="fu">generate</span><span class="op">(</span><span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"bootstrap"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># generujemy dane</span></span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span><span class="va">null_mean</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Response: age (numeric)
+Null Hypothesis: point
+# A tibble: 1,000 × 2
+   replicate  stat
+       &lt;int&gt; &lt;dbl&gt;
+ 1         1  40.6
+ 2         2  39.3
+ 3         3  39.7
+ 4         4  40.5
+ 5         5  40.0
+ 6         6  39.6
+ 7         7  40.1
+ 8         8  39.7
+ 9         9  39.9
+10        10  39.3
+# ℹ 990 more rows</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span>response <span class="op">=</span> <span class="va">age</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span><span class="va">sample_mean</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Response: age (numeric)
+# A tibble: 1 × 1
+   stat
+  &lt;dbl&gt;
+1  40.3</code></pre>
+</div>
+</div>
+<p>Teraz możemy przyjrzeć się rozkładowi średnich w próbach bootstrapowych.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_confidence_interval</span><span class="op">(</span>point_estimate <span class="op">=</span> <span class="va">sample_mean</span>,</span>
+<span>                          level <span class="op">=</span> <span class="fl">.95</span>,</span>
+<span>                          type <span class="op">=</span> <span class="st">"se"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">shade_ci</span><span class="op">(</span>endpoints <span class="op">=</span> <span class="va">ci</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-hist3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-hist3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="infer_files/figure-html/fig-hist3-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufności dla średniej
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Koncentracja wokół wartości 40 może przemawiać za przyjęciem hipotezy <span class="math inline">\(H_0\)</span>. Ponadto wygląda na to, że otrzymany przedział ufności zawiera teoretyczną średnią wieku 40, co jest kolejny argumentem za przyjęciem hipotezy zerowej. Na koniec wyliczymy <span class="math inline">\(p\)</span> dla testu bootstrapowego. Wyliczanie <span class="math inline">\(p\)</span> dla testu bootstrapowego odbywa się wg następujących kroków:</p>
+<ol type="1">
+<li>Wyznaczamy na podstawie próby statystykę interesującą nas w teście (w naszym przypadku średnią <span class="math inline">\(\bar{x}\)</span>).</li>
+<li>Następnie przesuwamy wszystkie obserwację o różnicę pomiędzy średnią teoretyczną a <span class="math inline">\(\bar{x}\)</span>, tak aby rozkład miał średnią teoretyczną.</li>
+<li>Losujemy próby bootstrapowe z nowej (przesuniętej) próby.</li>
+<li>Na podstawie prób bootstrapowych wyznaczamy rozkład średnich poszczególnych prób.</li>
+<li>Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż <span class="math inline">\(-\bar{x}\)</span> (patrz <a href="#fig-hist4" class="quarto-xref">Rys.&nbsp;<span>3.3</span></a>)</li>
+</ol>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_mean</span>, direction <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1   0.642</code></pre>
+</div>
+</div>
+<p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_mean</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-hist4" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-hist4-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4"><img src="infer_files/figure-html/fig-hist4-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.3: Histogram średnich bootstrapowych z zacienonym obszarem ilustrującym na ile ekstremalna jest średnia naszej próby w stosunku do średniej wynikającej z hipotezy zerowej
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wskazówka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W przypadku weryfikacji hipotez dotyczących jednej zmiennej wyniki testu bootstrapowego i permutacyjnego są identyczne, ponieważ te dwa rodzaje próbkowania są w tym przypadku identyczne.</p>
+</div>
+</div>
+<div id="exm-2" class="theorem example page-columns page-full">
+<p><span class="theorem-title"><strong>Przykład 3.2</strong></span> Tym razem przetestujemy nico bardziej ambitną hipotezę. Będzie to hipoteza o równości median. Dane zostaną wygenerowane z rozkładów asymetrycznych, a w tych przypadkach porównywanie median ma więcej sensu niż średnich.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">rchisq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">rchisq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">2</span><span class="op">)</span><span class="op">+</span><span class="fl">10</span></span>
+<span></span>
+<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">x1</span>,<span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>gr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">x</span>, fill <span class="op">=</span> <span class="va">gr</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_density</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/nord/man/scale_fill_nord.html">scale_fill_nord</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"victory_bonds"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-medians" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-medians-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-medians-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="infer_files/figure-html/fig-medians-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-medians-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.4: Porównanie rozkładów obu prób
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Jak widać na <a href="#fig-medians" class="quarto-xref">Rys.&nbsp;<span>3.4</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p>
+<div class="no-row-height column-margin column-container"><p><sup>6</sup>&nbsp;tylko w przypadku jednakowych kształtów rozkładów test ten weryfikuje równość median</p></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">sample_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sample_diff</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Response: x (numeric)
+Explanatory: gr (factor)
+# A tibble: 1 × 1
+   stat
+  &lt;dbl&gt;
+1 -6.83</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span>reps <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"bootstrap"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Oceńmy rozkład różnic z prób bootstrapowych. Jeśli hipoteza zerowa jest prawdziwa to rozkład różnicy median powinien oscylować wokół zera.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_confidence_interval</span><span class="op">(</span>level <span class="op">=</span> <span class="fl">.95</span>, type <span class="op">=</span> <span class="st">"percentile"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">shade_ci</span><span class="op">(</span>endpoints <span class="op">=</span> <span class="va">ci</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>             linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-median2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-median2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6"><img src="infer_files/figure-html/fig-median2-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.5: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Widać wyraźnie, że rozkład różnic pomiędzy medianami nie oscyluje wokół zera, co może świadczyć o konieczności odrzucenia hipotezy zerowej.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="fl">0</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1       0</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">x1</span>,<span class="va">x2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum exact test
+
+data:  x1 and x2
+W = 32, p-value = 2.453e-05
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Wartość <span class="math inline">\(p\)</span> mniejsza od <span class="math inline">\(\alpha\)</span> każe odrzucić hipotezę zerową na korzyść alternatywnej, czyli mediany nie są równe.</p>
+<p>Teraz przeprowadzimy test permutacyjny.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">null_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">gr</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span>reps <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"permute"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"diff in medians"</span>, order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_ci</span><span class="op">(</span>level <span class="op">=</span> <span class="fl">.95</span>, </span>
+<span>         type <span class="op">=</span> <span class="st">"percentile"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">shade_ci</span><span class="op">(</span>endpoints <span class="op">=</span> <span class="va">ci</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">sample_diff</span><span class="op">$</span><span class="va">stat</span>,</span>
+<span>             linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-median3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-median3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="quarto-lightbox-gallery-7"><img src="infer_files/figure-html/fig-median3-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Jak widać z <a href="#fig-median3" class="quarto-xref">Rys.&nbsp;<span>3.6</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p>
+<div class="no-row-height column-margin column-container"><p><sup>7</sup>&nbsp;co odzwierciedla warunek z hipotezy zerowej</p></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_diff</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_diff</span>, direction <span class="op">=</span> <span class="st">"two-sided"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1       0</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-median4" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-median4-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="infer_files/figure-html/fig-median4-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value
+</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exm-3" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 3.3</strong></span> W tym przykładzie zbadamy niezależność cech <code>partyid</code> i <code>class</code> ze zbioru <code>gss</code>, które oznaczają odpowiednio sprzyjanie danej partii politycznej i subiektywną identyfikację klasy społeczno-ekonomicznej.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://indrajeetpatil.github.io/ggstatsplot/">ggstatsplot</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html">ggbarstats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gss</span>,</span>
+<span>           x <span class="op">=</span> <span class="va">class</span>,</span>
+<span>           y <span class="op">=</span> <span class="va">partyid</span>, </span>
+<span>           label <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>           proportion.test <span class="op">=</span> <span class="cn">F</span>, </span>
+<span>           bf.message <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-chisq" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-chisq-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="quarto-lightbox-gallery-9"><img src="infer_files/figure-html/fig-chisq-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.8: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu <span class="math inline">\(\chi^2\)</span> niezależności
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Powyższy test każe odrzucić hipotezę o niezależności cech, a ponieważ nie wymaga on spełnienia założeń (poza niezależnością obserwacji w próbie), to można uznać wynik ten za wiarygodny. Jedyny czynnik jaki mógłby wpłynąć na wynik testu <span class="math inline">\(\chi^2\)</span> to liczebności w tabeli kontyngencji poniżej 5. Dlatego tym bardziej warto przeprowadzić testowanie tej hipotezy za pomocą próbkowania.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="co"># obliczamy statystykę testową dla próby</span></span>
+<span><span class="va">sample_stat</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">partyid</span>, <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">partyid</span><span class="op">~</span><span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># generujemy próby zgodne z hipotezą zerową za pomocą próbkowania</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">partyid</span>, <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">specify</span><span class="op">(</span>formula <span class="op">=</span> <span class="va">partyid</span> <span class="op">~</span> <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">hypothesise</span><span class="op">(</span>null <span class="op">=</span> <span class="st">"independence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">generate</span><span class="op">(</span><span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"permute"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">calculate</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># porównujemy rozkład wynikający z hipotezy zerowej z</span></span>
+<span><span class="co"># z wartością statystyki obliczoną z próby</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># obliczamy p-value</span></span>
+<span><span class="va">null_chisq_sim</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">get_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1   0.002</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chisq2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-chisq2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-10" data-gallery="quarto-lightbox-gallery-10"><img src="infer_files/figure-html/fig-chisq2-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.9: Porównanie rozkładu statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Widzimy, że test każe odrzucić hipotezę o niezależności cech, podobnie jak test teoretyczny. Pakiet <code>infer</code> daje nam możliwość generowania rozkładu teoretycznego zgodnego z hipotezą zerową nieco inaczej niż na podstawie resamplingu.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_chisq_theory</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">specify</span><span class="op">(</span><span class="va">partyid</span><span class="op">~</span><span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">assume</span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"Chisq"</span>, df <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">null_chisq_theory</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">shade_p_value</span><span class="op">(</span>obs_stat <span class="op">=</span> <span class="va">sample_stat</span>, </span>
+<span>                direction <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="va">sample_stat</span><span class="op">$</span><span class="va">stat</span>, df <span class="op">=</span> <span class="fl">9</span>, lower.tail <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   X-squared 
+0.0001314536 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-chisq3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="infer_files/figure-html/fig-chisq3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-11" data-gallery="quarto-lightbox-gallery-11"><img src="infer_files/figure-html/fig-chisq3-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;3.10: Porównanie rozkładu teoretycznego statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Oczywiście wynik otrzymany metodą teoretyczną pokrywa się dokładnie z wynikiem klasycznego testu <span class="math inline">\(\chi^2\)</span>.</p>
+</div>
+
+
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;3.1: Histogram wieku</span>
+<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufności dla średniej</span>
+<span class="glightbox-desc lightbox-desc-4">Rys.&nbsp;3.3: Histogram średnich bootstrapowych z zacienonym obszarem ilustrującym na ile ekstremalna jest średnia naszej próby w stosunku do średniej wynikającej z hipotezy zerowej</span>
+<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;3.4: Porównanie rozkładów obu prób</span>
+<span class="glightbox-desc lightbox-desc-6">Rys.&nbsp;3.5: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności</span>
+<span class="glightbox-desc lightbox-desc-7">Rys.&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności</span>
+<span class="glightbox-desc lightbox-desc-8">Rys.&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value</span>
+<span class="glightbox-desc lightbox-desc-9">Rys.&nbsp;3.8: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu <span class="math inline">\(\chi^2\)</span> niezależności</span>
+<span class="glightbox-desc lightbox-desc-10">Rys.&nbsp;3.9: Porównanie rozkładu statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby</span>
+<span class="glightbox-desc lightbox-desc-11">Rys.&nbsp;3.10: Porównanie rozkładu teoretycznego statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby</span>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-infer" class="csl-entry" role="listitem">
+Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, i Mine Çetinkaya-Rundel. 2021. <span>„<span></span>infer<span></span>: An <span></span>R<span></span> package for tidyverse-friendly statistical inference”</span> 6: 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
+</div>
+<div id="ref-tidymodels" class="csl-entry" role="listitem">
+Kuhn, Max, i Hadley Wickham. 2020. <span>„Tidymodels: a collection of packages for modeling and machine learning using tidyverse principles.”</span> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
+</div>
+</div>
+</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Skopiowano!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Skopiowano!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./modeling.html" class="pagination-link  aria-label=" statystyczne="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./measures.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Przegląd miar dopasowania modelu</span>">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Metody walidacji modeli statystycznych, Dariusz Majerek</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
+
+
+</body></html>

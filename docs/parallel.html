@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Metody walidacji modeli statystycznych - 11&nbsp; Paralelizacja resamplingu</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./iterative.html" rel="next">
+<link href="./grid_search.html" rel="prev">
+<link href="./cover.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-contrib/videojs/video.min.js"></script>
+<link href="site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Brak wyników",
+    "search-matching-documents-text": "dopasowane dokumenty",
+    "search-copy-link-title": "Kopiuj link do wyszukiwania",
+    "search-hide-matches-text": "Ukryj dodatkowe dopasowania",
+    "search-more-match-text": "więcej dopasowań w tym dokumencie",
+    "search-more-matches-text": "więcej dopasowań w tym dokumencie",
+    "search-clear-button-title": "Wyczyść",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Anuluj",
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parallel.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Metody walidacji modeli statystycznych</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Szukaj"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./measures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tuning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imbalance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
+   
+  <ul>
+<li><a href="#dost%C4%99p-do-zmiennych-globalnych" id="toc-dostęp-do-zmiennych-globalnych" class="nav-link active" data-scroll-target="#dost%C4%99p-do-zmiennych-globalnych"><span class="header-section-number">11.1</span> Dostęp do zmiennych globalnych</a></li>
+  <li><a href="#metoda-wy%C5%9Bcig%C3%B3w" id="toc-metoda-wyścigów" class="nav-link" data-scroll-target="#metoda-wy%C5%9Bcig%C3%B3w"><span class="header-section-number">11.2</span> Metoda wyścigów</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Poszukiwanie optymalnego modelu za pomocą siatek parametrów jest czynnością żmudną i zajmuje sporo czasu. Same funkcje pakietu <code>tune</code> są już w pewnym stopniu zoptymalizowane pod kątem poszukiwania najlepszych rozwiązań. W przypadku modeli, których parametry można przeszukiwać bazując na wiedzy pochodzącej z wcześniejszych epok estymacji, to funkcje <code>tune</code> z tego korzystają. Przykładowo, dajmy na to, że uczymy model PLS (ang. <em>Partial Least Squares</em>), który co do zasady jest podobny do zastosowania PCA na predyktorach, a następnie przewidywaniu wartości wynikowej, z tą różnicą, że w PLS tworzone składowe są dobierane tak aby zmaksymalizować korelację pomiędzy nimi a zmienną wynikową. Wówczas do obliczenia budowy modelu z 10 składowymi procedura przebiega identycznie jak w modelu z 9 składowymi, z tą różnicą, że dodatkowo ostatnia składowa jest obliczana. Wówczas aby zaoszczędzić czas procedura tuningu modelu względem liczby składowych, których zakres przeszukiwania był powiedzmy [0,10], korzysta ze wspomnianej iteracyjnej metody budowania modelu PLS. To znacząco przyspiesza czas dostrajania modelu. Oczywiście nie wszystkie modele mają tą własność, ale te które mają korzystają z tej procedury nazywanej optymalizacją podprocesów (ang. <em>submodel optimization</em>).</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+</figure>
+</div>
+<p>W innych przypadkach, chcąc przyspieszyć procedurę tuningu, musimy stosować paralelizację procedury dostrajania. W pakiecie <code>tune</code> możliwe jest zastosowanie paralelizacji na dwa sposoby. Podczas dostrajania modeli poprzez wyszukiwanie w siatce, istnieją dwie odrębne pętle: jedna nad foldami (zewnętrzna pętla) i druga nad unikalnymi kombinacjami parametrów (wewnętrzna pętla).</p>
+<p>Domyślnie pakiet <code>tune</code> paralelizuje tylko nad próbkami (pętla zewnętrzna). Jest to optymalny scenariusz, gdy metody wstępnego przetwarzania (<em>preprocessing</em>) są kosztowne oblczeniowo. Istnieją jednak dwa potencjalne minusy tego podejścia:</p>
+<ul>
+<li>Ogranicza osiągalne przyspieszenia, gdy preprocessing nie jest wymagający obliczeniowo.</li>
+<li>Liczba równoległych rdzeni jest ograniczona przez liczbę foldów. Na przykład przy 10-krotnej walidacji krzyżowej można użyć tylko 10 równoległych rdzeni, nawet jeśli komputer ma więcej.</li>
+</ul>
+<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1" class="quarto-xref">Rys.&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
+<div id="fig-parallel1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli
+</figcaption></figure>
+</div>
+<p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymaliby do przeliczenia kilka foldów.</p>
+<p>W funkcjach sterujących <code>tune_*()</code> argument <code>parallel_over</code> kontroluje sposób wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest <code>parallel_over = "resamples"</code>.</p>
+<p>Zamiast równoległego przetwarzania tylko nad zewnętrzną pętlą, alternatywny schemat łączy pętle nad foldami i modelami w jedną pętlę. W tym przypadku paralelizacja występuje teraz nad pojedynczą pętlą. Na przykład, jeśli używamy 5-krotnej walidacji krzyżowej z <span class="math inline">\(M\)</span> wartościami parametrów dostrajania, pętla jest wykonywana przez <span class="math inline">\(5 \times M\)</span> iteracji. Zwiększa to liczbę potencjalnych rdzeni, które można wykorzystać. Jednak praca związana ze wstępnym przetwarzaniem danych jest powtarzana wielokrotnie. Jeśli te kroki są wymagające obliczeniowo, to podejście to będzie nieefektywne. W <code>tidymodels</code>, zestawy walidacyjne są traktowane jako pojedynczy fold. W takich przypadkach ten schemat paralelizacji byłby najlepszy.</p>
+<p><a href="#fig-parallel2" class="quarto-xref">Rys.&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
+<div id="fig-parallel2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami
+</figcaption></figure>
+</div>
+<p>Tutaj każdy proces roboczy obsługuje wiele foldów, a przetwarzanie wstępne jest niepotrzebnie powtarzane. Na przykład, dla pierwszego foldu, preprocessing został wykonany siedem razy zamiast raz. Dla tego schematu argumentem funkcji sterującej jest <code>parallel_over = "everything"</code>.</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><img src="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+</figure>
+</div>
+<p>Aby porównać różne schematy paralelizacji, dostroiliśmy drzewo wzmacniane za pomocą silnika xgboost, używając zestawu danych składającego się z 4000 próbek, z 5-krotną walidacją krzyżową i 10 modelami kandydującymi. Dane te wymagały pewnego podstawowego przetwarzania wstępnego. Przetwarzanie wstępne było obsługiwane na trzy różne sposoby:</p>
+<ul>
+<li>Wstępne przetwarzanie danych przed modelowaniem przy użyciu potoku <code>dplyr</code> poza przepisami (oznaczone jako “none” w późniejszych wykresach).</li>
+<li>To samo przetwarzanie wstępne za pomocą przepisów inżynierii cech (oznaczone jako “light” przetwarzanie wstępne).</li>
+<li>Dodano nowy krok, który ma wysoki koszt obliczeniowy (oznaczony jako “expensive”).</li>
+</ul>
+<p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>.</p>
+<div id="fig-parallel3" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy
+</figcaption></figure>
+</div>
+<p>Ponieważ było tylko pięć foldów, liczba rdzeni używanych, gdy <code>parallel_over = "resamples"</code> jest ograniczona do pięciu. Porównanie krzywych w pierwszych dwóch panelach dla “none” i “light” daje następujące wnioski:</p>
+<ul>
+<li>Istnieje niewielka różnica w czasach wykonania między panelami. Wskazuje to, dla tych danych, że nie ma wyraźnej kary obliczeniowej za wykonywanie kroków przetwarzania wstępnego w recepturze.</li>
+<li>Istnieje pewna korzyść z używania <code>parallel_over = "wszystko"</code> z wieloma rdzeniami. Jednak, jak widać na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>, większość korzyści z przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.</li>
+</ul>
+<p>W przypadku z drogim krokiem wstępnego przetwarzania, istnieje znaczna różnica w czasach wykonywania. Użycie <code>parallel_over = "everything"</code> jest problematyczne, ponieważ nawet przy użyciu wszystkich rdzeni, nigdy nie osiąga czasu wykonania, który <code>parallel_over = "everything"</code> osiąga przy użyciu tylko pięciu rdzeni. Dzieje się tak dlatego, że kosztowny krok wstępnego przetwarzania jest niepotrzebnie powtarzany w schemacie obliczeniowym.</p>
+<p>Na <a href="#fig-parallel4" class="quarto-xref">Rys.&nbsp;<span>11.4</span></a> możemy również obejrzeć te dane w kategoriach przyrostu prędkości.</p>
+<div id="fig-parallel4" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów
+</figcaption></figure>
+</div>
+<p>Najlepsze przyspieszenie pracy, dla tych danych, występują, gdy <code>parallel_over = "resamples"</code> i gdy obliczenia wstępne są drogie. Jednak w tym ostatnim przypadku należy pamiętać, że poprzednia analiza wskazuje, że ogólne dopasowanie modelu jest wolniejsze.</p>
+<p>Jaka jest korzyść z zastosowania metody optymalizacji submodelu w połączeniu z przetwarzaniem równoległym? Model klasyfikacyjny C5.0 został również uruchomiony równolegle przy użyciu dziesięciu rdzeni. Obliczenia równoległe zajęły 13,3 sekundy, co oznacza 7,5-krotne przyspieszenie (w obu przypadkach zastosowano sztuczkę optymalizacji submodelu). Dzięki sztuczce optymalizacji podmodelu i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w stosunku do najbardziej podstawowego kodu przeszukiwania siatki.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Należy pamiętać, że korzyść z wykonywania równoległych obliczeń dla modeli zoptymalizowanych obliczeniowo nie będzie tak duża, jak dla modeli niezoptymalizowanych.</p>
+</div>
+</div>
+<section id="dostęp-do-zmiennych-globalnych" class="level2" data-number="11.1"><h2 data-number="11.1" class="anchored" data-anchor-id="dostęp-do-zmiennych-globalnych">
+<span class="header-section-number">11.1</span> Dostęp do zmiennych globalnych</h2>
+<p>Jeśli definiujemy zmienną, która ma być użyta jako parametr modelu, a następnie przekazujemy ją do funkcji takiej jak <code>linear_reg()</code>, zmienna ta jest zazwyczaj zdefiniowana w środowisku globalnym.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">coef_penalty</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Modele utworzone za pomocą pakietu <code>parsnip</code> zapisują argumenty takie jak te jako <em>quosures</em>; są to obiekty śledzące zarówno nazwę obiektu, jak i środowisko, w którym istnieje:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>&lt;quosure&gt;
+expr: ^coef_penalty
+env:  global</code></pre>
+</div>
+</div>
+<p>Zauważ, że mamy <code>env: global</code>, ponieważ ta zmienna została utworzona w środowisku globalnym. Specyfikacja modelu zdefiniowana przez <code>spec</code> działa poprawnie, gdy jest uruchamiana w zwykłej sesji użytkownika, ponieważ sesja ta również korzysta ze środowiska globalnego; R może łatwo znaleźć obiekt <code>coef_penalty</code>. Kiedy taki model jest szacowany z równoległymi rdzeniami, może zawieść. W zależności od konkretnej technologii, która jest używana do przetwarzania równoległego, rdzenie mogą nie mieć dostępu do globalnego środowiska. Podczas pisania kodu, który będzie uruchamiany równolegle, dobrym pomysłem jest wstawianie rzeczywistych danych do obiektów, a nie referencji do obiektu. Pakiety <code>rlang</code> i <code>dplyr</code> mogą być w tym bardzo pomocne. Na przykład, operator <code>!!</code> może wstawić pojedynczą wartość do obiektu:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span>
+<span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>&lt;quosure&gt;
+expr: ^0.1
+env:  empty</code></pre>
+</div>
+</div>
+<p>Teraz wyjście to <code>^0,1</code>, wskazując, że jest to wartość zamiast odniesienia do obiektu. Kiedy masz wiele zewnętrznych wartości do wstawienia do obiektu, operator <code>!!!</code> może pomóc:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mcmc_args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>chains <span class="op">=</span> <span class="fl">3</span>, iter <span class="op">=</span> <span class="fl">1000</span>, cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"stan"</span>, <span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">mcmc_args</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Engine-Specific Arguments:
+  chains = 3
+  iter = 1000
+  cores = 3
+
+Computational engine: stan </code></pre>
+</div>
+</div>
+<p>Selektory receptur to kolejne miejsce, w którym możesz chcieć uzyskać dostęp do zmiennych globalnych. Załóżmy, że masz krok receptury, który powinien użyć wszystkich predyktorów w danych komórkowych (<code>cells</code>), które zostały zmierzone za pomocą drugiego kanału optycznego. Możemy utworzyć wektor tych nazw kolumn:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span>
+<span><span class="va">ch_2_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span>, <span class="st">"ch_2"</span><span class="op">)</span></span>
+<span><span class="va">ch_2_vars</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] "avg_inten_ch_2"   "total_inten_ch_2"</code></pre>
+</div>
+</div>
+<p>Moglibyśmy twardo zakodować je w kroku receptury, ale lepiej byłoby odwołać się do nich programowo na wypadek zmiany danych. Mamy dwa sposoby, aby to zrobić to:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Still uses a reference to global data (~_~;)</span></span>
+<span><span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_spatialsign</span><span class="op">(</span><span class="fu">all_of</span><span class="op">(</span><span class="va">ch_2_vars</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Inserts the values into the step ヽ(•‿•)ノ</span></span>
+<span><span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_spatialsign</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">ch_2_vars</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Ten ostatni jest lepszy dla przetwarzania równoległego, ponieważ wszystkie potrzebne informacje są osadzone w obiekcie receptury.</p>
+</section><section id="metoda-wyścigów" class="level2 page-columns page-full" data-number="11.2"><h2 data-number="11.2" class="anchored" data-anchor-id="metoda-wyścigów">
+<span class="header-section-number">11.2</span> Metoda wyścigów</h2>
+<p>Jednym z problemów z przeszukiwaniem siatki jest to, że wszystkie modele muszą być dopasowane we wszystkich foldach, zanim jakiekolwiek dostrajanie parametrów może być ocenione. Byłoby pomocne, gdyby zamiast tego, w pewnym momencie podczas dostrajania parametrów, można było przeprowadzić analizę przejściową w celu wyeliminowania wszelkich naprawdę bezużytecznych kandydatów na parametry. Byłoby to podobne do analizy daremności w badaniach klinicznych. Jeśli nowy lek działa zbyt słabo (lub dobrze), to potencjalnie nieetyczne jest czekanie na zakończenie badania, by podjąć decyzję.</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"></a></p><div class="no-row-height column-margin column-container"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"><img src="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+</figure>
+</div>
+<p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="references.html#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
+<p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na rysunku 13.9.</p>
+<div id="fig-parallel5" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
+</figcaption></figure>
+</div>
+<p>Każdy zestaw parametrów, którego przedział ufności zawiera zero, nie daje podstaw by twierdzić, że jego wydajność jest statystycznie różna od najlepszych wyników. Zachowujemy 6 najlepszych ustawień i są one ponownie próbkowane. Pozostałe 14 podmodeli nie jest już rozpatrywane.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.tmwr.org/race_results.mp4"></video></div>
+<p>Metody wyścigowe mogą być bardziej efektywne niż podstawowe przeszukiwanie siatki, o ile analiza pośrednia jest szybka, a niektóre ustawienia parametrów mają słabą wydajność. Jest to również najbardziej pomocne, gdy model nie ma możliwości wykorzystania predykcji submodelu.</p>
+<p>Pakiet <code>finetune</code> zawiera funkcje dla metody wyścigowej. Funkcja <code><a href="https://finetune.tidymodels.org/reference/tune_race_anova.html">tune_race_anova()</a></code> przeprowadza model ANOVA w celu przetestowania statystycznej istotności różnych konfiguracji modelu. Składnia pozwalająca odtworzyć pokazane wcześniej filtrowanie to:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/finetune">finetune</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_spec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"nnet"</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_param</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">mlp_spec</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
+<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="va">cells</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">case</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1304</span><span class="op">)</span></span>
+<span><span class="va">cell_folds</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_rec</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_YeoJohnson</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">mlp_spec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">mlp_rec</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mlp_param</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">mlp_wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span></span>
+<span>    epochs <span class="op">=</span> <span class="fu">epochs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    num_comp <span class="op">=</span> <span class="fu">num_comp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1308</span><span class="op">)</span></span>
+<span><span class="va">mlp_sfd_race</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">mlp_wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://finetune.tidymodels.org/reference/tune_race_anova.html">tune_race_anova</a></span><span class="op">(</span></span>
+<span>    <span class="va">cell_folds</span>,</span>
+<span>    grid <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>    param_info <span class="op">=</span> <span class="va">mlp_param</span>,</span>
+<span>    metrics <span class="op">=</span> <span class="va">roc_res</span>,</span>
+<span>    control <span class="op">=</span> <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_race.html">control_race</a></span><span class="op">(</span>verbose_elim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Argumenty są odzwierciedleniem argumentów funkcji <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>. Funkcja <code><a href="https://finetune.tidymodels.org/reference/control_race.html">control_race()</a></code> posiada opcje dotyczące procedury eliminacji. Jak pokazano na powyższej animacji, rozważane były dwie kombinacje parametrów po ocenie pełnego zestawu próbek. <code><a href="https://tune.tidymodels.org/reference/show_best.html">show_best()</a></code> zwraca najlepsze modele (uszeregowane według wydajności), ale zwraca tylko konfiguracje, które nigdy nie zostały wyeliminowane:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">mlp_sfd_race</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 10
+   hidden_units  penalty epochs num_comp .metric .estimator  mean     n std_err
+          &lt;int&gt;    &lt;dbl&gt;  &lt;int&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+ 1            4 1.26e- 3    112        9 roc_auc binary     0.893     4 0.0102 
+ 2            8 8.14e- 1    177       15 roc_auc binary     0.890    10 0.00966
+ 3            5 1.30e-10     89        5 roc_auc binary     0.889     5 0.0106 
+ 4            1 7.08e- 9    106       24 roc_auc binary     0.888     3 0.00379
+ 5            3 1.23e- 1     55       36 roc_auc binary     0.888     3 0.00662
+ 6            2 7.91e- 4    164        7 roc_auc binary     0.883     5 0.0123 
+ 7            5 4.91e- 7    132       12 roc_auc binary     0.883     4 0.0103 
+ 8            7 6.53e- 8     69       18 roc_auc binary     0.883     3 0.00932
+ 9            2 7.99e- 3    161       32 roc_auc binary     0.882     3 0.0125 
+10            3 4.02e- 2    151       10 roc_auc binary     0.881     7 0.0154 
+# ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Istnieją również inne techniki analizy pośredniej do odrzucania pewnych konfiguracji parametrów.</p>
+
+
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli</span>
+<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami</span>
+<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy</span>
+<span class="glightbox-desc lightbox-desc-6">Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów</span>
+<span class="glightbox-desc lightbox-desc-8">Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej</span>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-NIPS1993_02a32ad2" class="csl-entry" role="listitem">
+Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating</span> Model Selection Search for Classification and Function Approximation”</span>. W <em>Advances in Neural Information Processing Systems</em>, zredagowane przez J. Cowan, G. Tesauro, i J. Alspector. T. 6. <span>Morgan-Kaufmann</span>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Skopiowano!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Skopiowano!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./grid_search.html" class="pagination-link  aria-label=" z="" przeszukiwaniem="" siatki="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./iterative.html" class="pagination-link" aria-label="<span class='chapter-number'>12</span>&nbsp; <span class='chapter-title'>Przeszukiwanie iteracyjne</span>">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Metody walidacji modeli statystycznych, Dariusz Majerek</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer><script>videojs(video_shortcode_videojs_video1);</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","loop":false,"selector":".lightbox","descPosition":"bottom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
+
+
+</body></html>

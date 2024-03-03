@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Metody walidacji modeli statystycznych - 2&nbsp; Modelowanie statystyczne</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./infer.html" rel="next">
+<link href="./intro.html" rel="prev">
+<link href="./cover.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Brak wyników",
+    "search-matching-documents-text": "dopasowane dokumenty",
+    "search-copy-link-title": "Kopiuj link do wyszukiwania",
+    "search-hide-matches-text": "Ukryj dodatkowe dopasowania",
+    "search-more-match-text": "więcej dopasowań w tym dokumencie",
+    "search-more-matches-text": "więcej dopasowań w tym dokumencie",
+    "search-clear-button-title": "Wyczyść",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Anuluj",
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./modeling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Metody walidacji modeli statystycznych</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Szukaj"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./measures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tuning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imbalance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
+   
+  <ul>
+<li>
+<a href="#typy-modeli" id="toc-typy-modeli" class="nav-link active" data-scroll-target="#typy-modeli"><span class="header-section-number">2.1</span> Typy modeli</a>
+  <ul class="collapse">
+<li><a href="#modele-opisowe" id="toc-modele-opisowe" class="nav-link" data-scroll-target="#modele-opisowe"><span class="header-section-number">2.1.1</span> Modele opisowe</a></li>
+  <li><a href="#modele-do-wnioskowania" id="toc-modele-do-wnioskowania" class="nav-link" data-scroll-target="#modele-do-wnioskowania"><span class="header-section-number">2.1.2</span> Modele do wnioskowania</a></li>
+  <li><a href="#modele-predykcyjne" id="toc-modele-predykcyjne" class="nav-link" data-scroll-target="#modele-predykcyjne"><span class="header-section-number">2.1.3</span> Modele predykcyjne</a></li>
+  </ul>
+</li>
+  <li><a href="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli" id="toc-związki-pomiędzy-typami-modeli" class="nav-link" data-scroll-target="#zwi%C4%85zki-pomi%C4%99dzy-typami-modeli"><span class="header-section-number">2.2</span> Związki pomiędzy typami modeli</a></li>
+  <li><a href="#proces-tworzenie-modelu" id="toc-proces-tworzenie-modelu" class="nav-link" data-scroll-target="#proces-tworzenie-modelu"><span class="header-section-number">2.3</span> Proces tworzenie modelu</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://miro.medium.com/max/1400/1*hXK4F_vFtG-fh2BrxDolFg.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="https://miro.medium.com/max/1400/1*hXK4F_vFtG-fh2BrxDolFg.webp" class="img-fluid"></a></p>
+</div></div><p>Modele są narzędziami matematycznymi, które mogą opisać system i uchwycić pewne wzorce w danych, które są im przekazywane. Modele mogą być wykorzystywane do różnych celów, w tym do przewidywania przyszłych zdarzeń, określania, czy istnieje różnica między kilkoma grupami, wspomagania wizualizacji opartej na mapach, odkrywania nowych wzorców w danych, które mogą być dalej badane, i innych. Użyteczność modelu zależy od jego zdolności do redukcji, czyli sprowadzenia złożonych relacji do prostszych pojęć. Wpływy podstawowych czynników mogą być uchwycone matematycznie w użyteczny sposób, np. w relacji, która może być wyrażona jako równanie.</p>
+<p>Od początku XXI wieku modele matematyczne stały się wszechobecne w naszym codziennym życiu, zarówno w sposób oczywisty, jak i bardziej subtelny. Typowy dzień dla wielu osób może obejmować sprawdzenie pogody, aby zobaczyć, kiedy jest dobry czas na spacer z psem, zamówienie produktu na stronie internetowej, napisanie wiadomości tekstowej do przyjaciela i jej autokorektę oraz sprawdzenie poczty elektronicznej. W każdym z tych przypadków istnieje duża szansa, że w grę wchodził jakiś rodzaj modelu. W niektórych przypadkach wkład modelu może być łatwo zauważalny (“Możesz być również zainteresowany zakupem produktu X”), podczas gdy w innych przypadkach wpływ może polegać na braku czegoś (np. spamu). Modele są wykorzystywane do wyboru ubrań, które mogą się spodobać klientowi, do identyfikacji substancji, która powinna być oceniana jako kandydat na lek, a nawet mogą być mechanizmem, którego używa nieuczciwa firma, aby uniknąć odkrycia samochodów, które nadmiernie zanieczyszczają środowisko.</p>
+<section id="typy-modeli" class="level2 page-columns page-full" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="typy-modeli">
+<span class="header-section-number">2.1</span> Typy modeli</h2>
+<p>Zanim przejdziemy dalej, opiszmy taksonomię rodzajów modeli, pogrupowanych według przeznaczenia. Taksonomia ta informuje zarówno o tym, jak model jest używany, jak i o wielu aspektach tego, jak model może być tworzony lub oceniany. Chociaż lista ta nie jest wyczerpująca, większość modeli należy do przynajmniej jednej z tych kategorii:</p>
+<section id="modele-opisowe" class="level3" data-number="2.1.1"><h3 data-number="2.1.1" class="anchored" data-anchor-id="modele-opisowe">
+<span class="header-section-number">2.1.1</span> Modele opisowe</h3>
+<p>Celem modelu opisowego jest opis lub zilustrowanie pewnych cech danych. Analiza może nie mieć innego celu niż wizualne podkreślenie jakiegoś trendu lub artefaktu (lub defektu) w danych.</p>
+<p>Na przykład, pomiary RNA na dużą skalę są możliwe od pewnego czasu przy użyciu mikromacierzy. Wczesne metody laboratoryjne umieszczały próbkę biologiczną na małym mikrochipie. Bardzo małe miejsca na chipie mogą mierzyć sygnał oparty na bogactwie specyficznej sekwencji RNA. Chip zawierałby tysiące (lub więcej) wyników, z których każdy byłby kwantyfikacją RNA związanego z procesem biologicznym. Jednakże na chipie mogłyby wystąpić problemy z jakością, które mogłyby prowadzić do słabych wyników. Na przykład, odcisk palca przypadkowo pozostawiony na części chipa mógłby spowodować niedokładne pomiary podczas skanowania.</p>
+<div id="fig-chip" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa
+</figcaption></figure>
+</div>
+<p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="references.html#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip" class="quarto-xref">Rysunek&nbsp;<span>2.1</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="references.html#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
+</section><section id="modele-do-wnioskowania" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="modele-do-wnioskowania">
+<span class="header-section-number">2.1.2</span> Modele do wnioskowania</h3>
+<p>Celem modelu inferencyjnego jest podjęcie decyzji dotyczącej pytania badawczego lub sprawdzenie określonej hipotezy, podobnie jak w przypadku testów statystycznych. Model inferencyjny zaczyna się od wcześniej zdefiniowanego przypuszczenia lub pomysłu na temat populacji i tworzy wniosek statystyczny, taki jak szacunek przedziału lub odrzucenie hipotezy.</p>
+<p>Na przykład, celem badania klinicznego może być potwierdzenie, że nowa terapia pozwala wydłużyć życie w porównaniu z istniejącą terapią lub brakiem leczenia. Jeśli kliniczny punkt końcowy dotyczyłby przeżycia pacjenta, hipoteza zerowa mogłaby brzmieć, że nowa terapia ma równą lub niższą medianę czasu przeżycia, a hipoteza alternatywna, że nowa terapia ma wyższą medianę czasu przeżycia. Jeśli ta próba byłaby oceniana przy użyciu tradycyjnego testowania istotności hipotezy zerowej poprzez modelowanie, testowanie istotności dałoby wartość <span class="math inline">\(p\)</span> przy użyciu jakiejś wcześniej zdefiniowanej metodologii opartej na zestawie założeń. Małe wartości dla wartości <span class="math inline">\(p\)</span> w wynikach modelu wskazywałyby na istnienie przesłanek, że nowa terapia pomaga pacjentom żyć dłużej. Duże wartości <span class="math inline">\(p\)</span> w wynikach modelu wskazywałyby, że nie udało się wykazać takiej różnicy; ten brak przesłanek mógłby wynikać z wielu powodów, w tym z tego, że terapia nie działa.</p>
+<p>Jakie są ważne aspekty tego typu analizy? Techniki modelowania inferencyjnego zazwyczaj dają pewien rodzaj danych wyjściowych o charakterze probabilistycznym, takich jak wartość <span class="math inline">\(p\)</span>, przedział ufności lub prawdopodobieństwo <em>a posteriori</em>. Zatem, aby obliczyć taką wielkość, należy przyjąć formalne założenia probabilistyczne dotyczące danych i procesów, które je wygenerowały. Jakość wyników modelowania statystycznego w dużym stopniu zależy od tych wcześniej określonych założeń, jak również od tego, w jakim stopniu obserwowane dane wydają się z nimi zgadzać. Najbardziej krytycznymi czynnikami są tutaj założenia teoretyczne: “Jeśli moje obserwacje były niezależne, a reszty mają rozkład X, to statystyka testowa Y może być użyta do uzyskania wartości <span class="math inline">\(p\)</span>. W przeciwnym razie wynikowa wartość <span class="math inline">\(p\)</span> może być niewłaściwa.”</p>
+<p>Jednym z aspektów analiz inferencyjnych jest to, że istnieje tendencja do opóźnionego sprzężenia zwrotnego w zrozumieniu, jak dobrze dane odpowiadają założeniom modelu. W naszym przykładzie badania klinicznego, jeśli znaczenie statystyczne (i kliniczne) wskazuje, że nowa terapia powinna być dostępna do stosowania przez pacjentów, mogą minąć lata zanim zostanie ona zastosowana w terenie i zostanie wygenerowana wystarczająca ilość danych do niezależnej oceny, czy pierwotna analiza statystyczna doprowadziła do podjęcia właściwej decyzji.</p>
+</section><section id="modele-predykcyjne" class="level3 page-columns page-full" data-number="2.1.3"><h3 data-number="2.1.3" class="anchored" data-anchor-id="modele-predykcyjne">
+<span class="header-section-number">2.1.3</span> Modele predykcyjne</h3>
+<p>Czasami modelowania używamy w celu uzyskania jak najdokładniejszej prognozy dla nowych danych. W tym przypadku głównym celem jest, aby przewidywane wartości (ang. <em>prediction</em>) miały najwyższą możliwą zgodność z prawdziwą wartością (ang. <em>observed</em>).</p>
+<p>Prostym przykładem może być przewidywanie przez sprzedającego książki, ile egzemplarzy danej książki powinno być zamówionych do jego sklepu w następnym miesiącu. Nadmierna prognoza powoduje marnowanie miejsca i pieniędzy z powodu nadmiaru książek. Jeśli przewidywanie jest mniejsze niż powinno, następuje utrata potencjału i mniejszy zysk.</p>
+<p>Celem tego typu modeli jest raczej estymacja niż wnioskowanie. Na przykład nabywca zwykle nie jest zainteresowany pytaniem typu “Czy w przyszłym miesiącu sprzedam więcej niż 100 egzemplarzy książki X?”, ale raczej “Ile egzemplarzy książki X klienci kupią w przyszłym miesiącu?”. Również, w zależności od kontekstu, może nie być zainteresowania tym, dlaczego przewidywana wartość wynosi X. Innymi słowy, bardziej interesuje go sama wartość niż ocena formalnej hipotezy związanej z danymi. Prognoza może również zawierać miary niepewności. W przypadku nabywcy książek podanie błędu prognozy może być pomocne przy podejmowaniu decyzji, ile książek należy kupić. Może też służyć jako metryka pozwalająca ocenić, jak dobrze zadziałała metoda predykcji.</p>
+<p>Jakie są najważniejsze czynniki wpływające na modele predykcyjne? Istnieje wiele różnych sposobów, w jaki można stworzyć model predykcyjny, dlatego w ocenie wpływu poszczególnych czynników kluczowej jest to jak model został opracowany.</p>
+<p>Model mechanistyczny może być wyprowadzony przy użyciu podstawowych zasad w celu uzyskania równania modelowego, które zależy od pewnych założeń. Na przykład przy przewidywaniu ilości leku, która znajduje się w organizmie danej osoby w określonym czasie, przyjmuje się pewne formalne założenia dotyczące sposobu podawania, wchłaniania, metabolizowania i eliminacji leku. Na tej podstawie można wykorzystać układ równań różniczkowych do wyprowadzenia określonego równania modelowego. Dane są wykorzystywane do oszacowania nieznanych parametrów tego równania, tak aby można było wygenerować prognozy. Podobnie jak modele inferencyjne, mechanistyczne modele predykcyjne w dużym stopniu zależą od założeń, które definiują ich równania modelowe. Jednakże, w przeciwieństwie do modeli inferencyjnych, łatwo jest formułować oparte na danych stwierdzenia dotyczące tego, jak dobrze model działa, na podstawie tego, jak dobrze przewiduje istniejące dane. W tym przypadku pętla sprzężenia zwrotnego dla osoby zajmującej się modelowaniem jest znacznie szybsza niż w przypadku testowania hipotez.</p>
+<p>Modele empiryczne są tworzone przy bardziej niejasnych założeniach. Modele te należą zwykle do kategorii uczenia maszynowego. Dobrym przykładem jest model K-najbliższych sąsiadów (KNN). Biorąc pod uwagę zestaw danych referencyjnych, nowa obserwacja jest przewidywana przy użyciu wartości K najbardziej podobnych danych w zestawie referencyjnym. Na przykład, jeśli kupujący książkę potrzebuje prognozy dla nowej książki, a dodatkowo posiada dane historyczne o istniejących książkach, wówczas model 5-najbliższych sąsiadów może posłużyć do estymacji liczby nowych książek do zakupu na podstawie liczby sprzedaży pięciu książek, które są najbardziej podobne do nowej książki (dla pewnej definicji “podobnej”). Model ten jest zdefiniowany jedynie przez samą funkcję predykcji (średnia z pięciu podobnych książek). Nie przyjmuje się żadnych teoretycznych lub probabilistycznych założeń dotyczących sprzedaży lub zmiennych, które są używane do określenia podobieństwa pomiędzy książkami. W rzeczywistości podstawową metodą oceny adekwatności modelu jest ocena jego precyzji przy użyciu istniejących danych. Jeśli model jest dobrym wyborem, predykcje powinny być zbliżone do wartości rzeczywistych.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://cdn.guff.com/site_0/media/33000/32179/items/072619be3f312eda10254537.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://cdn.guff.com/site_0/media/33000/32179/items/072619be3f312eda10254537.jpg" class="img-fluid"></a></p>
+</div></div></section></section><section id="związki-pomiędzy-typami-modeli" class="level2 page-columns page-full" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="związki-pomiędzy-typami-modeli">
+<span class="header-section-number">2.2</span> Związki pomiędzy typami modeli</h2>
+<p>Zwykły model regresji może należeć do którejś z tych trzech klas modeli, w zależności od sposobu jego wykorzystania:</p>
+<ul>
+<li><p>model regresji liniowej może być użyty do opisania trendów w danych;</p></li>
+<li><p>model analizy wariancji (ANOVA) jest specjalnym rodzajem modelu liniowego, który może być użyty do wnioskowania o prawdziwości hipotezy;</p></li>
+<li><p>model regresji liniowej wykorzystywany jako model predykcyjny.</p></li>
+</ul>
+<p>Istnieje dodatkowy związek między typami modeli, ponieważ konstrukcje, których celem był opis zjawiska lub wnioskowanie o nim, nie są zwykle wykorzystywane do predykcji, to nie należy całkowicie ignorować ich zdolności predykcyjnych. W przypadku pierwszych dwóch typów modeli, badacz skupia się głównie na wyselekcjonowaniu statystycznie istotnych zmiennych w modelu oraz spełnieniu szeregu założeń pozwalających na bezpieczne wnioskowanie. Takie podejście może być niebezpieczne, gdy istotność statystyczna jest używana jako jedyna miara jakości modelu. Jest możliwe, że ten statystycznie zoptymalizowany model ma słabą dokładność wyrażoną pewną miarą dopasowania. Wiemy więc, że model może nie być używany do przewidywania, ale jak bardzo należy ufać wnioskom z modelu, który ma istotne wartości <span class="math inline">\(p\)</span>, ale fatalną dokładność?</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://i.pinimg.com/564x/a7/d1/56/a7d1563affbc70083e252520bc25d86b.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://i.pinimg.com/564x/a7/d1/56/a7d1563affbc70083e252520bc25d86b.jpg" class="img-fluid"></a></p>
+</div></div><div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ważne
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Jeśli model nie jest dobrze dopasowany do danych, wnioski uzyskane na jego podstawie mogą być wysoce wątpliwe. Innymi słowy, istotność statystyczna może nie być wystarczającym dowodem na to, że model jest właściwy.</p>
+</div>
+</div>
+<p>Istnieje również podział samych modeli uczenia maszynowego. Po pierwsze, wiele modeli można skategoryzować jako nadzorowane lub nienadzorowane. Modele nienadzorowane to takie, które uczą się wzorców, skupisk lub innych cech danych, ale nie mają zmiennej wynikowej (nauczyciela). Analiza głównych składowych (PCA), analiza skupień czy autoenkodery są przykładami modeli nienadzorowanych; są one używane do zrozumienia relacji pomiędzy zmiennymi lub zestawami zmiennych bez wyraźnego związku pomiędzy predyktorami i wynikiem. Modele nadzorowane to takie, które mają zmienną wynikową. Regresja liniowa, sieci neuronowe i wiele innych metodologii należą do tej kategorii.</p>
+<p>W ramach modeli nadzorowanych można wyróżnić dwie główne podkategorie:</p>
+<ul>
+<li><p>regresyjne - przewidujące zmienną wynikową będącą zmienną o charakterze ilościowym;</p></li>
+<li><p>klasyfikacyjne - przewidujące zmienną wynikową będącą zmienną o charakterze jakościowym.</p></li>
+</ul>
+<p>Różne zmienne modelu mogą pełnić różne role, zwłaszcza w nadzorowanym uczeniu maszynowym. Zmienna zależna lub objaśniana (ang. <em>outcome</em>) to wartość przewidywana w modelach nadzorowanych. Zmienne niezależne, które są podłożem do tworzenia przewidywań wyniku, są również określane jako predyktory, cechy lub kowarianty (w zależności od kontekstu).</p>
+</section><section id="proces-tworzenie-modelu" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="proces-tworzenie-modelu">
+<span class="header-section-number">2.3</span> Proces tworzenie modelu</h2>
+<p>Po pierwsze, należy pamiętać o chronicznie niedocenianym procesie czyszczenia danych. Bez względu na okoliczności, należy przeanalizować dane pod kątem tego, czy są one odpowiednie do celów projektu i czy są właściwe. Te kroki mogą z łatwością zająć więcej czasu niż cała reszta procesu analizy danych (w zależności od okoliczności).</p>
+<p>Czyszczenie danych może również pokrywać się z drugą fazą eksploracji danych, często określaną jako eksploracyjna analiza danych (ang. <em>exploratory data analysis</em> - EDA). EDA wydobywa na światło dzienne to, jak różne zmienne są ze sobą powiązane, ich rozkłady, typowe zakresy zmienności i inne atrybuty. Dobrym pytaniem, które należy zadać w tej fazie, jest “Jak dotarłem do tych danych?”. To pytanie może pomóc zrozumieć, w jaki sposób dane, o których mowa, były próbkowane lub filtrowane i czy te operacje były właściwe. Na przykład podczas łączenia tabel bazy danych może dojść do nieudanego złączenia, które może przypadkowo wyeliminować jedną lub więcej subpopulacji.</p>
+<p>Wreszcie, przed rozpoczęciem procesu analizy danych, powinny istnieć jasne oczekiwania co do celu modelu i sposobu oceny jego wydajności. Należy zidentyfikować przynajmniej jedną metrykę wydajności z realistycznymi celami dotyczącymi tego, co można osiągnąć. Typowe metryki statystyczne, to dokładność klasyfikacji (ang. <em>accuracy</em>), odsetek poprawnie i niepoprawnie zaklasyfikowanych sukcesów (przez sukces rozumiemy wyróżnioną klasę), pierwiastek błędu średniokwadratowego i tak dalej. Należy rozważyć względne korzyści i wady tych metryk. Ważne jest również, aby metryka była zgodna z szerszymi celami analizy danych.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
+<figcaption>Typowy przebieg budowy modelu</figcaption></figure>
+</div>
+<p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="references.html#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
+<p>W ramach czynności zaznaczonych na szarym polu możemy wyróżnić:</p>
+<ul>
+<li>eksploracyjna analiza danych - to kombinacja pewnych obliczeń statystycznych i wizualizacji, w celu odpowiedzi na podstawowe pytania i postawienia kolejnych. Przykładowo jeśli na wykresie histogramu lub gęstości zmiennej wynikowej w zadaniu regresyjnym zauważymy wyraźną dwumodalność, to może ona świadczyć, że badana zbiorowość nie jest homogeniczna w kontekście analizowanej zmiennej, a co w konsekwencji może skłonić nas do oddzielnego modelowania zjawisk w każdej z podpopulacji.</li>
+<li>inżynieria cech (ang. <em>feature engineering</em>) - zespół czynności mający na celu transformację i selekcję cech w procesie budowania modelu.</li>
+<li>tuning modeli - zespół czynności mający na celu optymalizację hiperparametrów modeli, poprzez wybór różnych ich konfiguracji oraz porównanie efektów uczenia.</li>
+<li>ocena dopasowania modeli - ocena jakości otrzymanych modeli na podstawie miar oraz wykresów diagnostycznych.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
+<figcaption>Przykładowy przebieg budowy modelu</figcaption></figure>
+</div>
+<p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="references.html#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>                                                                                                                           <span class="op">~</span><span class="va">Thoughts</span>,             <span class="op">~</span><span class="va">Activity</span>,</span>
+<span>                                                             <span class="st">"The daily ridership values between stations are extremely correlated."</span>,                 <span class="st">"EDA"</span>,</span>
+<span>                                                                                <span class="st">"Weekday and weekend ridership look very different."</span>,                 <span class="st">"EDA"</span>,</span>
+<span>                                                           <span class="st">"One day in the summer of 2010 has an abnormally large number of riders."</span>,                 <span class="st">"EDA"</span>,</span>
+<span>                                                                             <span class="st">"Which stations had the lowest daily ridership values?"</span>,                 <span class="st">"EDA"</span>,</span>
+<span>                                                                    <span class="st">"Dates should at least be encoded as day-of-the-week, and year."</span>, <span class="st">"Feature Engineering"</span>,</span>
+<span>                                <span class="st">"Maybe PCA could be used on the correlated predictors to make it easier for the models to use them."</span>, <span class="st">"Feature Engineering"</span>,</span>
+<span>                                                     <span class="st">"Hourly weather records should probably be summarized into daily measurements."</span>, <span class="st">"Feature Engineering"</span>,</span>
+<span>                                      <span class="st">"Let’s start with simple linear regression, K-nearest neighbors, and a boosted decision tree."</span>,       <span class="st">"Model Fitting"</span>,</span>
+<span>                                                                                                <span class="st">"How many neighbors should be used?"</span>,        <span class="st">"Model Tuning"</span>,</span>
+<span>                                                                         <span class="st">"Should we run a lot of boosting iterations or just a few?"</span>,        <span class="st">"Model Tuning"</span>,</span>
+<span>                                                                           <span class="st">"How many neighbors seemed to be optimal for these data?"</span>,        <span class="st">"Model Tuning"</span>,</span>
+<span>                                                                            <span class="st">"Which models have the lowest root mean squared errors?"</span>,    <span class="st">"Model Evaluation"</span>,</span>
+<span>                                                                                                 <span class="st">"Which days were poorly predicted?"</span>,                 <span class="st">"EDA"</span>,</span>
+<span>  <span class="st">"Variable importance scores indicate that the weather information is not predictive. We’ll drop them from the next set of models."</span>,    <span class="st">"Model Evaluation"</span>,</span>
+<span>                                                     <span class="st">"It seems like we should focus on a lot of boosting iterations for that model."</span>,    <span class="st">"Model Evaluation"</span>,</span>
+<span>                                            <span class="st">"We need to encode holiday features to improve predictions on (and around) those dates."</span>, <span class="st">"Feature Engineering"</span>,</span>
+<span>                                                                                               <span class="st">"Let’s drop KNN from the model list."</span>,    <span class="st">"Model Evaluation"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">dt</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="eplldjbqdd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eplldjbqdd table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#eplldjbqdd thead, #eplldjbqdd tbody, #eplldjbqdd tfoot, #eplldjbqdd tr, #eplldjbqdd td, #eplldjbqdd th {
+  border-style: none;
+}
+
+#eplldjbqdd p {
+  margin: 0;
+  padding: 0;
+}
+
+#eplldjbqdd .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#eplldjbqdd .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#eplldjbqdd .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#eplldjbqdd .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#eplldjbqdd .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#eplldjbqdd .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#eplldjbqdd .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#eplldjbqdd .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#eplldjbqdd .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#eplldjbqdd .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#eplldjbqdd .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#eplldjbqdd .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#eplldjbqdd .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#eplldjbqdd .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#eplldjbqdd .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eplldjbqdd .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#eplldjbqdd .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#eplldjbqdd .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#eplldjbqdd .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eplldjbqdd .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#eplldjbqdd .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eplldjbqdd .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#eplldjbqdd .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eplldjbqdd .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eplldjbqdd .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eplldjbqdd .gt_left {
+  text-align: left;
+}
+
+#eplldjbqdd .gt_center {
+  text-align: center;
+}
+
+#eplldjbqdd .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#eplldjbqdd .gt_font_normal {
+  font-weight: normal;
+}
+
+#eplldjbqdd .gt_font_bold {
+  font-weight: bold;
+}
+
+#eplldjbqdd .gt_font_italic {
+  font-style: italic;
+}
+
+#eplldjbqdd .gt_super {
+  font-size: 65%;
+}
+
+#eplldjbqdd .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#eplldjbqdd .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#eplldjbqdd .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#eplldjbqdd .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#eplldjbqdd .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#eplldjbqdd .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#eplldjbqdd .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="header gt_col_headings">
+<th id="Thoughts" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Thoughts</th>
+<th id="Activity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Activity</th>
+</tr></thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">The daily ridership values between stations are extremely correlated.</td>
+<td class="gt_row gt_left" headers="Activity">EDA</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Weekday and weekend ridership look very different.</td>
+<td class="gt_row gt_left" headers="Activity">EDA</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">One day in the summer of 2010 has an abnormally large number of riders.</td>
+<td class="gt_row gt_left" headers="Activity">EDA</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Which stations had the lowest daily ridership values?</td>
+<td class="gt_row gt_left" headers="Activity">EDA</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">Dates should at least be encoded as day-of-the-week, and year.</td>
+<td class="gt_row gt_left" headers="Activity">Feature Engineering</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Maybe PCA could be used on the correlated predictors to make it easier for the models to use them.</td>
+<td class="gt_row gt_left" headers="Activity">Feature Engineering</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">Hourly weather records should probably be summarized into daily measurements.</td>
+<td class="gt_row gt_left" headers="Activity">Feature Engineering</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Let’s start with simple linear regression, K-nearest neighbors, and a boosted decision tree.</td>
+<td class="gt_row gt_left" headers="Activity">Model Fitting</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">How many neighbors should be used?</td>
+<td class="gt_row gt_left" headers="Activity">Model Tuning</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Should we run a lot of boosting iterations or just a few?</td>
+<td class="gt_row gt_left" headers="Activity">Model Tuning</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">How many neighbors seemed to be optimal for these data?</td>
+<td class="gt_row gt_left" headers="Activity">Model Tuning</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Which models have the lowest root mean squared errors?</td>
+<td class="gt_row gt_left" headers="Activity">Model Evaluation</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">Which days were poorly predicted?</td>
+<td class="gt_row gt_left" headers="Activity">EDA</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">Variable importance scores indicate that the weather information is not predictive. We’ll drop them from the next set of models.</td>
+<td class="gt_row gt_left" headers="Activity">Model Evaluation</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">It seems like we should focus on a lot of boosting iterations for that model.</td>
+<td class="gt_row gt_left" headers="Activity">Model Evaluation</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Thoughts">We need to encode holiday features to improve predictions on (and around) those dates.</td>
+<td class="gt_row gt_left" headers="Activity">Feature Engineering</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Thoughts">Let’s drop KNN from the model list.</td>
+<td class="gt_row gt_left" headers="Activity">Model Evaluation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa</span>
+<span class="glightbox-desc lightbox-desc-5">Typowy przebieg budowy modelu</span>
+<span class="glightbox-desc lightbox-desc-6">Przykładowy przebieg budowy modelu</span>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bolstadLowlevelAnalysisHighdensity2004" class="csl-entry" role="listitem">
+Bolstad, Benjamin Milo. 2004. <em>Low-Level <span>Analysis</span> of <span>High-Density Oligonucleotide Array Data</span>: <span>Background</span>, <span>Normalization</span> and <span>Summarization</span></em>. <span>University of California, Berkeley</span>.
+</div>
+<div id="ref-gentlemanBioinformaticsComputationalBiology2005" class="csl-entry" role="listitem">
+Gentleman, Robert, Vincent Carey, Wolfgang Huber, Sandrine Dudoit, i Rafael Irizarry. 2005. <em>Bioinformatics and <span>Computational Biology Solutions Using R</span> and <span>Bioconductor</span></em>. <span>Springer</span>.
+</div>
+<div id="ref-kuhnFeatureEngineeringSelection2021" class="csl-entry" role="listitem">
+Kuhn, Max, i Kjell Johnson. 2021. <em>Feature <span>Engineering</span> and <span>Selection</span>: <span>A Practical Approach</span> for <span>Predictive Models</span></em>. <span>Taylor &amp; Francis Group</span>.
+</div>
+<div id="ref-wickhamWelcomeTidyverse2019" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, i in. 2019. <span>„Welcome to the Tidyverse”</span>. <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Skopiowano!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Skopiowano!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link  aria-label=">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./infer.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Modele inferencyjne</span>">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Metody walidacji modeli statystycznych, Dariusz Majerek</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
+
+
+</body></html>

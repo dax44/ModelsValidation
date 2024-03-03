@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Metody walidacji modeli statystycznych - 6&nbsp; Praca z tidymodels</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./resampling2.html" rel="next">
+<link href="./resampling.html" rel="prev">
+<link href="./cover.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Brak wyników",
+    "search-matching-documents-text": "dopasowane dokumenty",
+    "search-copy-link-title": "Kopiuj link do wyszukiwania",
+    "search-hide-matches-text": "Ukryj dodatkowe dopasowania",
+    "search-more-match-text": "więcej dopasowań w tym dokumencie",
+    "search-more-matches-text": "więcej dopasowań w tym dokumencie",
+    "search-clear-button-title": "Wyczyść",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Anuluj",
+    "search-submit-button-title": "Zatwierdź",
+    "search-label": "Szukaj"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidymodels.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Metody walidacji modeli statystycznych</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://github.com/dax44/ModelsValidation/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://twitter.com/intent/tweet?url=%7Curl%7C" title="Twitter" class="quarto-navigation-tool px-1" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Przełącz tryb ciemny"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Przełącz tryb czytnika">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Szukaj"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./measures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./resampling2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tuning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grid_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parallel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./iterative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dimensionality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imbalance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
+   
+  <ul>
+<li><a href="#budowa-modelu" id="toc-budowa-modelu" class="nav-link active" data-scroll-target="#budowa-modelu"><span class="header-section-number">6.1</span> Budowa modelu</a></li>
+  <li><a href="#u%C5%BCycie-modelu" id="toc-użycie-modelu" class="nav-link" data-scroll-target="#u%C5%BCycie-modelu"><span class="header-section-number">6.2</span> Użycie modelu</a></li>
+  <li>
+<a href="#predykcja-z-modelu" id="toc-predykcja-z-modelu" class="nav-link" data-scroll-target="#predykcja-z-modelu"><span class="header-section-number">6.3</span> Predykcja z modelu</a>
+  <ul class="collapse">
+<li><a href="#rozszerzenia" id="toc-rozszerzenia" class="nav-link" data-scroll-target="#rozszerzenia"><span class="header-section-number">6.3.1</span> Rozszerzenia</a></li>
+  </ul>
+</li>
+  <li><a href="#przep%C5%82ywy-w-modelowaniu" id="toc-przepływy-w-modelowaniu" class="nav-link" data-scroll-target="#przep%C5%82ywy-w-modelowaniu"><span class="header-section-number">6.4</span> Przepływy w modelowaniu</a></li>
+  <li>
+<a href="#in%C5%BCynieria-cech" id="toc-inżynieria-cech" class="nav-link" data-scroll-target="#in%C5%BCynieria-cech"><span class="header-section-number">6.5</span> Inżynieria cech</a>
+  <ul class="collapse">
+<li><a href="#kodowanie-faktor%C3%B3w" id="toc-kodowanie-faktorów" class="nav-link" data-scroll-target="#kodowanie-faktor%C3%B3w"><span class="header-section-number">6.5.1</span> Kodowanie faktorów</a></li>
+  <li><a href="#interakcje-efekt%C3%B3w" id="toc-interakcje-efektów" class="nav-link" data-scroll-target="#interakcje-efekt%C3%B3w"><span class="header-section-number">6.5.2</span> Interakcje efektów</a></li>
+  <li><a href="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci" id="toc-nieliniowość-zależności" class="nav-link" data-scroll-target="#nieliniowo%C5%9B%C4%87-zale%C5%BCno%C5%9Bci"><span class="header-section-number">6.5.3</span> Nieliniowość zależności</a></li>
+  <li><a href="#ekstrakcja-cech" id="toc-ekstrakcja-cech" class="nav-link" data-scroll-target="#ekstrakcja-cech"><span class="header-section-number">6.5.4</span> Ekstrakcja cech</a></li>
+  <li><a href="#przepisy-wierszowe" id="toc-przepisy-wierszowe" class="nav-link" data-scroll-target="#przepisy-wierszowe"><span class="header-section-number">6.5.5</span> Przepisy wierszowe</a></li>
+  <li><a href="#przekszta%C5%82cenia-og%C3%B3lne" id="toc-przekształcenia-ogólne" class="nav-link" data-scroll-target="#przekszta%C5%82cenia-og%C3%B3lne"><span class="header-section-number">6.5.6</span> Przekształcenia ogólne</a></li>
+  <li><a href="#pomijanie-krok%C3%B3w" id="toc-pomijanie-kroków" class="nav-link" data-scroll-target="#pomijanie-krok%C3%B3w"><span class="header-section-number">6.5.7</span> Pomijanie kroków</a></li>
+  <li><a href="#role-zmiennych" id="toc-role-zmiennych" class="nav-link" data-scroll-target="#role-zmiennych"><span class="header-section-number">6.5.8</span> Role zmiennych</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Filozofia jaką przyjęli twórcy pakietu <code>tidymodels</code>, wraz z wszystkimi pakietami towarzyszącymi, miała na celu ujednolicenie procesu modelowania, bez względu na to jaki aktualnie model jest uczony. Jest to odpowiedź na powszechnie pojawiające się problemy z modelowaniem w R, gdzie praktycznie każdy model ma swoją charakterystyczną formę wywołania, predykcji czy podsumowania. Co więcej, zdarza się nierzadko, że ten sam rodzaj modelu, np. regresja liniowa, może być budowany z wykorzystaniem różnych “silników”: <code>stats</code>, <code>glm</code>, <code>glmnet</code> , <code>rstanarm</code>. W każdym z nich model będzie budowany nieco inaczej. Dodatkowo niektóre z wymienionych pakietów wymagają podczas uczenia ustalenia pewnych parametrów, jak rodzina rozkładów, parametr regularyzacji itp., co więcej w różnych pakietach mogą mieć inne nazwy.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/tw1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/tw1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
+</figure>
+</div>
+</div></div><p>Z pewnością powoduje to dodatkową komplikację podczas budowy modelu nie mającą bezpośredniego związku z modelowaniem. Podobnych przykładów różnic pomiędzy modelami można mnożyć. Nie tylko parametry modelu, czy funkcje wywoławcze się różnią, czasami format w jakim dane muszą być aplikowane do modelu - jako formuła czy jako para <span class="math inline">\((X,y)\)</span> - czy nawet sposób predykcji mogą się znacząco różnić pomiędzy modelami. To wszystko sprawiło, że autorzy pakiety <code>tidymodels</code> dokonali pewnego rodzaju standaryzacji modeli. Sprawiło, to że badacz już nie musi się zastanawiać nad różnym nazewnictwem tego samego parametru w różnych modelach tego samego typu, czy jak przeprowadzić predykcję aby w wyniku otrzymać prawdopodobieństwa poszczególnych klas. W tym rozdziale postaramy się przybliżyć ten sposób unifikacji w budowie modelu uczenia maszynowego.</p>
+<section id="budowa-modelu" class="level2 page-columns page-full" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="budowa-modelu">
+<span class="header-section-number">6.1</span> Budowa modelu</h2>
+<p>Oddzielny pakiet przeznaczony do budowy modeli zawarty w ekosystemie <code>tidymodels</code> o nazwie <code>parsnip</code> pozwala w uniwersalny sposób budować i dopasowywać modele. Wracając do przykładu modelu liniowego postaramy się pokazać wszystkie zalety tego podejścia. Choć regresje liniową możemy zbudować z wykorzystaniem 11 różnych pakietów, to my się ograniczymy tylko do <code>stats</code>, <code>glmnet</code> i <code>rstanarm.</code></p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># w wersji klasycznej należałoby je budować następująco</span></span>
+<span><span class="va">mod_stat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">...</span><span class="op">)</span></span>
+<span><span class="va">mod_glmnet</span> <span class="op">&lt;-</span> <span class="fu">glmnet</span><span class="op">(</span>x <span class="op">=</span> <span class="va">matrix</span>, y <span class="op">=</span> <span class="va">vector</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="va">mod_stan</span> <span class="op">&lt;-</span> <span class="fu">stan_glm</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>, <span class="va">...</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Już na poziomie definiowana modeli widzimy różnice w definicjach, np. glmnet potrzebuje danych w formacie <span class="math inline">\((X,y)\)</span>. W przypadku <code>tidymodels</code> podejście do określania modelu ma być bardziej zunifikowane:</p>
+<ol type="1">
+<li>Określ typ modelu na podstawie jego struktury matematycznej (np. regresja liniowa, las losowy, KNN, itp.).</li>
+<li>Określenie silnika do dopasowania modelu. Najczęściej odzwierciedla to pakiet, który powinien być użyty, jak <code>stan</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> lub <code>glmnet</code>. Są to modele same w sobie, a <code>parsnip</code> zapewnia spójne interfejsy, używając ich jako silników do modelowania.</li>
+<li>Jeśli jest to wymagane, zadeklaruj tryb pracy modelu<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Tryb odzwierciedla typ przewidywanego wyniku. Dla wyników liczbowych trybem jest regresja; dla wyników jakościowych jest to klasyfikacja. Jeśli algorytm modelu może realizować tylko jeden typ wyniku, takim jak regresja liniowa, tryb jest już ustawiony.</li>
+</ol>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;jest to bibliotek języka C++</p><p><sup>2</sup>&nbsp;klasyfikacja czy regresja</p></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># to samo z wykorzystaniem parsnip</span></span>
+<span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: glmnet </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"stan"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: stan </code></pre>
+</div>
+</div>
+<p>Po ustaleniu modeli można je podać uczeniu, za pomocą funkcji <code>fit</code> w przypadku gdy określaliśmy zależność formułą lub <code>fit_xy</code> gdy zmienne niezależne i zależna były określone oddzielnie. Drugi przypadek ma miejsce gdy w procedurze przygotowania danych mamy je w postaci <span class="math inline">\((X,y)\)</span>. Nie mniej jednak pakiet <code>parsnip</code> pozwala na użycie <code>fit</code> nawet gdy oryginalna funkcja wymagała podania zmiennych niezależnych i zależnej. Ponadto funkcja <code>translate</code> pozwala na przetłumaczenie modelu <code>parsnip</code> na język danego pakietu.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/parsnip.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/parsnip.png" class="img-fluid"></a></p>
+</div></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">translate</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: lm 
+
+Model fit template:
+stats::lm(formula = missing_arg(), data = missing_arg(), weights = missing_arg())</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">translate</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = 1
+
+Computational engine: glmnet 
+
+Model fit template:
+glmnet::glmnet(x = missing_arg(), y = missing_arg(), weights = missing_arg(), 
+    family = "gaussian")</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"stan"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">translate</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Computational engine: stan 
+
+Model fit template:
+rstanarm::stan_glm(formula = missing_arg(), data = missing_arg(), 
+    weights = missing_arg(), family = stats::gaussian, refresh = 0)</code></pre>
+</div>
+</div>
+<p>Wykorzystując dane <code>ames</code> dopasujemy cenę (<code>Sale_Price</code>) na podstawie długości i szerokości geograficznej domu.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
+<span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_form_fit</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lm_model</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_xy_fit</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lm_model</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">fit_xy</span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">ames_train</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">Longitude</span>, <span class="va">Latitude</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="va">ames_train</span> <span class="op">%&gt;%</span> <span class="fu">pull</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_form_fit</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+
+Call:
+stats::lm(formula = Sale_Price ~ Longitude + Latitude, data = data)
+
+Coefficients:
+(Intercept)    Longitude     Latitude  
+   -321.755       -2.091        3.120  </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_xy_fit</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+
+Call:
+stats::lm(formula = ..y ~ ., data = data)
+
+Coefficients:
+(Intercept)    Longitude     Latitude  
+   -321.755       -2.091        3.120  </code></pre>
+</div>
+</div>
+<p>Kolejną zaletą pakietu <code>parsnip</code> jest unifikacja nazw parametrów modeli. Dla przykładu gdybyśmy chcieli dopasować trzy różne modele lasów losowych, korzystając z pakietów <code>ranger</code>, <code>randomForest</code> i <code>sparklyr</code>, musielibyśmy określać parametry modelu używając za każdym razem innych nazw.</p>
+<div id="fig-pars1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pars1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pars1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;6.1: Różne sposoby określania parametrów modelu
+</figcaption></figure>
+</div>
+<p>W przypadku budowy w <code>parsnip</code> nazwy parametrów zostały zunifikowane:</p>
+<ul>
+<li>
+<code>mtry</code> - liczba wybranych predyktorów;</li>
+<li>
+<code>trees</code> - liczba drzew;</li>
+<li>
+<code>min_n</code> - minimalna liczba obserwacji aby dokonać podziału węzła.</li>
+</ul>
+<p>Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który nie koniecznie musi się znać na różnicach pomiędzy pakietami.</p>
+<p>Dla wspomnianego przykładu lasów losowych, model można zdefiniować następująco.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">1000</span>, min_n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">translate</span><span class="op">(</span><span class="op">)</span> <span class="co"># translate nie musi być używane, w tym przypadku było</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Random Forest Model Specification (regression)
+
+Main Arguments:
+  trees = 1000
+  min_n = 5
+
+Computational engine: ranger 
+
+Model fit template:
+ranger::ranger(x = missing_arg(), y = missing_arg(), weights = missing_arg(), 
+    num.trees = 1000, min.node.size = min_rows(~5, x), num.threads = 1, 
+    verbose = FALSE, seed = sample.int(10^5, 1))</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># użyte aby pokazać jak parsnip zamienił z unikalnej funkcji </span></span>
+<span><span class="co"># rand_forest na model ranger</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Główne parametry modelu są przekazywane przez główną funkcję (w przykładzie była to <code>rand_forest</code>), ale pozostałe parametry, charakterystyczne dla danego silnika można przekazać przez argumenty silnika.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">1000</span>, min_n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="co"># parametr verbose = T przekazany został oddzielnie</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Random Forest Model Specification (regression)
+
+Main Arguments:
+  trees = 1000
+  min_n = 5
+
+Engine-Specific Arguments:
+  verbose = TRUE
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+</section><section id="użycie-modelu" class="level2 page-columns page-full" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="użycie-modelu">
+<span class="header-section-number">6.2</span> Użycie modelu</h2>
+<p>Po utworzeniu i dopasowaniu modelu możemy wykorzystać wyniki na wiele sposobów; możemy chcieć narysować, podsumować lub w inny sposób zbadać model wyjściowy. W obiekcie modelu <code>parsnip</code> przechowywanych jest kilka wielkości, w tym dopasowany model. Można go znaleźć w elemencie o nazwie <code>fit</code>, który może być zwrócony za pomocą funkcji <code>extract_fit_engine</code>.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_form_fit</span> <span class="op">%&gt;%</span> <span class="fu">extract_fit_engine</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Sale_Price ~ Longitude + Latitude, data = data)
+
+Coefficients:
+(Intercept)    Longitude     Latitude  
+   -321.755       -2.091        3.120  </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_form_fit</span> <span class="op">%&gt;%</span> <span class="fu">extract_fit_engine</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            (Intercept)    Longitude     Latitude
+(Intercept)  214.194437  1.611665120 -1.505256159
+Longitude      1.611665  0.016726120 -0.001079561
+Latitude      -1.505256 -0.001079561  0.033404800</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nigdy nie przekazuj elementu <code>fit</code> modelu <code>parsnip</code> do funkcji <code>predict(lm_form_fit)</code>, tzn. nie używaj <code>predict(lm_form_fit$fit)</code>. Jeśli dane zostały wstępnie przetworzone w jakikolwiek sposób, zostaną wygenerowane nieprawidłowe predykcje (czasami bez błędów). Funkcja predykcji modelu bazowego nie ma pojęcia czy jakiekolwiek przekształcenia zostały dokonane na danych przed uruchomieniem modelu.</p>
+</div>
+</div>
+<p>Kolejną zaletę unifikacji <code>parsnip</code> możemy dostrzec przeglądając podsumowanie modeli. Nie zawsze wyniki modelu są przedstawiane w jednakowy sposób. Czasami różnice są niewielkie, gdy w jednym podsumowaniu zobaczymy <code>p-value</code> a w innym <code>Pr(&gt;|t|)</code> ale czasem mogą być większe. I o ile nie da się zunifikować wszystkich podsumować modeli, ponieważ zawierają różne elementy, to w pakiecie <code>parsnip</code> korzysta się z funkcji <code>tidy</code> pakietu <code>broom</code> do podsumowania modelu.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/broom_package.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="images/broom_package.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a></p>
+</figure>
+</div>
+</div></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tidy</span><span class="op">(</span><span class="va">lm_form_fit</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)  -322.      14.6       -22.0 1.57e-97
+2 Longitude      -2.09     0.129     -16.2 7.71e-56
+3 Latitude        3.12     0.183      17.1 1.17e-61</code></pre>
+</div>
+</div>
+<p>Oczywiście nie wszystkie modele da się w ten sposób podsumować.</p>
+</section><section id="predykcja-z-modelu" class="level2 page-columns page-full" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="predykcja-z-modelu">
+<span class="header-section-number">6.3</span> Predykcja z modelu</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://i.kym-cdn.com/photos/images/original/002/028/868/312.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="https://i.kym-cdn.com/photos/images/original/002/028/868/312.jpg" class="img-fluid" width="300"></a></p>
+</div></div><p>Predykcja z modelu jest kolejnym elementem, w którym unifikacja daje o sobie znać:</p>
+<ol type="1">
+<li>wyniki zawsze są w formacie <code>tibble</code>;</li>
+<li>nazwy kolumn są zawsze przewidywalne;</li>
+<li>w <code>tibble</code> wynikowej wierszy jest zawsze tyle samo co w zbiorze, na którym predykcja była przeprowadzona;</li>
+<li>kolejność wierszy jest ta sama co w oryginalnym zbiorze.</li>
+</ol>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_test_small</span> <span class="op">&lt;-</span> <span class="va">ames_test</span> <span class="op">%&gt;%</span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_form_fit</span>, new_data <span class="op">=</span> <span class="va">ames_test_small</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 1
+  .pred
+  &lt;dbl&gt;
+1  5.23
+2  5.29
+3  5.25
+4  5.25
+5  5.23</code></pre>
+</div>
+</div>
+<p>To sprawia, że łatwiej można korzystać z wyników predykcji, ponieważ zawsze jesteśmy pewni jaki układ ramki danych predykcji się pojawi.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_test_small</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">bind_cols</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_form_fit</span>, <span class="va">ames_test_small</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># Add 95% prediction intervals to the results:</span></span>
+<span>  <span class="fu">bind_cols</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_form_fit</span>, <span class="va">ames_test_small</span>, type <span class="op">=</span> <span class="st">"pred_int"</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  Sale_Price .pred .pred_lower .pred_upper
+       &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1       5.24  5.23        4.91        5.54
+2       5.33  5.29        4.97        5.60
+3       5.06  5.25        4.93        5.56
+4       5.26  5.25        4.93        5.56
+5       5.08  5.23        4.92        5.55</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6" title="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"><img src="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400" alt="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"></a></p>
+<figcaption>Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji</figcaption></figure>
+</div>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tree_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">decision_tree</span><span class="op">(</span>min_n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"rpart"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tree_fit</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">tree_model</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ames_test_small</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">bind_cols</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tree_fit</span>, <span class="va">ames_test_small</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  Sale_Price .pred
+       &lt;dbl&gt; &lt;dbl&gt;
+1       5.24  5.16
+2       5.33  5.31
+3       5.06  5.16
+4       5.26  5.16
+5       5.08  5.16</code></pre>
+</div>
+</div>
+<section id="rozszerzenia" class="level3 page-columns page-full" data-number="6.3.1"><h3 data-number="6.3.1" class="anchored" data-anchor-id="rozszerzenia">
+<span class="header-section-number">6.3.1</span> Rozszerzenia</h3>
+<p>Sam pakiet <code>parsnip</code> zawiera interfejsy do wielu modeli. Jednakże, dla ułatwienia instalacji i konserwacji pakietu, istnieją inne pakiety <code>tidymodels</code>, które posiadają definicje modeli nie zawartych w <code>parsnip</code>. Np. pakiet <code>discrim</code> posiada definicje modeli klasyfikacyjnych zwanych metodami analizy dyskryminacyjnej (takich jak liniowa lub kwadratowa analiza dyskryminacyjna). Lista wszystkich modeli, które mogą być używane z <code>parsnip</code> znajduje się na stronie <a href="https://www.tidymodels.org/find/" class="uri">https://www.tidymodels.org/find/</a>.</p>
+<p>Przydatnym narzędziem w budowaniu modeli z wykorzystaniem pakietu <code>tidymodels</code> jest dodatek programu Rstudio<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;addin instalowany razem z pakietem <code>parsnip</code></p></div><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/video1.mp4" class="lightbox" data-gallery="quarto-lightbox-gallery-7" data-glightbox="description: .lightbox-desc-7" title="Przykład działania parsnip_addin()"><video src="images/video1.mp4" class="img-fluid quarto-figure quarto-figure-center" controls=""></video></a><a href="images/video1.mp4">Przykład działania parsnip_addin()</a></p>
+<figcaption>Przykład działania parsnip_addin()</figcaption></figure>
+</div>
+</section></section><section id="przepływy-w-modelowaniu" class="level2 page-columns page-full" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="przepływy-w-modelowaniu">
+<span class="header-section-number">6.4</span> Przepływy w modelowaniu</h2>
+<p>Do tej pory o modelowaniu myśleliśmy w uproszczony sposób, ponieważ zakładaliśmy pewną strukturę modelu, dobieraliśmy silnik i uczyliśmy model na zbiorze treningowym. W “prawdziwych” zadaniach z zakresu uczenia maszynowego, proces ten jest znacznie bardziej złożony. W fazie, którą się powszechnie nazywa przygotowaniem danych (ang. <em>pre-processing</em>), dokonuje się transformacji, agregacji i imputacji danych w celu wykształcenia predyktorów o większej mocy predykcyjnej. W tej fazie dochodzi również do inżynierii cech<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> (ang. <em>feature engineering</em>), która ma na celu odfiltrowanie nieużytecznych cech zbioru danych.</p>
+<div class="no-row-height column-margin column-container"><p><sup>4</sup>&nbsp;chodzi o wszelkiego rodzaju modyfikacje i selekcje cech</p><p><sup>5</sup>&nbsp;szerzej o tej części będziemy mówić w dalszej części tej książki</p></div><p>Kolejna faza budowania poprawnego modelu to jego optymalizacja (ang. <em>tuning</em>). Często bowiem budowane modele zawierają hiperparametry, których nie oszacujemy podczas uczenia modelu, dlatego należy je skalibrować na podstawie innych metod<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
+<p>Również w końcowej fazie uczenia modelu tzw. <em>post-processing</em>-u dokonuje się jego modyfikacji, np. dobierając optymalny poziom odcięcia dla regresji logistycznej.</p>
+<p>To wszystko powoduje, że procedura modelowania składa się z kilku elementów. Do ich połączenia w ekosystemie <code>tidymodels</code> używa się przepływów (ang. <em>workflow</em>). Pakiet <code>workflow</code> zawiera szereg funkcji pozwalających skutecznie obsługiwać potoki <code>workflow</code><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><p><sup>6</sup>&nbsp;tak nazywa się funkcja do tworzenia potoku</p></div><p>Pomimo złożoności procedury modelowania można się dalej zastawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie. Postaramy się na przykładzie pokazać zasadności stosowania przepływów.</p>
+<p>Weźmy, dajmy na to, że predyktory w zbiorze danych są wysoce skorelowane. Wiem, że zjawisko współliniowości może przeszkodzić w modelowaniu zjawiska, np. za pomocą modelu liniowego, ponieważ znacznie rosną wówczas błędy standardowe estymacji. Jednym ze sposobów radzenia sobie z tym problemem jest zrzutowanie danych na nową przestrzeń mniej wymiarową za pomocą PCA. I gdyby PCA była metodą deterministyczną, czyli nie towarzyszyła jej żadna niepewność<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, to tę procedurę <em>preprocessingu</em> użyli byśmy do zbioru uczącego w procesie uczenia modelu, a w predykcji do zbioru testowego, bez konsekwencji w postaci niedokładnego oszacowania wartości wynikowych. Jednak PCA wiąże się z niepewnością, dlatego procedura ta powinna być włączona do przepływu, czyli być immanentną częścią procesu modelowania.</p>
+<div class="no-row-height column-margin column-container"><p><sup>7</sup>&nbsp;jak np. logarytmowanie zmiennej</p></div><p>Choć <code>workflow</code> pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie <code>workflow</code> do prostego ucznia modelu bez tych elementów.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># określenie modelu</span></span>
+<span><span class="va">lm_model</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># zebranie elementów w workflow</span></span>
+<span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">add_formula</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># workflow</span></span>
+<span><span class="va">lm_wflow</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Sale_Price ~ Longitude + Latitude
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># uczenie modelu</span></span>
+<span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu">fit</span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span>
+<span><span class="va">lm_fit</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Sale_Price ~ Longitude + Latitude
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:
+stats::lm(formula = ..y ~ ., data = data)
+
+Coefficients:
+(Intercept)    Longitude     Latitude  
+   -321.755       -2.091        3.120  </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_fit</span>, <span class="va">ames_test</span> <span class="op">%&gt;%</span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  .pred
+  &lt;dbl&gt;
+1  5.23
+2  5.29
+3  5.25</code></pre>
+</div>
+</div>
+<p>Pomimo tego, że model został zebrany w jedną całość (przepływ), to cały czas możemy modyfikować jego elementy. Przykładowo ujmijmy jeden z predyktorów.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_fit</span> <span class="op">%&gt;%</span> <span class="fu">update_formula</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Sale_Price ~ Longitude
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+</div>
+<p>Jeszcze inny przykład modyfikacji przepływu pokazuje przeformatowanie zależności opisywanej modelem.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lm_wflow</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">remove_formula</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">add_variables</span><span class="op">(</span>outcome <span class="op">=</span> <span class="va">Sale_Price</span>, predictors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Longitude</span>, <span class="va">Latitude</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_wflow</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Variables
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Outcomes: Sale_Price
+Predictors: c(Longitude, Latitude)
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">fit</span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Variables
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Outcomes: Sale_Price
+Predictors: c(Longitude, Latitude)
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:
+stats::lm(formula = ..y ~ ., data = data)
+
+Coefficients:
+(Intercept)    Longitude     Latitude  
+   -321.755       -2.091        3.120  </code></pre>
+</div>
+</div>
+<p>Genialną właściwością przepływów jest to, że gdy uczymy model wymagający zamiany zmiennych typu faktor na indykatory (ang. <em>dummy variables</em>), to przepływ to zrobi za nas. Przykładowo gdy uczymy model <code>boost_tree</code> z silnikiem <code>xgboost</code> to przepływ zamieni faktory na indykatory, a gdy uczymy z silnikiem <code>C5.0</code> to już nie, ponieważ ten pakiet tego nie wymaga. Są jednak sytuacje, w których niewielka interwencja w <code>workflow</code> jest potrzebna. Np. jeśli uczymy model z efektami losowymi.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: distance ~ Sex + (age | Subject)
+   Data: Orthodont
+REML criterion at convergence: 471.1635
+Random effects:
+ Groups   Name        Std.Dev. Corr 
+ Subject  (Intercept) 7.3912        
+          age         0.6943   -0.97
+ Residual             1.3100        
+Number of obs: 108, groups:  Subject, 27
+Fixed Effects:
+(Intercept)    SexFemale  
+     24.517       -2.145  </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tej formuły nie możemy bezpośrednio przekazać do workflow</span></span>
+<span><span class="co"># za pomocą add_formula</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/multilevelmod">multilevelmod</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">multilevel_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"lmer"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">multilevel_workflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Pass the data along as-is: </span></span>
+<span>  <span class="fu">add_variables</span><span class="op">(</span>outcome <span class="op">=</span> <span class="va">distance</span>, predictors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Sex</span>, <span class="va">age</span>, <span class="va">Subject</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">multilevel_spec</span>, </span>
+<span>            <span class="co"># This formula is given to the model</span></span>
+<span>            formula <span class="op">=</span> <span class="va">distance</span> <span class="op">~</span> <span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">multilevel_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">multilevel_workflow</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span></span>
+<span><span class="va">multilevel_fit</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Variables
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Outcomes: distance
+Predictors: c(Sex, age, Subject)
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear mixed model fit by REML ['lmerMod']
+Formula: distance ~ Sex + (age | Subject)
+   Data: data
+REML criterion at convergence: 471.1635
+Random effects:
+ Groups   Name        Std.Dev. Corr 
+ Subject  (Intercept) 7.3912        
+          age         0.6943   -0.97
+ Residual             1.3100        
+Number of obs: 108, groups:  Subject, 27
+Fixed Effects:
+(Intercept)    SexFemale  
+     24.517       -2.145  </code></pre>
+</div>
+</div>
+<p>Kolejną zaletą pakietu <code>workflowset</code> jest możliwość jednoczesnego uczenia wielu wariantów modeli.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># określamy potencjalne formuły modeli</span></span>
+<span><span class="va">location</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  longitude <span class="op">=</span> <span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span>,</span>
+<span>  latitude <span class="op">=</span> <span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Latitude</span>,</span>
+<span>  coords <span class="op">=</span> <span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>,</span>
+<span>  neighborhood <span class="op">=</span> <span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/workflowsets">workflowsets</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># zestaw przepływów do uczenia</span></span>
+<span><span class="va">location_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://workflowsets.tidymodels.org/reference/workflow_set.html">workflow_set</a></span><span class="op">(</span>preproc <span class="op">=</span> <span class="va">location</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lm <span class="op">=</span> <span class="va">lm_model</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">location_models</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A workflow set/tibble: 4 × 4
+  wflow_id        info             option    result    
+  &lt;chr&gt;           &lt;list&gt;           &lt;list&gt;    &lt;list&gt;    
+1 longitude_lm    &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+2 latitude_lm     &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+3 coords_lm       &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+4 neighborhood_lm &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># pierwszy przepływ</span></span>
+<span><span class="va">location_models</span><span class="op">$</span><span class="va">info</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  workflow   preproc model      comment
+  &lt;list&gt;     &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  
+1 &lt;workflow&gt; formula linear_reg ""     </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># wyciągamy informacje o przepływie trzecim</span></span>
+<span><span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_workflow</a></span><span class="op">(</span><span class="va">location_models</span>, id <span class="op">=</span> <span class="st">"coords_lm"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Sale_Price ~ Longitude + Latitude
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># uczymy modele</span></span>
+<span><span class="va">location_models</span> <span class="op">&lt;-</span></span>
+<span>   <span class="va">location_models</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu">mutate</span><span class="op">(</span>fit <span class="op">=</span> <span class="fu">map</span><span class="op">(</span><span class="va">info</span>, <span class="op">~</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">.x</span><span class="op">$</span><span class="va">workflow</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">ames_train</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wyniki uczenia wszystkich modeli</span></span>
+<span><span class="va">location_models</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A workflow set/tibble: 4 × 5
+  wflow_id        info             option    result     fit       
+  &lt;chr&gt;           &lt;list&gt;           &lt;list&gt;    &lt;list&gt;     &lt;list&gt;    
+1 longitude_lm    &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt; &lt;workflow&gt;
+2 latitude_lm     &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt; &lt;workflow&gt;
+3 coords_lm       &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt; &lt;workflow&gt;
+4 neighborhood_lm &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt; &lt;workflow&gt;</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># wynik uczenia modelu 1</span></span>
+<span><span class="va">location_models</span><span class="op">$</span><span class="va">fit</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+Sale_Price ~ Longitude
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:
+stats::lm(formula = ..y ~ ., data = data)
+
+Coefficients:
+(Intercept)    Longitude  
+   -181.180       -1.991  </code></pre>
+</div>
+</div>
+<p>Jeszcze jedną wygodną funkcja do oceny ostatecznego modelu jest funkcja <code>last_fit</code>, której używamy do ostatecznego modelu. Wywołanie jej powoduje uczenie modelu na zbiorze uczącym i predykcje na zbiorze testowym.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ostatnie dopasowanie</span></span>
+<span><span class="va">final_lm_res</span> <span class="op">&lt;-</span> <span class="fu">last_fit</span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_split</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># wynik dopasowania</span></span>
+<span><span class="va">final_lm_res</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits             id               .metrics .notes   .predictions .workflow 
+  &lt;list&gt;             &lt;chr&gt;            &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [2342/588]&gt; train/test split &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb63"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podsumowanie modelu</span></span>
+<span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">final_lm_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimator .estimate .config             
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 rmse    standard       0.163 Preprocessor1_Model1
+2 rsq     standard       0.131 Preprocessor1_Model1</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykjca na pierwszych pięciu obserwacjach</span></span>
+<span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_predictions</a></span><span class="op">(</span><span class="va">final_lm_res</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  id               .pred  .row Sale_Price .config             
+  &lt;chr&gt;            &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt; &lt;chr&gt;               
+1 train/test split  5.23     3       5.24 Preprocessor1_Model1
+2 train/test split  5.29     7       5.33 Preprocessor1_Model1
+3 train/test split  5.25    28       5.06 Preprocessor1_Model1
+4 train/test split  5.25    29       5.26 Preprocessor1_Model1
+5 train/test split  5.23    35       5.08 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/excel.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="images/excel.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></p>
+</figure>
+</div>
+</div></div></section><section id="inżynieria-cech" class="level2 page-columns page-full" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="inżynieria-cech">
+<span class="header-section-number">6.5</span> Inżynieria cech</h2>
+<p>Wspomniana już inżynieria cech jest bardzo ważnym elementem budowy modelu. Inżynieria cech polega na przeformatowaniu wartości predyktorów, aby ułatwić ich efektywne wykorzystanie przez model. Obejmuje to transformacje i kodowanie danych, aby najlepiej reprezentować ich ważne cechy. Wyobraź sobie, że masz dwa predyktory w zestawie danych, które mogą być bardziej efektywnie reprezentowane w modelu jako stosunek; stworzenie nowego predyktora ze stosunku oryginalnych dwóch jest prostym przykładem inżynierii cech.</p>
+<p>Weźmy lokalizację domu w Ames jako bardziej ambitny przykład. Istnieje wiele sposobów, w jakie te informacje przestrzenne mogą być eksponowane w modelu, w tym sąsiedztwo (miara jakościowa), długość/szerokość geograficzna, odległość do najbliższej szkoły lub Uniwersytetu Stanowego Iowa, i tak dalej. Wybierając sposób kodowania tych danych w modelowaniu, możemy wybrać opcję, która naszym zdaniem jest najbardziej związana z wynikiem. Oryginalny format danych, na przykład numeryczny (jak odległość) lub kategoryczny (np. sąsiedztwo), jest również czynnikiem decydującym o przeprowadzeniu inżynierii cech.</p>
+<p>Inne przykłady przetwarzania wstępnego w celu zbudowania lepszych cech dla modelowania to:</p>
+<ul>
+<li>Korelacja między predyktorami może być zmniejszona poprzez ekstrakcję cech lub usunięcie niektórych predyktorów.</li>
+<li>Gdy niektóre predyktory mają brakujące wartości, mogą być imputowane przy użyciu modelu pomocniczego.</li>
+<li>Wymuszenie symetryczności predyktorów poprzez zastosowanie transformacji.</li>
+</ul>
+<p>Inżynieria cech i wstępne przetwarzanie danych może również obejmować przeformatowanie, które może być wymagane przez model. Niektóre modele używają metryki odległości geometrycznej i w konsekwencji predyktory numeryczne powinny być wyśrodkowane i przeskalowane tak, aby wszystkie były w tych samych jednostkach<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. W przeciwnym razie wartości odległości byłyby zniekształcone przez skalę każdej kolumny.</p>
+<div class="no-row-height column-margin column-container"><p><sup>8</sup>&nbsp;przykładem może być model kNN</p></div><p>W ekosystemie <code>tidymodels</code> do realizowania inżynierii cech został dedykowany pakiet <code>recipes</code>.</p>
+<div id="exm-1" class="theorem example">
+<p><span class="theorem-title"><strong>Przykład 6.1</strong></span> Dla przykładu przeprowadzimy transformację kilku cech zbioru <code>ames</code>:</p>
+<ul>
+<li>sąsiedztwa (zmienna jakościowa o 29 stanach w zbiorze uczącym);</li>
+<li>powierzchnia mieszkalna nad poziomem terenu (ciągła);</li>
+<li>rok budowy;</li>
+<li>typ budynku.</li>
+</ul>
+<p>Ze względu na asymetrię rozkładu zmiennej <code>Gr_Liv_Area</code> załóżmy, że początkowy model regresji będzie opisany równaniem:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Gr_Liv_Area</span><span class="op">)</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Wywołanie tej funkcji dokonało by następujących czynności na predyktorach i zmiennej zależnej:</p>
+<ul>
+<li>zmienna <code>Sale_Price</code> została by przypisana jako zależna;</li>
+<li>zmienna <code>Gr_Liv_Area</code> została by przekształcona logarytmicznie;</li>
+<li>zmienne <code>Neighborhood</code> i <code>Bldg_Type</code> zostały by zamienione na indykatory stanów.</li>
+</ul>
+<p>Te czynności byłyby wykonane również podczas predykcji na podstawie tego modelu. Chcąc przeprowadzić te czynności w pakiecie <code>recipes</code> wykorzystujemy kroki <code>step_</code>:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">simple_ames</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span>,</span>
+<span>         data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">simple_ames</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Jaka jest przewaga stosowania przepisów, nad prostą formułą lub surowymi predykatorami? Jest ich kilka, w tym:</p>
+<ul>
+<li>Obliczenia te mogą być przetwarzane w różnych modelach, ponieważ nie są ściśle sprzężone z funkcją modelowania.</li>
+<li>Receptura umożliwia szerszy zestaw wyborów przetwarzania danych niż formuły mogą zaoferować.</li>
+<li>Składnia może być bardzo zwarta. Na przykład, <code>all_nominal_predictors</code> może być użyta do uchwycenia wielu zmiennych dla określonych typów przetwarzania, podczas gdy formuła wymagałaby wyraźnego wymienienia każdej z nich.</li>
+<li>Całe przetwarzanie danych może być uchwycone w pojedynczym obiekcie R zamiast w skryptach, które są powtarzane, a nawet rozłożone w różnych plikach.</li>
+</ul>
+</div>
+<p>Oczywiście przepisy można (a nawet trzeba) łączyć z przepływami.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lm_wflow</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">remove_variables</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># musieliśmy usunąć wcześniejszy preprocessing</span></span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">simple_ames</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_wflow</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+2 Recipe Steps
+
+• step_log()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Przez to, że przepis na <em>preprocessing</em> został zapisany w przepływie, to zostanie on zastosowany (co jest konieczne) również do zbioru testowego używając funkcji <code>predict</code>.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb72"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lm_fit</span>, <span class="va">ames_test</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  .pred
+  &lt;dbl&gt;
+1  5.17
+2  5.37
+3  5.08</code></pre>
+</div>
+</div>
+<p>Możemy się przekonać, że faktycznie przepisy zostały wykonane podczas uczenia modelu.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_recipe</a></span><span class="op">(</span>estimated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Otrzymany model jest postaci:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb75"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lm_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_fit_parsnip</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="co"># oczywiście parametrów modelu jest dużo więcej</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  term                       estimate std.error statistic   p.value
+  &lt;chr&gt;                         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)                -0.876    0.233        -3.76 1.77e-  4
+2 Gr_Liv_Area                 0.631    0.0141       44.8  2.50e-316
+3 Year_Built                  0.00208  0.000118     17.6  2.38e- 65
+4 Neighborhood_College_Creek  0.0135   0.00822       1.64 1.01e-  1
+5 Neighborhood_Old_Town      -0.0251   0.00837      -3.00 2.71e-  3</code></pre>
+</div>
+</div>
+<p>Dane są przekazywane do receptur na różnych etapach.</p>
+<p>Po pierwsze, podczas wywołania <code>recipe(..., dane)</code>, zestaw danych jest wykorzystywany do określenia typów danych dla każdej kolumny, tak aby można było użyć selektorów takich jak <code>all_numeric()</code> lub <code>all_numeric_predictors()</code>.</p>
+<p>Po drugie, podczas przygotowywania danych za pomocą <code>fit(workflow, data)</code>, dane treningowe są używane do wszystkich operacji estymacji, w tym czynności z przepisu, który może być częścią przepływu, od określenia poziomów czynników do obliczania komponentów PCA i wszystkiego pomiędzy.</p>
+<p>Wreszcie, gdy używamy <code>predict(workflow, new_data)</code>, żadne parametry modelu czy <em>preprocessingu</em>, jak te z przepisu, nie są ponownie szacowane przy użyciu wartości z <code>new_data</code>. Weźmy jako przykład centrowanie i skalowanie przy użyciu <code>step_normalize()</code>. Używając tego kroku, średnie i odchylenia standardowe z odpowiednich kolumn są określane z zestawu treningowego; nowe próbki w czasie predykcji są normalizowane przy użyciu tych wartości z treningu, gdy wywoływana jest funkcja <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ostrzeżenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wszystkie kroki przetwarzania wstępnego i inżynierii cech wykorzystują tylko dane treningowe. W przeciwnym razie wyciek informacji może negatywnie wpłynąć na wydajność modelu, gdy jest on używany z nowymi danymi.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="https://i.redd.it/d6o8hxvun6r61.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="https://i.redd.it/d6o8hxvun6r61.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></p>
+</figure>
+</div>
+</div></div><section id="kodowanie-faktorów" class="level3 page-columns page-full" data-number="6.5.1"><h3 data-number="6.5.1" class="anchored" data-anchor-id="kodowanie-faktorów">
+<span class="header-section-number">6.5.1</span> Kodowanie faktorów</h3>
+<p>Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (<code>step_nomalize()</code>), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (<code>step_holiday()</code>). W trakcie budowania modelu różne czynności będą wymagane, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor. Możemy to zrobić na kilka sposobów. Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory. Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym. Zamiana go na indykator powoduje powstanie stałej zmiennej, która jest bezużyteczna w uczeniu modelu. Można oczywiście przystąpić do imputacji takiej wartości, a sposobów na jej realizację jest bardzo wiele. Pomijając techniki korzystające z modeli pomocniczych, jak <code>step_impute_knn</code> czy <code>step_impute_bag</code>, można też zastąpić brak stałą wartością (<code>step_unknown</code>). Podobnie, jeśli przewidujemy, że w testowych danych może pojawić się nowy poziom czynnika, <code>step_novel()</code> może w tym celu przydzielić mu nowy poziom czynnika.</p>
+<p>Dodatkowo, funkcja <code>step_other()</code> może być użyta do przeanalizowania częstotliwości poziomów czynników w zbiorze treningowym i przekonwertowania rzadko występujących wartości do poziomu “inne”, z progiem, który można określić. Dobrym przykładem jest predyktor <code>Neighborhood</code> w naszych danych, pokazany na <a href="#fig-sasiad" class="quarto-xref">Rys.&nbsp;<span>6.2</span></a>.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb77"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_train</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Neighborhood</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_bar</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-sasiad" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sasiad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="tidymodels_files/figure-html/fig-sasiad-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" data-glightbox="description: .lightbox-desc-10"><img src="tidymodels_files/figure-html/fig-sasiad-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sasiad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Widzimy, że dwie dzielnice mają mniej niż pięć nieruchomości w danych treningowych (Landmark i Green Hills); w tym przypadku żadne domy w dzielnicy Landmark nie zostały włączone do zbioru testowego. Dla niektórych modeli może być problematyczne posiadanie zmiennych dummy z jednym niezerowym wpisem w kolumnie. Przynajmniej jest wysoce nieprawdopodobne, że te cechy byłyby ważne dla modelu. Jeśli dodamy <code>step_other(Neighborhood, threshold = 0.01)</code> do naszego przepisu, 1% dzielnic<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> zostanie wrzucony do nowego poziomu o nazwie “inne”. W tym zbiorze treningowym próg ten obejmie siedem sąsiedztw.</p>
+<div class="no-row-height column-margin column-container"><p><sup>9</sup>&nbsp;najrzadziej występujący</p></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb78"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">simple_ames</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span>,</span>
+<span>         data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>W kodowaniu zmiennych typu faktor na indykatory stanów zazwyczaj korzysta się z pełno-rzędowego przekształcenia, czyli dla faktora z 5 kategoriami, jeden traktuje się jako referencyjny, a pozostałe się koduje indykatorami. Powstała w ten sposób macierz modelu jest pełnego rzędu. Takie zachowanie jest domyślne używając funkcji <code>step_dummy</code>. Jednak niektóre modele wymagają kodowania <em>one-hot edcoding</em>, które tworzy indykatory wszystkich kategorii. Chcąc wywołać kodowanie <em>one-hot</em> używamy funkcji <code>step_dummy(…, one_hot = TRUE)</code>.</p>
+</section><section id="interakcje-efektów" class="level3 page-columns page-full" data-number="6.5.2"><h3 data-number="6.5.2" class="anchored" data-anchor-id="interakcje-efektów">
+<span class="header-section-number">6.5.2</span> Interakcje efektów</h3>
+<p>Jeszcze innym ciekawym zagadnieniem podczas budowy jest odpowiedź na pytanie, czy model powinien zawierać interakcje efektów. Pozwalają to na stwierdzenie czy wpływ jednej zmiennej na wynik jest modyfikowany przez inną zmienną. W naszym przykładzie domów <code>ames</code> też możemy podejrzewać istnienie interakcji, ponieważ na <a href="#fig-inter" class="quarto-xref">Rys.&nbsp;<span>6.3</span></a> można zauważyć inny charakter zależności dla różnych typów budynków.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb79"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ames_train</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Gr_Liv_Area</span>, y <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">Bldg_Type</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="va">lm</span>, formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, color <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Gross Living Area"</span>, y <span class="op">=</span> <span class="st">"Sale Price (USD)"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-inter" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-inter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="tidymodels_files/figure-html/fig-inter-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" data-glightbox="description: .lightbox-desc-11"><img src="tidymodels_files/figure-html/fig-inter-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;6.3: Potencjalne interakcje zmiennych <code>Gr_Liv_Area</code> i <code>Bldg_Type</code>
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>W pakiecie <code>recipes</code> istnieje oddzielny krok to tworzenia interakcji.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb80"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">simple_ames</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span>,</span>
+<span>         data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Gr_Liv_Area is on the log scale from a previous step</span></span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Można ją było również dodać w klasyczny sposób <code>+var1:var2</code> wpisując do formuły. Jednak w naszym przypadku ten sposób nie byłby poprawny, ponieważ to kazałoby funkcji <code>step_interact()</code>, aby stworzyła indykatory, a następnie utworzyć interakcje. W rzeczywistości, program nie miałby jak stworzyć interakcji, ponieważ powstałyby już nowe zmienne z prefiksem <code>Bldg_Type_</code>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ważne
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Powyższy przykład pokazuje, że kolejność włączania kroków jest bardzo ważna.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="https://starecat.com/content/wp-content/uploads/you-dont-matter-give-up-word-order-fail.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="https://starecat.com/content/wp-content/uploads/you-dont-matter-give-up-word-order-fail.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></p>
+</figure>
+</div>
+</div></div></section><section id="nieliniowość-zależności" class="level3 page-columns page-full" data-number="6.5.3"><h3 data-number="6.5.3" class="anchored" data-anchor-id="nieliniowość-zależności">
+<span class="header-section-number">6.5.3</span> Nieliniowość zależności</h3>
+<p>Bardzo często analizowane zależności są bardzo złożone i wykazują nieliniowy charakter. Jednym ze sposobów modelowania takich relacji jest aproksymacja ich za pomocą rozbudowanych modeli liniowych składających się z olbrzymiej liczby kombinacji liniowych predyktorów<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Innym sposobem obsługi tego zjawiska jest odpowiednie przekształcenie predyktorów, tak aby zamodelować złożony charakter zależności. Często w tym miejscu są polecane funkcje wielomianowe. Mają one jednak jedną poważną wadę, ponieważ o ile mogą dobrze opisywać zależność w analizowanej dziedzinie, to ekstrapolacja tej zależności często nie ma sensu. Z pomocą mogą przyjść splajny (ang. <em>spline</em>), czyli funkcje bazowe modeli GAM (ang. <em>Generalized Additive Models</em>). Nie wchodząc w szczegóły modeli GAM, splajny pozwalają na lokalną estymację zależności<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> .</p>
+<div class="no-row-height column-margin column-container"><p><sup>10</sup>&nbsp;przykładem może być sieć neuronowa</p><p><sup>11</sup>&nbsp;lokalną - czyli pomiędzy punktami węzłowymi, im więcej punktów węzłowych wym większa elastyczność splajnów</p></div><div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb81"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot_smoother</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">deg_free</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">ames_train</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Latitude</span>, y <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_smooth</span><span class="op">(</span></span>
+<span>      method <span class="op">=</span> <span class="va">lm</span>,</span>
+<span>      formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="va">deg_free</span><span class="op">)</span>,</span>
+<span>      color <span class="op">=</span> <span class="st">"lightblue"</span>,</span>
+<span>      se <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">deg_free</span>, <span class="st">"Spline Terms"</span><span class="op">)</span>,</span>
+<span>         y <span class="op">=</span> <span class="st">"Sale Price (USD)"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="op">(</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span> <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-splajn" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-splajn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="tidymodels_files/figure-html/fig-splajn-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" data-glightbox="description: .lightbox-desc-13"><img src="tidymodels_files/figure-html/fig-splajn-1.png" class="img-fluid figure-img" width="672"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-splajn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Rys.&nbsp;6.4: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Rozwiązanie z 2 i 100 punktami węzłowymi wykazuje niedopasowanie i nadmierne dopasowanie odpowiednio. Wybór 5 lub 20 punktów wydaje się dużo lepszy. Ostatecznie ten hiperparametr modelu można kalibrować, ale to nie będzie naszym celem w tym przykładzie.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> <span class="va">Latitude</span>,</span>
+<span>         data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="ekstrakcja-cech" class="level3" data-number="6.5.4"><h3 data-number="6.5.4" class="anchored" data-anchor-id="ekstrakcja-cech">
+<span class="header-section-number">6.5.4</span> Ekstrakcja cech</h3>
+<p>Inna powszechna metoda reprezentowania wielu cech jednocześnie nazywana jest ekstrakcją cech. Większość z tych technik tworzy nowe cechy z predyktorów, które wychwytują informacje w szerszym zestawie jako całości. Na przykład, analiza składowych głównych (PCA) próbuje wyodrębnić jak najwięcej oryginalnej informacji w zestawie predyktorów przy użyciu mniejszej liczby cech. PCA jest liniową metodą ekstrakcji, co oznacza, że każda nowa cecha jest liniową kombinacją oryginalnych predyktorów. Jednym z ciekawych aspektów PCA jest to, że każda z nowych cech, zwanych głównymi składowymi, jest nieskorelowana z innymi. Z tego powodu PCA może być bardzo skuteczne w redukcji korelacji pomiędzy predyktorami.</p>
+<p>W danych <code>ames</code>, kilka predyktorów mierzy powierzchnię nieruchomości, takich jak całkowita powierzchnia piwnicy (<code>Total_Bsmt_SF</code>), powierzchnia pierwszego piętra (<code>First_Flr_SF</code>), powierzchnia mieszkalna (<code>Gr_Liv_Area</code>), i tak dalej. PCA może być sposobem reprezentowania tych potencjalnie zbędnych zmiennych w mniej wymiarowej przestrzeni cech. Oprócz powierzchni mieszkalnej brutto, predyktory mają przyrostek SF w swoich nazwach (oznaczające stopy kwadratowe), więc krok przepisu PCA mógłby wyglądać tak:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb83"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">step_pca</span><span class="op">(</span><span class="fu">matches</span><span class="op">(</span><span class="st">"(SF$)|(Gr_Liv)"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Zauważmy, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali. W tym przypadku to prawda, ale często ten krok musi być poprzedzony przez <code>step_normalize()</code>.</p>
+<p>Istnieją kroki przepisów dla innych metod ekstrakcji, takie jak: analiza składowych niezależnych (ICA), faktoryzacja macierzy nieujemnej (NNMF), skalowanie wielowymiarowe (MDS), jednolita aproksymacja i projekcja (UMAP) i inne.</p>
+</section><section id="przepisy-wierszowe" class="level3" data-number="6.5.5"><h3 data-number="6.5.5" class="anchored" data-anchor-id="przepisy-wierszowe">
+<span class="header-section-number">6.5.5</span> Przepisy wierszowe</h3>
+<p>Do tej pory wspominaliśmy o krokach, które dotyczyły zmiennych, ale istnieją również takie, które dotyczą wierszy. Na przykład, techniki podpróbkowania (ang. <em>subsampling</em>) dla nierównowagi klas zmieniają proporcje klas w danych przekazywanych do modelu; techniki te często nie poprawiają ogólnej wydajności, ale mogą generować lepiej zachowujące się rozkłady przewidywanych prawdopodobieństw klas. O nich jednak będzie więcej w dalszej części tej książki.</p>
+<p>Istnieją inne funkcje krokowe, które są również oparte na wierszach, jak: <code>step_filter()</code>, <code>step_sample()</code>, <code>step_slice()</code> i <code>step_arrange()</code>.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tylko zestaw treningowy powinien być poddany wpływowi tych technik. Zbiór testowy lub inne próbki powinny być pozostawione w niezmienionym stanie, czyli ten krok przepisu nie powinien być do nich stosowany. Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument <code>skip</code> na wartość <code>TRUE.</code></p>
+</div>
+</div>
+</section><section id="przekształcenia-ogólne" class="level3" data-number="6.5.6"><h3 data-number="6.5.6" class="anchored" data-anchor-id="przekształcenia-ogólne">
+<span class="header-section-number">6.5.6</span> Przekształcenia ogólne</h3>
+<p>Przekształcenia, które mają swoje korzenie w pakiecie <code>dplyr</code> jak <code>step_mutate</code> też mogą być stosowane w przepisach. Najlepiej używać ich do prostych przekształceń, takich jak obliczanie stosunku dwóch zmiennych, (np. <code>Bedroom_AbvGr / Full_Bath)</code>, stosunek sypialni do łazienek dla danych mieszkaniowych <code>ames</code>.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Podczas korzystania z tego kroku należy zachować szczególną ostrożność, aby uniknąć wycieku danych w swoim wstępnym przetwarzaniu. Rozważmy na przykład transformację <code>x = w &gt; mean(w)</code>. W przypadku zastosowania go do nowych danych lub danych testowych, ta transformacja użyłaby średniej <code>w</code> z nowych danych, a nie średniej <code>w</code>z danych treningowych.</p>
+</div>
+</div>
+<p>Przepis może również obsługiwać dane, które nie mają tradycyjnej struktury. Na przykład pakiet <code>textrecipes</code> może zastosować do danych metody przetwarzania języka naturalnego. Kolumna wejściowa jest zwykle ciągiem tekstu, a różne kroki mogą być użyte do tokenizacji danych (np. podzielenia tekstu na osobne słowa), odfiltrowania tokenów i stworzenia nowych cech odpowiednich do modelowania.</p>
+</section><section id="pomijanie-kroków" class="level3" data-number="6.5.7"><h3 data-number="6.5.7" class="anchored" data-anchor-id="pomijanie-kroków">
+<span class="header-section-number">6.5.7</span> Pomijanie kroków</h3>
+<p>Na samym początku analiz zbioru <code>ames</code> przekształciliśmy zmienną <code>Sale_Price</code> logarytmicznie. Dlaczego nie użyliśmy zamiast tego kroku</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb84"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">step_log</span><span class="op">(</span><span class="va">Sale_Price</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Ponieważ użycie go powodowałoby problemy przy użyciu całego przepisu na nowych danych do predykcji. Często jest bowiem tak, że zmiennej zależnej w tym zbiorze nie ma.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zagrożenie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W przypadku prostych przekształceń kolumny (kolumn) wynikowej, zdecydowanie sugerujemy, aby operacje te były wykonywane poza przepisem.</p>
+</div>
+</div>
+<p>Również wspomniane wcześniej kroki redukujące nierównowagę klasową powinny być stosowane tylko do danych uczących. Wszystkie te kroki, które chcemy wyłączyć z przetwarzania podczas predykcji na nowych zbiorach, powinny mieć włączoną flagę <code>skip = TRUE</code>.</p>
+<p>Na koniec części dotyczącej inżynierii cech nauczymy model.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb85"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
+<span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">0.01</span>, id <span class="op">=</span> <span class="st">"my_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, <span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_wflow</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">lm_model</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html">fit</a></span><span class="op">(</span><span class="va">lm_wflow</span>, <span class="va">ames_train</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">estimated_recipe</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">lm_fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_recipe</a></span><span class="op">(</span>estimated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">estimated_recipe</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  number operation type     trained skip  id            
+   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;         
+1      1 step      log      TRUE    FALSE log_p06et     
+2      2 step      other    TRUE    FALSE my_id         
+3      3 step      dummy    TRUE    FALSE dummy_rztdZ   
+4      4 step      interact TRUE    FALSE interact_1T8XZ
+5      5 step      ns       TRUE    FALSE ns_eTRX6      </code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb87"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># możemy też wywołać szczegóły konkretnego kroku</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">estimated_recipe</span>, id <span class="op">=</span> <span class="st">"my_id"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 3
+   terms        retained           id   
+   &lt;chr&gt;        &lt;chr&gt;              &lt;chr&gt;
+ 1 Neighborhood North_Ames         my_id
+ 2 Neighborhood College_Creek      my_id
+ 3 Neighborhood Old_Town           my_id
+ 4 Neighborhood Edwards            my_id
+ 5 Neighborhood Somerset           my_id
+ 6 Neighborhood Northridge_Heights my_id
+ 7 Neighborhood Gilbert            my_id
+ 8 Neighborhood Sawyer             my_id
+ 9 Neighborhood Northwest_Ames     my_id
+10 Neighborhood Sawyer_West        my_id
+# ℹ 11 more rows</code></pre>
+</div>
+</div>
+</section><section id="role-zmiennych" class="level3 page-columns page-full" data-number="6.5.8"><h3 data-number="6.5.8" class="anchored" data-anchor-id="role-zmiennych">
+<span class="header-section-number">6.5.8</span> Role zmiennych</h3>
+<p>W modelach przedstawianych do tej pory dominowały dwie role zmiennych: predyktory (<code>predictor</code>) i zmienna zależna (<code>outcome</code>). W razie potrzeby można jednak przypisać inne role.</p>
+<p>Na przykład, w naszym zestawie danych <code>ames</code>, oryginalne dane zawierały kolumnę z adresem. Może być przydatne zachowanie tej kolumny w danych, aby po dokonaniu przewidywań można było szczegółowo zbadać problematyczne wyniki. Innymi słowy, kolumna może być ważna, nawet jeśli nie jest predyktorem lub wynikiem. Aby to rozwiązać, pomocne mogą być funkcje <code>add_role()</code>, <code>remove_role()</code> i <code>update_role()</code>. Na przykład, dla danych dotyczących cen domów, rola kolumny adresu ulicy może być zmodyfikowana przy użyciu:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb89"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">update_role</span><span class="op">(</span><span class="va">address</span>, new_role <span class="op">=</span> <span class="st">"street address"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Po tej zmianie kolumna adresu w ramce danych nie będzie już predyktorem, ale “adresem ulicy” zgodnie z przepisem. Każdy ciąg znaków może być użyty jako rola. Również kolumny mogą mieć wiele ról (dodatkowe role są dodawane poprzez <code>add_role()</code>) tak, że mogą być nadane w więcej niż jednym kontekście.</p>
+<p>Może to być pomocne, gdy dane są próbkowane. Pomaga to utrzymać kolumny, które nie są zaangażowane w dopasowanie modelu w tej samej ramce danych (a nie w zewnętrznym wektorze). Próbkowanie, opisane nieco później, tworzy alternatywne wersje danych głównie poprzez podpróbkowanie wierszy. Gdyby adres ulicy znajdował się w innej kolumnie, wymagane byłoby dodatkowe podpróbkowanie, co mogłoby prowadzić do bardziej skomplikowanego kodu i większego prawdopodobieństwa wystąpienia błędów.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://i.imgflip.com/5av52m.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="https://i.imgflip.com/5av52m.jpg" class="img-fluid" width="400"></a></p>
+</div></div><p>Wreszcie, wszystkie funkcje kroków mają pole <code>role</code>, które może przypisać role do wyników kroku. W wielu przypadkach kolumny, na które wpływa krok, zachowują swoją dotychczasową rolę. Na przykład, wywołania funkcji <code>step_log()</code> w naszym obiekcie <code>ames_rec</code> wpłynęły na kolumnę <code>Gr_Liv_Area</code>. Dla tego kroku, domyślnym zachowaniem jest zachowanie istniejącej roli dla tej kolumny, ponieważ nie jest tworzona żadna nowa kolumna. Jako przykład przeciwny, krok do tworzenia splajnów ustawia domyślnie nowe kolumny na rolę “predyktor”, ponieważ jest to zwykle sposób, w jaki kolumny splajnów są używane w modelu.</p>
+
+
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;6.1: Różne sposoby określania parametrów modelu</span>
+<span class="glightbox-desc lightbox-desc-6">Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji</span>
+<span class="glightbox-desc lightbox-desc-7">Przykład działania parsnip_addin()</span>
+<span class="glightbox-desc lightbox-desc-10">Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic</span>
+<span class="glightbox-desc lightbox-desc-11">Rys.&nbsp;6.3: Potencjalne interakcje zmiennych <code>Gr_Liv_Area</code> i <code>Bldg_Type</code></span>
+<span class="glightbox-desc lightbox-desc-13">Rys.&nbsp;6.4: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych</span>
+</div>
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Skopiowano!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Skopiowano!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./resampling.html" class="pagination-link  aria-label=" danymi="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./resampling2.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Metody próbkowania</span>">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Metody walidacji modeli statystycznych, Dariusz Majerek</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","openEffect":"zoom","closeEffect":"zoom","descPosition":"bottom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
+
+
+</body></html>
