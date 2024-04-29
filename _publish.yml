@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 999a6d75-081d-4f61-bbf5-fb1b05a6b1f1
+      url: 'https://majerek.quarto.pub/metody-walidacji-modeli-statystycznych'
