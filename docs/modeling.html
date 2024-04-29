@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.550">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 2&nbsp; Modelowanie statystyczne</title>
 <style>
@@ -344,7 +344,7 @@ window.Quarto = {
 <p>Na przykład, pomiary RNA na dużą skalę są możliwe od pewnego czasu przy użyciu mikromacierzy. Wczesne metody laboratoryjne umieszczały próbkę biologiczną na małym mikrochipie. Bardzo małe miejsca na chipie mogą mierzyć sygnał oparty na bogactwie specyficznej sekwencji RNA. Chip zawierałby tysiące (lub więcej) wyników, z których każdy byłby kwantyfikacją RNA związanego z procesem biologicznym. Jednakże na chipie mogłyby wystąpić problemy z jakością, które mogłyby prowadzić do słabych wyników. Na przykład, odcisk palca przypadkowo pozostawiony na części chipa mógłby spowodować niedokładne pomiary podczas skanowania.</p>
 <div id="fig-chip" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa
@@ -406,7 +406,7 @@ Ważne
 <p>Czyszczenie danych może również pokrywać się z drugą fazą eksploracji danych, często określaną jako eksploracyjna analiza danych (ang. <em>exploratory data analysis</em> - EDA). EDA wydobywa na światło dzienne to, jak różne zmienne są ze sobą powiązane, ich rozkłady, typowe zakresy zmienności i inne atrybuty. Dobrym pytaniem, które należy zadać w tej fazie, jest “Jak dotarłem do tych danych?”. To pytanie może pomóc zrozumieć, w jaki sposób dane, o których mowa, były próbkowane lub filtrowane i czy te operacje były właściwe. Na przykład podczas łączenia tabel bazy danych może dojść do nieudanego złączenia, które może przypadkowo wyeliminować jedną lub więcej subpopulacji.</p>
 <p>Wreszcie, przed rozpoczęciem procesu analizy danych, powinny istnieć jasne oczekiwania co do celu modelu i sposobu oceny jego wydajności. Należy zidentyfikować przynajmniej jedną metrykę wydajności z realistycznymi celami dotyczącymi tego, co można osiągnąć. Typowe metryki statystyczne, to dokładność klasyfikacji (ang. <em>accuracy</em>), odsetek poprawnie i niepoprawnie zaklasyfikowanych sukcesów (przez sukces rozumiemy wyróżnioną klasę), pierwiastek błędu średniokwadratowego i tak dalej. Należy rozważyć względne korzyści i wady tych metryk. Ważne jest również, aby metryka była zgodna z szerszymi celami analizy danych.</p>
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
 <figcaption>Typowy przebieg budowy modelu</figcaption></figure>
 </div>
 <p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="references.html#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
@@ -418,7 +418,7 @@ Ważne
 <li>ocena dopasowania modeli - ocena jakości otrzymanych modeli na podstawie miar oraz wykresów diagnostycznych.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
 <figcaption>Przykładowy przebieg budowy modelu</figcaption></figure>
 </div>
 <p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="references.html#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
@@ -446,23 +446,24 @@ Ważne
 <span><span class="va">dt</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="hodiqyuwkg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hodiqyuwkg table {
+<div>
+<div id="ooepgeymay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ooepgeymay table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hodiqyuwkg thead, #hodiqyuwkg tbody, #hodiqyuwkg tfoot, #hodiqyuwkg tr, #hodiqyuwkg td, #hodiqyuwkg th {
+#ooepgeymay thead, #ooepgeymay tbody, #ooepgeymay tfoot, #ooepgeymay tr, #ooepgeymay td, #ooepgeymay th {
   border-style: none;
 }
 
-#hodiqyuwkg p {
+#ooepgeymay p {
   margin: 0;
   padding: 0;
 }
 
-#hodiqyuwkg .gt_table {
+#ooepgeymay .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -488,12 +489,12 @@ Ważne
   border-left-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_caption {
+#ooepgeymay .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hodiqyuwkg .gt_title {
+#ooepgeymay .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -505,7 +506,7 @@ Ważne
   border-bottom-width: 0;
 }
 
-#hodiqyuwkg .gt_subtitle {
+#ooepgeymay .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -517,7 +518,7 @@ Ważne
   border-top-width: 0;
 }
 
-#hodiqyuwkg .gt_heading {
+#ooepgeymay .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -529,13 +530,13 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_bottom_border {
+#ooepgeymay .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_col_headings {
+#ooepgeymay .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -550,7 +551,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_col_heading {
+#ooepgeymay .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -570,7 +571,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#hodiqyuwkg .gt_column_spanner_outer {
+#ooepgeymay .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -582,15 +583,15 @@ Ważne
   padding-right: 4px;
 }
 
-#hodiqyuwkg .gt_column_spanner_outer:first-child {
+#ooepgeymay .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hodiqyuwkg .gt_column_spanner_outer:last-child {
+#ooepgeymay .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hodiqyuwkg .gt_column_spanner {
+#ooepgeymay .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -602,11 +603,11 @@ Ważne
   width: 100%;
 }
 
-#hodiqyuwkg .gt_spanner_row {
+#ooepgeymay .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hodiqyuwkg .gt_group_heading {
+#ooepgeymay .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -632,7 +633,7 @@ Ważne
   text-align: left;
 }
 
-#hodiqyuwkg .gt_empty_group_heading {
+#ooepgeymay .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -647,15 +648,15 @@ Ważne
   vertical-align: middle;
 }
 
-#hodiqyuwkg .gt_from_md > :first-child {
+#ooepgeymay .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hodiqyuwkg .gt_from_md > :last-child {
+#ooepgeymay .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hodiqyuwkg .gt_row {
+#ooepgeymay .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -674,7 +675,7 @@ Ważne
   overflow-x: hidden;
 }
 
-#hodiqyuwkg .gt_stub {
+#ooepgeymay .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -687,7 +688,7 @@ Ważne
   padding-right: 5px;
 }
 
-#hodiqyuwkg .gt_stub_row_group {
+#ooepgeymay .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -701,15 +702,15 @@ Ważne
   vertical-align: top;
 }
 
-#hodiqyuwkg .gt_row_group_first td {
+#ooepgeymay .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hodiqyuwkg .gt_row_group_first th {
+#ooepgeymay .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hodiqyuwkg .gt_summary_row {
+#ooepgeymay .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -719,16 +720,16 @@ Ważne
   padding-right: 5px;
 }
 
-#hodiqyuwkg .gt_first_summary_row {
+#ooepgeymay .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_first_summary_row.thick {
+#ooepgeymay .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hodiqyuwkg .gt_last_summary_row {
+#ooepgeymay .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -738,7 +739,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_grand_summary_row {
+#ooepgeymay .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -748,7 +749,7 @@ Ważne
   padding-right: 5px;
 }
 
-#hodiqyuwkg .gt_first_grand_summary_row {
+#ooepgeymay .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -758,7 +759,7 @@ Ważne
   border-top-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_last_grand_summary_row_top {
+#ooepgeymay .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -768,11 +769,11 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_striped {
+#ooepgeymay .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hodiqyuwkg .gt_table_body {
+#ooepgeymay .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -781,7 +782,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_footnotes {
+#ooepgeymay .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -795,7 +796,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_footnote {
+#ooepgeymay .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -804,7 +805,7 @@ Ważne
   padding-right: 5px;
 }
 
-#hodiqyuwkg .gt_sourcenotes {
+#ooepgeymay .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -818,7 +819,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-#hodiqyuwkg .gt_sourcenote {
+#ooepgeymay .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -826,63 +827,63 @@ Ważne
   padding-right: 5px;
 }
 
-#hodiqyuwkg .gt_left {
+#ooepgeymay .gt_left {
   text-align: left;
 }
 
-#hodiqyuwkg .gt_center {
+#ooepgeymay .gt_center {
   text-align: center;
 }
 
-#hodiqyuwkg .gt_right {
+#ooepgeymay .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hodiqyuwkg .gt_font_normal {
+#ooepgeymay .gt_font_normal {
   font-weight: normal;
 }
 
-#hodiqyuwkg .gt_font_bold {
+#ooepgeymay .gt_font_bold {
   font-weight: bold;
 }
 
-#hodiqyuwkg .gt_font_italic {
+#ooepgeymay .gt_font_italic {
   font-style: italic;
 }
 
-#hodiqyuwkg .gt_super {
+#ooepgeymay .gt_super {
   font-size: 65%;
 }
 
-#hodiqyuwkg .gt_footnote_marks {
+#ooepgeymay .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hodiqyuwkg .gt_asterisk {
+#ooepgeymay .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hodiqyuwkg .gt_indent_1 {
+#ooepgeymay .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hodiqyuwkg .gt_indent_2 {
+#ooepgeymay .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hodiqyuwkg .gt_indent_3 {
+#ooepgeymay .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hodiqyuwkg .gt_indent_4 {
+#ooepgeymay .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hodiqyuwkg .gt_indent_5 {
+#ooepgeymay .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -962,6 +963,7 @@ Ważne
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 </div>
@@ -1517,12 +1519,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./intro.html" class="pagination-link  aria-label=">
+      <a href="./intro.html" class="pagination-link" aria-label="Ekosystem">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./infer.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Modele inferencyjne</span>">
+      <a href="./infer.html" class="pagination-link" aria-label="Modele inferencyjne">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1539,7 +1541,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom","loop":false});
+</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","loop":false,"descPosition":"bottom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.550">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Metody walidacji modeli statystycznych - 3&nbsp; Modele inferencyjne</title>
 <style>
@@ -357,7 +357,7 @@ $ weight  &lt;dbl&gt; 0.8960034, 1.0825000, 0.5501000, 1.0864000, 1.0825000, 1.0
 </details><div class="cell-output-display">
 <div id="fig-hist1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-hist1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="infer_files/figure-html/fig-hist1-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-hist1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="infer_files/figure-html/fig-hist1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.1: Histogram wieku
@@ -396,16 +396,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  40.5
- 2         2  38.4
- 3         3  39.8
- 4         4  40.2
- 5         5  39.5
- 6         6  39.1
- 7         7  40.7
- 8         8  39.5
- 9         9  39.7
-10        10  41.0
+ 1         1  40.2
+ 2         2  39.9
+ 3         3  39.7
+ 4         4  39.5
+ 5         5  39.9
+ 6         6  39.7
+ 7         7  40.6
+ 8         8  39.9
+ 9         9  39.4
+10        10  39.9
 # ℹ 990 more rows</code></pre>
 </div>
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -433,7 +433,7 @@ Null Hypothesis: point
 </details><div class="cell-output-display">
 <div id="fig-hist3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-hist3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="infer_files/figure-html/fig-hist3-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-hist3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="infer_files/figure-html/fig-hist3-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufności dla średniej
@@ -456,7 +456,7 @@ Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufnoś
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1   0.658</code></pre>
+1   0.638</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>
@@ -467,7 +467,7 @@ Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufnoś
 </details><div class="cell-output-display">
 <div id="fig-hist4" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-hist4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-hist4-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4"><img src="infer_files/figure-html/fig-hist4-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-hist4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" data-glightbox="description: .lightbox-desc-4"><img src="infer_files/figure-html/fig-hist4-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.3: Histogram średnich bootstrapowych z zacienonym obszarem ilustrującym na ile ekstremalna jest średnia naszej próby w stosunku do średniej wynikającej z hipotezy zerowej
@@ -508,7 +508,7 @@ Wskazówka
 </details><div class="cell-output-display">
 <div id="fig-medians" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-medians-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-medians-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="infer_files/figure-html/fig-medians-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-medians-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5"><img src="infer_files/figure-html/fig-medians-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-medians-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.4: Porównanie rozkładów obu prób
@@ -552,7 +552,7 @@ Explanatory: gr (factor)
 </details><div class="cell-output-display">
 <div id="fig-median2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-median2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6"><img src="infer_files/figure-html/fig-median2-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-median2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6"><img src="infer_files/figure-html/fig-median2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.5: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
@@ -603,7 +603,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </details><div class="cell-output-display">
 <div id="fig-median3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-median3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="quarto-lightbox-gallery-7"><img src="infer_files/figure-html/fig-median3-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-median3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" data-glightbox="description: .lightbox-desc-7"><img src="infer_files/figure-html/fig-median3-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
@@ -628,7 +628,7 @@ Rys.&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
 <div class="cell-output-display">
 <div id="fig-median4" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-median4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-median4-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="infer_files/figure-html/fig-median4-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-median4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" data-glightbox="description: .lightbox-desc-8"><img src="infer_files/figure-html/fig-median4-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-median4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value
@@ -650,7 +650,7 @@ Rys.&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value
 </details><div class="cell-output-display">
 <div id="fig-chisq" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-chisq-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="quarto-lightbox-gallery-9"><img src="infer_files/figure-html/fig-chisq-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-chisq-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" data-glightbox="description: .lightbox-desc-9"><img src="infer_files/figure-html/fig-chisq-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.8: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu <span class="math inline">\(\chi^2\)</span> niezależności
@@ -696,7 +696,7 @@ Rys.&nbsp;3.8: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz 
 <div class="cell-output-display">
 <div id="fig-chisq2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-chisq2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-10" data-gallery="quarto-lightbox-gallery-10"><img src="infer_files/figure-html/fig-chisq2-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-chisq2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" data-glightbox="description: .lightbox-desc-10"><img src="infer_files/figure-html/fig-chisq2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.9: Porównanie rozkładu statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
@@ -722,7 +722,7 @@ Rys.&nbsp;3.9: Porównanie rozkładu statystyki testowej przy założeniu prawdz
 <div class="cell-output-display">
 <div id="fig-chisq3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chisq3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="infer_files/figure-html/fig-chisq3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-11" data-gallery="quarto-lightbox-gallery-11"><img src="infer_files/figure-html/fig-chisq3-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="infer_files/figure-html/fig-chisq3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" data-glightbox="description: .lightbox-desc-11"><img src="infer_files/figure-html/fig-chisq3-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chisq3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;3.10: Porównanie rozkładu teoretycznego statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
@@ -1285,12 +1285,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./modeling.html" class="pagination-link  aria-label=" statystyczne="">
+      <a href="./modeling.html" class="pagination-link" aria-label="Modelowanie statystyczne">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./measures.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Przegląd miar dopasowania modelu</span>">
+      <a href="./measures.html" class="pagination-link" aria-label="Przegląd miar dopasowania modelu">
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1307,7 +1307,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","selector":".lightbox","descPosition":"bottom","openEffect":"zoom"});
+</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"descPosition":"bottom","closeEffect":"zoom","openEffect":"zoom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
