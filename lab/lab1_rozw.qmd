@@ -1,0 +1,174 @@
+---
+title: "Rozwiązania tidyverse"
+author: "Dariusz Majerek"
+format: html
+execute: 
+  warning: false
+embed-resources: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+0. Rozgrzewka
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+
+flights %>% 
+  mutate(delay = arr_delay + dep_delay) %>% 
+  slice_max(delay)
+```
+
+
+1. Filtrowanie i agregacja z warunkami wielowymiarowymi
+
+```{r}
+flights %>%
+  group_by(year, month, day, origin) %>%
+  summarise(mean_delay = mean(dep_delay, na.rm = TRUE), .groups = "drop") %>%
+  filter(mean_delay > 10) %>%
+  arrange(desc(mean_delay))
+```
+
+2. Zagnieżdżone operacje grupowania
+
+```{r}
+mtcars %>%
+  rownames_to_column(var = "car_model") %>%
+  group_by(manufacturer = word(car_model, 1)) %>%
+  summarise(mean_mpg = mean(mpg), .groups = "drop") %>%
+  left_join(
+    mtcars %>%
+      rownames_to_column(var = "car_model") %>%
+      group_by(manufacturer = word(car_model, 1)) %>%
+      slice_max(hp, n = 1, with_ties = FALSE),
+    by = "manufacturer"
+  ) %>%
+  arrange(desc(mean_mpg))
+
+# or
+
+df_grouped_mean_mpg <- mtcars %>%
+  rownames_to_column(var = "car_model") %>%
+  group_by(manufacturer = word(car_model, 1)) %>%
+  summarise(mean_mpg = mean(mpg), .groups = "drop")
+
+df_grouped_max_hp <- mtcars %>%
+      rownames_to_column(var = "car_model") %>%
+      group_by(manufacturer = word(car_model, 1)) %>%
+      slice_max(hp, n = 1, with_ties = FALSE)
+
+merged_data <- left_join(df_grouped_mean_mpg, df_grouped_max_hp, by = "manufacturer")
+
+merged_data %>% 
+  arrange(desc(mean_mpg))
+```
+
+3. Tworzenie nowych zmiennych na podstawie wielu warunków
+
+```{r}
+diamonds %>%
+  mutate(
+    quality_label = case_when(
+      cut %in% c("Ideal", "Premium") & clarity %in% c("IF", "VVS1") ~ "high",
+      cut == "Very Good" ~ "medium",
+      TRUE ~ "low"
+    )
+  ) %>%
+  group_by(quality_label) %>%
+  summarise(mean_price = mean(price, na.rm = TRUE))
+```
+
+4. Porównanie dwóch zbiorów danych
+
+```{r}
+set.seed(44)
+orders <- tibble(order_id = 1:10, 
+                 customer_id = rep(1:5, each = 2), 
+                 order_value = rnorm(10, 100, 20))
+customers <- tibble(customer_id = 1:5, 
+                    segment = c("A", "B", "A", "C", "B"))
+
+orders %>%
+  left_join(customers, by = "customer_id") %>%
+  group_by(segment) %>%
+  summarise(mean_order = mean(order_value), median_order = median(order_value)) %>%
+  mutate(diff = mean_order - median_order) %>%
+  arrange(desc(diff))
+```
+
+5. Hierarchiczne rangowanie
+
+```{r}
+airquality %>%
+  group_by(Month) %>%
+  summarise(mean_temp = mean(Temp))
+
+airquality %>%
+  group_by(Month) %>%
+  mutate(temp_rank = rank(-Temp)) %>%
+  slice_min(temp_rank) %>% 
+  count(Month) %>%
+  arrange(desc(n))
+```
+
+6. Dynamiczne pivotowanie danych
+
+```{r}
+data <- tibble(
+  product = rep(c("A", "B", "C"), each = 3),
+  month = rep(c("Jan", "Feb", "Mar"), times = 3),
+  sales = c(100, 150, 130, 200, 180, 170, 50, 75, 90)
+)
+
+data %>%
+  pivot_wider(names_from = month, values_from = sales)
+```
+
+7. Analiza współwystępowania wartości
+
+```{r}
+storms %>%
+  count(year, name) %>%
+  filter(n >= 5) %>%
+  group_by(name) %>%
+  summarise(avg_wind = mean(n)) %>%
+  arrange(avg_wind)
+```
+
+8. Optymalizacja zapytań w dplyr
+
+```{r}
+starwars %>%
+  filter(!is.na(homeworld)) %>%
+  group_by(homeworld) %>%
+  summarise(avg_mass = mean(mass, na.rm = TRUE), unique_species = n_distinct(species)) %>%
+  filter(avg_mass > 80, unique_species >= 3) %>%
+  arrange(desc(unique_species))
+```
+
+9. Analiza wzorców czasowych
+
+```{r}
+library(babynames)
+
+babynames %>%
+  group_by(year) %>%
+  top_n(10, wt = n) %>%
+  ungroup() %>%
+  group_by(name) %>%
+  summarise(max_diff = max(abs(diff(n))), .groups = "drop") %>%
+  arrange(desc(max_diff)) %>%
+  head(1)
+
+babynames %>%
+  group_by(year, sex) %>%
+  filter(rank(-n) <= 10) %>%
+  count(year, sex) %>%
+  pivot_wider(names_from = sex, values_from = n, names_prefix = "Top_") %>%
+  filter(Top_M > 5)
+```
+
+

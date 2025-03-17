@@ -1,0 +1,111 @@
+---
+title: "Zadania tidyverse"
+author: "Dariusz Majerek"
+format: html
+execute: 
+  warning: false
+embed-resources: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+0. Rozgrzewka
+
+W zbiorze danych `flights` (z pakietu `nycflights13`) stwórz nową zmienną `delay`, która będzie suma opóźnienia przylotu i odlotu, a następnie znajdź lot opóźniony najbardziej.
+
+1. Filtrowanie i agregacja z warunkami wielowymiarowymi
+
+Masz zbiór danych `flights` (z pakietu `nycflights13`). Wybierz tylko te loty, które:
+
+- wystartowały ze wszystkich trzech nowojorskich lotnisk (JFK, LGA, EWR) w danym miesiącu,
+- miały średnie opóźnienie wylotu powyżej 10 minut w danym dniu.
+
+Zwróć wynik w postaci posortowanej tabeli (sortowanie opóźnieniu).
+
+2. Zagnieżdżone operacje grupowania
+
+Dla danych `mtcars`:
+
+- Oblicz średnie spalanie (`mpg`) dla każdego producenta (`rownames` jako marka samochodu).
+- W obrębie każdej grupy znajdź model o największej wartości `hp`.
+- Posortuj wyniki malejąco według średniego `mpg`.
+
+3. Tworzenie nowych zmiennych na podstawie wielu warunków
+
+W zbiorze `diamonds` (pakiet `ggplot2`) dodaj zmienną `quality_label`, która:
+
+- Przyjmuje wartość "high" dla diamentów z kategorią `cut` "Ideal" lub "Premium" oraz `clarity` "IF" lub "VVS1".
+- "medium" dla wszystkich pozostałych diamentów z `cut` "Very Good".
+- "low" dla reszty.
+
+Podsumuj średnią cenę (`price`) dla każdej grupy.
+
+4. Porównanie dwóch zbiorów danych
+
+Masz dwie tabele:
+
+```{r}
+library(tidyverse)
+orders <- tibble(order_id = 1:10, 
+                 customer_id = rep(1:5, each = 2), 
+                 order_value = rnorm(10, 100, 20))
+customers <- tibble(customer_id = 1:5, 
+                    segment = c("A", "B", "A", "C", "B"))
+```
+
+- `orders` zawierającą zamówienia z kolumnami `order_id`, `customer_id`, `order_value`
+- `customers` zawierającą klientów z kolumnami `customer_id`, `segment`
+
+Oblicz średnią wartość zamówienia dla każdego segmentu klientów. Znajdź `segment` z największą różnicą między medianą a średnią wartości zamówienia.
+
+5. Hierarchiczne rangowanie
+
+Dla danych `airquality`:
+
+- Oblicz średnią temperaturę (`Temp`) dla każdego miesiąca.
+- Dla każdego miesiąca przypisz każdemu dniu jego rangę według `Temp`, gdzie 1 oznacza najcieplejszy dzień.
+- Znajdź miesiąc z największą liczbą dni o randze 1 (najcieplejszych).
+
+6. Dynamiczne piwotowanie danych
+
+Masz dane o sprzedaży produktów w formacie:
+
+```{r}
+library(tidyverse)
+data <- tibble(
+  product = rep(c("A", "B", "C"), each = 3),
+  month = rep(c("Jan", "Feb", "Mar"), times = 3),
+  sales = c(100, 150, 130, 200, 180, 170, 50, 75, 90)
+)
+```
+
+Przekształć dane, tak aby kolumny odpowiadały miesiącom, a wiersze produktom.
+
+7. Analiza współwystępowania wartości
+
+Dla danych `storms` (pakiet `dplyr`):
+
+- Znajdź pary lat, w których wystąpiło co najmniej 5 burz o tej samej nazwie.
+- Dla tych lat oblicz średnią prędkość wiatru (`wind`) w burzach o tych nazwach.
+- Wyświetl wyniki posortowane rosnąco według średniej prędkości wiatru.
+
+
+8. Optymalizacja zapytań w `dplyr`
+
+Dane `starwars` (pakiet `dplyr`) zawierają informacje o postaciach z Gwiezdnych Wojen. Wykonaj następujące operacje:
+
+- Znajdź planety, na których średnia masa postaci przekracza 80 kg.
+- Posortuj planety malejąco według liczby unikalnych gatunków (`species`).
+- Wybierz tylko planety, na których jest co najmniej 3 różnych gatunków.
+
+Spróbuj wykonać operację zarówno w jednym zapytaniu `dplyr`, jak i w dwóch osobnych krokach, analizując różnice wydajnościowe.
+
+9. Analiza wzorców czasowych
+
+Dane `babynames` (pakiet `babynames`) zawierają popularność imion od 1880 roku. Wykonaj następujące kroki:
+
+- Wybierz imiona, które były w top 10 w dowolnym roku.
+- Znajdź imię, którego popularność zmieniła się najszybciej (największa różnica między dwoma kolejnymi latami).
+- Zidentyfikuj lata, w których w top 10 było więcej niż 5 męskich imion.
+ 
