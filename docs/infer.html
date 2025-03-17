@@ -326,7 +326,7 @@ window.Quarto = {
 </figure>
 </div>
 <p>Niezależnie od stawianej hipotezy, badacz zadaje sobie ten sam rodzaj pytania podczas wnioskowania statystycznego: czy efekt/różnica w obserwowanych danych jest rzeczywista, czy wynika z przypadku? Aby odpowiedzieć na to pytanie, analityk zakłada, że efekt w obserwowanych danych był spowodowany przypadkiem i nazywa to założenie hipotezą zerową<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Analityk następnie oblicza statystykę testową z danych, która opisuje obserwowany efekt. Może użyć tej statystyki testowej do obliczenia wartości <span class="math inline">\(p\)</span> poprzez zestawienie jej z rozkładem wynikającym z hipotezy zerowej. Jeśli to prawdopodobieństwo jest poniżej jakiegoś wcześniej zdefiniowanego poziomu istotności <span class="math inline">\(\alpha\)</span>, to analityk powinien odrzucić hipotezę zerową.</p>
-<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że “coś się dzieje”</p></div></div><p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;W rzeczywistości, może nie wierzyć, że hipoteza zerowa jest prawdziwa - hipoteza zerowa jest w opozycji do hipotezy alternatywnej, która zakłada, że efekt obecny w obserwowanych danych jest rzeczywiście spowodowany faktem, że “coś się dzieje”</p></div></div><p>Poniżej przedstawione zostaną przykłady zastosowania obu metod we wnioskowaniu. Można te zadania realizować na różne sposoby, my natomiast wykorzystamy bibliotekę <code>infer</code> <span class="citation" data-cites="infer">(<a href="references.html#ref-infer" role="doc-biblioref">Couch i in. 2021</a>)</span> ekosystemu <code>tidymodels</code> <span class="citation" data-cites="tidymodels">(<a href="references.html#ref-tidymodels" role="doc-biblioref">Kuhn i Wickham 2020</a>)</span>.</p>
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 3.1</strong></span> W tym przykładzie przetestujemy hipotezę o równości średniej z wartością teoretyczną. Dane weźmiemy ze zbioru <code>gss</code> biblioteki <code>infer</code> zawierającego podzbiór wyników spisu powszechnego przeprowadzonego w 1972 r. w USA.</p>
 <div class="cell">
@@ -396,16 +396,16 @@ Null Hypothesis: point
 # A tibble: 1,000 × 2
    replicate  stat
        &lt;int&gt; &lt;dbl&gt;
- 1         1  39.2
- 2         2  41.3
- 3         3  39.7
- 4         4  41.6
- 5         5  40.7
- 6         6  40.4
- 7         7  38.8
- 8         8  39.9
- 9         9  40.1
-10        10  39.9
+ 1         1  40.8
+ 2         2  40.1
+ 3         3  39.2
+ 4         4  39.4
+ 5         5  39.8
+ 6         6  39.7
+ 7         7  40.6
+ 8         8  40.9
+ 9         9  39.6
+10        10  40.5
 # ℹ 990 more rows</code></pre>
 </div>
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_mean</span> <span class="op">&lt;-</span> <span class="va">gss</span> <span class="op">|&gt;</span> </span>
@@ -447,7 +447,7 @@ Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufnoś
 <li>Następnie przesuwamy wszystkie obserwację o różnicę pomiędzy średnią teoretyczną a <span class="math inline">\(\bar{x}\)</span>, tak aby rozkład miał średnią teoretyczną.</li>
 <li>Losujemy próby bootstrapowe z nowej (przesuniętej) próby.</li>
 <li>Na podstawie prób bootstrapowych wyznaczamy rozkład średnich poszczególnych prób.</li>
-<li>Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż <span class="math inline">\(-\bar{x}\)</span> (patrz <a href="#fig-hist4" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-hist4</span></a>)</li>
+<li>Na koniec sprawdzamy prawdopodobieństwo (szacując na podstawie rozkładu bootstrapowego) otrzymania wartości większych niż średnia oryginalnej próby. Dla hipotez dwustronnych dodajemy do tego prawdopodobieństwo otrzymania wartości mniejszej niż <span class="math inline">\(-\bar{x}\)</span> (patrz <a href="#fig-hist4" class="quarto-xref">Rys.&nbsp;<span>3.3</span></a>)</li>
 </ol>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_mean</span> <span class="op">|&gt;</span> </span>
@@ -456,7 +456,7 @@ Rys.&nbsp;3.2: Histogram średnich bootstrapowych wraz z 95% przedziałem ufnoś
 <pre><code># A tibble: 1 × 1
   p_value
     &lt;dbl&gt;
-1   0.666</code></pre>
+1    0.63</code></pre>
 </div>
 </div>
 <p>Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od otrzymanej testem klasycznym.</p>
@@ -516,7 +516,7 @@ Rys.&nbsp;3.4: Porównanie rozkładów obu prób
 </div>
 </div>
 </div>
-<p>Jak widać na <a href="#fig-medians" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-medians</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p>
+<p>Jak widać na <a href="#fig-medians" class="quarto-xref">Rys.&nbsp;<span>3.4</span></a> rozkłady różnią się zarówno położeniem, jak i kształtem. Ponieważ różnią się kształtem to porównanie obu rozkładów testem Manna-Whitneya nie odpowie nam na pytanie o równość median<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, a jedynie o tym, że z prawdopodobieństwem 50% losowa wartość z jednego rozkładu będzie większa niż losowa wartość z drugiego rozkładu. Zatem wyniki testu klasycznego nie będą wystarczające do oceny postawionej hipotezy. Przeprowadzimy zatem test metodami próbkowania. Najpierw techniką bootstrapową.</p>
 <div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;tylko w przypadku jednakowych kształtów rozkładów test ten weryfikuje równość median</p></div></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
 <span><span class="va">sample_diff</span> <span class="op">&lt;-</span> <span class="va">dt</span> <span class="op">|&gt;</span> </span>
@@ -611,7 +611,7 @@ Rys.&nbsp;3.6: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
 </div>
 </div>
 </div>
-<p>Jak widać z <a href="#fig-median3" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-median3</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p>
+<p>Jak widać z <a href="#fig-median3" class="quarto-xref">Rys.&nbsp;<span>3.6</span></a> rozkład różnic pomiędzy medianami dla całkowicie losowego układu obserwacji<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> oscyluje wokół zera. Wartość różnicy median obliczona na podstawie próby -6.83 nie leży wewnątrz przedziału ufności dla różnicy, należy zatem odrzucić hipotezę o równości median. Potwierdza to wynik testu permutacyjnego.</p>
 <div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;co odzwierciedla warunek z hipotezy zerowej</p></div></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">null_diff</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">visualise</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -641,8 +641,10 @@ Rys.&nbsp;3.7: Rozkład różnic pomiędzy medianami z naniesionym p-value
 <p><span class="theorem-title"><strong>Przykład 3.3</strong></span> W tym przykładzie zbadamy niezależność cech <code>partyid</code> i <code>class</code> ze zbioru <code>gss</code>, które oznaczają odpowiednio sprzyjanie danej partii politycznej i subiektywną identyfikację klasy społeczno-ekonomicznej.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://indrajeetpatil.github.io/ggstatsplot/">ggstatsplot</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html">ggbarstats</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">gss</span>,</span>
-<span>           x <span class="op">=</span> <span class="va">class</span>,</span>
+<span><span class="va">gss</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="va">partyid</span>, <span class="va">class</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html">ggbarstats</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">class</span>,</span>
 <span>           y <span class="op">=</span> <span class="va">partyid</span>, </span>
 <span>           label <span class="op">=</span> <span class="st">"count"</span>,</span>
 <span>           proportion.test <span class="op">=</span> <span class="cn">F</span>, </span>
@@ -734,7 +736,7 @@ Rys.&nbsp;3.10: Porównanie rozkładu teoretycznego statystyki testowej przy za�
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-infer" class="csl-entry" role="listitem">
 Couch, Simon P., Andrew P. Bray, Chester Ismay, Evgeni Chasnovski, Benjamin S. Baumer, i Mine Çetinkaya-Rundel. 2021. <span>„<span></span>infer<span></span>: An <span></span>R<span></span> package for tidyverse-friendly statistical inference”</span> 6: 3661. <a href="https://doi.org/10.21105/joss.03661">https://doi.org/10.21105/joss.03661</a>.
 </div>

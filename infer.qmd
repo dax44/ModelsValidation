@@ -302,8 +302,10 @@ subiektywną identyfikację klasy społeczno-ekonomicznej.
 #| label: fig-chisq
 #| fig-cap: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu $\chi^2$ niezależności
 library(ggstatsplot)
-ggbarstats(data = gss,
-           x = class,
+gss |> 
+  drop_na(partyid, class) |> 
+  droplevels() %>% 
+  ggbarstats(x = class,
            y = partyid, 
            label = "count",
            proportion.test = F, 

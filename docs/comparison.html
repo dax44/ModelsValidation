@@ -421,7 +421,7 @@ window.Quarto = {
 4 splines_lm    &lt;tibble [1 × 4]&gt; &lt;opts[2]&gt; &lt;rsmp[+]&gt;</code></pre>
 </div>
 </div>
-<p>Funkcja <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code>, której wyniki przedstawiono na <a href="#fig-comp1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-comp1</span></a>, pokazuje przedziały ufności dla każdego modelu w kolejności od najlepszego do najgorszego. Jeśli chcemy się skupić na konkretnej mierze wybieramy <code>metric = 'rsq'</code>, inaczej funkcja dobierze domyślną metrykę.</p>
+<p>Funkcja <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code>, której wyniki przedstawiono na <a href="#fig-comp1" class="quarto-xref">Rys.&nbsp;<span>8.1</span></a>, pokazuje przedziały ufności dla każdego modelu w kolejności od najlepszego do najgorszego. Jeśli chcemy się skupić na konkretnej mierze wybieramy <code>metric = 'rsq'</code>, inaczej funkcja dobierze domyślną metrykę.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">four_models</span>, metric <span class="op">=</span> <span class="st">"rsq"</span><span class="op">)</span> <span class="op">+</span></span>

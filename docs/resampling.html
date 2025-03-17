@@ -340,7 +340,7 @@ Zagrożenie
 <span class="header-section-number">5.1</span> Podział na próbę uczącą i testową</h2>
 <p>Podstawowym podejściem w empirycznej walidacji modelu jest podział istniejącej puli danych na dwa odrębne zbiory - treningowy i testowy. Jedna część danych jest wykorzystywana do budowy i optymalizacji modelu. Ten zbiór treningowy stanowi zazwyczaj większość danych. Dane te służą dla budowy modelu, poszukiwania optymalnych parametrów modelu, czy selekcji cech istotnych z punktu widzenia predykcji.</p>
 <p>Pozostała część danych stanowi zbiór testowy. Jest on trzymany aż do momentu, gdy jeden lub dwa modele zostaną wybrane jako metody najlepiej opisujące badane zjawisko. Zestaw testowy jest wtedy używany jako ostateczny arbiter do określenia dopasowania modelu. Krytyczne jest, aby użyć zbiór testowy tylko raz; w przeciwnym razie staje się on częścią procesu modelowania.</p>
-<p>Proporcje w jakich należy podzielić dane nie są wyraźnie sprecyzowane. Choć istnieją prace, jak np. <span class="citation" data-cites="josephOptimalRatioData2022">Joseph (<a href="#ref-josephOptimalRatioData2022" role="doc-biblioref">2022</a>)</span>, które wskazują konkretne reguły podziału zbioru danych na uczący i testowy dla modeli regresyjnych, to nie ma co do tego powszechnej zgody, że tylko jedna proporcja jest optymalna. W przypadku wspomnianej metody próba testowa powinna stanowić</p>
+<p>Proporcje w jakich należy podzielić dane nie są wyraźnie sprecyzowane. Choć istnieją prace, jak np. <span class="citation" data-cites="josephOptimalRatioData2022">Joseph (<a href="references.html#ref-josephOptimalRatioData2022" role="doc-biblioref">2022</a>)</span>, które wskazują konkretne reguły podziału zbioru danych na uczący i testowy dla modeli regresyjnych, to nie ma co do tego powszechnej zgody, że tylko jedna proporcja jest optymalna. W przypadku wspomnianej metody próba testowa powinna stanowić</p>
 <p><span class="math display">\[
 \frac{1}{\sqrt{p}+1},
 \]</span></p>
@@ -507,9 +507,9 @@ Wskazówka
 <li>Na przykład w przypadku danych podłużnych (ang. <em>longitudinal data</em>) ta sama niezależna jednostka eksperymentalna może być mierzona w wielu punktach czasowych. Przykładem może być osoba w badaniu medycznym.</li>
 <li>Partia wyprodukowanego produktu może być również uważana za niezależną jednostkę doświadczalną. W powtarzanych pomiarach, replikowane punkty danych z partii są zbierane w wielu momentach.</li>
 <li>
-<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson i in. (<a href="#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
+<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson i in. (<a href="references.html#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
 </ul>
-<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których dla pojedyncze obserwacje mierzone są kilkukrotnie, losowanie przypadków wśród wierszy nie zapewni niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
+<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="references.html#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których dla pojedyncze obserwacje mierzone są kilkukrotnie, losowanie przypadków wśród wierszy nie zapewni niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -528,7 +528,7 @@ Ważne
 <p>Na początku tego rozdziału, ostrzegaliśmy przed używaniem tych samych danych do różnych zadań. W dalszej części tej książki omówimy metodologie wykorzystania danych, które pozwolą zmniejszyć ryzyko związane z tendencyjnością, nadmiernym dopasowaniem i innymi problemami.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-johnsonPolarAuxinTransport2018" class="csl-entry" role="listitem">
 Johnson, Dan, Phoebe Eckart, Noah Alsamadisi, Hilary Noble, Celia Martin, i Rachel Spicer. 2018. <span>„Polar Auxin Transport Is Implicated in Vessel Differentiation and Spatial Patterning During Secondary Growth in <span>Populus</span>”</span>. <em>American Journal of Botany</em> 105 (2): 186–96. <a href="https://doi.org/10.1002/ajb2.1035">https://doi.org/10.1002/ajb2.1035</a>.
 </div>
