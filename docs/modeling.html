@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 2&nbsp; Modelowanie statystyczne</title>
+<title>2&nbsp; Modelowanie statystyczne – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./modeling.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Modelowanie statystyczne</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -346,19 +342,15 @@ window.Quarto = {
 <span class="header-section-number">2.1.1</span> Modele opisowe</h3>
 <p>Celem modelu opisowego jest opis lub zilustrowanie pewnych cech danych. Analiza może nie mieć innego celu niż wizualne podkreślenie jakiegoś trendu lub artefaktu (lub defektu) w danych.</p>
 <p>Na przykład, pomiary RNA na dużą skalę są możliwe od pewnego czasu przy użyciu mikromacierzy. Wczesne metody laboratoryjne umieszczały próbkę biologiczną na małym mikrochipie. Bardzo małe miejsca na chipie mogą mierzyć sygnał oparty na bogactwie specyficznej sekwencji RNA. Chip zawierałby tysiące (lub więcej) wyników, z których każdy byłby kwantyfikacją RNA związanego z procesem biologicznym. Jednakże na chipie mogłyby wystąpić problemy z jakością, które mogłyby prowadzić do słabych wyników. Na przykład, odcisk palca przypadkowo pozostawiony na części chipa mógłby spowodować niedokładne pomiary podczas skanowania.</p>
-<div id="fig-chip" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-chip" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
-=======
-<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa"><img src="images/Zrzut ekranu 2023-01-29 o 10.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa
 </figcaption></figure>
 </div>
-<p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="references.html#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip" class="quarto-xref">Rysunek&nbsp;<span>2.1</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="references.html#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
+<p>Wczesną metodą oceny takich zagadnień były modele na poziomie sondy, czyli PLM <span class="citation" data-cites="bolstadLowlevelAnalysisHighdensity2004">(<a href="#ref-bolstadLowlevelAnalysisHighdensity2004" role="doc-biblioref">Bolstad 2004</a>)</span>. Tworzono model statystyczny, który uwzględniał pewne różnice w danych, takie jak chip, sekwencja RNA, typ sekwencji i tak dalej. Jeśli w danych występowałyby inne, nieznane czynniki, to efekty te zostałyby uchwycone w resztach modelu. Gdy reszty zostały wykreślone według ich lokalizacji na chipie, dobrej jakości chip nie wykazywałby żadnych wzorców. W przypadku wystąpienia problemu, pewien rodzaj wzorca przestrzennego byłby dostrzegalny. Często typ wzorca sugerowałby problem (np. odcisk palca) oraz możliwe rozwiązanie (wytarcie chipa i ponowne skanowanie, powtórzenie próbki, itp.) <a href="#fig-chip" class="quarto-xref">Rysunek&nbsp;<span class="quarto-unresolved-ref ref-noprefix">fig-chip</span></a> pokazuje zastosowanie tej metody dla dwóch mikromacierzy <span class="citation" data-cites="gentlemanBioinformaticsComputationalBiology2005">(<a href="#ref-gentlemanBioinformaticsComputationalBiology2005" role="doc-biblioref">Gentleman i in. 2005</a>)</span>. Obrazy pokazują dwie różne wartości kolorystyczne; obszary, które są ciemniejsze to miejsca, gdzie intensywność sygnału była większa niż oczekuje model, podczas gdy jaśniejszy kolor pokazuje wartości niższe niż oczekiwane. Lewy panel pokazuje w miarę losowy wzór, podczas gdy prawy panel wykazuje niepożądany artefakt w środku chipa.</p>
 </section><section id="modele-do-wnioskowania" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="modele-do-wnioskowania">
 <span class="header-section-number">2.1.2</span> Modele do wnioskowania</h3>
 <p>Celem modelu inferencyjnego jest podjęcie decyzji dotyczącej pytania badawczego lub sprawdzenie określonej hipotezy, podobnie jak w przypadku testów statystycznych. Model inferencyjny zaczyna się od wcześniej zdefiniowanego przypuszczenia lub pomysłu na temat populacji i tworzy wniosek statystyczny, taki jak szacunek przedziału lub odrzucenie hipotezy.</p>
@@ -414,14 +406,13 @@ Ważne
 <p>Czyszczenie danych może również pokrywać się z drugą fazą eksploracji danych, często określaną jako eksploracyjna analiza danych (ang. <em>exploratory data analysis</em> - EDA). EDA wydobywa na światło dzienne to, jak różne zmienne są ze sobą powiązane, ich rozkłady, typowe zakresy zmienności i inne atrybuty. Dobrym pytaniem, które należy zadać w tej fazie, jest “Jak dotarłem do tych danych?”. To pytanie może pomóc zrozumieć, w jaki sposób dane, o których mowa, były próbkowane lub filtrowane i czy te operacje były właściwe. Na przykład podczas łączenia tabel bazy danych może dojść do nieudanego złączenia, które może przypadkowo wyeliminować jedną lub więcej subpopulacji.</p>
 <p>Wreszcie, przed rozpoczęciem procesu analizy danych, powinny istnieć jasne oczekiwania co do celu modelu i sposobu oceny jego wydajności. Należy zidentyfikować przynajmniej jedną metrykę wydajności z realistycznymi celami dotyczącymi tego, co można osiągnąć. Typowe metryki statystyczne, to dokładność klasyfikacji (ang. <em>accuracy</em>), odsetek poprawnie i niepoprawnie zaklasyfikowanych sukcesów (przez sukces rozumiemy wyróżnioną klasę), pierwiastek błędu średniokwadratowego i tak dalej. Należy rozważyć względne korzyści i wady tych metryk. Ważne jest również, aby metryka była zgodna z szerszymi celami analizy danych.</p>
 <div class="quarto-figure quarto-figure-center">
-<<<<<<< HEAD
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
-=======
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
->>>>>>> 4245f9f (poprawki typo)
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Typowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 12.40.00.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Typowy przebieg budowy modelu"></a></p>
+</figure>
+</div>
 <figcaption>Typowy przebieg budowy modelu</figcaption></figure>
 </div>
-<p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="references.html#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
+<p>Proces badania danych może nie być prosty. <span class="citation" data-cites="wickhamWelcomeTidyverse2019">Wickham i in. (<a href="#ref-wickhamWelcomeTidyverse2019" role="doc-biblioref">2019</a>)</span> przedstawili doskonałą ilustrację ogólnego procesu analizy danych. Import danych i czyszczenie/porządkowanie są pokazane jako początkowe kroki. Kiedy rozpoczynają się kroki analityczne dla zrozumienia relacji panujących pomiędzy predyktorami i/lub zmienną wynikową, nie możemy wstępnie określić, ile czasu mogą zająć. Cykl transformacji, modelowania i wizualizacji często wymaga wielu iteracji.</p>
 <p>W ramach czynności zaznaczonych na szarym polu możemy wyróżnić:</p>
 <ul>
 <li>eksploracyjna analiza danych - to kombinacja pewnych obliczeń statystycznych i wizualizacji, w celu odpowiedzi na podstawowe pytania i postawienia kolejnych. Przykładowo jeśli na wykresie histogramu lub gęstości zmiennej wynikowej w zadaniu regresyjnym zauważymy wyraźną dwumodalność, to może ona świadczyć, że badana zbiorowość nie jest homogeniczna w kontekście analizowanej zmiennej, a co w konsekwencji może skłonić nas do oddzielnego modelowania zjawisk w każdej z podpopulacji.</li>
@@ -430,14 +421,13 @@ Ważne
 <li>ocena dopasowania modeli - ocena jakości otrzymanych modeli na podstawie miar oraz wykresów diagnostycznych.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
-<<<<<<< HEAD
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
-=======
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
->>>>>>> 4245f9f (poprawki typo)
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Przykładowy przebieg budowy modelu"><img src="images/Zrzut ekranu 2023-01-29 o 13.00.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Przykładowy przebieg budowy modelu"></a></p>
+</figure>
+</div>
 <figcaption>Przykładowy przebieg budowy modelu</figcaption></figure>
 </div>
-<p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="references.html#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
+<p>Przykładowo w pracy <span class="citation" data-cites="kuhnFeatureEngineeringSelection2021">Kuhn i Johnson (<a href="#ref-kuhnFeatureEngineeringSelection2021" role="doc-biblioref">2021</a>)</span> autorzy badając natężenie ruchu kolei publicznej w Chicago, przeprowadzili następujące rozumowanie podczas budowy modelu (oryginalna pisownia):</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
 <span>                                                                                                                           <span class="op">~</span><span class="va">Thoughts</span>,             <span class="op">~</span><span class="va">Activity</span>,</span>
@@ -462,41 +452,23 @@ Ważne
 <span><span class="va">dt</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<<<<<<< HEAD
-<div>
-<div id="ooepgeymay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ooepgeymay table {
-=======
-<div id="qpntyamwkl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qpntyamwkl table {
->>>>>>> 4245f9f (poprawki typo)
+<div id="ouecfmasha" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ouecfmasha table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-<<<<<<< HEAD
-#ooepgeymay thead, #ooepgeymay tbody, #ooepgeymay tfoot, #ooepgeymay tr, #ooepgeymay td, #ooepgeymay th {
+#ouecfmasha thead, #ouecfmasha tbody, #ouecfmasha tfoot, #ouecfmasha tr, #ouecfmasha td, #ouecfmasha th {
   border-style: none;
 }
 
-#ooepgeymay p {
-=======
-#qpntyamwkl thead, #qpntyamwkl tbody, #qpntyamwkl tfoot, #qpntyamwkl tr, #qpntyamwkl td, #qpntyamwkl th {
-  border-style: none;
-}
-
-#qpntyamwkl p {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha p {
   margin: 0;
   padding: 0;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_table {
-=======
-#qpntyamwkl .gt_table {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -522,20 +494,12 @@ Ważne
   border-left-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_caption {
-=======
-#qpntyamwkl .gt_caption {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_title {
-=======
-#qpntyamwkl .gt_title {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -547,11 +511,7 @@ Ważne
   border-bottom-width: 0;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_subtitle {
-=======
-#qpntyamwkl .gt_subtitle {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -563,11 +523,7 @@ Ważne
   border-top-width: 0;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_heading {
-=======
-#qpntyamwkl .gt_heading {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -579,21 +535,13 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_bottom_border {
-=======
-#qpntyamwkl .gt_bottom_border {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_col_headings {
-=======
-#qpntyamwkl .gt_col_headings {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -608,11 +556,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_col_heading {
-=======
-#qpntyamwkl .gt_col_heading {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -632,11 +576,7 @@ Ważne
   overflow-x: hidden;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_column_spanner_outer {
-=======
-#qpntyamwkl .gt_column_spanner_outer {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -648,27 +588,15 @@ Ważne
   padding-right: 4px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_column_spanner_outer:first-child {
+#ouecfmasha .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ooepgeymay .gt_column_spanner_outer:last-child {
+#ouecfmasha .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ooepgeymay .gt_column_spanner {
-=======
-#qpntyamwkl .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#qpntyamwkl .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#qpntyamwkl .gt_column_spanner {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -680,19 +608,11 @@ Ważne
   width: 100%;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_spanner_row {
+#ouecfmasha .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ooepgeymay .gt_group_heading {
-=======
-#qpntyamwkl .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#qpntyamwkl .gt_group_heading {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -718,11 +638,7 @@ Ważne
   text-align: left;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_empty_group_heading {
-=======
-#qpntyamwkl .gt_empty_group_heading {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -737,27 +653,15 @@ Ważne
   vertical-align: middle;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_from_md > :first-child {
+#ouecfmasha .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ooepgeymay .gt_from_md > :last-child {
+#ouecfmasha .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ooepgeymay .gt_row {
-=======
-#qpntyamwkl .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#qpntyamwkl .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#qpntyamwkl .gt_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -776,11 +680,7 @@ Ważne
   overflow-x: hidden;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_stub {
-=======
-#qpntyamwkl .gt_stub {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -793,11 +693,7 @@ Ważne
   padding-right: 5px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_stub_row_group {
-=======
-#qpntyamwkl .gt_stub_row_group {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -811,27 +707,15 @@ Ważne
   vertical-align: top;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_row_group_first td {
+#ouecfmasha .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ooepgeymay .gt_row_group_first th {
+#ouecfmasha .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ooepgeymay .gt_summary_row {
-=======
-#qpntyamwkl .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#qpntyamwkl .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#qpntyamwkl .gt_summary_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -841,28 +725,16 @@ Ważne
   padding-right: 5px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_first_summary_row {
-=======
-#qpntyamwkl .gt_first_summary_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_first_summary_row.thick {
+#ouecfmasha .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ooepgeymay .gt_last_summary_row {
-=======
-#qpntyamwkl .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#qpntyamwkl .gt_last_summary_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -872,11 +744,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_grand_summary_row {
-=======
-#qpntyamwkl .gt_grand_summary_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -886,11 +754,7 @@ Ważne
   padding-right: 5px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_first_grand_summary_row {
-=======
-#qpntyamwkl .gt_first_grand_summary_row {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -900,11 +764,7 @@ Ważne
   border-top-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_last_grand_summary_row_top {
-=======
-#qpntyamwkl .gt_last_grand_summary_row_top {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -914,19 +774,11 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_striped {
+#ouecfmasha .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ooepgeymay .gt_table_body {
-=======
-#qpntyamwkl .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#qpntyamwkl .gt_table_body {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -935,11 +787,7 @@ Ważne
   border-bottom-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_footnotes {
-=======
-#qpntyamwkl .gt_footnotes {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -953,11 +801,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_footnote {
-=======
-#qpntyamwkl .gt_footnote {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -966,11 +810,7 @@ Ważne
   padding-right: 5px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_sourcenotes {
-=======
-#qpntyamwkl .gt_sourcenotes {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -984,11 +824,7 @@ Ważne
   border-right-color: #D3D3D3;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_sourcenote {
-=======
-#qpntyamwkl .gt_sourcenote {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -996,124 +832,77 @@ Ważne
   padding-right: 5px;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_left {
+#ouecfmasha .gt_left {
   text-align: left;
 }
 
-#ooepgeymay .gt_center {
+#ouecfmasha .gt_center {
   text-align: center;
 }
 
-#ooepgeymay .gt_right {
-=======
-#qpntyamwkl .gt_left {
-  text-align: left;
-}
-
-#qpntyamwkl .gt_center {
-  text-align: center;
-}
-
-#qpntyamwkl .gt_right {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_font_normal {
+#ouecfmasha .gt_font_normal {
   font-weight: normal;
 }
 
-#ooepgeymay .gt_font_bold {
+#ouecfmasha .gt_font_bold {
   font-weight: bold;
 }
 
-#ooepgeymay .gt_font_italic {
+#ouecfmasha .gt_font_italic {
   font-style: italic;
 }
 
-#ooepgeymay .gt_super {
+#ouecfmasha .gt_super {
   font-size: 65%;
 }
 
-#ooepgeymay .gt_footnote_marks {
-=======
-#qpntyamwkl .gt_font_normal {
-  font-weight: normal;
-}
-
-#qpntyamwkl .gt_font_bold {
-  font-weight: bold;
-}
-
-#qpntyamwkl .gt_font_italic {
-  font-style: italic;
-}
-
-#qpntyamwkl .gt_super {
-  font-size: 65%;
-}
-
-#qpntyamwkl .gt_footnote_marks {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_asterisk {
-=======
-#qpntyamwkl .gt_asterisk {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-<<<<<<< HEAD
-#ooepgeymay .gt_indent_1 {
+#ouecfmasha .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ooepgeymay .gt_indent_2 {
+#ouecfmasha .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ooepgeymay .gt_indent_3 {
+#ouecfmasha .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ooepgeymay .gt_indent_4 {
+#ouecfmasha .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ooepgeymay .gt_indent_5 {
-=======
-#qpntyamwkl .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#qpntyamwkl .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#qpntyamwkl .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#qpntyamwkl .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#qpntyamwkl .gt_indent_5 {
->>>>>>> 4245f9f (poprawki typo)
+#ouecfmasha .gt_indent_5 {
   text-indent: 25px;
 }
+
+#ouecfmasha .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ouecfmasha div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
 </style>
-<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead><tr class="header gt_col_headings">
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings header">
 <th id="Thoughts" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Thoughts</th>
 <th id="Activity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Activity</th>
 </tr></thead>
@@ -1191,15 +980,9 @@ Ważne
 </div>
 </div>
 </div>
-</div>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;2.1: Ocena jakości odczytów z mikroczipa</span>
-<span class="glightbox-desc lightbox-desc-5">Typowy przebieg budowy modelu</span>
-<span class="glightbox-desc lightbox-desc-6">Przykładowy przebieg budowy modelu</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-bolstadLowlevelAnalysisHighdensity2004" class="csl-entry" role="listitem">
 Bolstad, Benjamin Milo. 2004. <em>Low-Level <span>Analysis</span> of <span>High-Density Oligonucleotide Array Data</span>: <span>Background</span>, <span>Normalization</span> and <span>Summarization</span></em>. <span>University of California, Berkeley</span>.
 </div>
@@ -1392,18 +1175,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1435,7 +1207,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1470,7 +1280,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1518,7 +1332,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1744,20 +1557,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./intro.html" class="pagination-link" aria-label="Ekosystem">
-=======
-      <a href="./intro.html" class="pagination-link  aria-label=">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Ekosystem</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./infer.html" class="pagination-link" aria-label="Modele inferencyjne">
-=======
-      <a href="./infer.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Modele inferencyjne</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1774,34 +1579,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","loop":false,"descPosition":"bottom"});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom","closeEffect":"zoom"});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

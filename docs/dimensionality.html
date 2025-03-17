@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 14&nbsp; Redukcja wymiarowości</title>
+<title>14&nbsp; Redukcja wymiarowości – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dimensionality.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Redukcja wymiarowości</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -393,13 +389,9 @@ window.Quarto = {
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu">tmwr_cols</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, tl.col <span class="op">=</span> <span class="st">"black"</span>, method <span class="op">=</span> <span class="st">"ellipse"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-dim1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-dim1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-dim1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="dimensionality_files/figure-html/fig-dim1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-dim1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="dimensionality_files/figure-html/fig-dim1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-dim1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;14.1: Macierz korelacji"><img src="dimensionality_files/figure-html/fig-dim1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dim1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.1: Macierz korelacji
@@ -445,13 +437,9 @@ Ostrzeżenie
 <code>bake(recipe, new_data)</code> stosuje operacje receptury do <code>new_data</code>.</li>
 </ul>
 <p>Rysunek 16.3 podsumowuje to.</p>
-<div id="fig-dim2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-dim2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4"><img src="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
-=======
-<a href="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" data-glightbox="description: .lightbox-desc-4"><img src="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Rys.&nbsp;14.2: Zasada działania poszczególnych czasowników"><img src="images/Zrzut ekranu 2023-03-11 o 17.14.23.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dim2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.2: Zasada działania poszczególnych czasowników
@@ -513,13 +501,9 @@ Wskazówka
 <span></span>
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-dim3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-dim3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-dim3-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="dimensionality_files/figure-html/fig-dim3-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-dim3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5"><img src="dimensionality_files/figure-html/fig-dim3-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-dim3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;14.3: Rozkłady przed i po transformacji"><img src="dimensionality_files/figure-html/fig-dim3-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dim3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.3: Rozkłady przed i po transformacji
@@ -574,13 +558,9 @@ Rys.&nbsp;14.3: Rozkłady przed i po transformacji
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-dim4" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-dim4" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-dim4-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="quarto-lightbox-gallery-7"><img src="dimensionality_files/figure-html/fig-dim4-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-dim4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" data-glightbox="description: .lightbox-desc-7"><img src="dimensionality_files/figure-html/fig-dim4-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-dim4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Rys.&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych głównych"><img src="dimensionality_files/figure-html/fig-dim4-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dim4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych głównych
@@ -599,13 +579,9 @@ Rys.&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych główn
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-pca1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-pca1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pca1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-pca1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="dimensionality_files/figure-html/fig-pca1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-pca1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" data-glightbox="description: .lightbox-desc-8"><img src="dimensionality_files/figure-html/fig-pca1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-pca1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Rys.&nbsp;14.5: Ładunki predyktorów w transformacji PCA"><img src="dimensionality_files/figure-html/fig-pca1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pca1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.5: Ładunki predyktorów w transformacji PCA
@@ -623,13 +599,9 @@ Rys.&nbsp;14.5: Ładunki predyktorów w transformacji PCA
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-pls1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-pls1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pls1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-pls1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="quarto-lightbox-gallery-9"><img src="dimensionality_files/figure-html/fig-pls1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-pls1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" data-glightbox="description: .lightbox-desc-9"><img src="dimensionality_files/figure-html/fig-pls1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-pls1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Rys.&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-pls1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pls1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorowane według klas
@@ -646,13 +618,9 @@ Rys.&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorow
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-pls2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-pls2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pls2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-pls2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-10" data-gallery="quarto-lightbox-gallery-10"><img src="dimensionality_files/figure-html/fig-pls2-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-pls2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" data-glightbox="description: .lightbox-desc-10"><img src="dimensionality_files/figure-html/fig-pls2-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-pls2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Rys.&nbsp;14.7: Ładunki predyktorów w transformacji PLS"><img src="dimensionality_files/figure-html/fig-pls2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pls2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.7: Ładunki predyktorów w transformacji PLS
@@ -669,13 +637,9 @@ Rys.&nbsp;14.7: Ładunki predyktorów w transformacji PLS
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Independent Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-ica1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-ica1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ica1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-ica1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-11" data-gallery="quarto-lightbox-gallery-11"><img src="dimensionality_files/figure-html/fig-ica1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-ica1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" data-glightbox="description: .lightbox-desc-11"><img src="dimensionality_files/figure-html/fig-ica1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-ica1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Rys.&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-ica1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ica1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokolorowane według klas
@@ -698,13 +662,9 @@ Rys.&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokoloro
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-umap1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-umap1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-umap1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-umap1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-12" data-gallery="quarto-lightbox-gallery-12"><img src="dimensionality_files/figure-html/fig-umap1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-umap1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" data-glightbox="description: .lightbox-desc-12"><img src="dimensionality_files/figure-html/fig-umap1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-umap1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Rys.&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-umap1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-umap1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolorowane według klas
@@ -720,13 +680,9 @@ Rys.&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolo
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP (supervised)"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-umap2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-umap2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-umap2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-umap2-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-13" data-gallery="quarto-lightbox-gallery-13"><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-umap2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" data-glightbox="description: .lightbox-desc-13"><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-umap2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-umap2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas
@@ -827,13 +783,9 @@ Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walida
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">0.02</span>, label <span class="op">=</span> <span class="va">wflow_id</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span>, hjust <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">lims</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-all-models1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-all-models1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-all-models1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="dimensionality_files/figure-html/fig-all-models1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-15" data-gallery="quarto-lightbox-gallery-15"><img src="dimensionality_files/figure-html/fig-all-models1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="dimensionality_files/figure-html/fig-all-models1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" data-glightbox="description: .lightbox-desc-15"><img src="dimensionality_files/figure-html/fig-all-models1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="dimensionality_files/figure-html/fig-all-models1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego"><img src="dimensionality_files/figure-html/fig-all-models1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-all-models1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
@@ -853,9 +805,9 @@ Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
 <pre><code># A tibble: 5 × 4
    rank  mean model               method
   &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt; 
-1     1 0.995 discrim_regularized pls   
-2     2 0.994 naive_Bayes         pls   
-3     3 0.994 mlp                 pls   
+1     1 0.995 mlp                 pls   
+2     2 0.995 discrim_regularized pls   
+3     3 0.994 naive_Bayes         pls   
 4     4 0.994 mlp                 basic 
 5     5 0.994 discrim_flexible    basic </code></pre>
 </div>
@@ -884,19 +836,6 @@ Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
 </div>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;14.1: Macierz korelacji</span>
-<span class="glightbox-desc lightbox-desc-4">Rys.&nbsp;14.2: Zasada działania poszczególnych czasowników</span>
-<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;14.3: Rozkłady przed i po transformacji</span>
-<span class="glightbox-desc lightbox-desc-7">Rys.&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych głównych</span>
-<span class="glightbox-desc lightbox-desc-8">Rys.&nbsp;14.5: Ładunki predyktorów w transformacji PCA</span>
-<span class="glightbox-desc lightbox-desc-9">Rys.&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorowane według klas</span>
-<span class="glightbox-desc lightbox-desc-10">Rys.&nbsp;14.7: Ładunki predyktorów w transformacji PLS</span>
-<span class="glightbox-desc lightbox-desc-11">Rys.&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokolorowane według klas</span>
-<span class="glightbox-desc lightbox-desc-12">Rys.&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolorowane według klas</span>
-<span class="glightbox-desc lightbox-desc-13">Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas</span>
-<span class="glightbox-desc lightbox-desc-15">Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego</span>
-</div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-koklu2020" class="csl-entry" role="listitem">
 Koklu, Murat, i Ilker Ali Ozkan. 2020. <span>„Multiclass Classification of Dry Beans Using Computer Vision and Machine Learning Techniques”</span>. <em>Computers and Electronics in Agriculture</em> 174 (lipiec): 105507. <a href="https://doi.org/10.1016/j.compag.2020.105507">https://doi.org/10.1016/j.compag.2020.105507</a>.
@@ -1084,18 +1023,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1127,7 +1055,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1162,7 +1128,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1210,7 +1180,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1436,20 +1405,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./example.html" class="pagination-link" aria-label="Poszukiwanie optymalnego modelu">
-=======
-      <a href="./example.html" class="pagination-link  aria-label=" optymalnego="" modelu="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Poszukiwanie optymalnego modelu</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./imbalance.html" class="pagination-link" aria-label="Nierównowaga klas w zadaniu klasyfikacyjnym">
-=======
-      <a href="./imbalance.html" class="pagination-link" aria-label="<span class='chapter-number'>15</span>&nbsp; <span class='chapter-title'>Nierównowaga klas w zadaniu klasyfikacyjnym</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Nierównowaga klas w zadaniu klasyfikacyjnym</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1466,34 +1427,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"openEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":false,"closeEffect":"zoom"});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

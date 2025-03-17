@@ -675,7 +675,6 @@ function showCopyLink(query, options) {
 // create the index
 var fuseIndex = undefined;
 var shownWarning = false;
-<<<<<<< HEAD
 
 // fuse index options
 const kFuseIndexOptions = {
@@ -688,8 +687,6 @@ const kFuseIndexOptions = {
   threshold: 0.1,
 };
 
-=======
->>>>>>> 4245f9f (poprawki typo)
 async function readSearchData() {
   // Initialize the search index on demand
   if (fuseIndex === undefined) {
@@ -700,21 +697,7 @@ async function readSearchData() {
       shownWarning = true;
       return;
     }
-<<<<<<< HEAD
     const fuse = new window.Fuse([], kFuseIndexOptions);
-=======
-    // create fuse index
-    const options = {
-      keys: [
-        { name: "title", weight: 20 },
-        { name: "section", weight: 20 },
-        { name: "text", weight: 10 },
-      ],
-      ignoreLocation: true,
-      threshold: 0.1,
-    };
-    const fuse = new window.Fuse([], options);
->>>>>>> 4245f9f (poprawki typo)
 
     // fetch the main search.json
     const response = await fetch(offsetURL("search.json"));
@@ -1292,7 +1275,11 @@ async function fuseSearch(query, fuse, fuseOptions) {
 
   // If we don't have a subfuse and the query is long enough, go ahead
   // and create a subfuse to use for subsequent queries
-  if (now - then > kFuseMaxWait && subSearchFuse === undefined) {
+  if (
+    now - then > kFuseMaxWait &&
+    subSearchFuse === undefined &&
+    resultsRaw.length < fuseOptions.limit
+  ) {
     subSearchTerm = query;
     subSearchFuse = new window.Fuse([], kFuseIndexOptions);
     resultsRaw.forEach((rr) => {

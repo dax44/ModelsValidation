@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 9&nbsp; Optymalizacja modeli</title>
+<title>9&nbsp; Optymalizacja modeli – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tuning.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Optymalizacja modeli</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -329,10 +325,10 @@ window.Quarto = {
 </header><p>Część modeli, jak np. regresja liniowa, posiada wszystkie parametry, które da się oszacować na podstawie zbioru uczącego. Są też modele, których parametry (przynajmniej część z nich) nie da się oszacować na podstawie próby. Przykładem może być model kNN, w którym <span class="math inline">\(k\)</span> jest parametrem, którego wartość nie jest estymowana w czasie uczenia modelu. Takich przykładów można mnożyć, przykładowo głębokość drzew czy minimalna wielkość węzła aby dokonać podziału w lesie losowym również są parametremi, których wartości nie da się szacować w procesie uczenia modelu. Takie “odmienne” parametry będziemy nazywać hiperparametrami modelu.</p>
 <p>Czy to oznacza, że jesteśmy zdani na ich zgadywanie? 🙈 Na szczęście nie. Proces w którym odbywa się poszukiwanie optymalnych parametrów modelu nazywamy optymalizacją modelu (ang. <em>tuning</em>). Definicję tę można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich parametrów jak szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba iteracji/epok w procesie uczenia. Co więcej również w procesie przygotowania danych do modelowania, występują parametry, których wartość należy optymalizować. Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego wartość należy dostrajać. Nawet w kontekście wspomnianych klasycznych modeli jak np. regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
-<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.imgflip.com/38dyzf.jpg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.imgflip.com/38dyzf.jpg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://i.imgflip.com/38dyzf.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.imgflip.com/38dyzf.jpg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><div class="no-row-height column-margin column-container"><img src="https://i.imgflip.com/38dyzf.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></div></a></p>
 </figure>
 </div>
-<p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
+<p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -407,9 +403,9 @@ window.Quarto = {
 <span>                width <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="st">"log-likelihood"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-tune1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-tune1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="tuning_files/figure-html/fig-tune1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="tuning_files/figure-html/fig-tune1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></a>
+<a href="tuning_files/figure-html/fig-tune1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności"><img src="tuning_files/figure-html/fig-tune1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności
@@ -419,9 +415,9 @@ Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności
 </div>
 <p>Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na mniejszym zbiorze danych; wartość uzyskana przez <code><a href="https://generics.r-lib.org/reference/glance.html">broom::glance()</a></code> jest sumą, podczas gdy <code><a href="https://yardstick.tidymodels.org/reference/mn_log_loss.html">yardstick::mn_log_loss()</a></code> jest średnią. Wyniki te pokazują, że istnieją znaczne dowody na to, że wybór funkcji łączącej ma znaczenie i że model logistyczny jest lepszy.</p>
 <p>A co gdy użyjemy innej miary oceny dopasowania?</p>
-<div id="fig-tune2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-tune2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;9.2: Porównanie pól pod krzywą ROC"><img src="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;9.2: Porównanie pól pod krzywą ROC
@@ -441,20 +437,20 @@ Ostrzeżenie
 <p>To ćwiczenie pokazuje, że różne metryki mogą prowadzić do różnych decyzji dotyczących wyboru wartości parametrów. W tym przypadku jedna metryka wydaje się wyraźnie sortować modele, podczas gdy inna nie wykazuje żadnej różnicy.</p>
 </div>
 </div>
-<p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="references.html#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz “gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.</p>
-<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></div><section id="konsekwencje-złego-oszacowania-parametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-oszacowania-parametrów">
+<p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz “gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></div></div><section id="konsekwencje-złego-oszacowania-parametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-oszacowania-parametrów">
 <span class="header-section-number">9.1</span> Konsekwencje złego oszacowania parametrów</h2>
 <p>Wiele parametrów dostrajania modyfikuje stopień złożoności modelu. Większa złożoność często oznacza większą plastyczność wzorców, które model może naśladować. Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność predykcji. Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych. <em>Overfitting</em> to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
-<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="images/tw1.jpeg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"></a></p><div class="no-row-height column-margin column-container"><a href="images/tw1.jpeg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><img src="images/tw1.jpeg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="images/tw1.jpeg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><div class="no-row-height column-margin column-container"><img src="images/tw1.jpeg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></div></a></p>
 </figure>
 </div>
 <p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji. Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.</p>
-<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></div><p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli ocena modelu jest dokonywana na podstawie wartości ROC zbioru treningowego, to preferuje się wiele neuronów w warstwie ukrytej, tak aby można było prawie całkowicie wyeliminować błędy.</p>
-<p>Rozdziały wcześniejsze pokazały, że ocena dopasowania na zbiorze uczącym jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3" class="quarto-xref">Rys.&nbsp;<span>9.3</span></a>.</p>
-<div id="fig-tune3" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></div></div><p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli ocena modelu jest dokonywana na podstawie wartości ROC zbioru treningowego, to preferuje się wiele neuronów w warstwie ukrytej, tak aby można było prawie całkowicie wyeliminować błędy.</p>
+<p>Rozdziały wcześniejsze pokazały, że ocena dopasowania na zbiorze uczącym jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-tune3</span></a>.</p>
+<div id="fig-tune3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5"><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej"><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej
@@ -468,9 +464,9 @@ Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warst
 <li>przeszukiwanie siatki - gdy wstępnie określamy zestaw wartości parametrów do oceny. Głównymi problemami związanymi z przeszukiwaniem siatki są sposób wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów siatki wymaganych do pokrycia przestrzeni parametrów może stać się niemożliwa do opanowania. Z jednej strony ten fakt przemawiałby za nie wybieraniem tej metody do poszukiwania optymalnych parametrów, ale jest to najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany w kontekście kierunków przeszukiwania.</li>
 <li>przeszukiwanie iteracyjne lub sekwencyjne - gdy sekwencyjnie odkrywamy nowe kombinacje parametrów na podstawie poprzednich wyników. W niektórych przypadkach do rozpoczęcia procesu optymalizacji wymagany jest wstępny zestaw wyników dla jednej lub więcej kombinacji parametrów.</li>
 </ul>
-<div id="fig-tune4" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-tune4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 10.17.59.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6"><img src="images/Zrzut ekranu 2023-02-26 o 10.17.59.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 10.17.59.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Rys.&nbsp;9.4: Porównanie metod przeszukiwania"><img src="images/Zrzut ekranu 2023-02-26 o 10.17.59.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;9.4: Porównanie metod przeszukiwania
@@ -494,16 +490,11 @@ Rys.&nbsp;9.4: Porównanie metod przeszukiwania
 <p>Chcąc zobaczyć jak model interpretuje takie podstawienie możemy użyć</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 1 parameters for tuning
-
-   identifier         type    object
- hidden_units hidden_units nparam[+]</code></pre>
-</div>
+</details>
 </div>
 <p>Wyniki pokazują wartość <code>nparam[+]</code>, co wskazuje, że liczba jednostek ukrytych jest parametrem liczbowym. Istnieje opcjonalny argument identyfikacyjny, który kojarzy nazwę z parametrami. Może się to przydać, gdy ten sam rodzaj parametrów jest dostrajany w różnych miejscach. Na przykład, w przypadku danych dotyczących mieszkania w Ames, przepis zakodował zarówno długość jak i szerokość geograficzną za pomocą funkcji <code>spline</code>. Jeśli chcemy dostroić dwie funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy <code>step_ns()</code> dwukrotnie, raz dla każdego predyktora. Aby parametry były identyfikowalne, argument “identyfikator” może przyjąć dowolny ciąg znaków:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
 <span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span><span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
 <span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
@@ -521,113 +512,61 @@ Rys.&nbsp;9.4: Porównanie metod przeszukiwania
 <span></span>
 <span><span class="va">recipes_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
 <span><span class="va">recipes_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 3 parameters for tuning
-
-   identifier      type    object
-    threshold threshold nparam[+]
- longitude df  deg_free nparam[+]
-  latitude df  deg_free nparam[+]</code></pre>
-</div>
+</details>
 </div>
 <p>Gdy receptura i specyfikacja modelu są połączone za pomocą przepływu pracy, oba zestawy parametrów są wyświetlane.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">wflow_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 4 parameters for tuning
-
-   identifier         type    object
- hidden_units hidden_units nparam[+]
-    threshold    threshold nparam[+]
- longitude df     deg_free nparam[+]
-  latitude df     deg_free nparam[+]</code></pre>
-</div>
+</details>
 </div>
 <p>W tym przypadku dodanie splajnów do sieci neuronowej jest tylko na potrzeby przykładu, ponieważ sama sieć neuronowa jest w stanie zamodelować dowolnie złożone zależności (w tym splajny) 🙉.</p>
 <p>Każdy argument parametru dostrajania ma odpowiadającą mu funkcję w pakiecie <code>dials</code>. W zdecydowanej większości przypadków funkcja ma taką samą nazwę jak argument parametru:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">hidden_units</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code># Hidden Units (quantitative)
-Range: [1, 10]</code></pre>
-</div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">threshold</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Threshold (quantitative)
-Range: [0, 1]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">hidden_units</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">threshold</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Parametr <code>deg_free</code> jest kontrprzykładem - pojęcie stopni swobody pojawia się w wielu różnych kontekstach. Gdy używamy splajnów, istnieje wyspecjalizowana funkcja <code>dials</code> o nazwie <code>spline_degree()</code>, która jest domyślnie wywoływana dla splajnów:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">spline_degree</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Spline Degrees of Freedom (quantitative)
-Range: [1, 10]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">spline_degree</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Pakiet <code>dials</code> posiada również funkcję wygodną do wyodrębnienia konkretnego obiektu parametru:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"threshold"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Threshold (quantitative)
-Range: [0, 0.1]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"threshold"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Wewnątrz zestawu parametrów, zakres parametrów może być również aktualizowany:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fu">threshold</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 3 parameters for tuning
-
-   identifier      type    object
-    threshold threshold nparam[+]
- longitude df  deg_free nparam[+]
-  latitude df  deg_free nparam[+]</code></pre>
-</div>
+</details>
 </div>
 <p>W niektórych przypadkach łatwo jest mieć rozsądne wartości domyślne dla zakresu możliwych wartości. W innych przypadkach zakres parametrów jest zależny od zbioru danych i nie można go założyć. Podstawowym parametrem dostrajania parametrów dla modeli lasu losowego jest liczba kolumn predyktorów, które są losowo próbkowane dla każdego podziału drzewa, zwykle oznaczana jako <code>mtry()</code>. Bez znajomości liczby predyktorów, ten zakres parametrów nie może być wstępnie skonfigurowany i wymaga finalizacji.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_spec</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_spec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">rand_forest</span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"regularization"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rf_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span></span>
 <span><span class="va">rf_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 2 parameters for tuning
-
-     identifier                  type    object
-           mtry                  mtry nparam[?]
- regularization regularization.factor nparam[+]
-
-Model parameters needing finalization:
-   # Randomly Selected Predictors ('mtry')
-
-See `?dials::finalize` or `?dials::update.parameters` for more information.</code></pre>
-</div>
+</details>
 </div>
 <p>Kompletne obiekty parametrów mają <code>[+]</code> w podsumowaniu; wartość <code>[?]</code> wskazuje, że brakuje przynajmniej jednego końca możliwego zakresu. Istnieją dwie metody radzenia sobie z tym problemem. Pierwszą jest użycie <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code>, aby dodać zakres na podstawie tego, co wiesz o wymiarach danych:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">%&gt;%</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">mtry</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 2 parameters for tuning
-
-     identifier                  type    object
-           mtry                  mtry nparam[+]
- regularization regularization.factor nparam[+]</code></pre>
-</div>
+</details>
 </div>
 <p>Jednak to podejście może nie działać, jeśli receptura jest dołączona do przepływu pracy, który używa kroków dodających lub odejmujących kolumny. Jeśli te kroki nie są przeznaczone do dostrajania, funkcja <code>finalize()</code> może wykonać recepturę raz, aby uzyskać wymiary:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="co"># Select the square-footage predictors and extract their PCA components:</span></span>
 <span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
@@ -641,59 +580,31 @@ See `?dials::finalize` or `?dials::update.parameters` for more information.</cod
 <span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">pca_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">finalize</span><span class="op">(</span><span class="va">ames_train</span><span class="op">)</span></span>
-<span><span class="va">updated_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 2 parameters for tuning
-
-     identifier                  type    object
-           mtry                  mtry nparam[+]
- regularization regularization.factor nparam[+]</code></pre>
-</div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">updated_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"mtry"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code># Randomly Selected Predictors (quantitative)
-Range: [1, 74]</code></pre>
-</div>
+<span><span class="va">updated_param</span></span>
+<span></span>
+<span><span class="va">updated_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"mtry"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Gdy receptura jest przygotowana, funkcja <code>finalize()</code> uczy się ustawiać górny zakres <code>mtry</code> na 74 predyktory. Dodatkowo, wyniki <code>extract_parameter_set_dials()</code> będą zawierały parametry specyficzne dla silnika (jeśli takie istnieją). Są one odkrywane w taki sam sposób jak główne argumenty i włączane do zestawu parametrów. Pakiet <code>dials</code> zawiera funkcje parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznych dla silnika:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Collection of 2 parameters for tuning
-
-     identifier                  type    object
-           mtry                  mtry nparam[?]
- regularization regularization.factor nparam[+]
-
-Model parameters needing finalization:
-   # Randomly Selected Predictors ('mtry')
-
-See `?dials::finalize` or `?dials::update.parameters` for more information.</code></pre>
-</div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">regularization_factor</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Gain Penalization (quantitative)
-Range: [0, 1]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span></span>
+<span><span class="fu">regularization_factor</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Wreszcie, niektóre parametry dostrajania są związane z transformacjami. Dobrym przykładem jest parametr kary związany z wieloma modelami regresji regularyzowanej. Ten parametr jest nieujemny i często przedstawia się go w skali logarytmicznej. Podstawowy obiekt parametru <code>dials</code> wskazuje, że domyślnie używana jest transformacja:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Amount of Regularization (quantitative)
-Transformer: log-10 [1e-100, Inf]
-Range (transformed scale): [-10, 0]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Jest to ważna informacja, zwłaszcza przy zmianie zakresu. Nowe wartości zakresu muszą być w przekształconych jednostkach:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correct method to have penalty values between 0.1 and 1.0</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correct method to have penalty values between 0.1 and 1.0</span></span>
 <span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.1001  0.1805  0.3115  0.3905  0.5582  0.9919 </code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># incorrect:</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># incorrect:</span></span>
 <span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -702,21 +613,12 @@ Range (transformed scale): [-10, 0]</code></pre>
 </div>
 <p>Skala może być zmieniona w razie potrzeby za pomocą argumentu <code>trans</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span>trans <span class="op">=</span> <span class="cn">NULL</span>, range <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>Amount of Regularization (quantitative)
-Range: [1e-10, 1]</code></pre>
-</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span>trans <span class="op">=</span> <span class="cn">NULL</span>, range <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności</span>
-<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;9.2: Porównanie pól pod krzywą ROC</span>
-<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej</span>
-<span class="glightbox-desc lightbox-desc-6">Rys.&nbsp;9.4: Porównanie metod przeszukiwania</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-friedman2001" class="csl-entry" role="listitem">
 Friedman, Jerome H. 2001. <span>„Greedy function approximation: A gradient boosting machine.”</span> <em>The Annals of Statistics</em> 29 (5). <a href="https://doi.org/10.1214/aos/1013203451">https://doi.org/10.1214/aos/1013203451</a>.
 </div>
@@ -903,18 +805,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -946,7 +837,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -981,7 +910,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1029,7 +962,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1255,20 +1187,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./comparison.html" class="pagination-link" aria-label="Porównanie modeli">
-=======
-      <a href="./comparison.html" class="pagination-link  aria-label=" modeli="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./grid_search.html" class="pagination-link" aria-label="Dostrajanie z przeszukiwaniem siatki">
-=======
-      <a href="./grid_search.html" class="pagination-link" aria-label="<span class='chapter-number'>10</span>&nbsp; <span class='chapter-title'>Dostrajanie z przeszukiwaniem siatki</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1285,34 +1209,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","loop":false,"descPosition":"bottom"});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","descPosition":"bottom","loop":false});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

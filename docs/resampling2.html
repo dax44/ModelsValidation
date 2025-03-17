@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 7&nbsp; Metody próbkowania</title>
+<title>7&nbsp; Metody próbkowania – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./resampling2.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -335,7 +331,7 @@ window.Quarto = {
 
 
 </header><p>W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych <code>ames</code>, na którym dokonywaliśmy już modelowania (regresja liniowa)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Oprócz modelu liniowego zbudujemy również las losowy, który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.</p>
-<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;z przykładu w poprzednim rozdziale</p></div><div id="exm-1" class="theorem example page-columns page-full">
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;z przykładu w poprzednim rozdziale</p></div></div><div id="exm-1" class="theorem example page-columns page-full">
 <p><span class="theorem-title"><strong>Przykład 7.1</strong></span> &nbsp;</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
@@ -456,10 +452,10 @@ window.Quarto = {
 </figure>
 </div>
 </div></div><p>Powyższy przykład pokazuje, że ocena modeli na zbiorze uczącym nie jest właściwym podejściem, ponieważ może zwrócić zbyt optymistyczny poziom dopasowania. A skoro zbiór testowy nie powinien być używany natychmiast, a predykcja na zbiorze treningowym jest złym pomysłem, to co należy zrobić? Rozwiązaniem są metody ponownego próbkowania (ang. <em>resampling</em>), takie jak walidacja krzyżowa lub zestawy walidacyjne.</p>
-<p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1" class="quarto-xref">Rys.&nbsp;<span>7.1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
-<div id="fig-resamp1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Metody resamplingu są empirycznymi systemami symulacji, które emulują proces używania pewnych danych do modelowania i innych danych do oceny. Większość metod resamplingu jest iteracyjna, co oznacza, że proces ten jest powtarzany wielokrotnie. Schemat na <a href="#fig-resamp1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-resamp1</span></a> ilustruje, jak generalnie działają metody resamplingu.</p>
+<div id="fig-resamp1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-resamp1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu"><img src="images/Zrzut ekranu 2023-02-20 o 19.54.34.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-resamp1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu
@@ -480,20 +476,20 @@ Rys.&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu
 </div>
 </div></div><section id="walidacja-krzyżowa" class="level2 page-columns page-full" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="walidacja-krzyżowa">
 <span class="header-section-number">7.1</span> Walidacja krzyżowa</h2>
-<p>Walidacja krzyżowa (ang. <em>cross-validation</em>) jest dobrze ugruntowaną metodą próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa. Dane są losowo dzielone na <span class="math inline">\(V\)</span> zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami). Dla ilustracji, <span class="math inline">\(V = 3\)</span> jest pokazane na <a href="#fig-cross1" class="quarto-xref">Rys.&nbsp;<span>7.2</span></a> dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów. Liczba wewnątrz symboli to numer próbki.</p>
-<div id="fig-cross1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Walidacja krzyżowa (ang. <em>cross-validation</em>) jest dobrze ugruntowaną metodą próbkowania. Chociaż istnieje wiele odmian, najbardziej powszechną metodą walidacji krzyżowej jest <span class="math inline">\(V\)</span>-krotna walidacja krzyżowa. Dane są losowo dzielone na <span class="math inline">\(V\)</span> zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami). Dla ilustracji, <span class="math inline">\(V = 3\)</span> jest pokazane na <a href="#fig-cross1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-cross1</span></a> dla zbioru danych składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów. Liczba wewnątrz symboli to numer próbki.</p>
+<div id="fig-cross1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cross1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;7.2: 3-krotny sprawdzian krzyżowy"><img src="images/Zrzut ekranu 2023-02-20 o 20.01.18.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cross1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.2: 3-krotny sprawdzian krzyżowy
 </figcaption></figure>
 </div>
-<p>Kolory symboli na <a href="#fig-cross1" class="quarto-xref">Rys.&nbsp;<span>7.2</span></a> reprezentują ich losowo przypisane foldy.</p>
-<p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2" class="quarto-xref">Rys.&nbsp;<span>7.3</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
-<div id="fig-cross2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Kolory symboli na <a href="#fig-cross1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-cross1</span></a> reprezentują ich losowo przypisane foldy.</p>
+<p>W przypadku trzykrotnej walidacji krzyżowej trzy iteracje próbkowania przedstawiono na <a href="#fig-cross2" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-cross2</span></a>. Dla każdej iteracji jeden fold jest zatrzymywany do oceny modelu, a pozostałe foldy są używane do uczenia modelu. Proces ten jest kontynuowany dla każdego folda, tak że trzy modele dają trzy zestawy statystyk dopasowania.</p>
+<div id="fig-cross2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cross2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="quarto-lightbox-gallery-6"><img src="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Rys.&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli"><img src="images/Zrzut ekranu 2023-02-20 o 20.01.30.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cross2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli
@@ -548,10 +544,10 @@ Rys.&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli
 </figure>
 </div>
 </div></div><p>Aby stworzyć <span class="math inline">\(R\)</span> powtórzeń <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej, ten sam proces generowania foldów jest wykonywany <span class="math inline">\(R\)</span> razy, aby wygenerować <span class="math inline">\(R\)</span> zbiorów złożonych z <span class="math inline">\(V\)</span> podzbiorów. Zamiast uśredniania <span class="math inline">\(V\)</span> statystyk, <span class="math inline">\(V\times R\)</span> wartości daje ostateczną estymację resamplingu.</p>
-<p>Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 obserwacji. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na <a href="#fig-cross3" class="quarto-xref">Rys.&nbsp;<span>7.4</span></a> pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
-<div id="fig-cross3" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Rozważmy dane <code>ames</code>. Średnio, 10-krotna walidacja krzyżowa używa zestawów oceny, które zawierają około 234 obserwacji. Jeśli RMSE jest wybraną statystyką, możemy oznaczyć odchylenie standardowe tego oszacowania jako <span class="math inline">\(\sigma\)</span>. Przy 10-krotnej walidacji krzyżowej błąd standardowy średniej RMSE wynosi <span class="math inline">\(\sigma/\sqrt{10}\)</span>. Podczas gdy ta wielkość może charakteryzować się jeszcze dużym szumem, powtórzenia zmniejszają błąd standardowy do <span class="math inline">\(\sigma/\sqrt{10R}\)</span>. Dla 10-krotnej walidacji krzyżowej z <span class="math inline">\(R\)</span> powtórzeniami, wykres na <a href="#fig-cross3" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-cross3</span></a> pokazuje, jak szybko błąd standardowy maleje wraz z liczbą powtórzeń.</p>
+<div id="fig-cross3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cross3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="quarto-lightbox-gallery-9"><img src="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Rys.&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych"><img src="images/Zrzut ekranu 2023-02-20 o 21.09.46.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cross3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych
@@ -590,7 +586,7 @@ Rys.&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od licz
 </div></div><p>Metody LOO są gorsza w porównaniu z prawie każdą inną metodą oceny dopasowania. Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet <code>rsample</code> zawiera funkcję <code>loo_cv()</code>, obiekty te nie są mocno zintegrowane z pakietami <code>tidymodels</code>.</p>
 </section><section id="walidacja-metodą-monte-carlo" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="walidacja-metodą-monte-carlo">
 <span class="header-section-number">7.4</span> Walidacja metodą Monte-Carlo</h2>
-<p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="references.html#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
+<p>Innym wariantem <span class="math inline">\(V\)</span>-krotnej walidacji krzyżowej jest walidacja krzyżowa Monte-Carlo (ang. <em>Monte-Carlo Cross-Validation</em> - MCCV) <span class="citation" data-cites="xu2001">(<a href="#ref-xu2001" role="doc-biblioref">Xu i Liang 2001</a>)</span>. Podobnie jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to powstają zestawy oceny, które nie wykluczają się wzajemnie.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">mc_cv</span><span class="op">(</span><span class="va">ames_train</span>, prop <span class="op">=</span> <span class="fl">9</span><span class="op">/</span><span class="fl">10</span>, times <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
@@ -622,19 +618,19 @@ Rys.&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od licz
 </div>
 </section><section id="zbiór-walidacyjny" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="zbiór-walidacyjny">
 <span class="header-section-number">7.5</span> Zbiór walidacyjny</h2>
-<p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1" class="quarto-xref">Rys.&nbsp;<span>7.5</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
-<div id="fig-val1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>We wcześniejszych rozdziałach wspominana była metoda z wykorzystaniem zbioru walidacyjnego. Polega ona na tym, że przy tworzeniu podziału zbioru na uczący i testowy, dodatkowo zbiór uczący dzieli się na właściwy uczący i walidacyjny (patrz <a href="#fig-val1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-val1</span></a>). Zbiór walidacyjny jest wykorzystywany do oceny dopasowania modelu, np. w procesie optymalizacji hiperparametrów modelu.</p>
+<div id="fig-val1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-val1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="lightbox" data-glightbox="description: .lightbox-desc-11" data-gallery="quarto-lightbox-gallery-11"><img src="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Rys.&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny"><img src="images/Zrzut ekranu 2023-02-20 o 21.32.37.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-val1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny
 </figcaption></figure>
 </div>
-<p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2" class="quarto-xref">Rys.&nbsp;<span>7.6</span></a>).</p>
-<div id="fig-val2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Podziału można dokonać też od razu dzieląc cały zbiór danych na trzy części (patrz <a href="#fig-val2" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-val2</span></a>).</p>
+<div id="fig-val2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-val2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="lightbox" data-glightbox="description: .lightbox-desc-12" data-gallery="quarto-lightbox-gallery-12"><img src="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Rys.&nbsp;7.6: Podział na trzy zbiory"><img src="images/Zrzut ekranu 2023-02-20 o 21.32.11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-val2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.6: Podział na trzy zbiory
@@ -655,12 +651,12 @@ Rys.&nbsp;7.6: Podział na trzy zbiory
 </div>
 </section><section id="bootstrapping" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="bootstrapping">
 <span class="header-section-number">7.6</span> Bootstrapping</h2>
-<p><em>Bootstrap</em> został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane <span class="citation" data-cites="davison1997">(<a href="references.html#ref-davison1997" role="doc-biblioref">Davison i Hinkley 1997</a>)</span>. Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.</p>
+<p><em>Bootstrap</em> został pierwotnie wynaleziony jako metoda aproksymacji próbkowego rozkładu statystyki, którego własności teoretyczne są nieznane <span class="citation" data-cites="davison1997">(<a href="#ref-davison1997" role="doc-biblioref">Davison i Hinkley 1997</a>)</span>. Wykorzystanie jej do szacowania dopasowania modelu jest wtórnym zastosowaniem tej metody.</p>
 <p>Próbka bootstrapowa zbioru treningowego to próbka, która ma ten sam rozmiar co zbiór treningowy, ale jest losowana ze zwracaniem. Oznacza to, że niektóre obserwacje zbioru treningowego są wielokrotnie wybierane do zbioru analitycznego. Każdy punkt danych ma 63,2% szans na włączenie do zbioru uczącego przynajmniej raz. Zestaw oceny zawiera wszystkie próbki zestawu treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8% zestawu treningowego). Podczas <em>bootstrappingu</em> zestaw oceny jest często nazywany próbką poza workiem (ang. <em>Out-Of-Bag)</em>.</p>
-<p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1" class="quarto-xref">Rys.&nbsp;<span>7.7</span></a></p>
-<div id="fig-boot1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek bootstrapowych przedstawiono na <a href="#fig-boot1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-boot1</span></a></p>
+<div id="fig-boot1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-boot1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="lightbox" data-glightbox="description: .lightbox-desc-13" data-gallery="quarto-lightbox-gallery-13"><img src="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;7.7: Trzy próby bootstrapowe"><img src="images/Zrzut ekranu 2023-02-20 o 21.45.08.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boot1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.7: Trzy próby bootstrapowe
@@ -685,16 +681,16 @@ Rys.&nbsp;7.7: Trzy próby bootstrapowe
 </section><section id="kroczące-próbkowanie-źródła" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="kroczące-próbkowanie-źródła">
 <span class="header-section-number">7.7</span> Kroczące próbkowanie źródła</h2>
 <p>Gdy dane mają istotny składnik czasowy (jak np. szeregi czasowe), metoda próbkowania powinna pozwolić na oszacowanie sezonowych i okresowych trendów w szeregach czasowych. Technika, która losowo próbkuje wartości ze zbioru treningowego, nie pozwoli na oszacowanie tych wzorców.</p>
-<p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, estymując parametry modelu na danymych historycznych i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="references.html#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
-<div id="fig-rolling" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Kroczące próbkowanie źródła (ang. <em>rolling forecast origin resampling</em>) jest metodą, która emuluje sposób, w jaki dane szeregów czasowych są często partycjonowane w praktyce, estymując parametry modelu na danymych historycznych i oceniając go z najnowszymi danymi <span class="citation" data-cites="hyndman">(<a href="#ref-hyndman" role="doc-biblioref">Hyndman i Athanasopoulos 2018</a>)</span>. Dla tego typu resamplingu określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę próbek.</p>
+<div id="fig-rolling" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-rolling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="lightbox" data-glightbox="description: .lightbox-desc-14" data-gallery="quarto-lightbox-gallery-14"><img src="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
+<a href="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Rys.&nbsp;7.8: Próbkowanie kroczące ze źródła"><img src="images/Zrzut ekranu 2023-02-20 o 21.45.23.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rolling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.8: Próbkowanie kroczące ze źródła
 </figcaption></figure>
 </div>
-<p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling" class="quarto-xref">Rys.&nbsp;<span>7.8</span></a>.</p>
+<p>Dla zilustrowania, zbiór treningowy składający się z piętnastu próbek został ponownie próbkowany z rozmiarem zbioru analizy wynoszącym osiem próbek i zbioru oceny wynoszącym trzy. W drugiej iteracji odrzucono pierwszą próbkę zbioru uczącego, a oba zbiory danych przesunięto do przodu o jeden. W tej konfiguracji uzyskuje się pięć próbek, jak pokazano na <a href="#fig-rolling" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-rolling</span></a>.</p>
 <p>Istnieją dwie różne konfiguracje tej metody:</p>
 <ul>
 <li>Zestaw analiz może narastać (w przeciwieństwie do utrzymywania tego samego rozmiaru). Po pierwszym początkowym zestawie analitycznym nowe próbki mogą narastać bez odrzucania wcześniejszych danych. W rezultacie oznacza to, że po nauczeniu i ocenie dopasowania modelu na <em>Resample 1,</em> model jest uczony na zbiorze rozszerzonym o obserwację 9, czyli na danych od 1 do 9. Następnie oceniany na obserwacjach od 10 do 12, itd.</li>
@@ -792,9 +788,9 @@ Wskazówka
 <span>  <span class="fu">coord_obs_pred</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Predicted"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-pred-obs" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-pred-obs" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pred-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="resampling2_files/figure-html/fig-pred-obs-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-16" data-gallery="quarto-lightbox-gallery-16"><img src="resampling2_files/figure-html/fig-pred-obs-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="resampling2_files/figure-html/fig-pred-obs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Rys.&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu"><img src="resampling2_files/figure-html/fig-pred-obs-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pred-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu
@@ -869,16 +865,16 @@ Rys.&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na po
 </div>
 </div>
 <p>Różnica między tymi dwoma wartościami jest związana z typem procesora. Na przykład większość procesorów Intela wykorzystuje <em>hyperthreading</em><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, który tworzy dwa wirtualne rdzenie dla każdego fizycznego rdzenia. Dodatkowe zasoby mogą poprawić wydajność, jednak rzadko można je stosować na wszystkich rdzeniach fizycznych, ponieważ pewne zasoby są potrzebne do obsługi <em>hyperthreadingu</em>.</p>
-<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;wielowątkowość współbieżna</p></div><p>W przypadku <code>fit_resamples()</code> i innych funkcji w pakiecie <code>tune</code>, przetwarzanie równoległe występuje, gdy użytkownik zarejestruje pakiet równoległego przetwarzania. Owe pakiety definiują sposób wykonywania przetwarzania równoległego. W systemach operacyjnych Unix i macOS jedną z metod podziału obliczeń jest rozgałęzienie wątków. Aby to umożliwić, załaduj pakiet <code>doMC</code> i zarejestruj liczbę równoległych rdzeni dla <code>foreach</code>:</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;wielowątkowość współbieżna</p></div></div><p>W przypadku <code>fit_resamples()</code> i innych funkcji w pakiecie <code>tune</code>, przetwarzanie równoległe występuje, gdy użytkownik zarejestruje pakiet równoległego przetwarzania. Owe pakiety definiują sposób wykonywania przetwarzania równoległego. W systemach operacyjnych Unix i macOS jedną z metod podziału obliczeń jest rozgałęzienie wątków. Aby to umożliwić, załaduj pakiet <code>doMC</code> i zarejestruj liczbę równoległych rdzeni dla <code>foreach</code>:</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tylko w Unix i macOS</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">doMC</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/doMC/man/registerDoMC.html">registerDoMC</a></span><span class="op">(</span>cores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">registerDoMC</span><span class="op">(</span>cores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>To daje instrukcje dla <code>fit_resamples()</code>, aby uruchomić 1/4 obliczeń na każdym z czterech rdzeni. Aby zresetować obliczenia do przetwarzania sekwencyjnego:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/foreach/man/registerDoSEQ.html">registerDoSEQ</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">registerDoSEQ</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Alternatywnie, inne podejście do paralelizacji obliczeń wykorzystuje gniazda sieciowe. Pakiet <code>doParallel</code> umożliwia tę metodę (możliwą do wykorzystania przez wszystkie systemy operacyjne):</p>
@@ -1011,18 +1007,7 @@ Rys.&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na po
 </div>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;7.1: Przykład podziału zbioru danych z wykorzystaniem resamplingu</span>
-<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;7.2: 3-krotny sprawdzian krzyżowy</span>
-<span class="glightbox-desc lightbox-desc-6">Rys.&nbsp;7.3: Zastosowanie foldów w uczeniu i ocenie dopasowania modeli</span>
-<span class="glightbox-desc lightbox-desc-9">Rys.&nbsp;7.4: Wielkość błędu standardowego estymacji w zależności od liczby powtórzeń walidacji krzyżowych</span>
-<span class="glightbox-desc lightbox-desc-11">Rys.&nbsp;7.5: Podział zbiorów na uczący, testowy i walidacyjny</span>
-<span class="glightbox-desc lightbox-desc-12">Rys.&nbsp;7.6: Podział na trzy zbiory</span>
-<span class="glightbox-desc lightbox-desc-13">Rys.&nbsp;7.7: Trzy próby bootstrapowe</span>
-<span class="glightbox-desc lightbox-desc-14">Rys.&nbsp;7.8: Próbkowanie kroczące ze źródła</span>
-<span class="glightbox-desc lightbox-desc-16">Rys.&nbsp;7.9: Porównanie predykcji z modelu z obserwowanymi wartościami na podstawie wyników resamplingu</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-davison1997" class="csl-entry" role="listitem">
 Davison, A. C., i D. V. Hinkley. 1997. <span>„Bootstrap Methods and their Application”</span>, październik. <a href="https://doi.org/10.1017/cbo9780511802843">https://doi.org/10.1017/cbo9780511802843</a>.
 </div>
@@ -1212,18 +1197,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1255,7 +1229,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1290,7 +1302,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1338,7 +1354,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1564,20 +1579,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./tidymodels.html" class="pagination-link" aria-label="Praca z `tidymodels`">
-=======
-      <a href="./tidymodels.html" class="pagination-link  aria-label=" z="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./comparison.html" class="pagination-link" aria-label="Porównanie modeli">
-=======
-      <a href="./comparison.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>Porównanie modeli</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Porównanie modeli</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1594,34 +1601,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","openEffect":"zoom","loop":false});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom","loop":false});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

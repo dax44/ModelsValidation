@@ -83,7 +83,8 @@ podążać proces wyszukiwania i gdzie występuje numerycznie optymalna wartoś�
 
 ![Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o dużej gęstości
 wartości dostrajania parametrów. Najlepszy punkt jest oznaczony kropką w prawym
-górnym rogu.](images/Zrzut%20ekranu%202023-03-9%20o%2011.49.58.png){#fig-iter1
+górnym
+rogu.](images/Zrzut%20ekranu%202023-03-9%20o%2011.49.58.png){#fig-iter1
 fig-align="center" width="600"}
 
 @fig-iter1 pokazuje wyniki oceny tej siatki, przy czym jaśniejszy kolor
@@ -627,4 +628,5 @@ Wizualizacja ścieżki wyszukiwania pomaga zrozumieć, gdzie proces wyszukiwania
 poradził sobie dobrze, a gdzie pobłądził:
 
 ![Wizualizacja przebiegu symulowanego
-wyżarzania](https://www.tmwr.org/sa_search.mp4){#fig-sa5 fig-align="center"}
+wyżarzania](https://www.tmwr.org/sa_search.mp4){#fig-sa5
+fig-align="center"}

@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 5&nbsp; Zarządzanie danymi</title>
+<title>5&nbsp; Zarządzanie danymi – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./resampling.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -344,7 +340,7 @@ Zagrożenie
 <span class="header-section-number">5.1</span> Podział na próbę uczącą i testową</h2>
 <p>Podstawowym podejściem w empirycznej walidacji modelu jest podział istniejącej puli danych na dwa odrębne zbiory - treningowy i testowy. Jedna część danych jest wykorzystywana do budowy i optymalizacji modelu. Ten zbiór treningowy stanowi zazwyczaj większość danych. Dane te służą dla budowy modelu, poszukiwania optymalnych parametrów modelu, czy selekcji cech istotnych z punktu widzenia predykcji.</p>
 <p>Pozostała część danych stanowi zbiór testowy. Jest on trzymany aż do momentu, gdy jeden lub dwa modele zostaną wybrane jako metody najlepiej opisujące badane zjawisko. Zestaw testowy jest wtedy używany jako ostateczny arbiter do określenia dopasowania modelu. Krytyczne jest, aby użyć zbiór testowy tylko raz; w przeciwnym razie staje się on częścią procesu modelowania.</p>
-<p>Proporcje w jakich należy podzielić dane nie są wyraźnie sprecyzowane. Choć istnieją prace, jak np. <span class="citation" data-cites="josephOptimalRatioData2022">Joseph (<a href="references.html#ref-josephOptimalRatioData2022" role="doc-biblioref">2022</a>)</span>, które wskazują konkretne reguły podziału zbioru danych na uczący i testowy dla modeli regresyjnych, to nie ma co do tego powszechnej zgody, że tylko jedna proporcja jest optymalna. W przypadku wspomnianej metody próba testowa powinna stanowić</p>
+<p>Proporcje w jakich należy podzielić dane nie są wyraźnie sprecyzowane. Choć istnieją prace, jak np. <span class="citation" data-cites="josephOptimalRatioData2022">Joseph (<a href="#ref-josephOptimalRatioData2022" role="doc-biblioref">2022</a>)</span>, które wskazują konkretne reguły podziału zbioru danych na uczący i testowy dla modeli regresyjnych, to nie ma co do tego powszechnej zgody, że tylko jedna proporcja jest optymalna. W przypadku wspomnianej metody próba testowa powinna stanowić</p>
 <p><span class="math display">\[
 \frac{1}{\sqrt{p}+1},
 \]</span></p>
@@ -479,13 +475,9 @@ Wskazówka
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
 <span><span class="va">p1</span><span class="op">/</span><span class="va">p2</span><span class="op">/</span><span class="va">p3</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="resampling_files/figure-html/fig-1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1"><img src="resampling_files/figure-html/fig-1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="resampling_files/figure-html/fig-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1"><img src="resampling_files/figure-html/fig-1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="resampling_files/figure-html/fig-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Rys.&nbsp;5.1: Porównanie próbkowań dla zmiennej typu ilościowego"><img src="resampling_files/figure-html/fig-1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;5.1: Porównanie próbkowań dla zmiennej typu ilościowego
@@ -508,16 +500,16 @@ Wskazówka
 </div>
 </div>
 <p>Jeszcze jedna uwaga na temat losowego podziału zbioru na uczący i testowy. W jednej sytuacji podział losowy i warstwowy nie są najlepszym rozwiązaniem - chodzi o szeregi czasowe lub dane zawierające znaczący czynnik zmienności w czasie. Wówczas stosuje się podział zbioru za pomocą funkcji <code>initial_time_split</code>, która parametrem <code>prop</code> określa jaka proporcja obserwacji z początku zbioru danych będzie wybrana do zbioru uczącego<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;zakłada się, że dane są posortowane wg czasu</p></div><p>Opisując cele podziału danych, wyróżniliśmy zbiór testowy jako dane, które powinny być wykorzystane do właściwej oceny działania modelu na modelu końcowym (modelach). To rodzi pytanie: “Jak możemy określić, co jest najlepsze, jeśli nie mierzymy wydajności aż do zbioru testowego?”.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;zakłada się, że dane są posortowane wg czasu</p></div></div><p>Opisując cele podziału danych, wyróżniliśmy zbiór testowy jako dane, które powinny być wykorzystane do właściwej oceny działania modelu na modelu końcowym (modelach). To rodzi pytanie: “Jak możemy określić, co jest najlepsze, jeśli nie mierzymy wydajności aż do zbioru testowego?”.</p>
 <p>Często słyszy się o zbiorach walidacyjnych jako odpowiedzi na to pytanie, szczególnie w literaturze dotyczącej sieci neuronowych i głębokiego uczenia. U początków sieci neuronowych badacze zdali sobie sprawę, że mierzenie wydajności poprzez przewidywanie na podstawie zbioru treningowego prowadziło do wyników, które były zbyt optymistyczne (nierealistycznie). Prowadziło to do modeli, które były nadmiernie dopasowane, co oznaczało, że osiągały bardzo dobre wyniki na zbiorze treningowym, ale słabe na zbiorze testowym. Aby ograniczyć ten problem, wybierano ze zbioru uczącego niewielki zbiór walidacyjny i użyto go do pomiaru wydajności podczas trenowania sieci. Gdy poziom błędu na zbiorze walidacyjnym zaczynał rosnąć, trening był wstrzymywany. Innymi słowy, zbiór walidacyjny był środkiem do uzyskania przybliżonego poczucia, jak dobrze model działał przed zbiorem testowym.</p>
 <p>W przypadku danych dotyczących mieszkań w Ames, nieruchomość jest traktowana jako niezależna jednostka eksperymentalna. Można bezpiecznie założyć, że statystycznie dane z danej nieruchomości są niezależne od innych nieruchomości. W przypadku innych zastosowań nie zawsze tak jest:</p>
 <ul>
 <li>Na przykład w przypadku danych podłużnych (ang. <em>longitudinal data</em>) ta sama niezależna jednostka eksperymentalna może być mierzona w wielu punktach czasowych. Przykładem może być osoba w badaniu medycznym.</li>
 <li>Partia wyprodukowanego produktu może być również uważana za niezależną jednostkę doświadczalną. W powtarzanych pomiarach, replikowane punkty danych z partii są zbierane w wielu momentach.</li>
 <li>
-<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson i in. (<a href="references.html#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
+<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson i in. (<a href="#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
 </ul>
-<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="references.html#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których dla pojedyncze obserwacje mierzone są kilkukrotnie, losowanie przypadków wśród wierszy nie zapewni niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
+<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których dla pojedyncze obserwacje mierzone są kilkukrotnie, losowanie przypadków wśród wierszy nie zapewni niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -536,10 +528,7 @@ Ważne
 <p>Na początku tego rozdziału, ostrzegaliśmy przed używaniem tych samych danych do różnych zadań. W dalszej części tej książki omówimy metodologie wykorzystania danych, które pozwolą zmniejszyć ryzyko związane z tendencyjnością, nadmiernym dopasowaniem i innymi problemami.</p>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-1">Rys.&nbsp;5.1: Porównanie próbkowań dla zmiennej typu ilościowego</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-johnsonPolarAuxinTransport2018" class="csl-entry" role="listitem">
 Johnson, Dan, Phoebe Eckart, Noah Alsamadisi, Hilary Noble, Celia Martin, i Rachel Spicer. 2018. <span>„Polar Auxin Transport Is Implicated in Vessel Differentiation and Spatial Patterning During Secondary Growth in <span>Populus</span>”</span>. <em>American Journal of Botany</em> 105 (2): 186–96. <a href="https://doi.org/10.1002/ajb2.1035">https://doi.org/10.1002/ajb2.1035</a>.
 </div>
@@ -729,18 +718,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -772,7 +750,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -807,7 +823,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -855,7 +875,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1081,20 +1100,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./measures.html" class="pagination-link" aria-label="Przegląd miar dopasowania modelu">
-=======
-      <a href="./measures.html" class="pagination-link  aria-label=" miar="" dopasowania="" modelu="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./tidymodels.html" class="pagination-link" aria-label="Praca z `tidymodels`">
-=======
-      <a href="./tidymodels.html" class="pagination-link" aria-label="<span class='chapter-number'>6</span>&nbsp; <span class='chapter-title'>Praca z `tidymodels`</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1111,34 +1122,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"descPosition":"bottom","openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","loop":false});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"descPosition":"bottom","closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","loop":false});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

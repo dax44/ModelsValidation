@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 6&nbsp; Praca z tidymodels</title>
+<title>6&nbsp; Praca z tidymodels – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -72,12 +68,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -106,7 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,13 +133,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidymodels.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Praca z <code>tidymodels</code></span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -350,7 +346,7 @@ window.Quarto = {
 <li>Określenie silnika do dopasowania modelu. Najczęściej odzwierciedla to pakiet, który powinien być użyty, jak <code>stan</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> lub <code>glmnet</code>. Są to modele same w sobie, a <code>parsnip</code> zapewnia spójne interfejsy, używając ich jako silników do modelowania.</li>
 <li>Jeśli jest to wymagane, zadeklaruj tryb pracy modelu<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Tryb odzwierciedla typ przewidywanego wyniku. Dla wyników liczbowych trybem jest regresja; dla wyników jakościowych jest to klasyfikacja. Jeśli algorytm modelu może realizować tylko jeden typ wyniku, takim jak regresja liniowa, tryb jest już ustawiony.</li>
 </ol>
-<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;jest to bibliotek języka C++</p><p><sup>2</sup>&nbsp;klasyfikacja czy regresja</p></div><div class="cell">
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;jest to bibliotek języka C++</p></div><div id="fn2"><p><sup>2</sup>&nbsp;klasyfikacja czy regresja</p></div></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># to samo z wykorzystaniem parsnip</span></span>
@@ -460,9 +456,9 @@ Coefficients:
 </div>
 </div>
 <p>Kolejną zaletą pakietu <code>parsnip</code> jest unifikacja nazw parametrów modeli. Dla przykładu gdybyśmy chcieli dopasować trzy różne modele lasów losowych, korzystając z pakietów <code>ranger</code>, <code>randomForest</code> i <code>sparklyr</code>, musielibyśmy określać parametry modelu używając za każdym razem innych nazw.</p>
-<div id="fig-pars1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-pars1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pars1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
+<a href="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;6.1: Różne sposoby określania parametrów modelu"><img src="images/Zrzut ekranu 2023-02-17 o 20.13.06.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pars1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;6.1: Różne sposoby określania parametrów modelu
@@ -619,7 +615,10 @@ Zagrożenie
 </div>
 </div>
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6" title="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"><img src="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400" alt="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"></a></p>
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"><img src="images/Zrzut ekranu 2023-02-17 o 20.41.43.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400" alt="Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji"></a></p>
+</figure>
+</div>
 <figcaption>Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji</figcaption></figure>
 </div>
 <div class="cell">
@@ -650,19 +649,22 @@ Zagrożenie
 <span class="header-section-number">6.3.1</span> Rozszerzenia</h3>
 <p>Sam pakiet <code>parsnip</code> zawiera interfejsy do wielu modeli. Jednakże, dla ułatwienia instalacji i konserwacji pakietu, istnieją inne pakiety <code>tidymodels</code>, które posiadają definicje modeli nie zawartych w <code>parsnip</code>. Np. pakiet <code>discrim</code> posiada definicje modeli klasyfikacyjnych zwanych metodami analizy dyskryminacyjnej (takich jak liniowa lub kwadratowa analiza dyskryminacyjna). Lista wszystkich modeli, które mogą być używane z <code>parsnip</code> znajduje się na stronie <a href="https://www.tidymodels.org/find/" class="uri">https://www.tidymodels.org/find/</a>.</p>
 <p>Przydatnym narzędziem w budowaniu modeli z wykorzystaniem pakietu <code>tidymodels</code> jest dodatek programu Rstudio<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
-<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;addin instalowany razem z pakietem <code>parsnip</code></p></div><div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="images/video1.mp4" class="lightbox" data-gallery="quarto-lightbox-gallery-7" data-glightbox="description: .lightbox-desc-7" title="Przykład działania parsnip_addin()"><video src="images/video1.mp4" class="img-fluid quarto-figure quarto-figure-center" controls=""></video></a><a href="images/video1.mp4">Przykład działania parsnip_addin()</a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;addin instalowany razem z pakietem <code>parsnip</code></p></div></div><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><a href="images/video1.mp4" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Przykład działania parsnip_addin()"><video src="images/video1.mp4" class="img-fluid quarto-figure quarto-figure-center" controls=""></video></a><a href="images/video1.mp4">Przykład działania parsnip_addin()</a></p>
+</figure>
+</div>
 <figcaption>Przykład działania parsnip_addin()</figcaption></figure>
 </div>
 </section></section><section id="przepływy-w-modelowaniu" class="level2 page-columns page-full" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="przepływy-w-modelowaniu">
 <span class="header-section-number">6.4</span> Przepływy w modelowaniu</h2>
 <p>Do tej pory o modelowaniu myśleliśmy w uproszczony sposób, ponieważ zakładaliśmy pewną strukturę modelu, dobieraliśmy silnik i uczyliśmy model na zbiorze treningowym. W “prawdziwych” zadaniach z zakresu uczenia maszynowego, proces ten jest znacznie bardziej złożony. W fazie, którą się powszechnie nazywa przygotowaniem danych (ang. <em>pre-processing</em>), dokonuje się transformacji, agregacji i imputacji danych w celu wykształcenia predyktorów o większej mocy predykcyjnej. W tej fazie dochodzi również do inżynierii cech<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> (ang. <em>feature engineering</em>), która ma na celu odfiltrowanie nieużytecznych cech zbioru danych.</p>
-<div class="no-row-height column-margin column-container"><p><sup>4</sup>&nbsp;chodzi o wszelkiego rodzaju modyfikacje i selekcje cech</p><p><sup>5</sup>&nbsp;szerzej o tej części będziemy mówić w dalszej części tej książki</p></div><p>Kolejna faza budowania poprawnego modelu to jego optymalizacja (ang. <em>tuning</em>). Często bowiem budowane modele zawierają hiperparametry, których nie oszacujemy podczas uczenia modelu, dlatego należy je skalibrować na podstawie innych metod<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;chodzi o wszelkiego rodzaju modyfikacje i selekcje cech</p></div><div id="fn5"><p><sup>5</sup>&nbsp;szerzej o tej części będziemy mówić w dalszej części tej książki</p></div></div><p>Kolejna faza budowania poprawnego modelu to jego optymalizacja (ang. <em>tuning</em>). Często bowiem budowane modele zawierają hiperparametry, których nie oszacujemy podczas uczenia modelu, dlatego należy je skalibrować na podstawie innych metod<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
 <p>Również w końcowej fazie uczenia modelu tzw. <em>post-processing</em>-u dokonuje się jego modyfikacji, np. dobierając optymalny poziom odcięcia dla regresji logistycznej.</p>
 <p>To wszystko powoduje, że procedura modelowania składa się z kilku elementów. Do ich połączenia w ekosystemie <code>tidymodels</code> używa się przepływów (ang. <em>workflow</em>). Pakiet <code>workflow</code> zawiera szereg funkcji pozwalających skutecznie obsługiwać potoki <code>workflow</code><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
-<div class="no-row-height column-margin column-container"><p><sup>6</sup>&nbsp;tak nazywa się funkcja do tworzenia potoku</p></div><p>Pomimo złożoności procedury modelowania można się dalej zastawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie. Postaramy się na przykładzie pokazać zasadności stosowania przepływów.</p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;tak nazywa się funkcja do tworzenia potoku</p></div></div><p>Pomimo złożoności procedury modelowania można się dalej zastawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie. Postaramy się na przykładzie pokazać zasadności stosowania przepływów.</p>
 <p>Weźmy, dajmy na to, że predyktory w zbiorze danych są wysoce skorelowane. Wiem, że zjawisko współliniowości może przeszkodzić w modelowaniu zjawiska, np. za pomocą modelu liniowego, ponieważ znacznie rosną wówczas błędy standardowe estymacji. Jednym ze sposobów radzenia sobie z tym problemem jest zrzutowanie danych na nową przestrzeń mniej wymiarową za pomocą PCA. I gdyby PCA była metodą deterministyczną, czyli nie towarzyszyła jej żadna niepewność<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, to tę procedurę <em>preprocessingu</em> użyli byśmy do zbioru uczącego w procesie uczenia modelu, a w predykcji do zbioru testowego, bez konsekwencji w postaci niedokładnego oszacowania wartości wynikowych. Jednak PCA wiąże się z niepewnością, dlatego procedura ta powinna być włączona do przepływu, czyli być immanentną częścią procesu modelowania.</p>
-<div class="no-row-height column-margin column-container"><p><sup>7</sup>&nbsp;jak np. logarytmowanie zmiennej</p></div><p>Choć <code>workflow</code> pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie <code>workflow</code> do prostego ucznia modelu bez tych elementów.</p>
+<div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;jak np. logarytmowanie zmiennej</p></div></div><p>Choć <code>workflow</code> pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie <code>workflow</code> do prostego ucznia modelu bez tych elementów.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># określenie modelu</span></span>
 <span><span class="va">lm_model</span> <span class="op">&lt;-</span> </span>
@@ -979,7 +981,7 @@ Coefficients:
 <li>Wymuszenie symetryczności predyktorów poprzez zastosowanie transformacji.</li>
 </ul>
 <p>Inżynieria cech i wstępne przetwarzanie danych może również obejmować przeformatowanie, które może być wymagane przez model. Niektóre modele używają metryki odległości geometrycznej i w konsekwencji predyktory numeryczne powinny być wyśrodkowane i przeskalowane tak, aby wszystkie były w tych samych jednostkach<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. W przeciwnym razie wartości odległości byłyby zniekształcone przez skalę każdej kolumny.</p>
-<div class="no-row-height column-margin column-container"><p><sup>8</sup>&nbsp;przykładem może być model kNN</p></div><p>W ekosystemie <code>tidymodels</code> do realizowania inżynierii cech został dedykowany pakiet <code>recipes</code>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn8"><p><sup>8</sup>&nbsp;przykładem może być model kNN</p></div></div><p>W ekosystemie <code>tidymodels</code> do realizowania inżynierii cech został dedykowany pakiet <code>recipes</code>.</p>
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 6.1</strong></span> Dla przykładu przeprowadzimy transformację kilku cech zbioru <code>ames</code>:</p>
 <ul>
@@ -1106,16 +1108,16 @@ Ostrzeżenie
 </div></div><section id="kodowanie-faktorów" class="level3 page-columns page-full" data-number="6.5.1"><h3 data-number="6.5.1" class="anchored" data-anchor-id="kodowanie-faktorów">
 <span class="header-section-number">6.5.1</span> Kodowanie faktorów</h3>
 <p>Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (<code>step_nomalize()</code>), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (<code>step_holiday()</code>). W trakcie budowania modelu różne czynności będą wymagane, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor. Możemy to zrobić na kilka sposobów. Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory. Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym. Zamiana go na indykator powoduje powstanie stałej zmiennej, która jest bezużyteczna w uczeniu modelu. Można oczywiście przystąpić do imputacji takiej wartości, a sposobów na jej realizację jest bardzo wiele. Pomijając techniki korzystające z modeli pomocniczych, jak <code>step_impute_knn</code> czy <code>step_impute_bag</code>, można też zastąpić brak stałą wartością (<code>step_unknown</code>). Podobnie, jeśli przewidujemy, że w testowych danych może pojawić się nowy poziom czynnika, <code>step_novel()</code> może w tym celu przydzielić mu nowy poziom czynnika.</p>
-<p>Dodatkowo, funkcja <code>step_other()</code> może być użyta do przeanalizowania częstotliwości poziomów czynników w zbiorze treningowym i przekonwertowania rzadko występujących wartości do poziomu “inne”, z progiem, który można określić. Dobrym przykładem jest predyktor <code>Neighborhood</code> w naszych danych, pokazany na <a href="#fig-sasiad" class="quarto-xref">Rys.&nbsp;<span>6.2</span></a>.</p>
+<p>Dodatkowo, funkcja <code>step_other()</code> może być użyta do przeanalizowania częstotliwości poziomów czynników w zbiorze treningowym i przekonwertowania rzadko występujących wartości do poziomu “inne”, z progiem, który można określić. Dobrym przykładem jest predyktor <code>Neighborhood</code> w naszych danych, pokazany na <a href="#fig-sasiad" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-sasiad</span></a>.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb77"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ames_train</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Neighborhood</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">geom_bar</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-sasiad" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-sasiad" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sasiad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="tidymodels_files/figure-html/fig-sasiad-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" data-glightbox="description: .lightbox-desc-10"><img src="tidymodels_files/figure-html/fig-sasiad-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="tidymodels_files/figure-html/fig-sasiad-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic"><img src="tidymodels_files/figure-html/fig-sasiad-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sasiad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic
@@ -1124,7 +1126,7 @@ Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic
 </div>
 </div>
 <p>Widzimy, że dwie dzielnice mają mniej niż pięć nieruchomości w danych treningowych (Landmark i Green Hills); w tym przypadku żadne domy w dzielnicy Landmark nie zostały włączone do zbioru testowego. Dla niektórych modeli może być problematyczne posiadanie zmiennych dummy z jednym niezerowym wpisem w kolumnie. Przynajmniej jest wysoce nieprawdopodobne, że te cechy byłyby ważne dla modelu. Jeśli dodamy <code>step_other(Neighborhood, threshold = 0.01)</code> do naszego przepisu, 1% dzielnic<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> zostanie wrzucony do nowego poziomu o nazwie “inne”. W tym zbiorze treningowym próg ten obejmie siedem sąsiedztw.</p>
-<div class="no-row-height column-margin column-container"><p><sup>9</sup>&nbsp;najrzadziej występujący</p></div><div class="cell">
+<div class="no-row-height column-margin column-container"><div id="fn9"><p><sup>9</sup>&nbsp;najrzadziej występujący</p></div></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb78"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">simple_ames</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span>,</span>
 <span>         data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1136,7 +1138,7 @@ Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic
 <p>W kodowaniu zmiennych typu faktor na indykatory stanów zazwyczaj korzysta się z pełno-rzędowego przekształcenia, czyli dla faktora z 5 kategoriami, jeden traktuje się jako referencyjny, a pozostałe się koduje indykatorami. Powstała w ten sposób macierz modelu jest pełnego rzędu. Takie zachowanie jest domyślne używając funkcji <code>step_dummy</code>. Jednak niektóre modele wymagają kodowania <em>one-hot edcoding</em>, które tworzy indykatory wszystkich kategorii. Chcąc wywołać kodowanie <em>one-hot</em> używamy funkcji <code>step_dummy(…, one_hot = TRUE)</code>.</p>
 </section><section id="interakcje-efektów" class="level3 page-columns page-full" data-number="6.5.2"><h3 data-number="6.5.2" class="anchored" data-anchor-id="interakcje-efektów">
 <span class="header-section-number">6.5.2</span> Interakcje efektów</h3>
-<p>Jeszcze innym ciekawym zagadnieniem podczas budowy jest odpowiedź na pytanie, czy model powinien zawierać interakcje efektów. Pozwalają to na stwierdzenie czy wpływ jednej zmiennej na wynik jest modyfikowany przez inną zmienną. W naszym przykładzie domów <code>ames</code> też możemy podejrzewać istnienie interakcji, ponieważ na <a href="#fig-inter" class="quarto-xref">Rys.&nbsp;<span>6.3</span></a> można zauważyć inny charakter zależności dla różnych typów budynków.</p>
+<p>Jeszcze innym ciekawym zagadnieniem podczas budowy jest odpowiedź na pytanie, czy model powinien zawierać interakcje efektów. Pozwalają to na stwierdzenie czy wpływ jednej zmiennej na wynik jest modyfikowany przez inną zmienną. W naszym przykładzie domów <code>ames</code> też możemy podejrzewać istnienie interakcji, ponieważ na <a href="#fig-inter" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-inter</span></a> można zauważyć inny charakter zależności dla różnych typów budynków.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb79"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ames_train</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Gr_Liv_Area</span>, y <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -1146,9 +1148,9 @@ Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic
 <span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Gross Living Area"</span>, y <span class="op">=</span> <span class="st">"Sale Price (USD)"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-inter" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-inter" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-inter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="tidymodels_files/figure-html/fig-inter-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" data-glightbox="description: .lightbox-desc-11"><img src="tidymodels_files/figure-html/fig-inter-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="tidymodels_files/figure-html/fig-inter-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Rys.&nbsp;6.3: Potencjalne interakcje zmiennych Gr_Liv_Area i Bldg_Type"><img src="tidymodels_files/figure-html/fig-inter-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;6.3: Potencjalne interakcje zmiennych <code>Gr_Liv_Area</code> i <code>Bldg_Type</code>
@@ -1191,7 +1193,7 @@ Ważne
 </div></div></section><section id="nieliniowość-zależności" class="level3 page-columns page-full" data-number="6.5.3"><h3 data-number="6.5.3" class="anchored" data-anchor-id="nieliniowość-zależności">
 <span class="header-section-number">6.5.3</span> Nieliniowość zależności</h3>
 <p>Bardzo często analizowane zależności są bardzo złożone i wykazują nieliniowy charakter. Jednym ze sposobów modelowania takich relacji jest aproksymacja ich za pomocą rozbudowanych modeli liniowych składających się z olbrzymiej liczby kombinacji liniowych predyktorów<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Innym sposobem obsługi tego zjawiska jest odpowiednie przekształcenie predyktorów, tak aby zamodelować złożony charakter zależności. Często w tym miejscu są polecane funkcje wielomianowe. Mają one jednak jedną poważną wadę, ponieważ o ile mogą dobrze opisywać zależność w analizowanej dziedzinie, to ekstrapolacja tej zależności często nie ma sensu. Z pomocą mogą przyjść splajny (ang. <em>spline</em>), czyli funkcje bazowe modeli GAM (ang. <em>Generalized Additive Models</em>). Nie wchodząc w szczegóły modeli GAM, splajny pozwalają na lokalną estymację zależności<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> .</p>
-<div class="no-row-height column-margin column-container"><p><sup>10</sup>&nbsp;przykładem może być sieć neuronowa</p><p><sup>11</sup>&nbsp;lokalną - czyli pomiędzy punktami węzłowymi, im więcej punktów węzłowych wym większa elastyczność splajnów</p></div><div class="cell">
+<div class="no-row-height column-margin column-container"><div id="fn10"><p><sup>10</sup>&nbsp;przykładem może być sieć neuronowa</p></div><div id="fn11"><p><sup>11</sup>&nbsp;lokalną - czyli pomiędzy punktami węzłowymi, im więcej punktów węzłowych wym większa elastyczność splajnów</p></div></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb81"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
 <span></span>
@@ -1211,9 +1213,9 @@ Ważne
 <span></span>
 <span><span class="op">(</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span> <span class="fu">plot_smoother</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span> <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-splajn" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-splajn" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-splajn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="tidymodels_files/figure-html/fig-splajn-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" data-glightbox="description: .lightbox-desc-13"><img src="tidymodels_files/figure-html/fig-splajn-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="tidymodels_files/figure-html/fig-splajn-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;6.4: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych"><img src="tidymodels_files/figure-html/fig-splajn-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-splajn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;6.4: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych
@@ -1366,14 +1368,6 @@ Zagrożenie
 </div></div><p>Wreszcie, wszystkie funkcje kroków mają pole <code>role</code>, które może przypisać role do wyników kroku. W wielu przypadkach kolumny, na które wpływa krok, zachowują swoją dotychczasową rolę. Na przykład, wywołania funkcji <code>step_log()</code> w naszym obiekcie <code>ames_rec</code> wpłynęły na kolumnę <code>Gr_Liv_Area</code>. Dla tego kroku, domyślnym zachowaniem jest zachowanie istniejącej roli dla tej kolumny, ponieważ nie jest tworzona żadna nowa kolumna. Jako przykład przeciwny, krok do tworzenia splajnów ustawia domyślnie nowe kolumny na rolę “predyktor”, ponieważ jest to zwykle sposób, w jaki kolumny splajnów są używane w modelu.</p>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;6.1: Różne sposoby określania parametrów modelu</span>
-<span class="glightbox-desc lightbox-desc-6">Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji</span>
-<span class="glightbox-desc lightbox-desc-7">Przykład działania parsnip_addin()</span>
-<span class="glightbox-desc lightbox-desc-10">Rys.&nbsp;6.2: Wykres częstości występowania poszczególnych dzielnic</span>
-<span class="glightbox-desc lightbox-desc-11">Rys.&nbsp;6.3: Potencjalne interakcje zmiennych <code>Gr_Liv_Area</code> i <code>Bldg_Type</code></span>
-<span class="glightbox-desc lightbox-desc-13">Rys.&nbsp;6.4: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych</span>
-</div>
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -1553,18 +1547,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1596,7 +1579,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1631,7 +1652,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1679,7 +1704,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1905,20 +1929,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./resampling.html" class="pagination-link" aria-label="Zarządzanie danymi">
-=======
-      <a href="./resampling.html" class="pagination-link  aria-label=" danymi="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./resampling2.html" class="pagination-link" aria-label="Metody próbkowania">
-=======
-      <a href="./resampling2.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Metody próbkowania</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Metody próbkowania</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1935,34 +1951,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"descPosition":"bottom","selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","loop":false});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","descPosition":"bottom"});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

@@ -1,20 +1,14 @@
 # Ekosystem
 
-Książka zawiera szereg przykładów ilustrujących zasadę działania poszczególnych technik walidacji modeli.
-Ponieważ od wielu lat używam języka R do budowania modeli uczenia maszynowego, to również w tej książce znajdą się implementacje metod ewaluacji modeli wykonane w R.
-Spośród trzech dominujących ekosystemów w języku R do budowania modeli uczenia maszynowego, czyli `caret`[^intro-1],`mlr3`[^intro-2] i `tidymodels`[^intro-3] postanowiłem postawić na ten ostatn
-i. Stanowi on przeniesienie filozofii *tidy data* realizowanej w pakiecie `tidyverse`[^intro-4] na modele
-ML. `tidymodels` jest meta-pakietem zawierającym w sob
-ie:
-
-[^intro-1]: biblioteka napisana przez Maxa Kuhna, która niestety nie dostaje już wsparcia - <https://topepo.github.io/caret/>
-
-[^intro-2]: jedna biblioteka z całego ekosystemu przygotowanego głównie przez niemieckich programistów Lars Kotthoff, Raphael Sonabend, Michel Lang, Bernd Bischl.
-    Jej największą zaletą jest fakt, iż wszelkie operacje na danych są dokonywane w formacie `data.table` uznawanym za najszybszy - <https://mlr3book.mlr-org.com>
-
-[^intro-3]: <https://www.tidymodels.org>
-
-[^intro-4]: pakiet został stworzony przez Julie Silge i Maxa Kuhna, a ich motto podane podczas prezentacji biblioteki brzmiało *Whenever possible, the software should be able to protect users from committing mistakes. Software should make it easy for users to do the right thing*
+Książka zawiera szereg przykładów ilustrujących zasadę działania poszczególnych
+technik walidacji modeli. Ponieważ od wielu lat używam języka R do budowania
+modeli uczenia maszynowego, to również w tej książce znajdą się implementacje
+metod ewaluacji modeli wykonane w R. Spośród trzech dominujących ekosystemów w
+języku R do budowania modeli uczenia maszynowego, czyli
+`caret`[^intro-1],`mlr3`[^intro-2] i `tidymodels`[^intro-3] postanowiłem
+postawić na ten ostatn i. Stanowi on przeniesienie filozofii *tidy data*
+realizowanej w pakiecie `tidyverse`[^intro-4] na modele ML. `tidymodels` jest
+meta-pakietem zawierającym w sob ie:
 
 ![](images/Zrzut%20ekranu%202023-01-28%20o%2021.09.19.png)
 
@@ -24,7 +18,8 @@ ie:
 -   `ggplot2` - narzędzia do wizualizacji;
 -   `infer` - narzędzia do wnioskowania statystycznego;
 -   `modeldata` - pakiet przykładowych danych do budowania modeli;
--   `parsnip` - narzędzia do tworzenia i manipulowania funkcjami powszechnie używanymi podczas modelowania;
+-   `parsnip` - narzędzia do tworzenia i manipulowania funkcjami powszechnie
+    używanymi podczas modelowania;
 -   `purrr` - zestaw narzędzi do programowania funkcyjnego;
 -   `recipes` - narzędzie do tworzenia modeli;
 -   `rsample` - narzędzie do resamplingu;
@@ -35,12 +30,31 @@ ie:
 -   `workflowsets` - narzędzie do tworzenia zestawów `workflow`;
 -   `yardstick` - narzędzia do oceny dopasowania modelu.
 
-Oprócz wspomnianych pakietów w ramach `tidymodels` występują także: `applicable`, `baguette`, `butcher`, `discrim`, `embed`, `hardhat`, `corrr`, `rules`, `text recipes`, `tidypredict`, `modeldb` i `tidyposterior`.
+Oprócz wspomnianych pakietów w ramach `tidymodels` występują także:
+`applicable`, `baguette`, `butcher`, `discrim`, `embed`, `hardhat`, `corrr`,
+`rules`, `text recipes`, `tidypredict`, `modeldb` i `tidyposterior`.
 
 ::: column-margin
 ![](https://tenor.com/view/shocked-po-kung-fu-panda-gif-4255877.gif)
 :::
 
-Wybór padł na `tidymodels` ponieważ filozofia tworzenia i walidacji modeli przypominająca pieczenie ciasta bardzo mi przypadła do gustu.
+Wybór padł na `tidymodels` ponieważ filozofia tworzenia i walidacji modeli
+przypominająca pieczenie ciasta bardzo mi przypadła do gustu.
 
 ![](images/Zrzut%20ekranu%202023-01-28%20o%2021.17.14.png)
+
+[^intro-1]: biblioteka napisana przez Maxa Kuhna, która niestety nie dostaje
+    już wsparcia - <https://topepo.github.io/caret/>
+
+[^intro-2]: jedna biblioteka z całego ekosystemu przygotowanego głównie przez
+    niemieckich programistów Lars Kotthoff, Raphael Sonabend, Michel Lang,
+    Bernd Bischl. Jej największą zaletą jest fakt, iż wszelkie operacje na
+    danych są dokonywane w formacie `data.table` uznawanym za najszybszy -
+    <https://mlr3book.mlr-org.com>
+
+[^intro-3]: <https://www.tidymodels.org>
+
+[^intro-4]: pakiet został stworzony przez Julie Silge i Maxa Kuhna, a ich motto
+    podane podczas prezentacji biblioteki brzmiało *Whenever possible, the
+    software should be able to protect users from committing mistakes. Software
+    should make it easy for users to do the right thing*

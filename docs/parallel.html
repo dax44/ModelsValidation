@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 11&nbsp; Paralelizacja resamplingu</title>
+<title>11&nbsp; Paralelizacja resamplingu – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/videojs/video.min.js"></script>
 <link href="site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -128,7 +124,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -159,13 +155,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parallel.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Paralelizacja resamplingu</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -330,7 +326,7 @@ window.Quarto = {
 
 </header><p>Poszukiwanie optymalnego modelu za pomocą siatek parametrów jest czynnością żmudną i zajmuje sporo czasu. Same funkcje pakietu <code>tune</code> są już w pewnym stopniu zoptymalizowane pod kątem poszukiwania najlepszych rozwiązań. W przypadku modeli, których parametry można przeszukiwać bazując na wiedzy pochodzącej z wcześniejszych epok estymacji, to funkcje <code>tune</code> z tego korzystają. Przykładowo, dajmy na to, że uczymy model PLS (ang. <em>Partial Least Squares</em>), który co do zasady jest podobny do zastosowania PCA na predyktorach, a następnie przewidywaniu wartości wynikowej, z tą różnicą, że w PLS tworzone składowe są dobierane tak aby zmaksymalizować korelację pomiędzy nimi a zmienną wynikową. Wówczas do obliczenia budowy modelu z 10 składowymi procedura przebiega identycznie jak w modelu z 9 składowymi, z tą różnicą, że dodatkowo ostatnia składowa jest obliczana. Wówczas aby zaoszczędzić czas procedura tuningu modelu względem liczby składowych, których zakres przeszukiwania był powiedzmy [0,10], korzysta ze wspomnianej iteracyjnej metody budowania modelu PLS. To znacząco przyspiesza czas dostrajania modelu. Oczywiście nie wszystkie modele mają tą własność, ale te które mają korzystają z tej procedury nazywanej optymalizacją podprocesów (ang. <em>submodel optimization</em>).</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
-<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><div class="no-row-height column-margin column-container"><img src="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></div></a></p>
 </figure>
 </div>
 <p>W innych przypadkach, chcąc przyspieszyć procedurę tuningu, musimy stosować paralelizację procedury dostrajania. W pakiecie <code>tune</code> możliwe jest zastosowanie paralelizacji na dwa sposoby. Podczas dostrajania modeli poprzez wyszukiwanie w siatce, istnieją dwie odrębne pętle: jedna nad foldami (zewnętrzna pętla) i druga nad unikalnymi kombinacjami parametrów (wewnętrzna pętla).</p>
@@ -339,10 +335,10 @@ window.Quarto = {
 <li>Ogranicza osiągalne przyspieszenia, gdy preprocessing nie jest wymagający obliczeniowo.</li>
 <li>Liczba równoległych rdzeni jest ograniczona przez liczbę foldów. Na przykład przy 10-krotnej walidacji krzyżowej można użyć tylko 10 równoległych rdzeni, nawet jeśli komputer ma więcej.</li>
 </ul>
-<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1" class="quarto-xref">Rys.&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
-<div id="fig-parallel1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-parallel1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
+<div id="fig-parallel1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli
@@ -351,10 +347,10 @@ Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli
 <p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymaliby do przeliczenia kilka foldów.</p>
 <p>W funkcjach sterujących <code>tune_*()</code> argument <code>parallel_over</code> kontroluje sposób wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest <code>parallel_over = "resamples"</code>.</p>
 <p>Zamiast równoległego przetwarzania tylko nad zewnętrzną pętlą, alternatywny schemat łączy pętle nad foldami i modelami w jedną pętlę. W tym przypadku paralelizacja występuje teraz nad pojedynczą pętlą. Na przykład, jeśli używamy 5-krotnej walidacji krzyżowej z <span class="math inline">\(M\)</span> wartościami parametrów dostrajania, pętla jest wykonywana przez <span class="math inline">\(5 \times M\)</span> iteracji. Zwiększa to liczbę potencjalnych rdzeni, które można wykorzystać. Jednak praca związana ze wstępnym przetwarzaniem danych jest powtarzana wielokrotnie. Jeśli te kroki są wymagające obliczeniowo, to podejście to będzie nieefektywne. W <code>tidymodels</code>, zestawy walidacyjne są traktowane jako pojedynczy fold. W takich przypadkach ten schemat paralelizacji byłby najlepszy.</p>
-<p><a href="#fig-parallel2" class="quarto-xref">Rys.&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
-<div id="fig-parallel2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p><a href="#fig-parallel2" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-parallel2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
+<div id="fig-parallel2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami
@@ -362,7 +358,7 @@ Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami
 </div>
 <p>Tutaj każdy proces roboczy obsługuje wiele foldów, a przetwarzanie wstępne jest niepotrzebnie powtarzane. Na przykład, dla pierwszego foldu, preprocessing został wykonany siedem razy zamiast raz. Dla tego schematu argumentem funkcji sterującej jest <code>parallel_over = "everything"</code>.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
-<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><img src="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><div class="no-row-height column-margin column-container"><img src="https://i.pinimg.com/originals/00/83/df/0083df855ae27b0019a5238b0ace6f4e.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></div></a></p>
 </figure>
 </div>
 <p>Aby porównać różne schematy paralelizacji, dostroiliśmy drzewo wzmacniane za pomocą silnika xgboost, używając zestawu danych składającego się z 4000 próbek, z 5-krotną walidacją krzyżową i 10 modelami kandydującymi. Dane te wymagały pewnego podstawowego przetwarzania wstępnego. Przetwarzanie wstępne było obsługiwane na trzy różne sposoby:</p>
@@ -371,10 +367,10 @@ Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami
 <li>To samo przetwarzanie wstępne za pomocą przepisów inżynierii cech (oznaczone jako “light” przetwarzanie wstępne).</li>
 <li>Dodano nowy krok, który ma wysoki koszt obliczeniowy (oznaczony jako “expensive”).</li>
 </ul>
-<p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>.</p>
-<div id="fig-parallel3" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Oceniliśmy ten proces przy użyciu zmiennej liczby rdzeni i przy użyciu dwóch opcji <code>parallel_over</code>, na komputerze z 10 fizycznymi rdzeniami i 20 wirtualnymi rdzeniami (poprzez hyper-threading). Najpierw rozważmy surowe czasy wykonania na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-parallel3</span></a>.</p>
+<div id="fig-parallel3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" data-glightbox="description: .lightbox-desc-5"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.31.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy
@@ -383,13 +379,13 @@ Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy
 <p>Ponieważ było tylko pięć foldów, liczba rdzeni używanych, gdy <code>parallel_over = "resamples"</code> jest ograniczona do pięciu. Porównanie krzywych w pierwszych dwóch panelach dla “none” i “light” daje następujące wnioski:</p>
 <ul>
 <li>Istnieje niewielka różnica w czasach wykonania między panelami. Wskazuje to, dla tych danych, że nie ma wyraźnej kary obliczeniowej za wykonywanie kroków przetwarzania wstępnego w recepturze.</li>
-<li>Istnieje pewna korzyść z używania <code>parallel_over = "wszystko"</code> z wieloma rdzeniami. Jednak, jak widać na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>, większość korzyści z przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.</li>
+<li>Istnieje pewna korzyść z używania <code>parallel_over = "wszystko"</code> z wieloma rdzeniami. Jednak, jak widać na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-parallel3</span></a>, większość korzyści z przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.</li>
 </ul>
 <p>W przypadku z drogim krokiem wstępnego przetwarzania, istnieje znaczna różnica w czasach wykonywania. Użycie <code>parallel_over = "everything"</code> jest problematyczne, ponieważ nawet przy użyciu wszystkich rdzeni, nigdy nie osiąga czasu wykonania, który <code>parallel_over = "everything"</code> osiąga przy użyciu tylko pięciu rdzeni. Dzieje się tak dlatego, że kosztowny krok wstępnego przetwarzania jest niepotrzebnie powtarzany w schemacie obliczeniowym.</p>
-<p>Na <a href="#fig-parallel4" class="quarto-xref">Rys.&nbsp;<span>11.4</span></a> możemy również obejrzeć te dane w kategoriach przyrostu prędkości.</p>
-<div id="fig-parallel4" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Na <a href="#fig-parallel4" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-parallel4</span></a> możemy również obejrzeć te dane w kategoriach przyrostu prędkości.</p>
+<div id="fig-parallel4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" data-glightbox="description: .lightbox-desc-6"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.41.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów
@@ -481,14 +477,14 @@ Computational engine: stan </code></pre>
 <span class="header-section-number">11.2</span> Metoda wyścigów</h2>
 <p>Jednym z problemów z przeszukiwaniem siatki jest to, że wszystkie modele muszą być dopasowane we wszystkich foldach, zanim jakiekolwiek dostrajanie parametrów może być ocenione. Byłoby pomocne, gdyby zamiast tego, w pewnym momencie podczas dostrajania parametrów, można było przeprowadzić analizę przejściową w celu wyeliminowania wszelkich naprawdę bezużytecznych kandydatów na parametry. Byłoby to podobne do analizy daremności w badaniach klinicznych. Jeśli nowy lek działa zbyt słabo (lub dobrze), to potencjalnie nieetyczne jest czekanie na zakończenie badania, by podjąć decyzję.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
-<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"></a></p><div class="no-row-height column-margin column-container"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"><img src="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
+<figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"><div class="no-row-height column-margin column-container"><img src="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></div></a></p>
 </figure>
 </div>
-<p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="references.html#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
+<p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
 <p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na rysunku 13.9.</p>
-<div id="fig-parallel5" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-parallel5" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" data-glightbox="description: .lightbox-desc-8"><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej"><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-parallel5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
@@ -571,14 +567,7 @@ Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
 <p>Istnieją również inne techniki analizy pośredniej do odrzucania pewnych konfiguracji parametrów.</p>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli</span>
-<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami</span>
-<span class="glightbox-desc lightbox-desc-5">Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy</span>
-<span class="glightbox-desc lightbox-desc-6">Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów</span>
-<span class="glightbox-desc lightbox-desc-8">Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-NIPS1993_02a32ad2" class="csl-entry" role="listitem">
 Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating</span> Model Selection Search for Classification and Function Approximation”</span>. W <em>Advances in Neural Information Processing Systems</em>, zredagowane przez J. Cowan, G. Tesauro, i J. Alspector. T. 6. <span>Morgan-Kaufmann</span>.
 </div>
@@ -762,18 +751,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -805,7 +783,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -840,7 +856,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -888,7 +908,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1114,20 +1133,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./grid_search.html" class="pagination-link" aria-label="Dostrajanie z przeszukiwaniem siatki">
-=======
-      <a href="./grid_search.html" class="pagination-link  aria-label=" z="" przeszukiwaniem="" siatki="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dostrajanie z przeszukiwaniem siatki</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./iterative.html" class="pagination-link" aria-label="Przeszukiwanie iteracyjne">
-=======
-      <a href="./iterative.html" class="pagination-link" aria-label="<span class='chapter-number'>12</span>&nbsp; <span class='chapter-title'>Przeszukiwanie iteracyjne</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Przeszukiwanie iteracyjne</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1144,34 +1155,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>videojs(video_shortcode_videojs_video1);</script><script>var lightboxQuarto = GLightbox({"descPosition":"bottom","openEffect":"zoom","loop":false,"closeEffect":"zoom","selector":".lightbox"});
-=======
-</footer><script>videojs(video_shortcode_videojs_video1);</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom"});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>videojs(video_shortcode_videojs_video1);</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 

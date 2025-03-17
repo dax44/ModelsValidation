@@ -2,13 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<<<<<<< HEAD
-<meta name="generator" content="quarto-1.4.550">
-=======
-<meta name="generator" content="quarto-1.4.549">
->>>>>>> 4245f9f (poprawki typo)
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Metody walidacji modeli statystycznych - 4&nbsp; Przegląd miar dopasowania modelu</title>
+<title>4&nbsp; Przegląd miar dopasowania modelu – Metody walidacji modeli statystycznych</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -92,12 +88,12 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d0026ac4bcdfb5636bdf416109eb2ba9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a48a05f7b42eba76d24f1ccb21adfb46.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +122,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,13 +153,13 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./measures.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Przegląd miar dopasowania modelu</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Przełącz pasek boczny" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Szukaj" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -362,7 +358,7 @@ window.Quarto = {
 <li>przedstawić klasyfikację w postaci macierzy błędnych klasyfikacji (ang. <em>confusion matrix</em>);</li>
 <li>najczęściej można się jednak spotkać z podejściem wykorzystującym różnego rodzaju miarami dopasowania modelu.</li>
 </ul>
-<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;dotyczy to modeli regresyjnych</p><p><sup>2</sup>&nbsp;czyli większej niż dwie</p></div><p>W tym rozdziale przedstawimy najpowszechniej stosowane miary dopasowania modelu w podziale na modele regresyjne i klasyfikacyjne. Przy czym w rodzinie modeli klasyfikacyjnych można wyszczególnić podklasę modeli, dla których zmienna wynikowa jest binarna. Modele ze zmienną wynikową binarną stanowią oddzielną klasę w kontekście dopasowania, ponieważ stosuje się wówczas inne miary dopasowania. Co prawda miary te można zastosować również w przypadku zmiennej wynikowej o większej liczbie kategorii<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, ale wymaga to wówczas przyjęcia dodatkowych umów w jaki sposób je stosować, a sposoby te nie są jednoznaczne.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;dotyczy to modeli regresyjnych</p></div><div id="fn2"><p><sup>2</sup>&nbsp;czyli większej niż dwie</p></div></div><p>W tym rozdziale przedstawimy najpowszechniej stosowane miary dopasowania modelu w podziale na modele regresyjne i klasyfikacyjne. Przy czym w rodzinie modeli klasyfikacyjnych można wyszczególnić podklasę modeli, dla których zmienna wynikowa jest binarna. Modele ze zmienną wynikową binarną stanowią oddzielną klasę w kontekście dopasowania, ponieważ stosuje się wówczas inne miary dopasowania. Co prawda miary te można zastosować również w przypadku zmiennej wynikowej o większej liczbie kategorii<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, ale wymaga to wówczas przyjęcia dodatkowych umów w jaki sposób je stosować, a sposoby te nie są jednoznaczne.</p>
 <section id="miary-dopasowania-modeli-regresyjnych" class="level2 page-columns page-full" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="miary-dopasowania-modeli-regresyjnych">
 <span class="header-section-number">4.1</span> Miary dopasowania modeli regresyjnych</h2>
 <p>Przegląd zaczniemy od najlepiej znanych miar, a skończymy na rzadziej stosowanych, jak funkcja straty Hubera.</p>
@@ -374,12 +370,12 @@ window.Quarto = {
 R^2=1-\frac{\sum_i(y_i-\hat{y}_i)^2}{\sum_i(y_i-\bar{y})^2},
 \tag{4.1}\]</span></span></p>
 <p>gdzie <span class="math inline">\(\hat{y}_i\)</span> jest <span class="math inline">\(i\)</span>-tą wartością przewidywaną na podstawie modelu, <span class="math inline">\(\bar{y}\)</span> jest średnią zmiennej wynikowej, a <span class="math inline">\(y_i\)</span> jest <span class="math inline">\(i\)</span>-tą wartością obserwowaną. Już na kursie modeli liniowych dowiedzieliśmy się o wadach tak zdefiniowanej miary. Wśród nich należy wymienić przede wszystkim fakt, iż dołączając do modelu zmienne, których zdolność predykcyjna jest nieistotna<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, to i tak rośnie <span class="math inline">\(R^2\)</span></p>
-<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;czyli nie mają znaczenia w przewidywaniu wartości wynikowej</p><p><sup>4</sup>&nbsp;drzewo składa się tylko z korzenia</p></div><p>W przypadku modeli liniowych wprowadzaliśmy korektę eliminującą tą wadę, jednak w przypadku modeli predykcyjnych skorygowana miara <span class="math inline">\(R^2_{adj}\)</span> nie wystarcza. W sytuacji gdy modele mają bardzo słabą moc predykcyjną, czyli są np. drzewem regresyjnym bez żadnej reguły podziału<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, wówczas można otrzymać ujemne wartości obu miar. Zaleca się zatem wprowadzenie miary, która pozbawiona jest tej wady, a jednocześnie ma tą sama interpretację. Definiuję się ją następująco:</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;czyli nie mają znaczenia w przewidywaniu wartości wynikowej</p></div><div id="fn4"><p><sup>4</sup>&nbsp;drzewo składa się tylko z korzenia</p></div></div><p>W przypadku modeli liniowych wprowadzaliśmy korektę eliminującą tą wadę, jednak w przypadku modeli predykcyjnych skorygowana miara <span class="math inline">\(R^2_{adj}\)</span> nie wystarcza. W sytuacji gdy modele mają bardzo słabą moc predykcyjną, czyli są np. drzewem regresyjnym bez żadnej reguły podziału<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, wówczas można otrzymać ujemne wartości obu miar. Zaleca się zatem wprowadzenie miary, która pozbawiona jest tej wady, a jednocześnie ma tą sama interpretację. Definiuję się ją następująco:</p>
 <p><span id="eq-r2cor"><span class="math display">\[
 \tilde{R}^2=[\operatorname{Cor}(Y, \hat{Y})]^2.
 \tag{4.2}\]</span></span></p>
-<p>Miara zdefiniowana w (<a href="#eq-r2cor" class="quarto-xref"><span>4.2</span></a>) zapewnia nam wartości w przedziale (0,1), a klasyczna miara (<a href="#eq-r2trad" class="quarto-xref"><span>4.1</span></a>) nie <span class="citation" data-cites="kvalsethCautionaryNoteR21985">(<a href="references.html#ref-kvalsethCautionaryNoteR21985" role="doc-biblioref">Kvalseth 1985</a>)</span>. Tradycyjna jest zdefiniowana w bibliotece <code>yardstick</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> pod nazwą <code>rsq_trad</code>, natomiast miara oparta na korelacji jako <code>rsq</code>. Oczywiście interpretacja jest następująca, że jeśli wartość <span class="math inline">\(\tilde{R}^2\)</span> jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.</p>
-<div class="no-row-height column-margin column-container"><p><sup>5</sup>&nbsp;będącej częścią ekosystemu <code>tidymodels</code></p></div></section><section id="rmse" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="rmse">
+<p>Miara zdefiniowana w (<a href="#eq-r2cor" class="quarto-xref"><span class="quarto-unresolved-ref ref-noprefix">eq-r2cor</span></a>) zapewnia nam wartości w przedziale (0,1), a klasyczna miara (<a href="#eq-r2trad" class="quarto-xref"><span class="quarto-unresolved-ref ref-noprefix">eq-r2trad</span></a>) nie <span class="citation" data-cites="kvalsethCautionaryNoteR21985">(<a href="#ref-kvalsethCautionaryNoteR21985" role="doc-biblioref">Kvalseth 1985</a>)</span>. Tradycyjna jest zdefiniowana w bibliotece <code>yardstick</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> pod nazwą <code>rsq_trad</code>, natomiast miara oparta na korelacji jako <code>rsq</code>. Oczywiście interpretacja jest następująca, że jeśli wartość <span class="math inline">\(\tilde{R}^2\)</span> jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.</p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;będącej częścią ekosystemu <code>tidymodels</code></p></div></div></section><section id="rmse" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="rmse">
 <span class="header-section-number">4.1.2</span> RMSE</h3>
 <p>Inną powszechnie stosowaną miarą do oceny dopasowania modeli regresyjnych jest pierwiastek błędu średnio-kwadratowego (ang. <em>Root Mean Square Error</em>), zdefiniowany następująco:</p>
 <p><span id="eq-rmse"><span class="math display">\[
@@ -409,11 +405,11 @@ MAPE=\frac{1}{n}\sum_{i=1}^n\left|\frac{y_i-\hat{y}_i}{y_i}\right|\cdot 100\%.
 <p>Interpretujemy ten błąd podobnie jak poprzednie pomimo, że jest wyrażony w procentach. Do wywołania go w pakiecie <code>yardstick</code> używamy funkcji <code>mape</code>.</p>
 </section><section id="mase" class="level3" data-number="4.1.6"><h3 data-number="4.1.6" class="anchored" data-anchor-id="mase">
 <span class="header-section-number">4.1.6</span> MASE</h3>
-<p>Średni bezwzględny błąd skalowany (ang. <em>Mean Absolute Scaled Error</em>) jest miarą dokładności prognoz. Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako “ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach” <span class="citation" data-cites="hyndmanAnotherLookMeasures2006">(<a href="references.html#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>)</span>. Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych <span class="citation" data-cites="fransesNoteMeanAbsolute2016">(<a href="references.html#ref-fransesNoteMeanAbsolute2016" role="doc-biblioref">Franses 2016</a>)</span>. Definiujemy go następująco</p>
+<p>Średni bezwzględny błąd skalowany (ang. <em>Mean Absolute Scaled Error</em>) jest miarą dokładności prognoz. Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako “ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach” <span class="citation" data-cites="hyndmanAnotherLookMeasures2006">(<a href="#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>)</span>. Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych <span class="citation" data-cites="fransesNoteMeanAbsolute2016">(<a href="#ref-fransesNoteMeanAbsolute2016" role="doc-biblioref">Franses 2016</a>)</span>. Definiujemy go następująco</p>
 <p><span id="eq-mase"><span class="math display">\[
 MASE = \frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{\sum_{i=1}^n\vert y_i-\bar{y}_i\vert}.
 \tag{4.6}\]</span></span></p>
-<p>Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej <span class="citation" data-cites="hyndmanAnotherLookMeasures2006 EvaluatingForecastAccuracy">(<a href="references.html#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>; <a href="references.html#ref-EvaluatingForecastAccuracy" role="doc-biblioref"><em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>, b.d.</a>)</span>. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów. Wywołujemy go funkcją <code>mase</code>.</p>
+<p>Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej <span class="citation" data-cites="hyndmanAnotherLookMeasures2006 EvaluatingForecastAccuracy">(<a href="#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>; <a href="#ref-EvaluatingForecastAccuracy" role="doc-biblioref"><em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>, b.d.</a>)</span>. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów. Wywołujemy go funkcją <code>mase</code>.</p>
 </section><section id="mpe" class="level3" data-number="4.1.7"><h3 data-number="4.1.7" class="anchored" data-anchor-id="mpe">
 <span class="header-section-number">4.1.7</span> MPE</h3>
 <p>Średni błąd procentowy (ang. <em>Mean Percentage Error</em>) jest miarą błędu względnego definiowaną nastepująco</p>
@@ -442,7 +438,7 @@ L_{\delta}(y, \hat{y})= \begin{cases}
 </section><section id="funkcja-straty-pseudo-hubera" class="level3 page-columns page-full" data-number="4.1.10"><h3 data-number="4.1.10" class="anchored" data-anchor-id="funkcja-straty-pseudo-hubera">
 <span class="header-section-number">4.1.10</span> Funkcja straty Pseudo-Hubera</h3>
 <p>Funkcja straty Pseudo-Hubera (ang. <em>Pseudo-Huber loss</em>) może być stosowana jako gładkie przybliżenie funkcji straty Hubera. Łączy ona najlepsze właściwości straty kwadratowej<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> i straty bezwzględnej<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych . Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr <span class="math inline">\(\delta\)</span>. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni . Definiujemy ją następująco :</p>
-<div class="no-row-height column-margin column-container"><p><sup>6</sup>&nbsp;inaczej w normie L2</p><p><sup>7</sup>&nbsp;w normie L1</p></div><p><span id="eq-huber2"><span class="math display">\[
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;inaczej w normie L2</p></div><div id="fn7"><p><sup>7</sup>&nbsp;w normie L1</p></div></div><p><span id="eq-huber2"><span class="math display">\[
 L_{\delta}(y-\hat{y})=\delta^2\left(\sqrt{1+((y-\hat{y})/\delta)^2}-1\right).
 \tag{4.10}\]</span></span> Wywołujemy ją za pomocą funkcji <code>huber_loss_pseudo</code>.</p>
 </section><section id="logarytm-funkcji-straty-dla-rozkładu-poissona" class="level3" data-number="4.1.11"><h3 data-number="4.1.11" class="anchored" data-anchor-id="logarytm-funkcji-straty-dla-rozkładu-poissona">
@@ -466,7 +462,7 @@ SMAPE = \frac1n\sum_{i=1}^n\frac{\vert y_i-\hat{y}_i\vert}{(|y_i|+|\hat{y}_i|)/2
 RPD = \frac{SD}{RMSE},
 \tag{4.12}\]</span></span></p>
 <p>gdzie <span class="math inline">\(SD\)</span> oczywiście oznacza odchylenie standardowe zmiennej zależnej. Tym razem interpretujemy go w ten sposób, że im wyższa jest wartość RPD tym lepiej dopasowany model. Wywołujemy za pomocą <code>rpd</code>.</p>
-<p>W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu. Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model. Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku zbiorów danych z asymetrią rozkładów. Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez <span class="citation" data-cites="bellon-maurelCriticalReviewChemometric2010">Bellon-Maurel i in. (<a href="references.html#ref-bellon-maurelCriticalReviewChemometric2010" role="doc-biblioref">2010</a>)</span> w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.</p>
+<p>W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu. Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model. Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku zbiorów danych z asymetrią rozkładów. Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez <span class="citation" data-cites="bellon-maurelCriticalReviewChemometric2010">Bellon-Maurel i in. (<a href="#ref-bellon-maurelCriticalReviewChemometric2010" role="doc-biblioref">2010</a>)</span> w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.</p>
 </section><section id="rpiq" class="level3" data-number="4.1.14"><h3 data-number="4.1.14" class="anchored" data-anchor-id="rpiq">
 <span class="header-section-number">4.1.14</span> RPIQ</h3>
 <p>Stosunek wartości do rozstępu międzykwartylowego (ang. <em>Ratio of Performance to Inter-Quartile</em>) definiujemy następująco:</p>
@@ -485,7 +481,7 @@ CCC = \frac{2\rho\sigma_y\sigma_{\hat{y}}}{\sigma^2_{y}+\sigma^2_{\hat{y}}+(\mu_
 <span class="header-section-number">4.1.16</span> Podsumowanie miar dla modeli regresyjnych</h3>
 <p>Wśród miar dopasowania modelu można wyróżnić, te które mierzą zgodność pomiędzy wartościami obserwowanymi a przewidywanymi, wyrażone często pewnego rodzaju korelacjami (lub ich kwadratami), a interpretujemy je w ten sposób, że im wyższe wartości tych współczynników tym bardziej zgodne są predykcje z obserwacjami. Drugą duża grupę miar stanowią błędy (bezwzględne i względne), które mierzą w różny sposób różnice pomiędzy wartościami obserwowanymi i przewidywanymi. Jedne są bardziej odporne wartości odstające inne mniej, a wszystkie interpretujemy tak, że jeśli ich wartość jest mniejsza tym lepiej jest dopasowany model.</p>
 <div id="exm-1" class="theorem example">
-<p><span class="theorem-title"><strong>Przykład 4.1</strong></span> Dla zilustrowania działania wspomnianych miar przeanalizujemy przykład modelu regresyjnego. Dla przykładu rozwiążemy zadanie przewidywania wytrzymałości betonu na podstawie jego parametrów. Do tego celu użyjemy danych ze zbioru <code>concrete</code> pakietu <code>modeldata</code>.<span class="citation" data-cites="yehAnalysisStrengthConcrete2006">(<a href="references.html#ref-yehAnalysisStrengthConcrete2006" role="doc-biblioref">Yeh 2006</a>)</span></p>
+<p><span class="theorem-title"><strong>Przykład 4.1</strong></span> Dla zilustrowania działania wspomnianych miar przeanalizujemy przykład modelu regresyjnego. Dla przykładu rozwiążemy zadanie przewidywania wytrzymałości betonu na podstawie jego parametrów. Do tego celu użyjemy danych ze zbioru <code>concrete</code> pakietu <code>modeldata</code>.<span class="citation" data-cites="yehAnalysisStrengthConcrete2006">(<a href="#ref-yehAnalysisStrengthConcrete2006" role="doc-biblioref">Yeh 2006</a>)</span></p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span></span>
@@ -559,13 +555,9 @@ $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.
 <span>  <span class="fu">facet_grid</span><span class="op">(</span><span class="va">sample</span><span class="op">~</span><span class="va">model</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">coord_obs_pred</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-por1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-por1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-por1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="measures_files/figure-html/fig-por1-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="measures_files/figure-html/fig-por1-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="measures_files/figure-html/fig-por1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2"><img src="measures_files/figure-html/fig-por1-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="measures_files/figure-html/fig-por1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach"><img src="measures_files/figure-html/fig-por1-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-por1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
@@ -664,7 +656,7 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 </div>
 </div>
 <p>W przypadku gdybyśmy chcieli zdefiniować własną miarę, to oczywiście jest taka możliwość<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> polecam stronę pakietu <code>yardstick</code> - <a href="https://www.tidymodels.org/learn/develop/metrics/" class="uri">https://www.tidymodels.org/learn/develop/metrics/</a>.</p>
-<div class="no-row-height column-margin column-container"><p><sup>8</sup>&nbsp;choć liczba już istniejących jest imponująca</p></div></section></section><section id="miary-dopasowania-modeli-klasyfikacyjnych" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="miary-dopasowania-modeli-klasyfikacyjnych">
+<div class="no-row-height column-margin column-container"><div id="fn8"><p><sup>8</sup>&nbsp;choć liczba już istniejących jest imponująca</p></div></div></section></section><section id="miary-dopasowania-modeli-klasyfikacyjnych" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="miary-dopasowania-modeli-klasyfikacyjnych">
 <span class="header-section-number">4.2</span> Miary dopasowania modeli klasyfikacyjnych</h2>
 <p>Jak to zostało wspomniane wcześniej w modelach klasyfikacyjnych można podzielić miary dopasowania na te, które dotyczą modeli z binarną zmienną wynikową i ze zmienna wielostanową. Miary można też podzielić na te, które zależą od prawdopodobieństwa poszczególnych stanów i te, które zależą tylko od klasyfikacji wynikowej.</p>
 <p>Do wyliczenia miar probabilistycznych konieczne jest wyliczenie predykcji z prawdopodobieństwami poszczególnych stanów. Aby uzyskać taki efekt wystarczy w predykcji modelu użyć parametru <code>type = "prob"</code>. W przykładzie podsumowującym miary będzie to zilustrowane.</p>
@@ -689,13 +681,9 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 <span>  <span class="fu">conf_mat</span><span class="op">(</span><span class="va">truth</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">autoplot</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<div id="fig-confmat" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-confmat" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-confmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="measures_files/figure-html/fig-confmat-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="measures_files/figure-html/fig-confmat-1.png" class="img-fluid figure-img" width="672"></a>
-=======
-<a href="measures_files/figure-html/fig-confmat-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3"><img src="measures_files/figure-html/fig-confmat-1.png" class="img-fluid figure-img" width="672"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="measures_files/figure-html/fig-confmat-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;4.2: Przykładowa macierz klasyfikacji"><img src="measures_files/figure-html/fig-confmat-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-confmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;4.2: Przykładowa macierz klasyfikacji
@@ -704,13 +692,9 @@ Rys.&nbsp;4.2: Przykładowa macierz klasyfikacji
 </div>
 </div>
 <p>Aby przedstawić poszczególne miary na podstawie macierzy klasyfikacji wystarczy przywołać ilustrację z <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Wikipedii</a>, która w genialny sposób podsumowuje większość miar.</p>
-<div id="fig-confmat2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-confmat2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-confmat2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4"><img src="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
-=======
-<a href="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" data-glightbox="description: .lightbox-desc-4"><img src="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Rys.&nbsp;4.3: Macierz klasyfikacji"><img src="images/Zrzut ekranu 2023-02-14 o 17.21.10.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-confmat2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;4.3: Macierz klasyfikacji
@@ -915,11 +899,7 @@ Prediction  No Yes
 </div>
 <p>Wybór optymalnego progu odcięcia.</p>
 <div class="cell">
-<<<<<<< HEAD
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably">probably</a></span><span class="op">)</span></span>
-=======
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably/">probably</a></span><span class="op">)</span></span>
->>>>>>> 4245f9f (poprawki typo)
 <span></span>
 <span><span class="co"># ustalam zakres threshold</span></span>
 <span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
@@ -1095,14 +1075,10 @@ Prediction   VF    F    M    L
 </div>
 </section></section></section><section id="uwagi-końcowe" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="uwagi-końcowe">
 <span class="header-section-number">4.3</span> Uwagi końcowe</h2>
-<p>Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na <span class="math inline">\(R^2\)</span> będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz <a href="#fig-por" class="quarto-xref">Rys.&nbsp;<span>4.4</span></a>).</p>
-<div id="fig-por" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<p>Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na <span class="math inline">\(R^2\)</span> będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz <a href="#fig-por" class="quarto-xref">Rys.&nbsp;<span class="quarto-unresolved-ref">fig-por</span></a>).</p>
+<div id="fig-por" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-por-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<<<<<<< HEAD
-<a href="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
-=======
-<a href="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" data-glightbox="description: .lightbox-desc-8"><img src="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
->>>>>>> 4245f9f (poprawki typo)
+<a href="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar"><img src="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-por-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
@@ -1111,8 +1087,8 @@ Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
 <p>Model zoptymalizowany pod kątem RMSE ma większą zmienność, ale ma stosunkowo jednolitą dokładność w całym zakresie wyników. Prawy panel pokazuje, że istnieje silniejsza korelacja między wartościami obserwowanymi i przewidywanymi, ale model ten słabo radzi sobie w przewidywaniu skrajnych wartości. Na marginesie można dodać, że jeśli model miałby być stosowany do predykcji (co zdarza się bardzo często w modelach ML), to miara RMSE jest lepsza, natomiast gdy interesują nas poszczególne efekty modelu regresji, wówczas <span class="math inline">\(R^2\)</span> jest częściej stosowaną miarą oceny dopasowania modelu.</p>
 <p>Podobny przykład można przytoczyć również dla modeli klasyfikacyjnych.</p>
 <p>Ocena skuteczności danego modelu zależy od tego, do czego będzie on wykorzystywany. Model inferencyjny jest używany przede wszystkim do zrozumienia związków i zazwyczaj kładzie nacisk na wybór (i ważność) rozkładów probabilistycznych i innych cech generatywnych, które definiują model. Dla modelu używanego głównie do przewidywania, w przeciwieństwie do tego, siła predykcyjna ma podstawowe znaczenie, a inne obawy dotyczące podstawowych właściwości statystycznych mogą być mniej ważne. Siła predykcyjna jest zwykle określana przez to, jak blisko nasze przewidywania zbliżają się do obserwowanych danych, tj. wierność przewidywań modelu do rzeczywistych wyników. W tym rozdziale skupiono się na funkcjach, które można wykorzystać do pomiaru siły predykcji. Jednakże naszą radą dla osób opracowujących modele inferencyjne jest stosowanie tych technik nawet wtedy, gdy model nie będzie używany z głównym celem przewidywania.</p>
-<p>Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu. Na przykład, rozważ dane dotyczące choroby Alzheimera z <span class="citation" data-cites="Craig-Schapiro2011">Craig-Schapiro i in. (<a href="references.html#ref-Craig-Schapiro2011" role="doc-biblioref">2011</a>)</span>, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych. W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony). Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E. Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu. Wiadomym jest, że apolipoproteina E ma związek z demencją <span class="citation" data-cites="Kim2009">(<a href="references.html#ref-Kim2009" role="doc-biblioref">Kim, Basak, i Holtzman 2009</a>)</span>.</p>
-<p>Powierzchowne, ale nierzadkie podejście do tej analizy polegałoby na dopasowaniu dużego modelu z głównymi efektami i interakcjami, a następnie zastosowaniu testów statystycznych w celu znalezienia minimalnego zestawu efektów modelu, które są statystycznie istotne na jakimś wcześniej zdefiniowanym poziomie. Jeśli użyto pełnego modelu z trzema czynnikami i ich dwu- i trójstronnymi interakcjami, wstępnym etapem byłoby przetestowanie interakcji przy użyciu sekwencyjnych testów ilorazu prawdopodobieństwa <span class="citation" data-cites="hosmer2000">(<a href="references.html#ref-hosmer2000" role="doc-biblioref">Hosmer i Lemeshow 2000</a>)</span>. Przejdźmy przez takie podejście dla przykładowych danych dotyczących choroby Alzheimera:</p>
+<p>Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu. Na przykład, rozważ dane dotyczące choroby Alzheimera z <span class="citation" data-cites="Craig-Schapiro2011">Craig-Schapiro i in. (<a href="#ref-Craig-Schapiro2011" role="doc-biblioref">2011</a>)</span>, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych. W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony). Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E. Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu. Wiadomym jest, że apolipoproteina E ma związek z demencją <span class="citation" data-cites="Kim2009">(<a href="#ref-Kim2009" role="doc-biblioref">Kim, Basak, i Holtzman 2009</a>)</span>.</p>
+<p>Powierzchowne, ale nierzadkie podejście do tej analizy polegałoby na dopasowaniu dużego modelu z głównymi efektami i interakcjami, a następnie zastosowaniu testów statystycznych w celu znalezienia minimalnego zestawu efektów modelu, które są statystycznie istotne na jakimś wcześniej zdefiniowanym poziomie. Jeśli użyto pełnego modelu z trzema czynnikami i ich dwu- i trójstronnymi interakcjami, wstępnym etapem byłoby przetestowanie interakcji przy użyciu sekwencyjnych testów ilorazu prawdopodobieństwa <span class="citation" data-cites="hosmer2000">(<a href="#ref-hosmer2000" role="doc-biblioref">Hosmer i Lemeshow 2000</a>)</span>. Przejdźmy przez takie podejście dla przykładowych danych dotyczących choroby Alzheimera:</p>
 <ul>
 <li>Porównując model ze wszystkimi interakcjami dwukierunkowymi z modelem z dodatkową interakcją trójkierunkową, testy ilorazu wiarygodności dają wartość <span class="math inline">\(p\)</span> równą 0,888. Oznacza to, że nie ma dowodów na to, że cztery dodatkowe terminy modelu związane z interakcją trójkierunkową wyjaśniają wystarczająco dużo zmienności w danych, aby zachować je w modelu.</li>
 <li>Następnie, dwukierunkowe interakcje są podobnie oceniane w stosunku do modelu bez interakcji. Wartość <span class="math inline">\(p\)</span> wynosi tutaj 0,0382. Biorąc pod uwagę niewielki rozmiar próbki, byłoby rozsądnie stwierdzić, że istnieją dowody na to, że niektóre z 10 możliwych dwukierunkowych interakcji są ważne dla modelu.</li>
@@ -1122,13 +1098,7 @@ Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
 <p>Jedną z brakujących informacji w tym podejściu jest to, jak blisko model ten pasuje do rzeczywistych danych. Stosując metody resamplingu, omówione w rozdziale 10, możemy oszacować dokładność tego modelu na około 73,4%. Dokładność jest często słabą miarą wydajności modelu; używamy jej tutaj, ponieważ jest powszechnie rozumiana. Jeśli model ma 73,4% dokładności w stosunku do danych, to czy powinniśmy zaufać wnioskom, które produkuje? Moglibyśmy tak myśleć, dopóki nie zdamy sobie sprawy, że wskaźnik bazowy nieupośledzonych pacjentów w danych wynosi 72,7%. Oznacza to, że pomimo naszej analizy statystycznej, model dwuczynnikowy okazuje się być tylko o 0,8% lepszy od prostej heurystyki, która zawsze przewiduje, że pacjenci nie są upośledzeni, niezależnie od obserwowanych danych.</p>
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach</span>
-<span class="glightbox-desc lightbox-desc-3">Rys.&nbsp;4.2: Przykładowa macierz klasyfikacji</span>
-<span class="glightbox-desc lightbox-desc-4">Rys.&nbsp;4.3: Macierz klasyfikacji</span>
-<span class="glightbox-desc lightbox-desc-8">Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar</span>
-</div>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-EvaluatingForecastAccuracy" class="csl-entry" role="listitem">
 <em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>. b.d.
 </div>
@@ -1336,18 +1306,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1379,7 +1338,45 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1414,7 +1411,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1462,7 +1463,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1688,20 +1688,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-<<<<<<< HEAD
       <a href="./infer.html" class="pagination-link" aria-label="Modele inferencyjne">
-=======
-      <a href="./infer.html" class="pagination-link  aria-label=" inferencyjne="">
->>>>>>> 4245f9f (poprawki typo)
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Modele inferencyjne</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-<<<<<<< HEAD
       <a href="./resampling.html" class="pagination-link" aria-label="Zarządzanie danymi">
-=======
-      <a href="./resampling.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Zarządzanie danymi</span>">
->>>>>>> 4245f9f (poprawki typo)
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Zarządzanie danymi</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1718,34 +1710,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <p>Książka została napisana w <a href="https://quarto.org/">Quarto</a></p>
 </div>
   </div>
-<<<<<<< HEAD
-</footer><script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","closeEffect":"zoom"});
-=======
-</footer><script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
->>>>>>> 4245f9f (poprawki typo)
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
     }
-  });
-
-};
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
           </script>
 
 
