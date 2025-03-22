@@ -1,0 +1,47 @@
+---
+title: "Untitled"
+format: html
+editor_options: 
+  chunk_output_type: console
+embed-resources: true
+---
+
+
+
+## Zadanie 1. Testowanie hipotezy dotyczącej frakcji 
+
+W bazie danych `titanic_train` z repozytorium pakietu `titanic` znajduje się informacja o przeżyciu pasażerów katastrofy statku Titanic. Zbadać, czy frakcja osób, które przeżyły katastrofę, była wyższa niż 0.35. Użyj metody bootstrapowej do zweryfikowania hipotezy.
+
+Hipotezy:
+
+$$H_0: p = 0.35$$
+$$H_1: p > 0.35$$
+
+
+## Zadanie 2. Porównanie średnich
+
+W zbiorze danych `ToothGrowth` wbudowanym w R znajdują się wyniki długości zębów u świnek morskich po suplementacji witaminą C. Przetestować, czy średnia długość zębów jest istotnie różna w zależności od sposobu dostarczenia witaminy (zmienna `supp`). Zastosować test permutacyjny do porównania średnich.
+
+Hipotezy:
+
+$$H_0: \mu_{VC} = \mu_{OJ}$$
+$$H_1: \mu_{VC} \neq \mu_{OJ}$$
+
+## Zadanie 3. Test różnicy median
+
+W zbiorze danych `mtcars` porównaj medianę zużycia paliwa (`mpg`) pomiędzy samochodami z automatyczną (`am = 0`) a manualną (`am = 1`) skrzynią biegów. Do weryfikacji hipotezy użyj metody bootstrapowej.
+
+Hipotezy:
+
+$$H_0: m_{auto} = m_{manual}$$
+$$H_1: m_{auto} < m_{manual}$$
+gdzie $m$ oznacza medianę.
+
+## Zadanie 4. Test korelacji
+
+W zbiorze danych `iris` zbadać, czy długość (`Sepal.Length`) i szerokość (`Sepal.Width`) działek kielicha są skorelowane. Do weryfikacji hipotezy użyj testu permutacyjnego współczynnika korelacji.
+
+Hipotezy:
+$$H_0: \rho = 0$$
+$$H_1: \rho > 0$$
+

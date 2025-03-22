@@ -214,36 +214,51 @@ sample_diff <- dt |>
   calculate(stat = "diff in medians", order = c("A","B"))
 sample_diff
 
-null_diff <- dt |> 
-  specify(x~gr) |> 
-  hypothesise(null = "independence") |> 
+# Mediana globalna
+global_median <- median(dt$x)
+
+# Mediana każdej grupy
+median_A <- median(dt$x[dt$gr == "A"])
+median_B <- median(dt$x[dt$gr == "B"])
+
+# Skorygowanie danych przez przesunięcie median do globalnej mediany
+dt_null <- dt |>
+  mutate(x_null = case_when(
+    gr == "A" ~ x - median_A + global_median,
+    gr == "B" ~ x - median_B + global_median
+  ))
+
+null_bootstrap <- dt_null |> 
+  specify(x_null ~ gr) |> 
   generate(reps = 1000, type = "bootstrap") |> 
-  calculate(stat = "diff in medians", order = c("A","B"))
+  calculate(stat = "diff in medians", order = c("A", "B"))
+
+null_bootstrap
 ```
 
-Oceńmy rozkład różnic z prób bootstrapowych. Jeśli hipoteza zerowa jest
-prawdziwa to rozkład różnicy median powinien oscylować wokół zera.
+Oceńmy rozkład różnic z prób bootstrapowych, powinien on oscylować wokół zera
+zgodnie z hipotezą zerową.
 
 ```{r}
 #| label: fig-median2
 #| fig-cap: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
-ci <- null_diff |> 
+ci <- null_bootstrap |> 
   get_confidence_interval(level = .95, type = "percentile")
 
-null_diff |> 
+null_bootstrap |> 
   visualise()+
   shade_ci(endpoints = ci)+
-  geom_vline(xintercept = 0, 
+  geom_vline(xintercept = sample_diff$stat, 
              linewidth = 2,
              color = "red")
 ```
 
-Widać wyraźnie, że rozkład różnic pomiędzy medianami nie oscyluje wokół zera,
-co może świadczyć o konieczności odrzucenia hipotezy zerowej.
+Widać wyraźnie, że próbkowa różnica median znacznie odbiega od rozkładu
+zgodnego z hipotezą zerową, co jej przeczy.
 
 ```{r}
-null_diff |> 
-  get_p_value(obs_stat = 0, direction = "two-sided")
+null_bootstrap |> 
+  get_p_value(obs_stat = sample_diff$stat, direction = "two-sided")
 wilcox.test(x1,x2)
 ```
 

@@ -5,20 +5,29 @@ bibliography: references.bib
 
 # Nierównowaga klas w zadaniu klasyfikacyjnym
 
-Próbkowanie (ang. *subsampling*) zbioru treningowego, zarówno zaniżanie (ang. *undersampling*), jak i zawyżanie (ang. *oversampling*) próbkowania odpowiedniej klasy lub klas, może być pomocne w radzeniu sobie z danymi klasyfikacyjnymi, w których jedna lub więcej klas występuje bardzo rzadko.
-W takiej sytuacji (bez kompensacji), większość modeli będzie nadmiernie dopasowana do klasy większościowej i wytworzy bardzo dobre statystyki dopasowania dla klasy zawierającej często występujące klasy, podczas gdy klasy mniejszościowe będą miały słabe wyniki.
+Próbkowanie (ang. *subsampling*) zbioru treningowego, zarówno zaniżanie (ang.
+*undersampling*), jak i zawyżanie (ang. *oversampling*) próbkowania
+odpowiedniej klasy lub klas, może być pomocne w radzeniu sobie z danymi
+klasyfikacyjnymi, w których jedna lub więcej klas występuje bardzo rzadko. W
+takiej sytuacji (bez kompensacji), większość modeli będzie nadmiernie
+dopasowana do klasy większościowej i wytworzy bardzo dobre statystyki
+dopasowania dla klasy zawierającej często występujące klasy, podczas gdy klasy
+mniejszościowe będą miały słabe wyniki.
 
-![](http://31.media.tumblr.com/64ae47b479a51d91af792dbea9b4e997/tumblr_mthcjipiao1surx6co1_400.gif){.column-margin fig-align="center"}
+![](http://31.media.tumblr.com/64ae47b479a51d91af792dbea9b4e997/tumblr_mthcjipiao1surx6co1_400.gif){.column-margin
+fig-align="center"}
 
-Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z nierównowagą klas.
+Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z
+nierównowagą klas.
 
-Rozważmy problem dwuklasowy, w którym pierwsza klasa ma bardzo niską częstość występowania.
-Dane zostały zasymulowane i można je zaimportować do R za pomocą poniższego kodu:
+Rozważmy problem dwuklasowy, w którym pierwsza klasa ma bardzo niską częstość
+występowania. Dane zostały zasymulowane i można je zaimportować do R za pomocą
+poniższego kodu:
 
 ```{r}
 library(tidymodels)
 imbal_data <- 
-  readr::read_csv("https://tidymodels.org/learn/models/sub-sampling/imbal_data.csv") |>  
+  readr::read_csv("data/imbal_data.csv") |>  
   mutate(Class = factor(Class))
 
 dim(imbal_data)
@@ -26,33 +35,59 @@ dim(imbal_data)
 table(imbal_data$Class)
 ```
 
-Jeśli "klasa1" jest zdarzeniem będącym przedmiotem zainteresowania, jest bardzo prawdopodobne, że model klasyfikacyjny byłby w stanie osiągnąć bardzo dobrą specyficzność, ponieważ prawie wszystkie dane należą do drugiej klasy.
-Czułość jednak będzie prawdopodobnie słaba, ponieważ modele będą optymalizować dokładność (lub inne funkcje straty) poprzez przewidywanie, że wszystko jest klasą większościową.
+Jeśli "klasa1" jest zdarzeniem będącym przedmiotem zainteresowania, jest bardzo
+prawdopodobne, że model klasyfikacyjny byłby w stanie osiągnąć bardzo dobrą
+specyficzność, ponieważ prawie wszystkie dane należą do drugiej klasy. Czułość
+jednak będzie prawdopodobnie słaba, ponieważ modele będą optymalizować
+dokładność (lub inne funkcje straty) poprzez przewidywanie, że wszystko jest
+klasą większościową.
 
-Jednym z rezultatów braku równowagi klasowej, gdy istnieją dwie klasy, jest to, że domyślne odcięcie prawdopodobieństwa na poziomie 50% jest nieodpowiednie; inne odcięcie, które jest bardziej ekstremalne, może być w stanie osiągnąć lepszą wydajność.
+Jednym z rezultatów braku równowagi klasowej, gdy istnieją dwie klasy, jest to,
+że domyślne odcięcie prawdopodobieństwa na poziomie 50% jest nieodpowiednie;
+inne odcięcie, które jest bardziej ekstremalne, może być w stanie osiągnąć
+lepszą wydajność.
 
 ## Próbkowanie danych
 
 Jednym ze sposobów na złagodzenie tego problemu jest podpróbkowanie danych.
-Istnieje wiele sposobów, aby to zrobić, ale najprostszym jest próbkowanie w dół (*undersample*) danych klasy większościowej, aż wystąpi ona z taką samą częstotliwością jak klasa mniejszościowa.
-Choć może się to wydawać sprzeczne z intuicją, wyrzucenie dużego procentu danych może być skuteczne w tworzeniu użytecznego modelu, który potrafi rozpoznać zarówno klasy większościowe, jak i mniejszościowe.
-W niektórych przypadkach oznacza to nawet, że ogólna wydajność modelu jest lepsza (np. poprawiony obszar pod krzywą ROC).
-Podpróbkowanie prawie zawsze daje modele, które są lepiej skalibrowane, co oznacza, że rozkłady prawdopodobieństwa klas są lepiej zachowane.
-W rezultacie, domyślne odcięcie 50% daje znacznie większe prawdopodobieństwo uzyskania lepszych wartości czułości i specyficzności niż w innym przypadku.
+Istnieje wiele sposobów, aby to zrobić, ale najprostszym jest próbkowanie w dół
+(*undersample*) danych klasy większościowej, aż wystąpi ona z taką samą
+częstotliwością jak klasa mniejszościowa. Choć może się to wydawać sprzeczne z
+intuicją, wyrzucenie dużego procentu danych może być skuteczne w tworzeniu
+użytecznego modelu, który potrafi rozpoznać zarówno klasy większościowe, jak i
+mniejszościowe. W niektórych przypadkach oznacza to nawet, że ogólna wydajność
+modelu jest lepsza (np. poprawiony obszar pod krzywą ROC). Podpróbkowanie
+prawie zawsze daje modele, które są lepiej skalibrowane, co oznacza, że
+rozkłady prawdopodobieństwa klas są lepiej zachowane. W rezultacie, domyślne
+odcięcie 50% daje znacznie większe prawdopodobieństwo uzyskania lepszych
+wartości czułości i specyficzności niż w innym przypadku.
 
-![](https://media.tenor.com/lB26Hv-TnvwAAAAd/freesample-eat.gif){.column-margin fig-align="center" width="400"}
+![](https://media.tenor.com/lB26Hv-TnvwAAAAd/freesample-eat.gif){.column-margin
+fig-align="center" width="400"}
 
-Istnieją również techniki *oversampling*, które sprowadzają klasy mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już istniejących w klasie mniejszościowej.
-W pakiecie `themis` można znaleźć różne techniki próbkowania w górę: `step_upsample()`, `step_smote()`, `step_bsmote(method = 1)`, `step_bsmote(method = 2)`, `step_adasyn()`, `step_rose()` oraz kilka technik próbkowania w dół: `step_downsample()`, `step_nearmiss()` i `step_tomek()`.
+Istnieją również techniki *oversampling*, które sprowadzają klasy
+mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej
+części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to
+jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już
+istniejących w klasie mniejszościowej. W pakiecie `themis` można znaleźć różne
+techniki próbkowania w górę: `step_upsample()`, `step_smote()`,
+`step_bsmote(method = 1)`, `step_bsmote(method = 2)`, `step_adasyn()`,
+`step_rose()` oraz kilka technik próbkowania w dół: `step_downsample()`,
+`step_nearmiss()` i `step_tomek()`.
 
-Zbadajmy działanie próbkowania używając `themis::step_rose()` w przepisie dla symulowanych danych.
-Wykorzystuje ona metodę ROSE (ang. *Random Over Sampling Examples*) z @menardi2012.
-Jest to przykład strategii *oversampling*.
+Zbadajmy działanie próbkowania używając `themis::step_rose()` w przepisie dla
+symulowanych danych. Wykorzystuje ona metodę ROSE (ang. *Random Over Sampling
+Examples*) z @menardi2012. Jest to przykład strategii *oversampling*.
 
 W zakresie przepływu pracy:
 
--   Niezwykle ważne jest, aby *subsampling* występował wewnątrz *resamplingu*. W przeciwnym razie proces resamplingu może dać słabe oszacowania wydajności modelu.
--   Proces próbkowania powinien być stosowany tylko do zbioru analiz. Zestaw analiz powinien odzwierciedlać częstość zdarzeń widzianych "w naturze" i z tego powodu argument `skip` w `step_downsample()` i innych krokach receptury próbkowania ma domyślnie wartość `TRUE`.
+-   Niezwykle ważne jest, aby *subsampling* występował wewnątrz *resamplingu*.
+    W przeciwnym razie proces resamplingu może dać słabe oszacowania wydajności
+    modelu.
+-   Proces próbkowania powinien być stosowany tylko do zbioru analiz. Zestaw
+    analiz powinien odzwierciedlać częstość zdarzeń widzianych "w naturze" i z
+    tego powodu argument `skip` w `step_downsample()` i innych krokach
+    receptury próbkowania ma domyślnie wartość `TRUE`.
 
 Oto prosta recepta implementująca *oversampling*:
 
@@ -64,8 +99,8 @@ imbal_rec <-
 
 ```
 
-Jako modelu użyjmy modelu kwadratowej analizy dyskryminacyjnej (QDA).
-Z poziomu pakietu `discrim`, model ten można określić za pomocą:
+Jako modelu użyjmy modelu kwadratowej analizy dyskryminacyjnej (QDA). Z poziomu
+pakietu `discrim`, model ten można określić za pomocą:
 
 ```{r}
 library(discrim)
@@ -74,7 +109,8 @@ qda_mod <-
   set_engine("klaR")
 ```
 
-Aby utrzymać te obiekty związane ze sobą, połączymy je w ramach przepływu pracy:
+Aby utrzymać te obiekty związane ze sobą, połączymy je w ramach przepływu
+pracy:
 
 ```{r}
 qda_rose_wflw <- 
@@ -85,7 +121,8 @@ qda_rose_wflw <-
 qda_rose_wflw
 ```
 
-Do oceny jakości dopasowania modelu zastosujemy 10-krotny sprawdzian krzyżowy z powtórzeniami:
+Do oceny jakości dopasowania modelu zastosujemy 10-krotny sprawdzian krzyżowy z
+powtórzeniami:
 
 ```{r}
 set.seed(5732)
@@ -95,11 +132,13 @@ cv_folds <- vfold_cv(imbal_data, strata = "Class", repeats = 5)
 Aby zmierzyć wydajność modelu, użyjmy dwóch metryk:
 
 -   Obszar pod krzywą ROC;
--   Wskaźnik J (statystyka Youdena J) określony jako czułość + specyficzność - 1. Wartości bliskie jeden są najlepsze.
+-   Wskaźnik J (statystyka Youdena J) określony jako czułość +
+    specyficzność - 1. Wartości bliskie jeden są najlepsze.
 
-Jeśli model jest źle skalibrowany, wartość krzywej ROC może nie wykazywać zmniejszonej wydajności.
-Jednak wskaźnik J byłby niższy dla modeli z patologicznymi rozkładami prawdopodobieństw klas.
-Do obliczenia tych metryk zostanie użyty pakiet `yardstick`.
+Jeśli model jest źle skalibrowany, wartość krzywej ROC może nie wykazywać
+zmniejszonej wydajności. Jednak wskaźnik J byłby niższy dla modeli z
+patologicznymi rozkładami prawdopodobieństw klas. Do obliczenia tych metryk
+zostanie użyty pakiet `yardstick`.
 
 ```{r}
 cls_metrics <- metric_set(roc_auc, j_index)
@@ -116,8 +155,8 @@ qda_rose_res <- fit_resamples(
 collect_metrics(qda_rose_res)
 ```
 
-Jak wyglądają wyniki bez użycia ROSE?
-Możemy stworzyć kolejny przepływ pracy i dopasować model QDA dla tych samych foldów:
+Jak wyglądają wyniki bez użycia ROSE? Możemy stworzyć kolejny przepływ pracy i
+dopasować model QDA dla tych samych foldów:
 
 ```{r}
 qda_wflw <- 
@@ -131,10 +170,14 @@ qda_only_res <- fit_resamples(qda_wflw, resamples = cv_folds, metrics = cls_metr
 collect_metrics(qda_only_res)
 ```
 
-Wygląda na to, że próbkowanie metodą ROSE bardzo pomogło, zwłaszcza w przypadku indeksu J.
-Metody próbkowania nierównowagi klasowej mają tendencję do znacznej poprawy metryk opartych na twardych przewidywaniach klasowych (tj. przewidywaniach kategorycznych), ponieważ domyślne odcięcie ma tendencję do lepszej równowagi pomiędzy czułością i specyficznością.
+Wygląda na to, że próbkowanie metodą ROSE bardzo pomogło, zwłaszcza w przypadku
+indeksu J. Metody próbkowania nierównowagi klasowej mają tendencję do znacznej
+poprawy metryk opartych na twardych przewidywaniach klasowych (tj.
+przewidywaniach kategorycznych), ponieważ domyślne odcięcie ma tendencję do
+lepszej równowagi pomiędzy czułością i specyficznością.
 
-Wykreślmy metryki dla każdej próbki, aby zobaczyć, jak zmieniły się poszczególne wyniki.
+Wykreślmy metryki dla każdej próbki, aby zobaczyć, jak zmieniły się
+poszczególne wyniki.
 
 ```{r}
 #| label: fig-rose1
@@ -158,18 +201,30 @@ bind_rows(no_sampling, with_sampling) %>%
   facet_wrap(~ .metric, scales = "free_y")
 ```
 
-Jak widać na podstawie @fig-rose1 szczególnie w kontekście miar, które wykorzystują twardy podział (czyli zdefiniowany przez parametr odcięcia) nastąpiła znaczna poprawa.
+Jak widać na podstawie @fig-rose1 szczególnie w kontekście miar, które
+wykorzystują twardy podział (czyli zdefiniowany przez parametr odcięcia)
+nastąpiła znaczna poprawa.
 
 ## Zagrożenia
 
-Pierwszą komplikacją związaną z próbkowaniem jest połączenie jej z przetwarzaniem wstępnym.
-Czy próbkowanie powinno mieć miejsce przed czy po przetwarzaniu wstępnym?
-Na przykład, jeśli zmniejszamy próbkę danych i używamy PCA do ekstrakcji cech, czy ładunki powinny być oszacowane z całego zbioru treningowego?
-Estymacja ta byłaby potencjalnie lepsza, ponieważ wykorzystywany byłby cały zbiór treningowy, ale może się zdarzyć, że podpróbka uchwyci niewielką część przestrzeni PCA.
-Nie ma żadnej oczywistej odpowiedzi ale zaleca się stosować próbkowanie przed procedurą wstępnego przetwarzania.
+Pierwszą komplikacją związaną z próbkowaniem jest połączenie jej z
+przetwarzaniem wstępnym. Czy próbkowanie powinno mieć miejsce przed czy po
+przetwarzaniu wstępnym? Na przykład, jeśli zmniejszamy próbkę danych i używamy
+PCA do ekstrakcji cech, czy ładunki powinny być oszacowane z całego zbioru
+treningowego? Estymacja ta byłaby potencjalnie lepsza, ponieważ wykorzystywany
+byłby cały zbiór treningowy, ale może się zdarzyć, że podpróbka uchwyci
+niewielką część przestrzeni PCA. Nie ma żadnej oczywistej odpowiedzi ale zaleca
+się stosować próbkowanie przed procedurą wstępnego przetwarzania.
 
 Inne zagrożenia to:
 
--   Słabo reprezentowane kategorie w zmiennych czynnikowych (predyktorach) mogą przekształcić się w predyktory o zerowej wariancji lub mogą być całkowicie wyrywane z modelu.
--   Jeśli używasz `grid_search()` do określenia siatki wyszukiwania, może się zdarzyć, że dane, które są używane do określenia siatki po próbkowaniu, nie wypełniają pełnych zakresów zmienności hiperparametrów. W większości przypadków nie ma to znaczenia, ale czasami może doprowadzić do uzyskania nieoptymalnej siatki.
--   W przypadku niektórych modeli, które wymagają więcej próbek niż parametrów, zmniejszenie rozmiaru próbki może uniemożliwić dopasowanie modelu.
+-   Słabo reprezentowane kategorie w zmiennych czynnikowych (predyktorach) mogą
+    przekształcić się w predyktory o zerowej wariancji lub mogą być całkowicie
+    wyrywane z modelu.
+-   Jeśli używasz `grid_search()` do określenia siatki wyszukiwania, może się
+    zdarzyć, że dane, które są używane do określenia siatki po próbkowaniu, nie
+    wypełniają pełnych zakresów zmienności hiperparametrów. W większości
+    przypadków nie ma to znaczenia, ale czasami może doprowadzić do uzyskania
+    nieoptymalnej siatki.
+-   W przypadku niektórych modeli, które wymagają więcej próbek niż parametrów,
+    zmniejszenie rozmiaru próbki może uniemożliwić dopasowanie modelu.
