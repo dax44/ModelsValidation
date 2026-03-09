@@ -1,0 +1,194 @@
+---
+title: "Rozwiązania do zadań z lab 6"
+author: Dariusz Majerek
+date: today
+execute: 
+  warning: false
+embed-resources: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## Zadanie 1
+
+0.  Eksploracja danych
+
+```{r}
+library(tidymodels)
+diamonds %>% 
+  ggplot(aes(price)) +
+  geom_histogram(bins = 30, color = "white") +
+  labs(title = "Histogram ceny diamentów",
+       x = "Cena diamentów",
+       y = "Liczba diamentów")
+```
+
+Mocna asymetria prawostronna każe przeprowadzić najpierw transformację zmiennej
+celu.
+
+1.  Podział danych
+
+```{r}
+set.seed(44)
+split <- initial_split(diamonds, prop = 0.7, strata = price)
+train <- training(split)
+test <- testing(split)
+```
+
+2.  Definicja modelu
+
+```{r}
+lr_model <- linear_reg() %>%
+  set_engine("lm")
+```
+
+3.  Utworzenie przepływu pracy
+
+```{r}
+lr_workflow <- workflow() %>%
+  add_model(lr_model) %>%
+  add_formula(price ~ carat + depth)
+```
+
+4.  Trenowanie modelu i predykcja
+
+```{r}
+lr_fit <- lr_workflow %>%
+  fit(data = train)
+
+lr_fit %>% 
+  extract_fit_parsnip() %>% 
+  tidy()
+
+predictions <- lr_fit %>%
+  predict(new_data = test) %>%
+  bind_cols(test) %>%
+  select(.pred, price)
+
+predictions
+```
+
+5.  Ocena dopasowania modelu
+
+```{r}
+predictions %>%
+  metrics(truth = price, estimate = .pred)
+```
+
+Dopasowanie modelu w kontekście miar wygląda przyzwoicie. Choć poniższy wykres
+pokazuje, że model jest daleki od doskonałości, ponieważ niedoszacowuje
+wartości dla tańszych diamentów.
+
+6.  Wykres `predicted vs. observed`
+
+```{r}
+predictions %>%
+  ggplot(aes(x = price, y = .pred)) +
+  geom_point(alpha = 0.1) +
+  geom_abline(slope = 1, intercept = 0) +
+  labs(title = "Predykcja ceny diamentów",
+       x = "Cena rzeczywista",
+       y = "Cena przewidywana")
+```
+
+## Zadanie 2
+
+1.  Utworzenie procedury przetwarzania danych
+
+```{r}
+diamonds_recipe <- recipe(price ~ carat + depth, data = train) %>%
+  step_log(price, skip = TRUE, role = "outcome") %>%
+  step_normalize(carat)
+
+diamonds_recipe
+```
+
+2.  Połączenie receptury z modelem
+
+```{r}
+diamonds_workflow <- workflow() %>%
+  add_model(lr_model) %>%
+  add_recipe(diamonds_recipe)
+
+diamonds_workflow
+```
+
+3.  Trenowanie przepływu
+
+```{r}
+diamonds_fit <- diamonds_workflow %>%
+  fit(data = train)
+
+diamonds_fit %>% 
+  extract_recipe(estimated = TRUE) 
+```
+
+4.  Porównanie wyników
+
+```{r}
+predictions2 <- diamonds_fit %>% 
+  predict(new_data = test) %>% 
+  bind_cols(price = test$price) %>% 
+  mutate(.pred = exp(.pred))
+
+predictions2
+```
+
+```{r}
+bind_cols(mod1 = predictions[,1]$.pred, 
+          mod2 = predictions2$.pred, 
+          price = predictions2$price) %>% 
+  pivot_longer(cols = mod1:mod2, names_to = "model", values_to = "pred") %>% 
+  group_by(model) %>%
+  metrics(truth = price, estimate = pred)
+```
+
+::: callout-tip
+W celu uniknięcia problemów przy predykcji z użyciem `step_log()` można wykonać
+transforamcję zmiennej zależnej (`price`) poza przepisem *preprocessingu*.
+:::
+
+```{r}
+train <- train %>% 
+  mutate(price = log(price))
+test <- test %>%
+  mutate(price = log(price))
+recipe <- recipe(price ~ carat + depth, data = train) %>%
+  step_normalize(carat)
+
+diamonds_workflow <- workflow() %>%
+  add_model(lr_model) %>%
+  add_recipe(recipe)
+
+diamonds_workflow
+
+diamonds_fit <- diamonds_workflow %>%
+  fit(data = train)
+
+diamonds_fit %>% 
+  extract_recipe(estimated = TRUE)
+
+predictions2 <- diamonds_fit %>% 
+  predict(new_data = test) %>% 
+  bind_cols(price = test$price) %>% 
+  mutate(across(everything(), exp))
+
+predictions2 %>% 
+  ggplot(aes(x = price, y = .pred)) +
+  geom_point(alpha = 0.1) +
+  geom_abline(slope = 1, intercept = 0) +
+  labs(title = "Predykcja ceny diamentów",
+       x = "Cena rzeczywista",
+       y = "Cena przewidywana")
+
+bind_cols(mod1 = predictions[,1]$.pred, 
+          mod2 = predictions2$.pred, 
+          price = predictions2$price) %>% 
+  pivot_longer(cols = mod1:mod2, names_to = "model", values_to = "pred") %>% 
+  group_by(model) %>%
+  metrics(truth = price, estimate = pred)
+```
+
+::: callout-tip
+Przekształcenie logarytmiczne jednocześnie zastosowane do zmiennej zależnej `price` i niezależnej `carat` daje dużo lepsze rezultaty dopasowania modelu.
+:::

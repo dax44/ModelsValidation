@@ -1,0 +1,295 @@
+---
+title: "Laboratorium 2 - rozwiązania"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+## Zadanie 1
+
+Operacje kolumnowe i `across()`
+
+Na danych `iris`:
+
+-   zamień je na tibble,
+-   zmień nazwy kolumn tak, aby nie zawierały kropki (`.`),
+-   oblicz średnią i odchylenie standardowe dla wszystkich kolumn numerycznych z użyciem `across()`,
+-   wynik zwróć w układzie: jedna kolumna z nazwą zmiennej i osobne kolumny `mean` oraz `sd`.
+
+```{r}
+iris %>%
+    as_tibble() %>%
+    rename_with(~ str_replace_all(.x, "\\.", "_")) %>%
+    summarise(across(
+        where(is.numeric),
+        list(mean = ~ mean(.x, na.rm = TRUE), sd = ~ sd(.x, na.rm = TRUE))
+    )) %>%
+    pivot_longer(
+        cols = everything(),
+        names_to = c("variable", ".value"),
+        names_sep = "_"
+    )
+```
+
+## Zadanie 2
+
+Obsługa braków danych i `if_any()`
+
+Utwórz ramkę danych:
+
+```{r}
+students <- tibble(
+    id = 1:8,
+    test_1 = c(60, 75, NA, 90, 50, NA, 88, 70),
+    test_2 = c(65, NA, 80, 92, 55, 73, NA, 68),
+    attendance = c(0.90, 0.75, 0.80, NA, 0.60, 0.95, 0.85, NA)
+)
+```
+
+Wykonaj:
+
+-   zastąp braki średnią z danej kolumny,
+-   dodaj kolumnę `risk` z wartością `"yes"`, jeśli którykolwiek wynik testu jest poniżej 65 (`if_any()`), w przeciwnym razie `"no"`,
+-   policz ilu studentów ma `risk == "yes"`.
+
+```{r}
+students_filled <- students %>%
+    mutate(across(
+        c(test_1, test_2, attendance),
+        ~ if_else(is.na(.x), mean(.x, na.rm = TRUE), .x)
+    )) %>%
+    mutate(risk = if_else(if_any(c(test_1, test_2), ~ .x < 65), "yes", "no"))
+
+students_filled %>%
+    count(risk)
+```
+
+## Zadanie 3
+
+Diagnostyka jakości danych przez `anti_join()`
+
+Utwórz tabele:
+
+```{r}
+orders <- tibble(
+    order_id = 1:10,
+    customer_id = c(1, 2, 3, 4, 5, 6, 2, 3, 8, 9),
+    amount = c(120, 80, 150, 200, 95, 60, 110, 130, 140, 100)
+)
+
+customers <- tibble(
+    customer_id = c(1, 2, 3, 4, 5, 7),
+    segment = c("A", "B", "A", "C", "B", "C")
+)
+```
+
+-   znajdź zamówienia z nieistniejącym klientem,
+-   policz ile ich jest,
+-   oblicz udział takich zamówień w całej liczbie zamówień (w procentach).
+
+```{r}
+missing_customers_orders <- orders %>%
+    anti_join(customers, by = "customer_id")
+
+missing_customers_orders
+
+missing_customers_orders %>%
+    summarise(
+        n_missing = n(),
+        pct_missing = 100 * n() / nrow(orders)
+    )
+```
+
+## Zadanie 4
+
+Funkcje okienkowe: `lag()` i zmiana dzień do dnia
+
+Na danych `economics` (pakiet `ggplot2`):
+
+-   wybierz lata 2000-2005,
+-   dla zmiennej `unemploy` oblicz miesięczną zmianę względem poprzedniego miesiąca (`lag()`),
+-   dla każdego roku policz średnią zmianę miesięczną,
+-   wskaż rok o największym średnim wzroście bezrobocia.
+
+```{r}
+econ_change <- economics %>%
+    mutate(year = lubridate::year(date)) %>%
+    filter(year >= 2000, year <= 2005) %>%
+    arrange(date) %>%
+    mutate(unemploy_change = unemploy - lag(unemploy))
+
+econ_change %>%
+    group_by(year) %>%
+    summarise(avg_monthly_change = mean(unemploy_change, na.rm = TRUE), .groups = "drop") %>%
+    arrange(desc(avg_monthly_change)) %>%
+    slice(1)
+```
+
+## Zadanie 5
+
+Kategoryzacja przez `ntile()` i `case_when()`
+
+Na danych `diamonds`:
+
+-   podziel diamenty na 4 kwartyle ceny (`ntile(price, 4)`),
+-   dla każdego kwartyla utwórz etykietę `price_group` (`low`, `mid_low`, `mid_high`, `high`) przez `case_when()`,
+-   dla każdej grupy policz medianę `carat` i średnią `depth`,
+-   posortuj wynik rosnąco wg mediany `carat`.
+
+```{r}
+diamonds %>%
+    mutate(price_q = ntile(price, 4)) %>%
+    mutate(price_group = case_when(
+        price_q == 1 ~ "low",
+        price_q == 2 ~ "mid_low",
+        price_q == 3 ~ "mid_high",
+        price_q == 4 ~ "high"
+    )) %>%
+    group_by(price_group) %>%
+    summarise(
+        med_carat = median(carat, na.rm = TRUE),
+        mean_depth = mean(depth, na.rm = TRUE),
+        .groups = "drop"
+    ) %>%
+    arrange(med_carat)
+```
+
+## Zadanie 6
+
+Losowanie warstwowe (`slice_sample()`)
+
+Na danych `starwars`:
+
+-   wyświetl rekordy z brakującym `species`,
+-   z każdej planety (`homeworld`) wylosuj maksymalnie 2 postacie,
+-   jeśli planeta ma mniej niż 2 postacie, zwróć wszystkie,
+-   ustaw ziarno losowe (`set.seed(2026)`) dla powtarzalności.
+
+```{r}
+set.seed(2026)
+
+starwars %>%
+    filter(!is.na(species), !is.na(homeworld)) %>%
+    group_by(homeworld) %>%
+    group_modify(~ slice_sample(.x, n = min(2, nrow(.x)))) %>%
+    ungroup()
+```
+
+## Zadanie 7
+
+`count()`, udziały i ranking
+
+Na danych `flights` (`nycflights13`):
+
+-   policz liczbę lotów dla każdej kombinacji `carrier` i `origin`,
+-   w obrębie każdego `origin` oblicz udział procentowy przewoźnika,
+-   dla każdego lotniska wskaż 3 największych przewoźników według liczby lotów.
+
+```{r}
+flights %>%
+    count(origin, carrier, name = "n_flights") %>%
+    group_by(origin) %>%
+    mutate(pct = 100 * n_flights / sum(n_flights)) %>%
+    arrange(origin, desc(n_flights)) %>%
+    slice_head(n = 3) %>%
+    ungroup()
+```
+
+## Zadanie 8
+
+Walidacja rekordów przez `if_all()`
+
+Utwórz dane:
+
+```{r}
+measurements <- tibble(
+    id = 1:7,
+    x = c(10, -2, 8, 15, 0, 7, 11),
+    y = c(5, 3, -1, 20, 2, 8, 9),
+    z = c(1, 4, 6, -3, 2, 10, 12)
+)
+```
+
+-   dodaj kolumnę `valid`, która ma wartość `TRUE`, jeśli wszystkie trzy pomiary (`x`, `y`, `z`) są dodatnie,
+-   zwróć tylko rekordy niepoprawne,
+-   policz odsetek rekordów poprawnych.
+
+```{r}
+validated <- measurements %>%
+    mutate(valid = if_all(c(x, y, z), ~ .x > 0))
+
+validated %>%
+    filter(!valid)
+
+validated %>%
+    summarise(pct_valid = 100 * mean(valid))
+```
+
+## Zadanie 9
+
+Wykrywanie duplikatów i porządkowanie danych
+
+Utwórz dane:
+
+```{r}
+visits <- tibble(
+    user_id = c(1, 1, 2, 2, 2, 3, 4, 4),
+    visit_date = as.Date(c(
+        "2024-01-01", "2024-01-01", "2024-01-02", "2024-01-03",
+        "2024-01-03", "2024-01-04", "2024-01-05", "2024-01-05"
+    )),
+    source = c("ads", "ads", "organic", "direct", "direct", "ads", "organic", "organic")
+)
+```
+
+-   znajdź zduplikowane wizyty po parach (`user_id`, `visit_date`),
+-   usuń duplikaty tak, aby został jeden rekord na parę,
+-   policz liczbę unikalnych dni wizyt na użytkownika.
+
+```{r}
+visits %>%
+    count(user_id, visit_date) %>%
+    filter(n > 1)
+
+visits_dedup <- visits %>%
+    distinct(user_id, visit_date, .keep_all = TRUE)
+
+visits_dedup %>%
+    count(user_id, name = "unique_visit_days")
+```
+
+## Zadanie 10
+
+Top-N z remisami i porównaniem metod
+
+Na danych `mpg` (`ggplot2`):
+
+-   dla każdego `class` wybierz 2 auta o najwyższym `hwy` używając `slice_max(..., with_ties = TRUE)`,
+-   powtórz to samo używając rankingu (`min_rank(desc(hwy)) <= 2`),
+-   sprawdź, czy oba podejścia zwracają identyczny zestaw rekordów.
+
+```{r}
+top_slice <- mpg %>%
+    group_by(class) %>%
+    slice_max(hwy, n = 2, with_ties = TRUE) %>%
+    ungroup() %>%
+    arrange(class, desc(hwy), manufacturer, model)
+
+top_rank <- mpg %>%
+    group_by(class) %>%
+    filter(min_rank(desc(hwy)) <= 2) %>%
+    ungroup() %>%
+    arrange(class, desc(hwy), manufacturer, model)
+
+identical(top_slice, top_rank)
+```

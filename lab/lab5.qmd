@@ -1,0 +1,64 @@
+---
+title: "Dopasowanie modeli predykcyjnych"
+author: Dariusz Majerek
+date: today
+format: html
+embed-resources: true
+---
+
+::: callout-important
+## Ważne
+
+We wszystkich zadaniach dokonaj podziału zbioru na uczący i testowy w proporcji
+70:30 procent. W żadnym z wymienionych modeli nie wykonuj *tuningu.* Wszystkie
+zbudowane modele mają pochodzić z pakietu `tidymodels`.
+:::
+
+## Zadanie 1 (klasyfikacja binarna)
+
+Dysponujesz zbiorami danych `titanic_train, titanic_test` zawierającym
+informację o pasażerach Titanica (pakiet `titanic`). Do podziału na zbiór
+uczący i testowy wykorzystaj jedynie `titanic_train`. Twoim zadaniem jest
+zbudowanie dwóch modeli klasyfikacyjnych przewidujących przeżycie pasażera
+(`Survived`):
+
+-   Model regresji logistycznej
+-   Drzewo decyzyjne (bez tuningu)
+
+Oceń dopasowanie obu modeli za pomocą następujących miar z pakietu `yardstick`:
+dokładność (ang. *accuracy*), czułość (ang. *sensitivity*), specyficzność (ang.
+*specificity*) oraz AUC (obszar pod krzywą ROC). Na podstawie uzyskanych
+wyników omów, który model jest bardziej odpowiedni. Czy w zależności od
+wybranej miary preferencja co do modelu może się zmienić? Zinterpretuj wyniki.
+
+## Zadanie 2 (klasyfikacja wieloklasowa)
+
+Zbiór danych `penguins` z pakietu `palmerpenguins` zawiera informacje o różnych
+gatunkach pingwinów. Zbuduj dwa modele przewidujące gatunek pingwina
+(`species`):
+
+-   Las losowy
+-   Support Vector Machine (SVM)
+
+Oceń modele za pomocą pakietu `yardstick`, wykorzystując następujące miary
+dopasowania: ogólną dokładność (ang. *accuracy*), mikro uśredniane miarę F1
+(ang. *micro* *F1 score*) oraz makro ważone AUC (ang. *macro-weighted AUC*).
+Porównaj wyniki modeli i omów, który z nich daje lepsze rezultaty, uzasadniając
+wybór odpowiednich miar do oceny.
+
+## Zadanie 3 (regresja)
+
+Zbiór danych `diamonds` z pakietu `ggplot2` zawiera informacje o diamentach,
+między innymi ich cenę (`price`). Twoim zadaniem jest zbudowanie trzech modeli
+predykcyjnych:
+
+-   Regresja liniowa
+-   XGBoost
+-   K-najbliższych sąsiadów (kNN)
+
+Dokonaj oceny dopasowania modeli za pomocą pakietu `yardstick`, stosując
+następujące miary: RMSE (ang. *root mean square error*), MAE (ang. *mean
+absolute error*), R² (współczynnik determinacji) oraz MAPE (ang. *mean absolute
+percentage error*). Omów, które modele sprawdzają się najlepiej ze względu na
+każdą z tych miar. Czy wybór miary wpływa na preferencję co do modelu? Wyjaśnij
+wnioski płynące z wyników.

@@ -10,7 +10,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-0. Rozgrzewka
+0.  Rozgrzewka
 
 ```{r}
 library(tidyverse)
@@ -21,18 +21,36 @@ flights %>%
   slice_max(delay)
 ```
 
-
-1. Filtrowanie i agregacja z warunkami wielowymiarowymi
+1.  Filtrowanie i agregacja z warunkami wielowymiarowymi
 
 ```{r}
-flights %>%
-  group_by(year, month, day, origin) %>%
-  summarise(mean_delay = mean(dep_delay, na.rm = TRUE), .groups = "drop") %>%
-  filter(mean_delay > 10) %>%
-  arrange(desc(mean_delay))
+# 1) Miesiące z kompletem lotnisk
+miesiace_ok <- flights %>%
+  group_by(month) %>%
+  summarise(
+    lotniska = n_distinct(origin),
+    .groups = "drop"
+  ) %>%
+  filter(lotniska == 3) %>%
+  select(month)
+
+# 2) Dni ze średnim opóźnieniem wylotu > 10 min
+dni_ok <- flights %>%
+  group_by(year, month, day) %>%
+  summarise(srednie_opoznienie = mean(dep_delay, na.rm = TRUE), .groups = "drop") %>%
+  filter(srednie_opoznienie > 10)
+
+# 3) Wynik: loty spełniające oba warunki + sortowanie po opóźnieniu
+wynik <- flights %>%
+  semi_join(miesiace_ok, by = "month") %>%
+  semi_join(dni_ok, by = c("year", "month", "day")) %>%
+  arrange(desc(dep_delay))  # sortowanie po opóźnieniu lotu
+
+wynik %>% 
+  select(dep_delay)
 ```
 
-2. Zagnieżdżone operacje grupowania
+2.  Zagnieżdżone operacje grupowania
 
 ```{r}
 mtcars %>%
@@ -50,6 +68,22 @@ mtcars %>%
 
 # or
 
+wynik <- mtcars %>%
+  rownames_to_column("model") %>%
+  mutate(producent = word(model, 1)) %>%   # producent = pierwszy wyraz nazwy modelu
+  group_by(producent) %>%
+  summarise(
+    srednie_mpg = mean(mpg),
+    model_max_hp = model[which.max(hp)],
+    max_hp = max(hp),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(srednie_mpg))
+
+wynik
+
+# or
+
 df_grouped_mean_mpg <- mtcars %>%
   rownames_to_column(var = "car_model") %>%
   group_by(manufacturer = word(car_model, 1)) %>%
@@ -64,9 +98,10 @@ merged_data <- left_join(df_grouped_mean_mpg, df_grouped_max_hp, by = "manufactu
 
 merged_data %>% 
   arrange(desc(mean_mpg))
+
 ```
 
-3. Tworzenie nowych zmiennych na podstawie wielu warunków
+3.  Tworzenie nowych zmiennych na podstawie wielu warunków
 
 ```{r}
 diamonds %>%
@@ -81,7 +116,7 @@ diamonds %>%
   summarise(mean_price = mean(price, na.rm = TRUE))
 ```
 
-4. Porównanie dwóch zbiorów danych
+4.  Porównanie dwóch zbiorów danych
 
 ```{r}
 set.seed(44)
@@ -99,7 +134,7 @@ orders %>%
   arrange(desc(diff))
 ```
 
-5. Hierarchiczne rangowanie
+5.  Hierarchiczne rangowanie
 
 ```{r}
 airquality %>%
@@ -114,7 +149,7 @@ airquality %>%
   arrange(desc(n))
 ```
 
-6. Dynamiczne pivotowanie danych
+6.  Dynamiczne pivotowanie danych
 
 ```{r}
 data <- tibble(
@@ -127,7 +162,7 @@ data %>%
   pivot_wider(names_from = month, values_from = sales)
 ```
 
-7. Analiza współwystępowania wartości
+7.  Analiza współwystępowania wartości
 
 ```{r}
 storms %>%
@@ -138,7 +173,7 @@ storms %>%
   arrange(avg_wind)
 ```
 
-8. Optymalizacja zapytań w dplyr
+8.  Optymalizacja zapytań w dplyr
 
 ```{r}
 starwars %>%
@@ -149,7 +184,7 @@ starwars %>%
   arrange(desc(unique_species))
 ```
 
-9. Analiza wzorców czasowych
+9.  Analiza wzorców czasowych
 
 ```{r}
 library(babynames)
@@ -170,5 +205,3 @@ babynames %>%
   pivot_wider(names_from = sex, values_from = n, names_prefix = "Top_") %>%
   filter(Top_M > 5)
 ```
-
-

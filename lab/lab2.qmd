@@ -1,0 +1,161 @@
+---
+title: "Laboratorium 2"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+## Zadanie 1
+
+Operacje kolumnowe i `across()`
+
+Na danych `iris`:
+
+-   zamień je na tibble,
+-   zmień nazwy kolumn tak, aby nie zawierały kropki (`.`),
+-   oblicz średnią i odchylenie standardowe dla wszystkich kolumn numerycznych z użyciem `across()`,
+-   wynik zwróć w układzie: jedna kolumna z nazwą zmiennej i osobne kolumny `mean` oraz `sd`.
+
+## Zadanie 2
+
+Obsługa braków danych i `if_any()`
+
+Utwórz ramkę danych:
+
+```{r}
+library(tidyverse)
+
+students <- tibble(
+  id = 1:8,
+  test_1 = c(60, 75, NA, 90, 50, NA, 88, 70),
+  test_2 = c(65, NA, 80, 92, 55, 73, NA, 68),
+  attendance = c(0.90, 0.75, 0.80, NA, 0.60, 0.95, 0.85, NA)
+)
+```
+
+Wykonaj:
+
+-   zastąp braki średnią z danej kolumny,
+-   dodaj kolumnę `risk` z wartością `"yes"`, jeśli którykolwiek wynik testu jest poniżej 65 (`if_any()`), w przeciwnym razie `"no"`,
+-   policz ilu studentów ma `risk == "yes"`.
+
+## Zadanie 3
+
+Diagnostyka jakości danych przez `anti_join()`
+
+Utwórz tabele:
+
+```{r}
+orders <- tibble(
+  order_id = 1:10,
+  customer_id = c(1, 2, 3, 4, 5, 6, 2, 3, 8, 9),
+  amount = c(120, 80, 150, 200, 95, 60, 110, 130, 140, 100)
+)
+
+customers <- tibble(
+  customer_id = c(1, 2, 3, 4, 5, 7),
+  segment = c("A", "B", "A", "C", "B", "C")
+)
+```
+
+-   znajdź zamówienia z nieistniejącym klientem,
+-   policz ile ich jest,
+-   oblicz udział takich zamówień w całej liczbie zamówień (w procentach).
+
+## Zadanie 4
+
+Funkcje okienkowe: `lag()` i zmiana dzień do dnia
+
+Na danych `economics` (pakiet `ggplot2`):
+
+-   wybierz lata 2000-2005,
+-   dla zmiennej `unemploy` oblicz miesięczną zmianę względem poprzedniego miesiąca (`lag()`),
+-   dla każdego roku policz średnią zmianę miesięczną,
+-   wskaż rok o największym średnim wzroście bezrobocia.
+
+## Zadanie 5
+
+Kategoryzacja przez `ntile()` i `case_when()`
+
+Na danych `diamonds`:
+
+-   podziel diamenty na 4 kwartyle ceny (`ntile(price, 4)`),
+-   dla każdego kwartyla utwórz etykietę `price_group` (`low`, `mid_low`, `mid_high`, `high`) przez `case_when()`,
+-   dla każdej grupy policz medianę `carat` i średnią `depth`,
+-   posortuj wynik rosnąco wg mediany `carat`.
+
+## Zadanie 6
+
+Losowanie warstwowe (`slice_sample()`)
+
+Na danych `starwars`:
+
+-   wyświetl rekordy z brakującym `species`,
+-   z każdej planety (`homeworld`) wylosuj maksymalnie 2 postacie,
+-   jeśli planeta ma mniej niż 2 postacie, zwróć wszystkie,
+-   ustaw ziarno losowe (`set.seed(2026)`) dla powtarzalności.
+
+## Zadanie 7
+
+`count()`, udziały i ranking
+
+Na danych `flights` (`nycflights13`):
+
+-   policz liczbę lotów dla każdej kombinacji `carrier` i `origin`,
+-   w obrębie każdego `origin` oblicz udział procentowy przewoźnika,
+-   dla każdego lotniska wskaż 3 największych przewoźników według liczby lotów.
+
+## Zadanie 8
+
+Walidacja rekordów przez `if_all()`
+
+Utwórz dane:
+
+```{r}
+measurements <- tibble(
+  id = 1:7,
+  x = c(10, -2, 8, 15, 0, 7, 11),
+  y = c(5, 3, -1, 20, 2, 8, 9),
+  z = c(1, 4, 6, -3, 2, 10, 12)
+)
+```
+
+-   dodaj kolumnę `valid`, która ma wartość `TRUE`, jeśli wszystkie trzy pomiary (`x`, `y`, `z`) są dodatnie,
+-   zwróć tylko rekordy niepoprawne,
+-   policz odsetek rekordów poprawnych.
+
+## Zadanie 9
+
+Wykrywanie duplikatów i porządkowanie danych
+
+Utwórz dane:
+
+```{r}
+visits <- tibble(
+  user_id = c(1, 1, 2, 2, 2, 3, 4, 4),
+  visit_date = as.Date(c(
+    "2024-01-01", "2024-01-01", "2024-01-02", "2024-01-03",
+    "2024-01-03", "2024-01-04", "2024-01-05", "2024-01-05"
+  )),
+  source = c("ads", "ads", "organic", "direct", "direct", "ads", "organic", "organic")
+)
+```
+
+-   znajdź zduplikowane wizyty po parach (`user_id`, `visit_date`),
+-   usuń duplikaty tak, aby został jeden rekord na parę,
+-   policz liczbę unikalnych dni wizyt na użytkownika.
+
+## Zadanie 10
+
+Top-N z remisami i porównaniem metod
+
+Na danych `mpg` (`ggplot2`):
+
+-   dla każdego `class` wybierz 2 auta o najwyższym `hwy` używając `slice_max(..., with_ties = TRUE)`,
+-   powtórz to samo używając rankingu (`min_rank(desc(hwy)) <= 2`),
+-   sprawdź, czy oba podejścia zwracają identyczny zestaw rekordów.

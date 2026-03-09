@@ -1,0 +1,176 @@
+---
+title: "Laboratorium 4"
+subtitle: "Testy permutacyjne i bootstrapowe"
+format: html
+embed-resources: true
+execute:
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Zadanie 1. Testowanie hipotezy dotyczącej frakcji
+
+Celem zadania jest sprawdzenie, czy frakcja pasażerów, którzy przeżyli katastrofę Titanica, była większa niż 0.35. W tym celu wykorzystujemy metodę *bootstrap*, zakładając hipotezy:
+
+\begin{align}
+  H_0: p &= 0.35\\
+  H_1: p &> 0.35
+\end{align}
+
+```{r}
+library(titanic)
+library(infer)
+library(dplyr)
+
+data <- titanic_train %>%
+  select(Survived) %>% 
+  mutate(Survived = as.factor(Survived))
+
+# Obserwowana statystyka
+observed_stat <- data %>%
+  specify(response = Survived, success = "1") %>%
+  calculate(stat = "prop")
+
+# Rozkład pod hipotezą zerową
+set.seed(44)  
+bootstrap_distribution <- data %>%
+  specify(response = Survived, success = "1") %>%
+  hypothesize(null = "point", p = 0.35) %>%
+  generate(reps = 1000, type = "draw") %>%
+  calculate(stat = "prop")
+
+# Ilustracja rozkładu bootstrap
+bootstrap_distribution %>% 
+  visualize() +
+  shade_p_value(obs_stat = observed_stat, direction = "greater")
+
+# P-wartość
+p_val <- bootstrap_distribution %>%
+  get_p_value(obs_stat = observed_stat, direction = "greater")
+
+p_val
+```
+
+## Zadanie 2. Porównanie średnich
+
+Sprawdzamy, czy średnia długość zębów świń morskich w zbiorze `ToothGrowth` różni się w zależności od rodzaju suplementacji (zmienna `supp`). Hipotezy mają postać:
+
+\begin{align}
+  H_0: \mu_{OJ} &= \mu_{VC}\\
+  H_1: \mu_{OJ} &\neq \mu_{VC}
+\end{align}
+
+```{r}
+data <- ToothGrowth
+
+# Obserwowana różnica średnich
+observed_diff <- ToothGrowth %>%
+  specify(len ~ supp) %>%
+  calculate(stat = "diff in means", order = c("VC", "OJ"))
+
+# Test permutacyjny
+set.seed(44)
+perm_distribution <- ToothGrowth %>%
+  specify(len ~ supp) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("VC", "OJ"))
+
+# P-wartość
+p_value <- perm_distribution %>%
+  get_p_value(obs_stat = observed_diff, direction = "two-sided")
+
+# Ilustracja rozkładu hipotezy zerowej
+perm_distribution %>% 
+  visualize() +
+  shade_p_value(obs_stat = observed_diff, direction = "two-sided")
+
+p_value
+```
+
+## Zadanie 3. Test różnicy median
+
+W zbiorze danych `mtcars` porównaj medianę zużycia paliwa (`mpg`) pomiędzy samochodami z automatyczną (`am = 0`) a manualną (`am = 1`) skrzynią biegów. Do weryfikacji hipotezy użyj metody bootstrapowej.
+
+Hipotezy:
+
+\begin{align}
+  H_0: \text{m}_{auto} &= \text{m}_{manual}\\
+  H_1: \text{m}_{auto} &< \text{m}_{manual}
+\end{align}
+
+
+```{r}
+mtcars <- mtcars %>% 
+  mutate(am = as.factor(am))
+
+# Obserwowana różnica median
+observed_diff_median <- mtcars %>%
+  specify(mpg ~ am) %>%
+  calculate(stat = "diff in medians", order = c("0", "1"))
+
+# Centrowanie danych aby różnica median była zero
+mtcars_centered <- mtcars %>%
+  group_by(am) %>%
+  mutate(mpg_centered = mpg - median(mpg) + median(mtcars$mpg))
+
+# Permutacje dla różnicy median
+set.seed(44)
+bootstrap_distribution <- mtcars_centered %>%
+  ungroup() %>%
+  specify(mpg_centered ~ am) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "diff in medians", order = c("0", "1"))
+
+# P-wartość
+p_value <- bootstrap_distribution %>%
+  get_p_value(obs_stat = observed_diff_median, direction = "less")
+
+# Ilustracja rozkładu hipotezy zerowej
+bootstrap_distribution %>% 
+  visualize() +
+  shade_p_value(obs_stat = observed_diff_median, direction = "less")
+
+p_value
+```
+
+## Zadanie 4. Test korelacji
+
+Interesuje nas, czy korelacja między zmiennymi `Sepal.Length` i `Sepal.Widht` jest istotna statystycznie.
+
+Hipotezy:
+
+\begin{align}
+  H_0: \rho &= 0\\
+  H_1: \rho &\neq 0
+\end{align}
+
+
+```{r}
+# Obserwowana korelacja
+observed_cor <- iris %>%
+  specify(Sepal.Length ~ Sepal.Width) %>%
+  calculate(stat = "correlation")
+
+# Rozkład permutacyjny
+set.seed(44)
+perm_distribution <- iris %>%
+  specify(Sepal.Length ~ Sepal.Width) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "correlation")
+
+# P-wartość
+p_value <- perm_distribution %>%
+  get_p_value(obs_stat = observed_cor, direction = "greater")
+
+perm_distribution %>% 
+  visualize() +
+  shade_p_value(obs_stat = observed_cor, direction = "greater")
+
+p_value
+```
+
+

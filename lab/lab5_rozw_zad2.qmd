@@ -1,0 +1,131 @@
+---
+title: "Laboratorium 5"
+subtitle: Rozwiązanie zadania 2
+author: "Dariusz Majerek"
+date: today
+embed-resources: true
+execute:
+  echo: true
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Przygotowanie danych
+
+```{r}
+library(tidymodels)
+library(palmerpenguins)
+
+glimpse(penguins)
+```
+
+Dokonajmy podziału na zbiór uczący i testowy
+
+```{r}
+set.seed(44)
+split <- initial_split(penguins, prop = 0.7, strata = species)
+train <- training(split)
+test <- testing(split)
+```
+
+# Budowa modeli
+
+```{r}
+rf <- rand_forest() %>%
+  set_mode("classification") %>%
+  set_engine("ranger")
+
+svm <- svm_rbf() %>%
+  set_mode("classification") %>%
+  set_engine("kernlab")
+```
+
+# Uczenie modeli na zbiorze uczącym
+
+```{r}
+rf_fit <- rf %>% fit(species ~ ., data = train)
+rf_fit
+svm_fit <- svm %>% fit(species ~ ., data = train)
+svm_fit
+```
+
+# Ocena dopasowania modeli
+
+Zaczniemy od macierzy pomyłek dla modelu lasu losowego.
+
+```{r}
+pred_rf <- augment(rf_fit, test) |> 
+  select(species, .pred_class:.pred_Gentoo)
+
+pred_rf
+
+cm <- pred_rf %>% 
+  conf_mat(species, .pred_class)
+
+cm %>% 
+  autoplot(type = 'heatmap')
+```
+
+Teraz zrobimy to samo dla modelu SVM. Tym razem trzeba zaznaczyć, że ponieważ model SVM nie radzi sobie z obsługą braków danych i daje predykcje jedynie dla pełnych obserwacji, to musimy usunąć braki danych z ramki testowej.
+
+```{r}
+pred_svm <- augment(svm_fit, drop_na(test)) |> 
+  select(species, .pred_class:.pred_Gentoo)
+
+pred_svm
+
+cm <- pred_svm %>% 
+  conf_mat(species, .pred_class)
+
+cm %>%
+  autoplot(type = 'heatmap')
+```
+
+Teraz porównamy modele w kontekście wybranych metryk.
+
+```{r}
+acc_rf <- pred_rf %>% 
+  accuracy(truth = species, estimate = .pred_class)
+
+acc_svm <- pred_svm %>% 
+  accuracy(truth = species, estimate = .pred_class)
+
+f1_rf <- pred_rf %>% 
+  f_meas(truth = species, estimate = .pred_class, estimator = "micro")
+
+f1_svm <- pred_svm %>% 
+  f_meas(truth = species, estimate = .pred_class, estimator = "micro")
+
+pred_rf %>% 
+  roc_curve(truth = species, .pred_Adelie:.pred_Gentoo, estimator = "macro_weighted") %>% 
+  autoplot()
+
+pred_svm %>%
+  roc_curve(truth = species, .pred_Adelie:.pred_Gentoo, estimator = "macro_weighted") %>% 
+  autoplot()
+
+auc_rf <- pred_rf %>% 
+  roc_auc(truth = species, .pred_Adelie:.pred_Gentoo, estimator = "macro_weighted")
+
+auc_svm <- pred_svm %>%
+  roc_auc(truth = species, .pred_Adelie:.pred_Gentoo, estimator = "macro_weighted")
+```
+
+Zbierzemy wszystkie metryki w jedną ramkę danych.
+
+```{r}
+bind_rows(acc_rf, f1_rf, auc_rf, acc_svm, f1_svm, auc_svm) |> 
+  mutate(model = rep(c("Las losowy", "SVM"), each = 3)) %>% 
+  arrange(.metric)
+```
+
+# Wnioski
+
+Na podstawie przedstawionych wyników w kontekście drugiego zadania (klasyfikacja wieloklasowa) można wyciągnąć następujące wnioski:
+
+- Dokładność (accuracy) obu modeli jest bardzo wysoka, z lekką przewagą modelu SVM (0,990 vs 0,981), co sugeruje, że SVM nieco lepiej klasyfikuje ogólnie wszystkie klasy.
+- Miara F1 (f_meas) liczona jako mikro-średnia jest zgodna z wynikami dokładności – również wskazuje na niewielką przewagę modelu SVM (0,990) nad lasem losowym (0,981). Oznacza to, że model SVM skuteczniej równoważy precyzję i czułość w klasyfikacji wieloklasowej.
+- AUC ROC (roc_auc) liczona jako średnia ważona dla wszystkich klas jest praktycznie idealna w obu modelach, z minimalną przewagą SVM (1,00 vs 0,997), co oznacza doskonałą zdolność modelu SVM do rozróżniania klas.
+
+Podsumowując, oba modele prezentują bardzo wysoką jakość klasyfikacji, jednak model SVM wykazuje minimalnie lepszą wydajność we wszystkich badanych metrykach. W praktyce można wybrać SVM jako preferowany model, ale warto mieć na uwadze, że różnica jakości jest marginalna, a ostateczny wybór może zależeć również od innych czynników, takich jak szybkość działania, łatwość interpretacji czy koszt obliczeniowy.

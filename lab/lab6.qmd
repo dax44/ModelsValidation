@@ -1,0 +1,99 @@
+---
+title: "Praca w `tidymodels`"
+author: Dariusz Majerek
+date: today
+editor_options: 
+  chunk_output_type: console
+embed-resources: true
+---
+
+## Zadanie 1: Budowa modelu regresji dla cen diamentów
+
+Celem zadania jest stworzenie przepływu (*workflow*) opartego o formułę,
+którego zadaniem będzie predykcja ceny diamentu na podstawie kilku cech. Należy
+wykonać następujące kroki:
+
+-   Wczytać dane ze zbioru `diamonds` oraz dokonać wstępnej eksploracji.\
+-   Podzielić dane na zestawy treningowe i testowe (np. przy użyciu funkcji
+    `initial_split()`).\
+-   Zdefiniować model regresji liniowej za pomocą funkcji `linear_reg()` oraz
+    ustawić silnik modelu (`lm`).\
+-   Utworzyć przepływ przy użyciu funkcji `workflow()`, określić relację między
+    zmienną zależną (`price`) a wybranymi predyktorami, `carat` oraz `depth`,
+    przy pomocy funkcji `add_formula()`.\
+-   Wytrenować model na zestawie treningowym przy użyciu funkcji `fit()`, a
+    następnie wykonać predykcję na wybranej części zbioru testowego z użyciem
+    funkcji `predict()`.\
+-   Ostatecznie uzyskać metryki modelu i ocenić dopadowasowanie.
+-   Wyznacz wykres *predicted vs observed*.
+
+## Zadanie 2: Preprocessing danych przy użyciu *recipes*
+
+W tym zadaniu celem jest przygotowanie receptury (*recipe*) przetwarzania
+danych dla zbioru `diamonds`, a następnie zintegrowanie jej z modelem. Należy
+wykonać następujące czynności:
+
+-   Utworzyć recepturę przetwarzania danych, która przekształci zmienną `carat`
+    (np. poprzez standaryzację przy użyciu `step_normalize()`), dokona
+    logarytmicznej transformacji zmiennej `price` (funkcja `step_log()`).\
+-   Połączyć recepturę z wcześniej zdefiniowanym modelem regresji (z Zadania 1)
+    za pomocą funkcji `workflow()` i `add_recipe()`.\
+-   Wytrenować przepływ na danych treningowych, a następnie sprawdzić efekty
+    przetwarzania danych za pomocą funkcji `extract_recipe(estimated = TRUE)`.\
+-   Porównać wyniki modelu opartego na recepturze z modelem, który korzystał
+    jedynie z formuły, komentując różnice wynikające z przetwarzania danych.
+
+## Zadanie 3: Modyfikacja przepływu modelowania
+
+Celem tego zadania jest pokazanie, jak łatwo modyfikować przepływ (*workflow*)
+w tidymodels oraz eksperymentować z różnymi konfiguracjami preprocesingu.
+Należy postąpić w następujący sposób:
+
+-   Utworzyć początkowy przepływ dla modelu regresji na bazie danych
+    `diamonds`, wykorzystując funkcję `add_formula()`, określając relację
+    między zmienną `price` a predyktorami np. `carat`, `depth` i `table`.\
+-   Następnie zaktualizować przepływ przy użyciu funkcji `update_formula()`,
+    usuwając jeden z predyktorów (np. `table`), aby zobaczyć, jak zmieni się
+    model.\
+-   Alternatywnie, usunąć istniejący preprocesor (za pomocą `remove_formula()`)
+    i dodać nowy preprocessor oparty na liście zmiennych przy użyciu
+    `add_variables()`, np. ustawiając `price` jako zmienną zależną i `carat`
+    oraz `depth` jako predyktory.\
+-   Ponownie wytrenować model na zmodyfikowanym przepływie oraz wykonać
+    predykcje.\
+-   W analizie porównać wyniki modeli.
+
+## Zadanie 4: Porównanie konfiguracji modeli z użyciem *workflowsets*
+
+Celem zadania jest porównanie różnych konfiguracji modelu na tym samym zbiorze
+danych za pomocą narzędzia *workflowsets*. Należy wykonać poniższe kroki:
+
+-   Zdefiniować kilka wariantów preprocesingu dla zbioru `diamonds`.
+    Przykładowo, jeden wariant może korzystać z relacji opartych na formule
+    (np. `price ~ carat + depth`), a inny wariant może wykorzystywać dodatkowe
+    zmienne, takie jak `cut` lub `color`, przy czym te ostatnie mogą wymagać
+    przekształcenia do zmiennych indykatorowych (*dummy variables*).
+-   Utworzyć zestaw przepływów przy użyciu funkcji `workflow_set()`, gdzie
+    każdy przepływ odpowiada innej konfiguracji preprocesingu lub formuły.\
+-   Wytrenować wszystkie przepływy na identycznym zestawie treningowym za
+    pomocą funkcji `map()` i `fit()`.\
+-   Wyciągnąć metryki poszczególnych modeli i porównać uzyskane rezultaty.
+
+## Zadanie 5: Budowa klasyfikatora na zbiorze `iris` z zaawansowanym przetwarzaniem danych
+
+Celem zadania jest stworzenie modelu klasyfikacyjnego wykorzystującego dane
+`iris`, w którym zastosować się do metod przetwarzania danych oraz inżynierii
+cech. Należy wykonać poniższe czynności:
+
+-   Wczytać zbiór `iris` i zapoznać się z jego strukturą.\
+-   Utworzyć recepturę (*recipe*), która dokona standaryzacji wszystkich
+    predyktorów (funkcja `step_normalize()`) oraz, opcjonalnie, stworzy
+    interakcje między wybranymi zmiennymi (przy użyciu `step_interact()`), aby
+    poprawić dyskryminację klas.\
+-   Zdefiniować model klasyfikacyjny, np. przy użyciu funkcji `logistic_reg()`
+    lub model drzewa decyzyjnego (funkcja `decision_tree()`), ustawić silnik
+    modelu oraz tryb pracy na klasyfikację.\
+-   Połączyć recepturę i model w jeden przepływ (*workflow*) za pomocą
+    `workflow()` i `add_recipe()`.\
+-   Wytrenować model na danych treningowych oraz przeprowadzić predykcję na
+    zbiorze testowym, analizując wyniki przy użyciu macierzy pomyłek.

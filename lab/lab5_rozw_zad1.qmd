@@ -1,0 +1,171 @@
+---
+title: "Laboratorium 5"
+subtitle: Rozwiązanie zadania 1
+author: "Dariusz Majerek"
+date: today
+embed-resources: true
+execute:
+  echo: true
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Przygotowanie danych
+
+```{r}
+library(tidymodels)
+library(titanic)
+
+glimpse(titanic_train)
+```
+
+Ponieważ zmienna zależna `Suvirved` jest zmienną binarną (kodowaną
+numerycznie), to zamienimy ją na faktor.
+
+```{r}
+titanic_train <- titanic_train %>%
+  mutate(Survived = factor(Survived, levels = c(0, 1), labels = c("No", "Yes")))
+
+set.seed(44)
+split <- initial_split(titanic_train, prop = 0.7, strata = Survived)
+train <- training(split)
+test <- testing(split)
+```
+
+Celem zadania nie jest ekstrakcja cech dlatego pominiemy ten krok i przejdziemy
+od razu do modelowania na pełnym zestawie zmiennych, z wyjątkiem zmiennych
+`Name`, `Ticket` i `Cabin`, które są bardzo unikalne dla obserwacji i mogłyby
+przeszkodzić w uczeniu modelu regresji logistycznej.
+
+```{r}
+train <- select(train, -Name, -Ticket, -Cabin)
+test <- select(test, -Name, -Ticket, -Cabin)
+```
+
+# Budowa modeli
+
+Zaczniemy od przygotowania przepisów na modele.
+
+```{r}
+reg_log <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+rpart <- decision_tree() %>%
+  set_engine("rpart", model = TRUE) %>%
+  set_mode("classification")
+```
+
+# Uczenie modeli na zbiorach treningowych
+
+Zaczniemy od modelu regresji logistycznej.
+
+```{r}
+reg_log_fit <- reg_log %>% 
+  fit(Survived ~ ., data = train)
+
+reg_log_fit %>% 
+  tidy()
+```
+
+Teraz dopasujemy model drzewa decyzyjnego.
+
+```{r}
+rpart_fit <- rpart %>% 
+  fit(Survived ~ ., data = train)
+
+library(rpart.plot)
+rpart_fit %>% 
+  extract_fit_engine() %>% 
+  rpart.plot()
+```
+
+# Ocena dopasowania modeli
+
+Zaczniemy od macierzy pomyłek dla modelu regresji logistycznej.
+
+```{r}
+pred_reg_log <- augment(reg_log_fit, test) |> 
+  select(Survived, .pred_class, .pred_No, .pred_Yes)
+
+pred_reg_log
+
+cm <- pred_reg_log %>% 
+  conf_mat(Survived, .pred_class)
+
+cm %>% 
+  autoplot(type = 'heatmap')
+```
+
+Teraz macierz pomyłek dla modelu drzewa decyzyjnego.
+
+```{r}
+pred_rpart <- augment(rpart_fit, test) |> 
+  select(Survived, .pred_class, .pred_No, .pred_Yes)
+
+pred_rpart
+
+cm <- pred_rpart %>% 
+  conf_mat(Survived, .pred_class)
+
+cm %>%
+  autoplot(type = 'heatmap')
+```
+
+Teraz porównamy modele w kontekście wybranych metryk.
+
+```{r}
+metrics <- metric_set(accuracy, sens, spec)
+
+metrics_reg_log <- pred_reg_log %>% 
+  metrics(truth = Survived, estimate = .pred_class)
+
+metrics_rpart <- pred_rpart %>% 
+  metrics(truth = Survived, estimate = .pred_class)
+
+pred_reg_log %>% 
+  roc_curve(truth = Survived, .pred_Yes, event_level = 'second') %>% 
+  autoplot()
+
+pred_rpart %>%
+  roc_curve(truth = Survived, .pred_Yes, event_level = 'second') %>% 
+  autoplot()
+
+auc_reg_log <- pred_reg_log %>% 
+  roc_auc(truth = Survived, .pred_Yes, event_level = 'second')
+
+auc_rpart <- pred_rpart %>%
+  roc_auc(truth = Survived, .pred_Yes, event_level = 'second')
+```
+
+Zbierzemy wszystkie metryki w jedną ramkę danych.
+
+```{r}
+bind_rows(metrics_reg_log, auc_reg_log, metrics_rpart, auc_rpart) |> 
+  mutate(model = rep(c("Regresja logistyczna", "Drzewo decyzyjne"), each = 4)) %>% 
+  arrange(.metric)
+```
+
+# Wnioski
+
+Na podstawie przedstawionych wyników można sformułować następujące wnioski:
+
+-   Dokładność (*accuracy*) jest podobna dla obu modeli, z minimalną przewagą
+    regresji logistycznej (0,812 vs 0,810), co wskazuje na zbliżoną ogólną
+    jakość klasyfikacji.
+-   Czułość (*sensitivity*) jest wyższa w modelu drzewa decyzyjnego (0,921 vs
+    0,873), co oznacza, że drzewo decyzyjne lepiej identyfikuje osoby, które
+    faktycznie przeżyły.
+-   Specyficzność (*specificity*) jest wyższa w modelu regresji logistycznej
+    (0,724 vs 0,631), co wskazuje, że regresja logistyczna skuteczniej
+    klasyfikuje osoby, które nie przeżyły.
+-   AUC ROC (0,874 vs 0,830) również przemawia za regresją logistyczną, co
+    świadczy o lepszej ogólnej zdolności tego modelu do rozróżniania klas.
+
+Podsumowując, jeśli kluczowa jest identyfikacja osób, które przeżyły (wysoka
+czułość), korzystniejsze jest drzewo decyzyjne. Natomiast jeśli istotna jest
+równowaga między wykrywaniem osób, które przeżyły i tych, które nie przeżyły
+(lepsza specyficzność oraz AUC), preferowanym modelem jest regresja
+logistyczna. Wybór konkretnego modelu zależy zatem od kontekstu zastosowania i
+priorytetów analizy.

@@ -1,0 +1,133 @@
+---
+title: "Klasyfikacja"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(bestNormalize)
+library(discrim)
+library(easystats)
+library(readxl)
+dt <- read_excel("/Users/majerek/Library/CloudStorage/OneDrive-PolitechnikaLubelska/analizy_statystyczne/Lagod/e_nos/BioreaktorSBR/Minitoring_SBR_03b.xlsx")
+dt <- dt %>% 
+  select(Stage, starts_with("Sensor"))
+head(dt)
+```
+
+# EDA
+
+```{r}
+dt %>% 
+  count(Stage) %>% 
+  mutate(perc = n/sum(n)*100) 
+```
+
+Układ nie jest zbalansowany ale nie jest celem tego zadania aby to obsługiwać, dlatego przejdziemy dalej.
+
+```{r}
+dt %>% 
+  pivot_longer(cols = -Stage, names_to = "Sensor", values_to = "Measurument") %>% 
+  ggplot(aes(x = Measurument, fill = Stage)) +
+  geom_histogram(alpha = 0.6) +
+  facet_wrap(~Sensor, scales = "free") +
+  theme(legend.position = 'top')
+
+dt %>% 
+  select(starts_with("Sensor")) %>%
+  correlation() %>% 
+  summary() %>% 
+  plot()
+```
+
+Ponieważ występują w zmiennych niezależnych wysokie korelacje to można użyć PCA, ale tego też nie będziemy tego robili.
+
+## Modelowanie
+
+Aby porównać modele użyję dla wszystkich ten sam prepocesor, czyli normalizację. Można by użyć również `step_best_normalize` w celu doprowadzenia zmiennych X do rozkładu normalnego (szczególnie potrzebne przy SVM) ale ponieważ oryginalne rozkłady nie odbiegają od normalnych to nie będziemy tego robić.
+
+```{r}
+set.seed(44)
+split <- initial_split(dt, strata = Stage, prop = 0.7)
+train <- training(split)
+test <- testing(split)
+
+recipe <- recipe(Stage ~ ., data = train) %>% 
+  step_normalize(all_predictors()) 
+
+recipe
+```
+
+Najpierw dokonam screeningu modeli, bez optymalizacji hiperparametrów. W tym celu użyję `workflow_set()`.
+
+```{r}
+lda <- discrim_linear() %>% 
+  set_engine("MASS") %>% 
+  set_mode("classification")
+
+knn <- nearest_neighbor() %>% 
+  set_engine("kknn") %>% 
+  set_mode("classification")
+
+svm <- svm_rbf() %>% 
+  set_engine("kernlab") %>% 
+  set_mode("classification")
+
+rf <- rand_forest() %>%
+  set_engine("ranger") %>% 
+  set_mode("classification")
+
+models <- workflow_set(
+  preproc = list(recipe),
+  models = list(lda = lda, knn = knn, svm = svm, rf = rf),
+  cross = TRUE
+)
+
+models
+```
+
+Przechodzimy do uczenia modeli z wykorzystaniem 10-krotnej walidacji krzyżowej.
+
+```{r}
+# library(doParallel)
+# registerDoParallel(cores = 4)
+# set.seed(44)
+# resamp <- vfold_cv(train, v = 10, strata = Stage)
+# results <- models %>% 
+#   workflow_map(
+#     "fit_resamples",
+#     resamples = resamp,
+#     control = control_resamples(save_pred = TRUE, save_workflow = TRUE)
+#   )
+
+
+# save(results, file = "training_results.rda")
+load("training_results.rda")
+
+```
+
+```{r}
+results %>% 
+  collect_metrics() %>% 
+  filter(.metric %in% c("accuracy", "roc_auc"))
+```
+
+```{r}
+library(ggrepel)
+autoplot(results, metric = "accuracy") +
+  geom_text_repel(aes(label = wflow_id), nudge_x = 1/8, nudge_y = 1/100) +
+  theme(legend.position = "none")
+
+autoplot(results, metric = "roc_auc") +
+  geom_text_repel(aes(label = wflow_id), nudge_x = 1/8, nudge_y = 1/100) +
+  theme(legend.position = "none")
+```
+
+Dwa najlepsze modele to `rf` i `knn`. Dalej powinno się na nich pracować.
