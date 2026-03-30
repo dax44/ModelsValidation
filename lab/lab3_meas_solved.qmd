@@ -1,0 +1,374 @@
+---
+title: "Laboratorium 3: Miary dopasowania modeli - rozwiązania"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+  message: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(modeldata)
+```
+
+## Zadanie 1
+
+```{r}
+set.seed(2026)
+
+ames <- modeldata::ames %>%
+  select(where(is.numeric))
+
+split_ames <- initial_split(ames, prop = 0.7)
+train_ames <- training(split_ames)
+test_ames <- testing(split_ames)
+
+lm_spec_1 <- linear_reg() %>%
+  set_engine("lm")
+
+lm_fit_1 <- lm_spec_1 %>%
+  fit(Sale_Price ~ ., data = train_ames)
+
+pred_ames <- test_ames %>%
+  select(Sale_Price) %>%
+  bind_cols(predict(lm_fit_1, new_data = test_ames))
+
+pred_ames %>%
+  metric_set(rmse, mae, rsq, mape)(truth = Sale_Price, estimate = .pred)
+```
+
+```{r}
+pred_ames %>%
+  ggplot(aes(x = Sale_Price, y = .pred)) +
+  geom_point(alpha = 0.35) +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  labs(
+    x = "Wartości obserwowane",
+    y = "Wartości przewidywane",
+    title = "Ames: observed vs predicted (test)"
+  )
+```
+
+## Zadanie 2
+
+```{r}
+set.seed(2026)
+
+auto <- ggplot2::mpg %>%
+  as_tibble() %>%
+  mutate(across(where(is.character), as.factor)) %>%
+  select(all_of(c("displ", "year", "cyl", "cty", "hwy", "fl", "class", "trans")))
+
+split_auto <- initial_split(auto, prop = 0.7)
+train_auto <- training(split_auto)
+test_auto <- testing(split_auto)
+
+# regresja liniowa
+lm_spec_2 <- linear_reg() %>%
+  set_engine("lm")
+
+lm_fit_2 <- lm_spec_2 %>%
+  fit(hwy ~ ., data = train_auto)
+
+pred_lm_auto <- predict(lm_fit_2, new_data = test_auto) %>%
+  bind_cols(test_auto %>% select(hwy)) %>%
+  mutate(model = "lm")
+
+# model 2: kNN
+knn_spec_reg <- nearest_neighbor(neighbors = 15) %>%
+  set_engine("kknn") %>%
+  set_mode("regression")
+
+knn_rec_reg <- recipe(hwy ~ ., data = train_auto) %>%
+  step_normalize(all_numeric_predictors())
+
+knn_wf_reg <- workflow() %>%
+  add_recipe(knn_rec_reg) %>%
+  add_model(knn_spec_reg)
+
+knn_fit_reg <- knn_wf_reg %>% fit(data = train_auto)
+
+pred_knn_auto <- predict(knn_fit_reg, new_data = test_auto) %>%
+  bind_cols(test_auto %>% select(hwy)) %>%
+  mutate(model = "knn")
+
+pred_auto_all <- bind_rows(pred_lm_auto, pred_knn_auto)
+
+pred_auto_all %>%
+  group_by(model) %>%
+  metric_set(rmse, mae, rsq_trad, ccc)(truth = hwy, estimate = .pred) %>%
+  arrange(.metric, .estimate)
+```
+
+## Zadanie 3
+
+```{r}
+set.seed(2026)
+
+chicago <- Chicago %>%
+  select(ridership, where(is.numeric)) %>%
+  drop_na()
+
+split_chi <- initial_split(chicago, prop = 0.7)
+train_chi <- training(split_chi)
+test_chi <- testing(split_chi)
+
+# model 1: regresja liniowa
+lm_spec_3 <- linear_reg() %>%
+  set_engine("lm")
+
+lm_fit_3 <- lm_spec_3 %>%
+  fit(ridership ~ ., data = train_chi)
+
+pred_lm_chi <- predict(lm_fit_3, new_data = test_chi) %>%
+  bind_cols(test_chi %>% select(ridership)) %>%
+  mutate(model = "lm")
+
+# model 2: drzewo regresyjne
+tree_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+
+tree_fit <- tree_spec %>%
+  fit(ridership ~ ., data = train_chi)
+
+pred_tree_chi <- predict(tree_fit, new_data = test_chi) %>%
+  bind_cols(test_chi %>% select(ridership)) %>%
+  mutate(model = "tree")
+
+pred_chi_all <- bind_rows(pred_lm_chi, pred_tree_chi)
+```
+
+```{r}
+# własna miara WAPE zgodna z yardstick
+wape <- function(data, ...) {
+  UseMethod("wape")
+}
+
+wape <- yardstick::new_numeric_metric(wape, direction = "minimize")
+
+wape.data.frame <- function(data, truth, estimate, na_rm = TRUE, case_weights = NULL, ...) {
+  truth <- rlang::eval_tidy(rlang::enquo(truth), data)
+  estimate <- rlang::eval_tidy(rlang::enquo(estimate), data)
+
+  yardstick::check_numeric_metric(truth, estimate, case_weights)
+
+  if (na_rm) {
+    complete <- stats::complete.cases(truth, estimate)
+    truth <- truth[complete]
+    estimate <- estimate[complete]
+  }
+
+  estimate_wape <- if (length(truth) == 0 || sum(abs(truth)) == 0) {
+    NA_real_
+  } else {
+    sum(abs(truth - estimate)) / sum(abs(truth)) * 100
+  }
+
+  tibble::tibble(
+    .metric = "wape",
+    .estimator = "standard",
+    .estimate = estimate_wape
+  )
+}
+
+pred_chi_all %>%
+  group_by(model) %>%
+  group_modify(~ metric_set(rmse, mae, wape)(.x, truth = ridership, estimate = .pred))
+```
+
+## Zadanie 4
+
+```{r}
+set.seed(2026)
+
+churn_data <- wa_churn %>%
+  mutate(across(where(is.character), as.factor)) %>%
+  mutate(churn = forcats::fct_relevel(churn, "Yes"))
+
+split_churn <- initial_split(churn_data, prop = 0.7, strata = churn)
+train_churn <- training(split_churn)
+test_churn <- testing(split_churn)
+
+log_spec_1 <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+log_fit_1 <- log_spec_1 %>%
+  fit(churn ~ ., data = train_churn)
+
+pred_class_churn <- predict(log_fit_1, new_data = test_churn)
+pred_prob_churn <- predict(log_fit_1, new_data = test_churn, type = "prob")
+
+pred_churn <- test_churn %>%
+  select(churn) %>%
+  bind_cols(pred_class_churn, pred_prob_churn)
+
+pred_churn %>%
+  conf_mat(truth = churn, estimate = .pred_class)
+```
+
+```{r}
+metric_set(accuracy, kap, sens, yardstick::spec, precision, recall, f_meas)(
+  pred_churn,
+  truth = churn,
+  estimate = .pred_class,
+  event_level = "first"
+)
+```
+
+Przy niezbalansowanych klasach `accuracy` bywa myląca, dlatego warto ją uzupełniać o `sens`, `spec`, `precision` i `f_meas`.
+
+## Zadanie 5
+
+```{r}
+set.seed(2026)
+
+cells_data <- cells %>%
+  mutate(class = forcats::fct_relevel(class, "WS", "PS"))
+
+split_cells <- initial_split(cells_data, prop = 0.7, strata = class)
+train_cells <- training(split_cells)
+test_cells <- testing(split_cells)
+
+# model logistyczny
+log_spec_2 <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+log_fit_2 <- log_spec_2 %>%
+  fit(class ~ ., data = train_cells)
+
+pred_lr <- test_cells %>%
+  select(class) %>%
+  bind_cols(predict(log_fit_2, new_data = test_cells)) %>%
+  bind_cols(predict(log_fit_2, new_data = test_cells, type = "prob")) %>%
+  mutate(model = "logistic")
+
+# model 2: kNN
+knn_spec_cls <- nearest_neighbor(neighbors = 21) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec_cls <- recipe(class ~ ., data = train_cells) %>%
+  step_normalize(all_numeric_predictors())
+
+knn_wf_cls <- workflow() %>%
+  add_recipe(knn_rec_cls) %>%
+  add_model(knn_spec_cls)
+
+knn_fit_cls <- knn_wf_cls %>% fit(data = train_cells)
+
+pred_knn <- test_cells %>%
+  select(class) %>%
+  bind_cols(predict(knn_fit_cls, new_data = test_cells)) %>%
+  bind_cols(predict(knn_fit_cls, new_data = test_cells, type = "prob")) %>%
+  mutate(model = "knn")
+
+pred_cells_all <- bind_rows(pred_lr, pred_knn)
+
+pred_cells_all %>%
+  group_by(model) %>%
+  roc_auc(truth = class, .pred_PS, event_level = "second")
+```
+
+```{r}
+pred_cells_all %>%
+  group_by(model) %>%
+  pr_auc(truth = class, .pred_PS, event_level = "second")
+```
+
+```{r}
+pred_lr %>%
+  roc_curve(truth = class, .pred_PS, event_level = "second") %>%
+  autoplot()
+```
+
+```{r}
+pred_lr %>%
+  pr_curve(truth = class, .pred_PS, event_level = "second") %>%
+  autoplot()
+```
+
+```{r}
+# porównanie progów 0.3, 0.5, 0.7 dla modelu logistycznego
+threshold_eval <- function(data, thr) {
+  data_thr <- data %>%
+    mutate(
+      class_thr = factor(
+        if_else(.pred_PS >= thr, "PS", "WS"),
+        levels = levels(class)
+      )
+    )
+
+  tibble(
+    threshold = thr,
+    sens = sens_vec(data_thr$class, data_thr$class_thr, event_level = "second"),
+    spec = spec_vec(data_thr$class, data_thr$class_thr, event_level = "second"),
+    f_meas = f_meas_vec(data_thr$class, data_thr$class_thr, event_level = "second")
+  )
+}
+
+bind_rows(
+  threshold_eval(pred_lr, 0.3),
+  threshold_eval(pred_lr, 0.5),
+  threshold_eval(pred_lr, 0.7)
+)
+```
+
+## Zadanie 6
+
+```{r}
+set.seed(2026)
+
+peng <- modeldata::attrition %>%
+  mutate(
+    is_adelie = if_else(Attrition == "Yes", "Yes", "No"),
+    is_adelie = factor(is_adelie, levels = c("No", "Yes"))
+  ) %>%
+  select(-Attrition)
+
+split_peng <- initial_split(peng, prop = 0.7, strata = is_adelie)
+train_peng <- training(split_peng)
+test_peng <- testing(split_peng)
+
+log_spec_3 <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+log_fit_3 <- log_spec_3 %>%
+  fit(is_adelie ~ ., data = train_peng)
+
+pred_peng <- test_peng %>%
+  select(is_adelie) %>%
+  bind_cols(predict(log_fit_3, new_data = test_peng)) %>%
+  bind_cols(predict(log_fit_3, new_data = test_peng, type = "prob"))
+```
+
+```{r}
+# standardowe metryki
+metric_set(accuracy, bal_accuracy, precision, recall)(
+  pred_peng,
+  truth = is_adelie,
+  estimate = .pred_class,
+  event_level = "second"
+)
+```
+
+```{r}
+# własna miara F2
+prec <- precision_vec(pred_peng$is_adelie, pred_peng$.pred_class, event_level = "second")
+rec <- recall_vec(pred_peng$is_adelie, pred_peng$.pred_class, event_level = "second")
+
+f2 <- (1 + 2^2) * (prec * rec) / ((2^2) * prec + rec)
+
+tibble(metric = "F2", value = f2)
+```
+
+W praktyce `F2` preferujemy wtedy, gdy ważniejsze jest ograniczenie pominięć klasy pozytywnej (większy nacisk na `recall`) niż maksymalizacja ogólnej trafności.

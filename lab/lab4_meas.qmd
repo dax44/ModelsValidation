@@ -1,0 +1,63 @@
+---
+title: "Laboratorium 4: Miary dopasowania modeli wieloklasowych"
+author: Dariusz Majerek
+date: today
+format: html
+embed-resources: true
+---
+
+::: callout-important
+## Ważne
+
+We wszystkich zadaniach:
+
+-   wykonaj podział danych na zbiór treningowy i testowy w proporcji 70:30,
+-   stosuj **losowanie warstwowe** (`strata`) po zmiennej wynikowej,
+-   trenuj model **wyłącznie** na zbiorze treningowym,
+-   oceniaj dopasowanie **wyłącznie** na zbiorze testowym,
+-   nie wykonuj tuningu hiperparametrów,
+-   nie stosuj preprocessingu poza ewentualną standaryzacją predyktorów (gdy model tego wymaga, np. kNN),
+-   korzystaj z pakietów `tidymodels` oraz `yardstick`.
+:::
+
+## Zadanie 1
+
+Użyj danych `modeldata::penguins` (zmienna wynikowa: `species` – trzy klasy: *Adelie*, *Chinstrap*, *Gentoo*).
+
+Wskazówka techniczna: przed podziałem usuń wiersze z brakami danych (`drop_na()`). Podział wykonaj ze stratyfikacją: `initial_split(..., strata = species)`.
+
+1.  Zbadaj rozkład zmiennej `species` w pełnym zbiorze danych oraz w zbiorach treningowym i testowym. Potwierdź, że losowanie warstwowe zachowuje proporcje klas.
+2.  Zbuduj model wieloklasowej regresji logistycznej (`multinom_reg()` + `nnet`).
+3.  Wyznacz predykcje klas i prawdopodobieństw na zbiorze testowym (`predict()` z `type = "class"` oraz `type = "prob"`).
+4.  Wyświetl macierz klasyfikacji (`conf_mat`) oraz jej wizualizację (`autoplot(type = "heatmap")`).
+5.  Oblicz metryki `accuracy`, `precision`, `recall`, `f_meas` i `kap` z użyciem trzech estymatorów: `macro`, `macro_weighted` i `micro`. Porównaj uzyskane wyniki.
+6.  Odpowiedz: który ze sposobów uśredniania jest najbardziej wrażliwy na klasę mniejszościową i dlaczego?
+
+## Zadanie 2
+
+Użyj danych `modeldata::hpc_data` (zmienna wynikowa: `class` – cztery klasy: *VF*, *F*, *M*, *L*).
+
+Wskazówka techniczna: ogranicz zbiór do kolumn: `class`, `compounds`, `iterations`, `num_pending`, `hour`, `day` (za pomocą `select()`). Przekształć zmienną `day` na czynnik (`mutate(day = factor(day))`). Podział ze stratyfikacją: `initial_split(..., strata = class)`. Dla kNN użyj `neighbors = 11`.
+
+1.  Zbadaj rozkład klas zmiennej `class` – zwróć uwagę na wyraźną dysproporcję. Porównaj proporcje w zbiorach treningowym i testowym, aby potwierdzić skuteczność losowania warstwowego.
+2.  Zbuduj dwa modele klasyfikacyjne:
+    -   wieloklasową regresję logistyczną (`multinom_reg()` + `nnet`),
+    -   model kNN (`nearest_neighbor(neighbors = 11)` + tryb `classification`) z zastosowaniem standaryzacji predyktorów numerycznych (`step_normalize`).
+3.  Dla obu modeli narysuj wieloklasową krzywą ROC (`roc_curve`) oraz oblicz `roc_auc` (używając kolumn z prawdopodobieństwami klas).
+4.  Oblicz `accuracy`, `bal_accuracy`, `precision` i `f_meas` z użyciem estymatora `macro` oraz `macro_weighted`.
+5.  Wskaż i uzasadnij, który model lepiej radzi sobie z klasą mniejszościową (*L*), a który lepiej klasyfikuje ogólnie.
+
+## Zadanie 3
+
+Użyj danych `modeldata::penguins` (zmienna wynikowa: `species`).
+
+Wskazówka techniczna: tak jak w Zadaniu 1 – usuń braki danych i zastosuj losowanie warstwowe. Do budowy modeli użyj jedynie predyktorów numerycznych: `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`. Dla kNN użyj `neighbors = 7`.
+
+1.  Zbuduj trzy modele:
+    -   wieloklasową regresję logistyczną (`multinom_reg()` + `nnet`),
+    -   model kNN (`nearest_neighbor(neighbors = 7)` + tryb `classification`) ze standaryzacją,
+    -   drzewo klasyfikacyjne (`decision_tree()` + `rpart`, tryb `classification`).
+2.  Dla każdego modelu oblicz macierz klasyfikacji i wyznacz `precision` oraz `recall` oddzielnie dla każdej klasy (estymator `macro` zwraca średnią – tutaj ręcznie sprawdź wyniki wg poszczególnych klas, np. korzystając z `summary(conf_mat(...))`).
+3.  Zdefiniuj własny zestaw metryk (`metric_set`), zawierający: `accuracy`, `bal_accuracy`, `f_meas`, `kap`, `mcc`.
+4.  Porównaj trzy modele za pomocą zdefiniowanego zestawu metryk (estymator `macro_weighted`). Przedstaw wyniki w formie jednej tabeli zbiorczej (wskazówka: `bind_rows` z kolumną `model`).
+5.  Odpowiedz: czy ranking modeli zmienia się w zależności od wybranej metryki? Która metryka jest Twoim zdaniem najbardziej adekwatna przy danych zbalansowanych, a która przy niezbalansowanych?

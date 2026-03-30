@@ -1,0 +1,116 @@
+---
+title: "Laboratorium 3: Miary dopasowania modeli"
+author: Dariusz Majerek
+date: today
+format: html
+embed-resources: true
+---
+
+::: callout-important
+## Ważne
+
+We wszystkich zadaniach:
+
+-   wykonaj podział danych na zbiór treningowy i testowy w proporcji 70:30,
+-   trenuj model **wyłącznie** na zbiorze treningowym,
+-   oceniaj dopasowanie **wyłącznie** na zbiorze testowym,
+-   nie wykonuj tuningu hiperparametrów,
+-   nie stosuj preprocessingu poza ewentualną standaryzacją predyktorów (gdy model tego wymaga, np. kNN),
+-   korzystaj z pakietów `tidymodels` oraz `yardstick`.
+:::
+
+## Zadanie 1
+
+Użyj danych `modeldata::ames` (cena domu: `Sale_Price`).
+
+Wskazówka techniczna: aby uniknąć problemów z poziomami zmiennych kategorycznych między zbiorem treningowym i testowym, w tym zadaniu pracuj tylko na predyktorach numerycznych.
+
+1.  Zbuduj model regresji liniowej (`linear_reg()` + `lm`).
+2.  Dopasuj model do danych treningowych i wyznacz predykcje dla zbioru testowego.
+3.  Oblicz i zinterpretuj metryki: `rmse`, `mae`, `rsq`, `mape`.
+4.  Wykonaj wykres *observed vs predicted* dla zbioru testowego.
+5.  Odpowiedz: która z metryk najmocniej „karze” duże błędy i dlaczego?
+
+## Zadanie 2
+
+Użyj danych `ggplot2::mpg` (zmienna wynikowa: `hwy`).
+
+Wskazówka techniczna: przed podziałem na zbiory ogranicz dane do kolumn: `displ`, `year`, `cyl`, `cty`, `hwy`, `fl`, `class`, `trans`, a następnie przekształć zmienne tekstowe na faktory (`mutate(across(where(is.character), as.factor))`). Dla modelu kNN użyj `neighbors = 15`.
+
+1.  Przygotuj dwa modele: regresję liniową oraz kNN (`nearest_neighbor()` z trybem `regression`).
+2.  Dla modelu kNN zastosuj **wyłącznie standaryzację** predyktorów.
+3.  Zbuduj przepływ modelowania dla kNN schematycznie:
+    -   `recipe(hwy ~ ., data = train)`
+    -   `step_normalize(all_numeric_predictors())`
+    -   `model_spec` (kNN)
+    -   `workflow() + add_recipe() + add_model()`
+    -   `fit(train)` i `predict(test)`
+4.  Porównaj oba modele na zbiorze testowym przez `rmse`, `mae`, `rsq_trad` i `ccc` (metryki licz osobno dla każdego modelu, np. po `group_by(model)`).
+5.  Sformułuj wniosek, czy ranking modeli zależy od wybranej metryki.
+
+## Zadanie 3
+
+Użyj danych `modeldata::Chicago` i przewiduj `ridership`.
+
+Wskazówka techniczna: ogranicz dane do zmiennej `ridership` i wszystkich kolumn numerycznych (`select(ridership, where(is.numeric))`), a następnie usuń wiersze z brakami danych (`drop_na()`). Jako drugi model użyj drzewa regresyjnego (`decision_tree()` + `rpart`, tryb `regression`, bez tuningu).
+
+1.  Zbuduj model regresji liniowej oraz drzewo regresyjne (`decision_tree()` + `rpart`).
+2.  Oceń oba modele na zbiorze testowym przez `rmse` i `mae`.
+3.  Zdefiniuj i zaimplementuj **własną miarę** błędu procentowego ważoną wielkością obserwacji:
+
+$$
+WAPE = \frac{\sum_{i=1}^{n} |y_i - \hat{y}_i|}{\sum_{i=1}^{n} |y_i|}\cdot 100\%.
+$$
+
+4.  Oblicz tę miarę dla obu modeli i porównaj wnioski z wnioskami z `rmse`/`mae`.
+
+## Zadanie 4
+
+Użyj danych `modeldata::wa_churn` (zmienna wynikowa: `churn`).
+
+Wskazówka techniczna: przed podziałem przekształć zmienne tekstowe na faktory (`mutate(across(where(is.character), as.factor))`), a następnie ustaw poziom `"Yes"` jako pierwszy (klasę pozytywną): `mutate(churn = forcats::fct_relevel(churn, "Yes"))`. Podział na zbiory wykonaj ze stratyfikacją: `initial_split(..., strata = churn)`.
+
+1.  Zbuduj model regresji logistycznej (`logistic_reg()` + `glm`).
+2.  Wyznacz predykcje klas i prawdopodobieństw na zbiorze testowym.
+3.  Oblicz `conf_mat`, a następnie metryki: `accuracy`, `kap`, `sens`, `spec`, `precision`, `recall`, `f_meas`.
+4.  Krótko opisz, co dzieje się z interpretacją `accuracy`, gdy klasy są niezbalansowane.
+5.  Na podstawie metryk wskaż, czy model jest bardziej „czuły”, czy bardziej „ostrożny” w wykrywaniu klasy pozytywnej.
+
+## Zadanie 5
+
+Użyj danych `modeldata::cells` (zmienna wynikowa: `class`).
+
+Wskazówka techniczna: przed podziałem ustaw kolejność poziomów zmiennej `class` tak, aby `"PS"` był klasą pozytywną: `mutate(class = forcats::fct_relevel(class, "WS", "PS"))`. Podział ze stratyfikacją: `initial_split(..., strata = class)`. Dla kNN użyj `neighbors = 21`.
+
+1.  Zbuduj model logistyczny oraz model kNN do klasyfikacji binarnej.
+2.  Dla kNN zastosuj pipeline ze standaryzacją (analogicznie do Zadania 2, ale dla klasyfikacji).
+3.  Dla obu modeli na zbiorze testowym oblicz `roc_auc` oraz `pr_auc`.
+4.  Narysuj `roc_curve` i `pr_curve`.
+5.  Dla modelu logistycznego porównaj jakość klasyfikacji dla progów 0.3, 0.5, 0.7 (metryki: `sens`, `spec`, `f_meas`).
+6.  Wskaż próg, który daje najlepszy kompromis między wykrywaniem klasy pozytywnej a liczbą fałszywych alarmów.
+
+## Zadanie 6
+
+Użyj danych `modeldata::attrition` i zdefiniuj binarną zmienną wynikową.
+
+Wskazówka techniczna: utwórz kolumnę `is_adelie` przekształcając oryginalną zmienną `Attrition`:
+
+``` r
+mutate(
+  is_adelie = if_else(Attrition == "Yes", "Yes", "No"),
+  is_adelie = factor(is_adelie, levels = c("No", "Yes"))
+)
+```
+
+Następnie usuń oryginalną kolumnę `Attrition` (`select(-Attrition)`) i wykonaj podział ze stratyfikacją: `initial_split(..., strata = is_adelie)`.
+
+1.  Zbuduj model regresji logistycznej i oceń go na zbiorze testowym.
+2.  Oblicz standardowe metryki: `accuracy`, `bal_accuracy`, `precision`, `recall`.
+3.  Zdefiniuj i zaimplementuj **własną miarę** z większym naciskiem na czułość (dla $\beta = 2$):
+
+$$
+F_{\beta} = (1+\beta^2)\cdot\frac{\text{Precision}\cdot\text{Recall}}{\beta^2\cdot\text{Precision}+\text{Recall}}, \quad \beta=2.
+$$
+
+4.  Porównaj ranking jakości modelu przy użyciu `accuracy` i własnej miary $F_2$.
+5.  Wyjaśnij, kiedy w praktyce warto preferować $F_2$ zamiast `accuracy`.

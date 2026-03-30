@@ -1,0 +1,340 @@
+---
+title: "Laboratorium: modele inferencyjne - rozwiązania"
+subtitle: "Bootstrap i testy permutacyjne"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(infer)
+```
+
+## Zadanie 1. Hipoteza parametryczna jednopróbkowa
+
+Badamy, czy przeciętny tygodniowy czas pracy przekracza 40 godzin. Statystyką
+testową będzie średnia z próby.
+
+\begin{align}
+H_0: \mu &= 40\\
+H_1: \mu &> 40
+\end{align}
+
+### Krok 1. Przygotowanie danych i statystyka obserwowana
+
+Usuwamy braki danych i liczymy średnią z próby.
+
+```{r}
+hours_data <- gss %>%
+  drop_na(hours)
+
+observed_mean <- hours_data %>%
+  specify(response = hours) %>%
+  calculate(stat = "mean")
+
+observed_mean
+```
+
+### Krok 2. Rozkład bootstrapowy zgodny z `H_0`
+
+W teście bootstrapowym dla hipotezy punktowej pakiet `infer` buduje rozkład
+zgodny z `H_0`, a następnie losuje z niego próby bootstrapowe.
+
+```{r}
+set.seed(2026)
+
+null_boot_mean <- hours_data %>%
+  specify(response = hours) %>%
+  hypothesize(null = "point", mu = 40) %>%
+  generate(reps = 2000, type = "bootstrap") %>%
+  calculate(stat = "mean")
+
+null_boot_mean
+```
+
+### Krok 3. Wizualizacja i wartość `p`
+
+```{r}
+null_boot_mean %>%
+  visualize() +
+  shade_p_value(obs_stat = observed_mean, direction = "greater")
+```
+
+```{r}
+p_value_mean <- null_boot_mean %>%
+  get_p_value(obs_stat = observed_mean, direction = "greater")
+
+p_value_mean
+```
+
+Otrzymujemy wartość `p` około `0.016`, więc przy poziomie istotności `0.05`
+odrzucamy hipotezę zerową. Dane sugerują, że średni tygodniowy czas pracy jest
+większy niż 40 godzin.
+
+### Krok 4. Porównanie z testem klasycznym
+
+```{r}
+t.test(hours_data$hours, mu = 40, alternative = "greater")
+```
+
+Wynik klasycznego testu `t` jest bardzo podobny, więc oba podejścia prowadzą do
+tego samego wniosku.
+
+## Zadanie 2. Hipoteza parametryczna dwupróbkowa
+
+Porównujemy średnią długość zębów pomiędzy grupami `OJ` i `VC`. Statystyką
+testową jest różnica średnich.
+
+\begin{align}
+H_0: \mu_{OJ} &= \mu_{VC}\\
+H_1: \mu_{OJ} &\neq \mu_{VC}
+\end{align}
+
+### Krok 1. Statystyka obserwowana
+
+```{r}
+observed_diff_mean <- ToothGrowth %>%
+  specify(len ~ supp) %>%
+  calculate(stat = "diff in means", order = c("OJ", "VC"))
+
+observed_diff_mean
+```
+
+Otrzymana wartość dodatnia oznacza, że w próbie średnia dla `OJ` jest większa
+niż dla `VC`.
+
+### Krok 2. Rozkład permutacyjny pod `H_0`
+
+Jeśli `H_0` jest prawdziwa, to etykiety grup można losowo przestawiać bez
+zmiany rozkładu danych. To właśnie robi test permutacyjny.
+
+```{r}
+set.seed(2026)
+
+null_perm_mean <- ToothGrowth %>%
+  specify(len ~ supp) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 2000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("OJ", "VC"))
+
+null_perm_mean
+```
+
+### Krok 3. Wizualizacja i wartość `p`
+
+```{r}
+null_perm_mean %>%
+  visualize() +
+  shade_p_value(obs_stat = observed_diff_mean, direction = "two-sided")
+```
+
+```{r}
+p_value_diff_mean <- null_perm_mean %>%
+  get_p_value(obs_stat = observed_diff_mean, direction = "two-sided")
+
+p_value_diff_mean
+```
+
+Wartość `p` jest bliska `0.05`, ale w tej konfiguracji pozostaje nieco powyżej
+tego progu. To oznacza, że wynik jest graniczny, lecz formalnie nie daje
+jednoznacznych podstaw do odrzucenia `H_0` na poziomie istotności `0.05`.
+
+### Krok 4. Porównanie z testem klasycznym
+
+```{r}
+t.test(len ~ supp, data = ToothGrowth)
+```
+
+Klasyczny test `t` daje bardzo podobny wynik, więc także tutaj oba podejścia są
+zgodne interpretacyjnie.
+
+## Zadanie 3. Hipoteza nieparametryczna jednopróbkowa
+
+Badamy medianę czasu oczekiwania na kolejny wybuch gejzeru Old Faithful.
+Ponieważ rozkład zmiennej `waiting` nie jest symetryczny, bardziej naturalnym
+parametrem położenia jest mediana.
+
+\begin{align}
+H_0: m &= 75\\
+H_1: m &\neq 75
+\end{align}
+
+### Krok 1. Wstępna ocena danych
+
+```{r}
+faithful %>%
+  ggplot(aes(waiting)) +
+  geom_histogram(bins = 20, color = "white", fill = "#4575b4") +
+  labs(x = "Czas oczekiwania", y = "Liczebność")
+```
+
+Histogram pokazuje wyraźnie, że rozkład nie ma prostego, normalnego kształtu.
+To dobry powód, aby oprzeć wnioskowanie o medianę na bootstrapie.
+
+### Krok 2. Statystyka obserwowana
+
+```{r}
+observed_median <- faithful %>%
+  specify(response = waiting) %>%
+  calculate(stat = "median")
+
+observed_median
+```
+
+Mediana próbki wynosi `76`, czyli jest blisko wartości z hipotezy zerowej.
+
+### Krok 3. Rozkład bootstrapowy pod `H_0`
+
+Pakiet `infer` pozwala bezpośrednio zadać hipotezę punktową dla mediany.
+
+```{r}
+set.seed(2026)
+
+null_boot_median <- faithful %>%
+  specify(response = waiting) %>%
+  hypothesize(null = "point", med = 75) %>%
+  generate(reps = 2000, type = "bootstrap") %>%
+  calculate(stat = "median")
+
+null_boot_median
+```
+
+### Krok 4. Wizualizacja i wartość `p`
+
+```{r}
+null_boot_median %>%
+  visualize() +
+  shade_p_value(obs_stat = observed_median, direction = "two-sided")
+```
+
+```{r}
+p_value_median <- null_boot_median %>%
+  get_p_value(obs_stat = observed_median, direction = "two-sided")
+
+p_value_median
+```
+
+Wartość `p` jest wyraźnie większa od `0.05`, więc nie mamy podstaw do
+odrzucenia `H_0`. Dane są zgodne z hipotezą, że mediana czasu oczekiwania może
+wynosić 75 minut.
+
+### Krok 5. Przedział ufności dla mediany
+
+Wyznaczymy jeszcze klasyczny bootstrapowy przedział ufności dla mediany, tym
+razem bez narzucania hipotezy zerowej.
+
+```{r}
+set.seed(2026)
+
+boot_median_ci <- faithful %>%
+  specify(response = waiting) %>%
+  generate(reps = 2000, type = "bootstrap") %>%
+  calculate(stat = "median")
+
+ci_median <- boot_median_ci %>%
+  get_confidence_interval(
+    point_estimate = observed_median,
+    level = 0.95,
+    type = "percentile"
+  )
+
+ci_median
+```
+
+```{r}
+boot_median_ci %>%
+  visualize() +
+  shade_ci(endpoints = ci_median)
+```
+
+Jeżeli wartość `75` należy do przedziału ufności, to wniosek jest zgodny z
+testem: brak podstaw do odrzucenia hipotezy zerowej.
+
+## Zadanie 4. Hipoteza nieparametryczna dla zależności dwóch zmiennych ilościowych
+
+Badamy, czy większa prędkość samochodu wiąże się z dłuższą drogą hamowania.
+Interesuje nas współczynnik kierunkowy prostej regresji.
+
+\begin{align}
+H_0: \beta_1 &= 0\\
+H_1: \beta_1 &> 0
+\end{align}
+
+### Krok 1. Wizualizacja zależności
+
+```{r}
+cars %>%
+  ggplot(aes(speed, dist)) +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
+  labs(x = "Prędkość", y = "Droga hamowania")
+```
+
+Już na wykresie widać dodatnią zależność, ale teraz chcemy ocenić ją formalnie
+przez test permutacyjny.
+
+### Krok 2. Nachylenie prostej w danych obserwowanych
+
+```{r}
+observed_slope <- cars %>%
+  specify(dist ~ speed) %>%
+  calculate(stat = "slope")
+
+observed_slope
+```
+
+Otrzymane nachylenie jest dodatnie, czyli wraz ze wzrostem prędkości droga
+hamowania rośnie.
+
+### Krok 3. Permutacyjny rozkład nachyleń pod `H_0`
+
+Jeśli `H_0` jest prawdziwa, to zmienna `dist` nie powinna być powiązana z
+`speed`. Możemy więc permutować wartości `dist` względem `speed`.
+
+```{r}
+set.seed(2026)
+
+null_perm_slope <- cars %>%
+  specify(dist ~ speed) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 2000, type = "permute") %>%
+  calculate(stat = "slope")
+
+null_perm_slope
+```
+
+### Krok 4. Wizualizacja i wartość `p`
+
+```{r}
+null_perm_slope %>%
+  visualize() +
+  shade_p_value(obs_stat = observed_slope, direction = "greater")
+```
+
+```{r}
+p_value_slope <- null_perm_slope %>%
+  get_p_value(obs_stat = observed_slope, direction = "greater")
+
+p_value_slope
+```
+
+Otrzymujemy bardzo małą wartość `p`. Przy `2000` permutacjach wynik `0`
+oznacza w praktyce `p < 0.0005`, więc zdecydowanie odrzucamy `H_0`.
+
+### Krok 5. Porównanie z klasycznym modelem liniowym
+
+```{r}
+summary(lm(dist ~ speed, data = cars))
+```
+
+Klasyczny model liniowy prowadzi do tego samego wniosku: współczynnik
+kierunkowy jest dodatni i istotny statystycznie. Test permutacyjny stanowi tu
+atrakcyjną alternatywę, ponieważ nie wymaga przyjmowania teoretycznego rozkładu
+statystyki testowej.

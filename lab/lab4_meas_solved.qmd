@@ -1,0 +1,337 @@
+---
+title: "Laboratorium 4: Miary dopasowania modeli wieloklasowych - rozwiązania"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+  message: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(modeldata)
+```
+
+## Zadanie 1
+
+### 1. Rozkład klas i weryfikacja losowania warstwowego
+
+```{r}
+set.seed(2026)
+
+penguins_clean <- penguins %>% drop_na()
+
+# proporcje w pełnym zbiorze
+penguins_clean %>%
+  count(species) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+
+# podział warstwowy
+split_peng <- initial_split(penguins_clean, prop = 0.7, strata = species)
+train_peng <- training(split_peng)
+test_peng <- testing(split_peng)
+
+# proporcje w zbiorze treningowym
+train_peng %>%
+  count(species) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+
+# proporcje w zbiorze testowym
+test_peng %>%
+  count(species) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+```
+
+Losowanie warstwowe zachowuje proporcje klas – w obu zbiorach rozkład `species` jest zbliżony do oryginału.
+
+### 2. Model wieloklasowej regresji logistycznej
+
+```{r}
+multinom_spec <- multinom_reg() %>%
+  set_engine("nnet") %>%
+  set_mode("classification")
+
+multinom_fit <- multinom_spec %>%
+  fit(species ~ ., data = train_peng)
+```
+
+### 3. Predykcje klas i prawdopodobieństw
+
+```{r}
+pred_peng <- test_peng %>%
+  select(species) %>%
+  bind_cols(predict(multinom_fit, new_data = test_peng)) %>%
+  bind_cols(predict(multinom_fit, new_data = test_peng, type = "prob"))
+
+head(pred_peng)
+```
+
+### 4. Macierz klasyfikacji
+
+```{r}
+cm_peng <- pred_peng %>%
+  conf_mat(truth = species, estimate = .pred_class)
+cm_peng
+
+cm_peng %>% autoplot(type = "heatmap")
+```
+
+### 5. Metryki z trzema estymatorami
+
+```{r}
+my_metrics <- metric_set(accuracy, precision, recall, f_meas, kap)
+
+# macro
+my_metrics(pred_peng,
+           truth = species,
+           estimate = .pred_class,
+           estimator = "macro") 
+
+# macro_weighted
+my_metrics(pred_peng,
+           truth = species,
+           estimate = .pred_class,
+           estimator = "macro_weighted") 
+
+# micro
+my_metrics(pred_peng,
+           truth = species,
+           estimate = .pred_class,
+           estimator = "micro") 
+```
+
+### 6. Odpowiedź
+
+Estymator **makro** jest najbardziej wrażliwy na klasę mniejszościową, ponieważ przyznaje każdej klasie równą wagę (1/k). Jeśli model źle klasyfikuje małą klasę, jej niska metryka obniża średnią tak samo jak metryka klasy dominującej. Estymatory makro-ważony i mikro faworyzują klasy z większą liczbą obserwacji, więc słabsze wyniki na klasie mniejszościowej mają mniejszy wpływ na końcowy wynik.
+
+## Zadanie 2
+
+### 1. Rozkład klas
+
+```{r}
+set.seed(2026)
+
+hpc <- hpc_data %>%
+  select(class, compounds, iterations, num_pending, hour, day) %>%
+  mutate(day = factor(day))
+
+hpc %>%
+  count(class) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+
+split_hpc <- initial_split(hpc, prop = 0.7, strata = class)
+train_hpc <- training(split_hpc)
+test_hpc <- testing(split_hpc)
+
+# proporcje w zbiorach
+train_hpc %>%
+  count(class) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+
+test_hpc %>%
+  count(class) %>%
+  mutate(prop = round(n / sum(n) * 100, 1))
+```
+
+Klasa *L* stanowi bardzo mały odsetek danych. Losowanie warstwowe zapewnia proporcjonalną reprezentację we wszystkich zbiorach.
+
+### 2. Budowa dwóch modeli
+
+```{r}
+# wieloklasowa regresja logistyczna
+multinom_spec2 <- multinom_reg() %>%
+  set_engine("nnet") %>%
+  set_mode("classification")
+
+multinom_fit2 <- multinom_spec2 %>%
+  fit(class ~ ., data = train_hpc)
+
+pred_multinom <- test_hpc %>%
+  select(class) %>%
+  bind_cols(predict(multinom_fit2, new_data = test_hpc)) %>%
+  bind_cols(predict(multinom_fit2, new_data = test_hpc, type = "prob")) %>%
+  mutate(model = "multinom")
+
+# kNN
+knn_spec <- nearest_neighbor(neighbors = 11) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec <- recipe(class ~ ., data = train_hpc) %>%
+  step_normalize(all_numeric_predictors())
+
+knn_wf <- workflow() %>%
+  add_recipe(knn_rec) %>%
+  add_model(knn_spec)
+
+knn_fit <- knn_wf %>% fit(data = train_hpc)
+
+pred_knn <- test_hpc %>%
+  select(class) %>%
+  bind_cols(predict(knn_fit, new_data = test_hpc)) %>%
+  bind_cols(predict(knn_fit, new_data = test_hpc, type = "prob")) %>%
+  mutate(model = "knn")
+```
+
+### 3. Wieloklasowa krzywa ROC i AUC
+
+```{r}
+# ROC – multinom
+pred_multinom %>%
+  roc_curve(truth = class, .pred_VF:.pred_L) %>%
+  autoplot() +
+  labs(title = "ROC – regresja logistyczna (multinom)")
+
+# ROC – kNN
+pred_knn %>%
+  roc_curve(truth = class, .pred_VF:.pred_L) %>%
+  autoplot() +
+  labs(title = "ROC – kNN")
+
+# AUC
+pred_all_hpc <- bind_rows(pred_multinom, pred_knn)
+
+pred_all_hpc %>%
+  group_by(model) %>%
+  roc_auc(truth = class, .pred_VF:.pred_L)
+```
+
+### 4. Metryki z estymatorami macro i macro_weighted
+
+```{r}
+hpc_metrics <- metric_set(accuracy, bal_accuracy, precision, f_meas)
+
+# macro
+pred_all_hpc %>%
+  group_by(model) %>%
+  hpc_metrics(truth = class,
+              estimate = .pred_class,
+              estimator = "macro") %>%
+  arrange(.metric, model)
+
+# macro_weighted
+pred_all_hpc %>%
+  group_by(model) %>%
+  hpc_metrics(truth = class,
+              estimate = .pred_class,
+              estimator = "macro_weighted") %>%
+  arrange(.metric, model)
+```
+
+### 5. Wnioski
+
+```{r}
+# macierze klasyfikacji dla pogłębienia analizy klasy L
+pred_multinom %>%
+  conf_mat(truth = class, estimate = .pred_class)
+
+pred_knn %>%
+  conf_mat(truth = class, estimate = .pred_class)
+```
+
+Porównując wyniki: `accuracy` i metryki `macro_weighted` mogą faworyzować model dobrze klasyfikujący dominującą klasę *VF*. Natomiast `bal_accuracy` i metryki `macro` lepiej eksponują słabość modeli wobec klasy *L*. Model, który osiąga wyższą `bal_accuracy`, lepiej radzi sobie z klasą mniejszościową, nawet jeśli jego ogólna `accuracy` jest nieco niższa.
+
+## Zadanie 3
+
+### 1. Trzy modele
+
+```{r}
+set.seed(2026)
+
+peng3 <- penguins %>%
+  drop_na() %>%
+  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+split_peng3 <- initial_split(peng3, prop = 0.7, strata = species)
+train_peng3 <- training(split_peng3)
+test_peng3 <- testing(split_peng3)
+
+# model 1: wieloklasowa regresja logistyczna
+multinom_spec3 <- multinom_reg() %>%
+  set_engine("nnet") %>%
+  set_mode("classification")
+
+multinom_fit3 <- multinom_spec3 %>%
+  fit(species ~ ., data = train_peng3)
+
+pred_mn3 <- test_peng3 %>%
+  select(species) %>%
+  bind_cols(predict(multinom_fit3, new_data = test_peng3)) %>%
+  mutate(model = "multinom")
+
+# model 2: kNN ze standaryzacją
+knn_spec3 <- nearest_neighbor(neighbors = 7) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+knn_rec3 <- recipe(species ~ ., data = train_peng3) %>%
+  step_normalize(all_numeric_predictors())
+
+knn_wf3 <- workflow() %>%
+  add_recipe(knn_rec3) %>%
+  add_model(knn_spec3)
+
+knn_fit3 <- knn_wf3 %>% fit(data = train_peng3)
+
+pred_knn3 <- test_peng3 %>%
+  select(species) %>%
+  bind_cols(predict(knn_fit3, new_data = test_peng3)) %>%
+  mutate(model = "knn")
+
+# model 3: drzewo klasyfikacyjne
+tree_spec3 <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+tree_fit3 <- tree_spec3 %>%
+  fit(species ~ ., data = train_peng3)
+
+pred_tree3 <- test_peng3 %>%
+  select(species) %>%
+  bind_cols(predict(tree_fit3, new_data = test_peng3)) %>%
+  mutate(model = "tree")
+```
+
+### 2. Macierze klasyfikacji i metryki per klasa
+
+```{r}
+cm_mn <- pred_mn3 %>% conf_mat(truth = species, estimate = .pred_class)
+cm_knn <- pred_knn3 %>% conf_mat(truth = species, estimate = .pred_class)
+cm_tree <- pred_tree3 %>% conf_mat(truth = species, estimate = .pred_class)
+
+cm_mn
+summary(cm_mn)
+
+cm_knn
+summary(cm_knn)
+
+cm_tree
+summary(cm_tree)
+```
+
+### 3–4. Własny zestaw metryk i tabela zbiorcza
+
+```{r}
+my_metric_set <- metric_set(accuracy, bal_accuracy, f_meas, kap, mcc)
+
+pred_all3 <- bind_rows(pred_mn3, pred_knn3, pred_tree3)
+
+pred_all3 %>%
+  group_by(model) %>%
+  my_metric_set(truth = species,
+                estimate = .pred_class,
+                estimator = "macro_weighted") %>%
+  arrange(.metric, desc(.estimate))
+```
+
+### 5. Odpowiedź
+
+Ranking modeli może się zmieniać w zależności od metryki. Na przykład model o wyższym `accuracy` niekoniecznie będzie liderem pod kątem `mcc` czy `kap`, zwłaszcza gdy klasy są niezbalansowane.
+
+-   **Przy danych zbalansowanych** (jak `penguins`) `accuracy` i `f_meas` z estymatorem `macro` dają wiarygodne wyniki, bo każda klasa ma porównywalną wagę.
+-   **Przy danych niezbalansowanych** lepiej sprawdzają się `bal_accuracy`, `kap` lub `mcc`, ponieważ nie są zdominowane przez klasę większościową i karają modele, które ignorują klasy mniejszościowe.

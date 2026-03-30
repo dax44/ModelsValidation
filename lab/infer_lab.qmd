@@ -1,0 +1,99 @@
+---
+title: "Laboratorium: modele inferencyjne"
+subtitle: "Bootstrap i testy permutacyjne"
+author: "Dariusz Majerek"
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+W zadaniach korzystaj z pakietu `infer`. W każdym przykładzie:
+
+-   oblicz statystykę z próby,
+-   zbuduj rozkład zgodny z hipotezą zerową,
+-   zwizualizuj wynik,
+-   wyznacz wartość `p`,
+-   zapisz końcowy wniosek dla poziomu istotności `0.05`.
+
+Dla powtarzalności ustaw `set.seed(2026)` i użyj co najmniej `2000` replikacji.
+
+```{r}
+#| include: false
+library(tidymodels)
+library(infer)
+```
+
+## Zadanie 1. Hipoteza parametryczna jednopróbkowa
+
+W zbiorze `gss` z pakietu `infer` znajduje się zmienna `hours`, oznaczająca
+liczbę godzin pracy tygodniowo. Po odrzuceniu braków danych sprawdź, czy
+przeciętny tygodniowy czas pracy przekracza 40 godzin. Zastosuj test
+bootstrapowy dla średniej.
+
+Hipotezy:
+
+\begin{align}
+H_0: \mu &= 40\\
+H_1: \mu &> 40
+\end{align}
+
+Dodatkowo porównaj wynik z klasycznym testem `t.test()`.
+
+## Zadanie 2. Hipoteza parametryczna dwupróbkowa
+
+W zbiorze `ToothGrowth` sprawdź, czy średnia długość zębów (`len`) różni się
+pomiędzy grupami suplementacji witaminy C (`supp`).
+
+Zastosuj test permutacyjny dla różnicy średnich.
+
+Hipotezy:
+
+\begin{align}
+H_0: \mu_{OJ} &= \mu_{VC}\\
+H_1: \mu_{OJ} &\neq \mu_{VC}
+\end{align}
+
+Oprócz wartości `p` oceń, czy wynik daje jednoznaczne podstawy do odrzucenia
+hipotezy zerowej.
+
+## Zadanie 3. Hipoteza nieparametryczna jednopróbkowa
+
+W zbiorze `faithful` znajduje się zmienna `waiting`, oznaczająca czas
+oczekiwania na kolejny wybuch gejzeru Old Faithful. Rozkład tej zmiennej jest
+daleki od normalnego, dlatego interesuje nas mediana, a nie średnia.
+
+Sprawdź, czy mediana czasu oczekiwania jest równa 75 minut.
+
+\begin{align}
+H_0: m &= 75\\
+H_1: m &\neq 75
+\end{align}
+
+W tym zadaniu:
+
+-   wykonaj bootstrapowy test mediany,
+-   wyznacz 95% przedział ufności dla mediany,
+-   oceń, czy wynik testu i przedział ufności prowadzą do zgodnych wniosków.
+
+## Zadanie 4. Hipoteza nieparametryczna dla zależności dwóch zmiennych ilościowych
+
+W zbiorze `cars` sprawdź, czy wraz ze wzrostem prędkości samochodu (`speed`)
+rośnie droga hamowania (`dist`).
+
+Zamiast polegać wyłącznie na klasycznym modelu liniowym, użyj testu
+permutacyjnego dla współczynnika kierunkowego prostej regresji.
+
+\begin{align}
+H_0: \beta_1 &= 0\\
+H_1: \beta_1 &> 0
+\end{align}
+
+W tym zadaniu:
+
+-   oblicz obserwowane nachylenie prostej regresji,
+-   zbuduj permutacyjny rozkład nachyleń pod `H_0`,
+-   porównaj wynik z klasycznym testem istotności współczynnika w `lm()`.
