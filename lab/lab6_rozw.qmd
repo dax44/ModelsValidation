@@ -1,194 +1,309 @@
 ---
 title: "Rozwiązania do zadań z lab 6"
-author: Dariusz Majerek
+subtitle: "Praca w tidymodels"
+author: "Dariusz Majerek"
 date: today
-execute: 
+format: html
+execute:
   warning: false
 embed-resources: true
-editor_options: 
+editor: visual
+editor_options:
   chunk_output_type: console
 ---
 
-## Zadanie 1
-
-0.  Eksploracja danych
-
 ```{r}
 library(tidymodels)
-diamonds %>% 
-  ggplot(aes(price)) +
-  geom_histogram(bins = 30, color = "white") +
-  labs(title = "Histogram ceny diamentów",
-       x = "Cena diamentów",
-       y = "Liczba diamentów")
-```
+library(workflowsets)
+data(ames, package = "modeldata")
 
-Mocna asymetria prawostronna każe przeprowadzić najpierw transformację zmiennej
-celu.
+set.seed(2026)
 
-1.  Podział danych
+ames <- ames %>%
+  mutate(Sale_Price = log10(Sale_Price))
 
-```{r}
-set.seed(44)
-split <- initial_split(diamonds, prop = 0.7, strata = price)
+split <- initial_split(ames, prop = 0.8, strata = Sale_Price)
 train <- training(split)
 test <- testing(split)
-```
 
-2.  Definicja modelu
-
-```{r}
-lr_model <- linear_reg() %>%
+lm_spec <- linear_reg() %>%
   set_engine("lm")
 ```
 
-3.  Utworzenie przepływu pracy
+## Zadanie 1. Jeden model, dwa sposoby dopasowania
+
+Najpierw definiujemy model i sprawdzamy, jak `parsnip` tłumaczy go na
+wywołanie silnika `lm`.
 
 ```{r}
-lr_workflow <- workflow() %>%
-  add_model(lr_model) %>%
-  add_formula(price ~ carat + depth)
+lm_spec %>%
+  translate()
 ```
 
-4.  Trenowanie modelu i predykcja
+Teraz dopasowujemy model na dwa sposoby:
+przez formułę i przez osobne obiekty `x` oraz `y`.
 
 ```{r}
-lr_fit <- lr_workflow %>%
-  fit(data = train)
+lm_form_fit <- lm_spec %>%
+  fit(Sale_Price ~ Longitude + Latitude, data = train)
 
-lr_fit %>% 
-  extract_fit_parsnip() %>% 
-  tidy()
-
-predictions <- lr_fit %>%
-  predict(new_data = test) %>%
-  bind_cols(test) %>%
-  select(.pred, price)
-
-predictions
+lm_xy_fit <- lm_spec %>%
+  fit_xy(
+    x = train %>% select(Longitude, Latitude),
+    y = train %>% pull(Sale_Price)
+  )
 ```
 
-5.  Ocena dopasowania modelu
+Porównajmy współczynniki obu modeli.
 
 ```{r}
-predictions %>%
-  metrics(truth = price, estimate = .pred)
+tidy(lm_form_fit)
+tidy(lm_xy_fit)
 ```
 
-Dopasowanie modelu w kontekście miar wygląda przyzwoicie. Choć poniższy wykres
-pokazuje, że model jest daleki od doskonałości, ponieważ niedoszacowuje
-wartości dla tańszych diamentów.
+Współczynniki powinny być takie same, ponieważ oba modele opisują dokładnie tę
+samą zależność.
 
-6.  Wykres `predicted vs. observed`
+Sprawdźmy jeszcze predykcje dla pierwszych 8 obserwacji testowych.
 
 ```{r}
-predictions %>%
-  ggplot(aes(x = price, y = .pred)) +
-  geom_point(alpha = 0.1) +
-  geom_abline(slope = 1, intercept = 0) +
-  labs(title = "Predykcja ceny diamentów",
-       x = "Cena rzeczywista",
-       y = "Cena przewidywana")
+pred_form <- predict(lm_form_fit, new_data = test %>% slice(1:8))
+
+pred_xy <- predict(
+  lm_xy_fit,
+  new_data = test %>% slice(1:8) %>% select(Longitude, Latitude)
+)
+
+bind_cols(
+  test %>% slice(1:8) %>% select(Sale_Price, Longitude, Latitude),
+  pred_form %>% rename(pred_form = .pred),
+  pred_xy %>% rename(pred_xy = .pred)
+)
 ```
 
-## Zadanie 2
-
-1.  Utworzenie procedury przetwarzania danych
+Możemy dodatkowo sprawdzić maksymalną różnicę bezwzględną między predykcjami.
 
 ```{r}
-diamonds_recipe <- recipe(price ~ carat + depth, data = train) %>%
-  step_log(price, skip = TRUE, role = "outcome") %>%
-  step_normalize(carat)
-
-diamonds_recipe
+max(abs(pred_form$.pred - pred_xy$.pred))
 ```
 
-2.  Połączenie receptury z modelem
+Różnica wynosi zero, więc oba sposoby dopasowania są równoważne.
+
+Dla pierwszych 5 obserwacji wyznaczmy jeszcze przedziały predykcji.
 
 ```{r}
-diamonds_workflow <- workflow() %>%
-  add_model(lr_model) %>%
-  add_recipe(diamonds_recipe)
-
-diamonds_workflow
+test %>%
+  slice(1:5) %>%
+  select(Sale_Price, Longitude, Latitude) %>%
+  bind_cols(predict(lm_form_fit, new_data = test %>% slice(1:5))) %>%
+  bind_cols(predict(lm_form_fit, new_data = test %>% slice(1:5), type = "pred_int"))
 ```
 
-3.  Trenowanie przepływu
+Oba sposoby dopasowania dają ten sam model, a `parsnip` ujednolica zarówno
+uczenie, jak i predykcję.
+
+## Zadanie 2. Modyfikowanie przepływu bez budowania go od zera
+
+Tworzymy bazowy przepływ z dwoma predyktorami przestrzennymi.
 
 ```{r}
-diamonds_fit <- diamonds_workflow %>%
-  fit(data = train)
+loc_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_formula(Sale_Price ~ Longitude + Latitude)
 
-diamonds_fit %>% 
-  extract_recipe(estimated = TRUE) 
+loc_wf
 ```
 
-4.  Porównanie wyników
+Pierwszy wariant to model bazowy.
 
 ```{r}
-predictions2 <- diamonds_fit %>% 
-  predict(new_data = test) %>% 
-  bind_cols(price = test$price) %>% 
-  mutate(.pred = exp(.pred))
+coords_last <- last_fit(loc_wf, split)
 
-predictions2
+collect_metrics(coords_last)
 ```
 
+Drugi wariant powstaje przez modyfikację tej samej struktury workflow.
+
 ```{r}
-bind_cols(mod1 = predictions[,1]$.pred, 
-          mod2 = predictions2$.pred, 
-          price = predictions2$price) %>% 
-  pivot_longer(cols = mod1:mod2, names_to = "model", values_to = "pred") %>% 
-  group_by(model) %>%
-  metrics(truth = price, estimate = pred)
+lon_wf <- loc_wf %>%
+  update_formula(Sale_Price ~ Longitude)
+
+lon_last <- last_fit(lon_wf, split)
+
+collect_metrics(lon_last)
 ```
 
-::: callout-tip
-W celu uniknięcia problemów przy predykcji z użyciem `step_log()` można wykonać
-transforamcję zmiennej zależnej (`price`) poza przepisem *preprocessingu*.
-:::
+Trzeci wariant usuwa formułę i przekazuje predyktory jawnie.
 
 ```{r}
-train <- train %>% 
-  mutate(price = log(price))
-test <- test %>%
-  mutate(price = log(price))
-recipe <- recipe(price ~ carat + depth, data = train) %>%
-  step_normalize(carat)
+vars_wf <- loc_wf %>%
+  remove_formula() %>%
+  add_variables(
+    outcome = Sale_Price,
+    predictors = c(Longitude, Latitude)
+  )
 
-diamonds_workflow <- workflow() %>%
-  add_model(lr_model) %>%
-  add_recipe(recipe)
+vars_last <- last_fit(vars_wf, split)
 
-diamonds_workflow
+collect_metrics(vars_last)
+```
 
-diamonds_fit <- diamonds_workflow %>%
-  fit(data = train)
+Zbierzmy metryki razem.
 
-diamonds_fit %>% 
+```{r}
+bind_rows(
+  collect_metrics(coords_last) %>% mutate(model = "coords_formula"),
+  collect_metrics(lon_last) %>% mutate(model = "longitude_only"),
+  collect_metrics(vars_last) %>% mutate(model = "coords_variables")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+Widzimy, że:
+
+-   model z dwoma predyktorami przestrzennymi wypada lepiej niż model tylko z
+    `Longitude`,
+-   przejście z formuły na `add_variables()` nie zmienia wyniku, bo informacja
+    przekazana do modelu jest merytorycznie taka sama,
+-   `workflow` pozwala więc modyfikować sposób specyfikacji modelu bez
+    przebudowy całej procedury.
+
+## Zadanie 3. Przepis na preprocessing
+
+Teraz przenosimy preprocessing do `recipe`, tak aby był częścią workflow i nie
+powodował wycieku informacji.
+
+```{r}
+ames_rec <- recipe(
+  Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+  data = train
+) %>%
+  step_log(Gr_Liv_Area, base = 10) %>%
+  step_dummy(all_nominal_predictors())
+
+ames_rec
+```
+
+Łączymy przepis z tym samym modelem liniowym.
+
+```{r}
+rec_wf <- workflow() %>%
+  add_model(lm_spec) %>%
+  add_recipe(ames_rec)
+
+rec_last <- last_fit(rec_wf, split)
+```
+
+Ocena modelu na zbiorze testowym:
+
+```{r}
+collect_metrics(rec_last)
+```
+
+Dla porównania zbierzmy metryki modelu bazowego z zadania 2 i modelu z
+recepturą.
+
+```{r}
+bind_rows(
+  collect_metrics(coords_last) %>% mutate(model = "coords_formula"),
+  collect_metrics(rec_last) %>% mutate(model = "recipe_model")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+Model oparty na recepturze jest wyraźnie lepszy, ponieważ korzysta z bardziej
+informacyjnych predyktorów niż same współrzędne geograficzne.
+
+Możemy podejrzeć oszacowaną recepturę.
+
+```{r}
+estimated_recipe <- rec_last %>%
+  extract_workflow() %>%
   extract_recipe(estimated = TRUE)
 
-predictions2 <- diamonds_fit %>% 
-  predict(new_data = test) %>% 
-  bind_cols(price = test$price) %>% 
-  mutate(across(everything(), exp))
-
-predictions2 %>% 
-  ggplot(aes(x = price, y = .pred)) +
-  geom_point(alpha = 0.1) +
-  geom_abline(slope = 1, intercept = 0) +
-  labs(title = "Predykcja ceny diamentów",
-       x = "Cena rzeczywista",
-       y = "Cena przewidywana")
-
-bind_cols(mod1 = predictions[,1]$.pred, 
-          mod2 = predictions2$.pred, 
-          price = predictions2$price) %>% 
-  pivot_longer(cols = mod1:mod2, names_to = "model", values_to = "pred") %>% 
-  group_by(model) %>%
-  metrics(truth = price, estimate = pred)
+estimated_recipe
 ```
 
-::: callout-tip
-Przekształcenie logarytmiczne jednocześnie zastosowane do zmiennej zależnej `price` i niezależnej `carat` daje dużo lepsze rezultaty dopasowania modelu.
-:::
+Zobaczmy też kroki recipe w zwartej postaci.
+
+```{r}
+tidy(estimated_recipe)
+```
+
+Na końcu sprawdźmy kilka predykcji.
+
+```{r}
+collect_predictions(rec_last) %>%
+  select(Sale_Price, .pred) %>%
+  slice(1:8)
+```
+
+Logarytmowanie i kodowanie zmiennych jakościowych zostało oszacowane wyłącznie
+na zbiorze treningowym, a potem powtórzone automatycznie przy predykcji na
+zbiorze testowym.
+
+## Zadanie 4. Porównanie wielu wariantów przez `workflow_set()`
+
+Budujemy zestaw przepływów różniących się tylko sposobem przekazania
+predyktorów.
+
+```{r}
+location_preproc <- list(
+  longitude = Sale_Price ~ Longitude,
+  latitude = Sale_Price ~ Latitude,
+  coords = Sale_Price ~ Longitude + Latitude,
+  neighborhood = Sale_Price ~ Neighborhood
+)
+
+location_wfs <- workflow_set(
+  preproc = location_preproc,
+  models = list(lm = lm_spec)
+)
+
+location_wfs
+```
+
+Dopasowujemy wszystkie workflow na tych samych danych treningowych.
+
+```{r}
+location_wfs <- location_wfs %>%
+  mutate(
+    fit = map(info, ~ fit(.x$workflow[[1]], data = train)),
+    preds = map(fit, ~ bind_cols(
+      test %>% select(Sale_Price),
+      predict(.x, new_data = test)
+    )),
+    metrics = map(preds, ~ metrics(.x, truth = Sale_Price, estimate = .pred))
+  )
+```
+
+Zestawmy wyniki.
+
+```{r}
+results_tbl <- location_wfs %>%
+  select(wflow_id, metrics) %>%
+  unnest(metrics) %>%
+  select(wflow_id, .metric, .estimate)
+
+results_tbl
+```
+
+Dla czytelności można też ustawić ranking po `rmse`.
+
+```{r}
+results_tbl %>%
+  filter(.metric == "rmse") %>%
+  arrange(.estimate)
+```
+
+W tym porównaniu najlepiej wypada zwykle model `neighborhood_lm` albo
+`coords_lm`, zależnie od podziału danych, ale sam ranking trzeba czytać łącznie
+z `rsq` i `mae`. W moim uruchomieniu najlepszy jest model z `Neighborhood`,
+ponieważ:
+
+-   ma najniższe `rmse`,
+-   ma także lepsze `mae` niż modele oparte tylko na współrzędnych,
+-   tłumaczy większą część zmienności ceny niż modele jednowymiarowe.
+
+To zadanie pokazuje praktyczną korzyść z `workflow_set()`: można porównać kilka
+wariantów preprocessingu bez ręcznego przepisywania niemal identycznego kodu.

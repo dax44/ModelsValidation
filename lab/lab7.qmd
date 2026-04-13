@@ -1,0 +1,97 @@
+---
+title: "Laboratorium 7"
+subtitle: "Kolejne zadania z tidymodels"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(workflowsets)
+data(ames, package = "modeldata")
+```
+
+## Zadanie 1. Dwa modele regresji, jeden interfejs
+
+Pracuj na danych `diamonds`, ale dla skrócenia czasu obliczeń wylosuj z nich
+`6000` obserwacji przy `set.seed(2026)`. Następnie:
+
+-   utwórz zmienną `log_price = log10(price)`,
+-   wykonaj podział `80/20` ze stratyfikacją względem `log_price`,
+-   zdefiniuj dwa modele regresyjne:
+    `linear_reg()` z silnikiem `lm` oraz `decision_tree()` z silnikiem `rpart`,
+-   dla obu modeli użyj tej samej formuły:
+    `log_price ~ carat + depth + table + cut`,
+-   wyświetl tłumaczenie obu modeli przez `translate()`,
+-   dopasuj oba modele na zbiorze treningowym,
+-   porównaj je na zbiorze testowym za pomocą `rmse`, `mae` i `rsq`,
+-   dla lepszego modelu narysuj wykres `predicted vs observed`.
+
+Wskazówka: porównanie będzie uczciwe tylko wtedy, gdy oba modele dostaną ten
+sam podział danych i tę samą specyfikację predyktorów.
+
+## Zadanie 2. Wieloklasowa klasyfikacja w workflow
+
+Na zbiorze `iris` zbuduj model klasyfikacyjny przewidujący `Species`.
+
+Wykonaj:
+
+-   podział `80/20` ze stratyfikacją względem `Species`,
+-   recepturę z normalizacją wszystkich numerycznych predyktorów,
+-   model `multinom_reg()` z silnikiem `nnet`,
+-   połączenie receptury i modelu w `workflow`,
+-   predykcję klas dla zbioru testowego,
+-   predykcję prawdopodobieństw klas dla tych samych obserwacji,
+-   macierz pomyłek oraz metrykę `accuracy`,
+-   krótką ocenę, która klasa sprawia modelowi najwięcej problemów.
+
+Wskazówka: domyślny typ predykcji nie zwraca prawdopodobieństw.
+
+## Zadanie 3. Interakcje w `recipe()`
+
+Na danych `ames`:
+
+-   przekształć `Sale_Price` do skali `log10`,
+-   wykonaj podział `80/20` ze stratyfikacją względem `Sale_Price`,
+-   zbuduj dwa przepisy dla modelu liniowego:
+    pierwszy bez interakcji, drugi z interakcją pomiędzy `Gr_Liv_Area` a
+    typem budynku `Bldg_Type`,
+-   w obu przepisach użyj predyktorów:
+    `Neighborhood`, `Gr_Liv_Area`, `Year_Built`, `Bldg_Type`,
+-   w obu zastosuj `step_log()` dla `Gr_Liv_Area`,
+    `step_other()` dla `Neighborhood` i `step_dummy()` dla predyktorów
+    jakościowych,
+-   w drugim przepisie dodaj krok `step_interact()`,
+-   dopasuj oba workflow i porównaj wyniki na zbiorze testowym,
+-   sprawdź oszacowaną recepturę modelu z interakcją.
+
+Wskazówka: jeśli interakcja ma dotyczyć zmiennych zero-jedynkowych powstałych z
+faktora, kolejność kroków w recipe ma znaczenie.
+
+## Zadanie 4. `workflow_set()` dla różnych modeli i preprocessingu
+
+Na tych samych danych `ames` co w zadaniu 3 porównaj cztery workflow powstałe z
+połączenia:
+
+-   dwóch wariantów preprocessingu:
+    prostej formuły `Sale_Price ~ Longitude + Latitude` oraz receptury z
+    `Neighborhood`, `Gr_Liv_Area`, `Year_Built`, `Bldg_Type`,
+-   dwóch modeli:
+    `linear_reg()` z silnikiem `lm` i `decision_tree()` z silnikiem `rpart`.
+
+Wykonaj:
+
+-   budowę `workflow_set()`,
+-   dopasowanie wszystkich workflow na zbiorze treningowym,
+-   predykcję na zbiorze testowym,
+-   porównanie `rmse`, `mae` i `rsq`,
+-   wskazanie najlepszego workflow wraz z krótkim uzasadnieniem.
+
+Wskazówka: w `workflow_set()` można zestawić listę preprocessorów z listą
+modeli i dopiero potem mapować dopasowanie.

@@ -6,3 +6,6 @@
 /models/
 .DS_Store
 lab/training_results.rda
+.skill_drafts/prepare-lab-exercises/SKILL.md
+.skill_drafts/prepare-lab-exercises/references/lab-patterns.md
+.skill_drafts/prepare-lab-exercises/references/project-map.md

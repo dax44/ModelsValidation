@@ -1,0 +1,301 @@
+---
+title: "Rozwiązania do zadań z lab 7"
+subtitle: "Kolejne zadania z tidymodels"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(workflowsets)
+data(ames, package = "modeldata")
+```
+
+## Zadanie 1. Dwa modele regresji, jeden interfejs
+
+Najpierw przygotowujemy próbkę danych i podział na zbiory.
+
+```{r}
+set.seed(2026)
+
+diamonds_small <- diamonds %>%
+  sample_n(6000) %>%
+  mutate(log_price = log10(price))
+
+diamonds_split <- initial_split(diamonds_small, prop = 0.8, strata = log_price)
+diamonds_train <- training(diamonds_split)
+diamonds_test <- testing(diamonds_split)
+```
+
+Definiujemy oba modele.
+
+```{r}
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+
+tree_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 8, min_n = 10) %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+```
+
+Sprawdzamy tłumaczenie modeli.
+
+```{r}
+lm_spec %>% translate()
+tree_spec %>% translate()
+```
+
+Dopasowujemy oba modele z tą samą formułą.
+
+```{r}
+lm_fit <- lm_spec %>%
+  fit(log_price ~ carat + depth + table + cut, data = diamonds_train)
+
+tree_fit <- tree_spec %>%
+  fit(log_price ~ carat + depth + table + cut, data = diamonds_train)
+```
+
+Porównujemy metryki na zbiorze testowym.
+
+```{r}
+lm_preds <- diamonds_test %>%
+  select(log_price) %>%
+  bind_cols(predict(lm_fit, new_data = diamonds_test))
+
+tree_preds <- diamonds_test %>%
+  select(log_price) %>%
+  bind_cols(predict(tree_fit, new_data = diamonds_test))
+
+bind_rows(
+  metrics(lm_preds, truth = log_price, estimate = .pred) %>% mutate(model = "linear_reg"),
+  metrics(tree_preds, truth = log_price, estimate = .pred) %>% mutate(model = "decision_tree")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+Dla lepszego modelu rysujemy wykres `predicted vs observed`.
+
+```{r}
+tree_preds %>%
+  ggplot(aes(x = log_price, y = .pred)) +
+  geom_point(alpha = 0.15) +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  labs(x = "Wartość obserwowana", y = "Predykcja")
+```
+
+Model drzewa daje tu wyraźnie lepsze dopasowanie niż prosty model liniowy.
+
+## Zadanie 2. Wieloklasowa klasyfikacja w workflow
+
+Przygotowujemy podział danych.
+
+```{r}
+set.seed(2026)
+
+iris_split <- initial_split(iris, prop = 0.8, strata = Species)
+iris_train <- training(iris_split)
+iris_test <- testing(iris_split)
+```
+
+Tworzymy recepturę oraz model.
+
+```{r}
+iris_rec <- recipe(Species ~ ., data = iris_train) %>%
+  step_normalize(all_numeric_predictors())
+
+multi_spec <- multinom_reg() %>%
+  set_engine("nnet") %>%
+  set_mode("classification")
+```
+
+Łączymy wszystko w workflow i uczymy model.
+
+```{r}
+iris_wf <- workflow() %>%
+  add_model(multi_spec) %>%
+  add_recipe(iris_rec)
+
+iris_fit <- fit(iris_wf, data = iris_train)
+```
+
+Predykcje klas i prawdopodobieństw:
+
+```{r}
+iris_preds <- iris_test %>%
+  select(Species) %>%
+  bind_cols(predict(iris_fit, new_data = iris_test)) %>%
+  bind_cols(predict(iris_fit, new_data = iris_test, type = "prob"))
+
+iris_preds %>%
+  slice(1:6)
+```
+
+Macierz pomyłek i accuracy:
+
+```{r}
+conf_mat(iris_preds, truth = Species, estimate = .pred_class)
+
+accuracy(iris_preds, truth = Species, estimate = .pred_class)
+```
+
+Najwięcej problemów sprawia zwykle rozróżnienie `versicolor` i `virginica`,
+podczas gdy `setosa` jest klasyfikowana bezbłędnie lub prawie bezbłędnie.
+
+## Zadanie 3. Interakcje w `recipe()`
+
+Przygotowujemy dane `ames`.
+
+```{r}
+set.seed(2026)
+
+ames_inter <- ames %>%
+  mutate(Sale_Price = log10(Sale_Price))
+
+ames_split <- initial_split(ames_inter, prop = 0.8, strata = Sale_Price)
+ames_train <- training(ames_split)
+ames_test <- testing(ames_split)
+```
+
+Tworzymy dwa przepisy: prostszy oraz z interakcją.
+
+```{r}
+simple_rec <- recipe(
+  Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+  data = ames_train
+) %>%
+  step_log(Gr_Liv_Area, base = 10) %>%
+  step_other(Neighborhood, threshold = 0.01) %>%
+  step_dummy(all_nominal_predictors())
+
+inter_rec <- recipe(
+  Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+  data = ames_train
+) %>%
+  step_log(Gr_Liv_Area, base = 10) %>%
+  step_other(Neighborhood, threshold = 0.01) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_"))
+```
+
+Specyfikujemy model i budujemy workflow.
+
+```{r}
+ames_lm_spec <- linear_reg() %>%
+  set_engine("lm")
+
+simple_fit <- workflow() %>%
+  add_model(ames_lm_spec) %>%
+  add_recipe(simple_rec) %>%
+  fit(data = ames_train)
+
+inter_fit <- workflow() %>%
+  add_model(ames_lm_spec) %>%
+  add_recipe(inter_rec) %>%
+  fit(data = ames_train)
+```
+
+Porównanie wyników na zbiorze testowym:
+
+```{r}
+simple_preds <- ames_test %>%
+  select(Sale_Price) %>%
+  bind_cols(predict(simple_fit, new_data = ames_test))
+
+inter_preds <- ames_test %>%
+  select(Sale_Price) %>%
+  bind_cols(predict(inter_fit, new_data = ames_test))
+
+bind_rows(
+  metrics(simple_preds, truth = Sale_Price, estimate = .pred) %>% mutate(model = "bez_interakcji"),
+  metrics(inter_preds, truth = Sale_Price, estimate = .pred) %>% mutate(model = "z_interakcja")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+Podejrzenie oszacowanej receptury dla modelu z interakcją:
+
+```{r}
+estimated_inter_rec <- inter_fit %>%
+  extract_recipe(estimated = TRUE)
+
+tidy(estimated_inter_rec)
+```
+
+Model z interakcją daje zwykle niewielką poprawę, co sugeruje, że wpływ
+powierzchni mieszkalnej może zależeć od typu budynku.
+
+## Zadanie 4. `workflow_set()` dla różnych modeli i preprocessingu
+
+Przygotowujemy dwa warianty preprocessingu oraz dwa modele.
+
+```{r}
+engineered_rec <- recipe(
+  Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+  data = ames_train
+) %>%
+  step_log(Gr_Liv_Area, base = 10) %>%
+  step_other(Neighborhood, threshold = 0.01) %>%
+  step_dummy(all_nominal_predictors())
+
+preproc_list <- list(
+  coords = Sale_Price ~ Longitude + Latitude,
+  engineered = engineered_rec
+)
+
+model_list <- list(
+  lm = linear_reg() %>% set_engine("lm"),
+  tree = decision_tree(cost_complexity = 0.001, tree_depth = 8, min_n = 10) %>%
+    set_engine("rpart") %>%
+    set_mode("regression")
+)
+```
+
+Tworzymy i dopasowujemy `workflow_set()`.
+
+```{r}
+wf_set <- workflow_set(
+  preproc = preproc_list,
+  models = model_list
+)
+
+wf_set <- wf_set %>%
+  mutate(
+    fit = map(info, ~ fit(.x$workflow[[1]], data = ames_train)),
+    preds = map(fit, ~ bind_cols(
+      ames_test %>% select(Sale_Price),
+      predict(.x, new_data = ames_test)
+    )),
+    metrics = map(preds, ~ metrics(.x, truth = Sale_Price, estimate = .pred))
+  )
+```
+
+Porównujemy wyniki.
+
+```{r}
+wf_results <- wf_set %>%
+  select(wflow_id, metrics) %>%
+  unnest(metrics) %>%
+  select(wflow_id, .metric, .estimate)
+
+wf_results
+```
+
+Ranking po `rmse`:
+
+```{r}
+wf_results %>%
+  filter(.metric == "rmse") %>%
+  arrange(.estimate)
+```
+
+Najlepszy workflow wykorzystuje zwykle bogatszy preprocessing i model liniowy,
+czyli `engineered_lm`. W tym porównaniu daje on najniższy błąd i najwyższe
+`rsq`, więc jest najrozsądniejszym wyborem spośród czterech analizowanych
+wariantów.
