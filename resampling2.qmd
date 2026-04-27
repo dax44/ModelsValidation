@@ -416,6 +416,213 @@ Istnieją dwie różne konfiguracje tej metody:
     zestawów danych, blok przyrostowy może wynosić tydzień lub miesiąc zamiast
     dnia.
 
+W pakiecie `tidymodels` podział szeregów czasowych przygotowuje się głównie za pomocą funkcji z pakietu `rsample`. Warto rozróżnić dwa poziomy pracy z danymi czasowymi. Pierwszy to jednorazowy podział na zbiór uczący i testowy, realizowany przez `initial_time_split()`. Drugi to wielokrotna walidacja czasowa, realizowana przez `sliding_window()`, `sliding_index()` albo `sliding_period()`. Starsza funkcja `rolling_origin()` nadal istnieje, ale jest oznaczona jako zastąpiona przez rodzinę `sliding_*`, która daje większą kontrolę nad oknami czasowymi.
+
+W dalszych przykładach załóżmy, że dysponujemy ramką danych `df` z kolumną czasu `date` oraz zmienną objaśnianą `y`.
+
+```{r}
+#| eval: false
+library(tidymodels)
+library(lubridate)
+
+df <- df |>
+  arrange(date)
+```
+
+Sortowanie jest krytyczne. Funkcje czasowe zakładają, że dane są uporządkowane chronologicznie. W przypadku `sliding_index()` indeks musi być rosnący; może mieć powtórzone wartości, ale nie powinien zawierać braków danych.
+
+Najprostszy schemat to pojedynczy podział chronologiczny na zbiór uczący i testowy. `initial_time_split()` działa podobnie do `initial_split()`, ale zamiast losować obserwacje, wybiera pierwsze `prop` obserwacji do treningu, a najnowsze dane zostawia do testu.
+
+```{r}
+#| eval: false
+set.seed(123)
+split_time <- initial_time_split(df, prop = 0.8)
+
+train_data <- training(split_time)
+test_data  <- testing(split_time)
+```
+
+Ten schemat odpowiada sytuacji:
+
+$$\text{train} = \{y_1,\ldots,y_T\},
+\qquad
+\text{test} = \{y_{T+1},\ldots,y_N\}.$$
+
+Jest to dobry wybór, gdy chcemy uzyskać jedną końcową ocenę jakości modelu na najnowszym fragmencie szeregu. Nie jest to jednak dobra procedura do intensywnego strojenia hiperparametrów, ponieważ łatwo wtedy wielokrotnie "podglądać" zbiór testowy.
+
+Jeżeli potrzebny jest osobny zbiór uczący, walidacyjny i testowy, można użyć podziału dwustopniowego. Najpierw wydzielamy końcowy test, a potem z części treningowej wydzielamy walidację.
+
+```{r}
+#| eval: false
+set.seed(123)
+split_test <- initial_time_split(df, prop = 0.85)
+
+train_valid <- training(split_test)
+test_data   <- testing(split_test)
+
+split_valid <- initial_time_split(train_valid, prop = 0.80)
+
+train_data <- training(split_valid)
+valid_data <- testing(split_valid)
+```
+
+Przy takim ustawieniu około 68% danych trafia do treningu, 17% do walidacji i 15% do testu, ponieważ
+
+$$0.85 \cdot 0.80 = 0.68.$$
+
+Zbiór testowy zostaje nietknięty do samego końca. Walidacja służy do strojenia modelu, a test do końcowej oceny.
+
+Jeżeli chcemy przygotować walidację kroczącą (ang. *walk-forward validation*), lepiej użyć funkcji `sliding_window()`, `sliding_index()` albo `sliding_period()`. Funkcja `sliding_window()` operuje na numerach wierszy, więc nadaje się do regularnych szeregów, na przykład wtedy, gdy każdy wiersz oznacza kolejną godzinę albo kolejny dzień bez luk. Funkcja `sliding_index()` używa jawnej kolumny indeksu, na przykład typu `Date` lub `POSIXct`, więc nadaje się także do szeregów nieregularnych. Funkcja `sliding_period()` najpierw grupuje dane według okresu, na przykład miesiąca albo roku, i dopiero potem tworzy podziały.
+
+Przykład walidacji kroczącej po numerach wierszy:
+
+```{r}
+#| eval: false
+resamples_sliding <- sliding_window(
+  data = df,
+  lookback = 99,
+  assess_start = 1,
+  assess_stop = 10,
+  complete = TRUE,
+  step = 10
+)
+
+resamples_sliding
+```
+
+Parametr `lookback = 99` oznacza, że zbiór uczący zawiera bieżącą obserwację i 99 wcześniejszych obserwacji, czyli razem 100 obserwacji. `assess_start = 1` oznacza, że test zaczyna się jedną obserwację po końcu treningu. `assess_stop = 10` oznacza, że test obejmuje obserwacje od 1 do 10 kroków po końcu treningu. `step = 10` przerzedza kolejne okna co 10 pozycji, więc zbiory testowe nie powinny nachodzić na siebie, jeżeli horyzont testowy ma długość 10.
+
+Ideowo otrzymujemy schemat:
+
+$$\text{fold 1: train} = \{1,\ldots,100\},
+\qquad
+\text{test} = \{101,\ldots,110\},$$
+
+$$\text{fold 2: train} = \{11,\ldots,110\},
+\qquad
+\text{test} = \{111,\ldots,120\}.$$
+
+Jeżeli ustawimy `step = 1`, kolejne foldy będą przesuwane o jedną obserwację i zbiory testowe będą się silnie nakładać. To nie jest wyciek danych, ale daje silnie skorelowane błędy testowe. Jeżeli zależy nam na bardziej niezależnej ocenie, zwykle lepiej ustawić `step` równy długości horyzontu testowego.
+
+Dla okna rozszerzającego (ang. *expanding window*) ustawiamy `lookback = Inf`. W takim schemacie zbiór uczący rośnie wraz z kolejnymi foldami.
+
+```{r}
+#| eval: false
+resamples_expanding <- sliding_window(
+  data = df,
+  lookback = Inf,
+  assess_start = 1,
+  assess_stop = 10,
+  complete = TRUE,
+  skip = 99,
+  step = 10
+)
+```
+
+Parametr `skip = 99` pomija pierwsze resamplingi, które miałyby bardzo małe zbiory uczące. Otrzymujemy schemat typu:
+
+$$\text{fold 1: train} = \{1,\ldots,100\},
+\qquad
+\text{test} = \{101,\ldots,110\},$$
+
+$$\text{fold 2: train} = \{1,\ldots,110\},
+\qquad
+\text{test} = \{111,\ldots,120\}.$$
+
+Ten wariant jest sensowny, gdy zakładamy, że cała historia pozostaje informacyjna. Jeżeli szereg ma silny dryf, zmianę reżimu albo zmieniającą się sezonowość, okno przesuwne z ustaloną długością bywa bezpieczniejsze.
+
+Jeżeli mamy kolumnę daty i chcemy, aby długości okien były wyrażone w czasie, używamy `sliding_index()`. Jest to bardziej naturalne dla szeregów nieregularnych lub dla okien typu "ostatnie 365 dni".
+
+```{r}
+#| eval: false
+resamples_index <- sliding_index(
+  data = df,
+  index = date,
+  lookback = years(1),
+  assess_start = days(1),
+  assess_stop = days(30),
+  complete = TRUE,
+  step = 30
+)
+```
+
+Ten kod oznacza: dla każdego punktu odniesienia ucz model na ostatnim roku danych, a oceniaj na kolejnych 30 dniach. `step = 30` przerzedza resamplingi, aby nie tworzyć oceny codziennie, tylko co 30 wyznaczonych indeksów. Trzeba jednak pamiętać, że `step` działa na sekwencji indeksów resamplingowych, a nie zawsze jako dokładnie 30 dni kalendarzowych.
+
+Jeżeli dane są dzienne, ale chcemy dzielić je miesiącami, zwykle wygodniejsze jest `sliding_period()`. Funkcja ta najpierw dzieli indeks na okresy, a potem tworzy okna po tych okresach.
+
+```{r}
+#| eval: false
+resamples_monthly <- sliding_period(
+  data = df,
+  index = date,
+  period = "month",
+  lookback = 11,
+  assess_start = 1,
+  assess_stop = 1,
+  complete = TRUE,
+  step = 1
+)
+```
+
+Interpretacja jest następująca: uczymy model na bieżącym miesiącu oraz 11 poprzednich miesiącach, czyli łącznie na 12 miesiącach, a oceniamy na następnym miesiącu. To naturalny schemat, jeżeli model ma być aktualizowany miesięcznie. Dla horyzontu kwartalnego można użyć:
+
+```{r}
+#| eval: false
+resamples_quarterly <- sliding_period(
+  data = df,
+  index = date,
+  period = "month",
+  lookback = 11,
+  assess_start = 1,
+  assess_stop = 3,
+  complete = TRUE,
+  step = 3
+)
+```
+
+W takim układzie model jest uczony na 12 miesiącach i oceniany na następnych 3 miesiącach, a kolejne okna są przesuwane co kwartał.
+
+Przerwę między treningiem a testem, nazywaną czasem *gap* albo *embargo*, wprowadzamy przez zwiększenie `assess_start`. Dla danych dziennych i `sliding_window()` może to wyglądać tak:
+
+```{r}
+#| eval: false
+resamples_gap <- sliding_window(
+  data = df,
+  lookback = 99,
+  assess_start = 8,
+  assess_stop = 17,
+  complete = TRUE,
+  step = 10
+)
+```
+
+Tutaj trening kończy się w chwili $t$, obserwacje od $t+1$ do $t+7$ są pomijane, a test zaczyna się od $t+8$ i trwa do $t+17$:
+
+$$\text{train} = \{y_{t-99},\ldots,y_t\},
+\qquad
+\text{gap} = \{y_{t+1},\ldots,y_{t+7}\},
+\qquad
+\text{test} = \{y_{t+8},\ldots,y_{t+17}\}.$$
+
+Analogiczny schemat dla indeksu daty:
+
+```{r}
+#| eval: false
+resamples_index_gap <- sliding_index(
+  data = df,
+  index = date,
+  lookback = years(1),
+  assess_start = days(8),
+  assess_stop = days(37),
+  complete = TRUE,
+  step = 30
+)
+```
+
+Przerwa między treningiem i testem jest przydatna, gdy cechy są obliczane z długich okien, zmienna wynikowa jest zdefiniowana jako zdarzenie w przyszłym okresie albo obserwacje są bardzo silnie autokorelacyjne.
+
+Opisując cele podziału danych, wyróżniliśmy zbiór testowy jako dane, które powinny być wykorzystane do właściwej oceny działania modelu na modelu końcowym (modelach). To rodzi pytanie: "Jak możemy określić, co jest najlepsze, jeśli nie mierzymy wydajności aż do zbioru testowego?".
+
 ## Oszacowanie dopasowania z wykorzystaniem resamplingu
 
 Każda z metod *resamplingu* omówionych w tym rozdziale może być wykorzystana do
