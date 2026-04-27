@@ -1,0 +1,113 @@
+---
+title: "Laboratorium 9"
+subtitle: "Przepisy i resampling"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W zadaniach korzystaj z ograniczonych wersji zbiorów danych wskazanych w
+poleceniach. Ustawiaj `set.seed(2026)` przed każdym losowaniem.
+:::
+
+## Zadanie 1. Role zmiennych, kroki wierszowe i pomijanie kroków
+
+Na zbiorze `Sacramento` przygotuj model regresji liniowej przewidujący cenę
+nieruchomości (`price`). Wylosuj `350` obserwacji i dodaj kolumnę
+`listing_id = row_number()`.
+
+Wykonaj:
+
+-   podział `80/20` ze stratyfikacją względem `price`,
+-   recepturę z predyktorami:
+    `listing_id`, `city`, `beds`, `baths`, `sqft`, `type`, `latitude`,
+    `longitude`,
+-   przypisz `listing_id` rolę `"id"` tak, aby nie był predyktorem,
+-   zastosuj krok wierszowy `step_filter()` usuwający obserwacje z `sqft <= 0`
+    lub `price <= 50000`; krok ten ma być pomijany przy predykcji,
+-   dodaj przekształcenie ogólne przez `step_mutate()`, tworząc
+    `bath_bed_ratio = baths / pmax(beds, 1)`,
+-   zastosuj `step_log()` dla `sqft`, `step_other()` dla `city`,
+    `step_dummy()`, `step_zv()` oraz `step_normalize()`,
+-   połącz recepturę z modelem `linear_reg()` i silnikiem `lm`,
+-   oceń model na zbiorze testowym przez `rmse`, `mae` i `rsq`,
+-   pokaż, że `listing_id` można zachować obok predykcji, mimo że nie był
+    używany do dopasowania modelu.
+
+## Zadanie 2. CV kontra Repeated CV
+
+Na zbiorze `biomass` wylosuj `180` obserwacji i przewiduj `HHV` na podstawie
+zmiennych: `carbon`, `hydrogen`, `oxygen`, `nitrogen`, `sulfur`.
+
+Zbuduj jeden workflow:
+
+-   receptura: `step_normalize(all_predictors())`,
+-   model: `linear_reg()` z silnikiem `lm`.
+
+Następnie porównaj dwie metody resamplingu:
+
+-   `5`-krotną walidację krzyżową,
+-   `5`-krotną walidację krzyżową z `3` powtórzeniami.
+
+Wykonaj:
+
+-   utwórz oba obiekty resamplingu ze stratyfikacją względem `HHV`,
+-   uruchom `fit_resamples()` z metrykami `rmse` i `rsq`,
+-   wykorzystaj równoleglenie obliczeń przez pakiet `future`,
+-   zestaw średnie i błędy standardowe metryk dla obu metod,
+-   skomentuj, jak powtórzenia wpływają na stabilność oszacowania.
+
+## Zadanie 3. Train, test, CV i bootstrap
+
+Na zbiorze `cells` wylosuj `450` obserwacji i usuń kolumnę `case`. Przewiduj
+zmienną `class` za pomocą modelu `logistic_reg()` z silnikiem `glm`.
+
+Wykonaj:
+
+-   podział `75/25` ze stratyfikacją względem `class`,
+-   dopasuj model na zbiorze treningowym,
+-   policz `accuracy` i `roc_auc` na zbiorze treningowym,
+-   policz `accuracy` i `roc_auc` na zbiorze testowym,
+-   utwórz `5`-krotną walidację krzyżową na zbiorze treningowym i oceń model
+    przez `fit_resamples()`,
+-   utwórz `10` prób bootstrapowych na zbiorze treningowym i oceń model przez
+    `fit_resamples()`,
+-   zestaw wyniki `train`, `test`, `CV` i `bootstrap` w jednej tabeli,
+-   skomentuj, która ocena jest najbardziej optymistyczna i dlaczego.
+
+## Zadanie 4. Szereg czasowy i równoległe resamplingowanie
+
+Na zbiorze `Chicago` z pakietu `modeldata` pracuj na ostatnich `420`
+obserwacjach uporządkowanych według `date`. Przewiduj dzienną liczbę pasażerów
+(`ridership`).
+
+Użyj predyktorów:
+`date`, `temp`, `humidity`, `wind`, `weather_rain`, `weather_snow`.
+
+Wykonaj:
+
+-   podział czasowy przez `initial_time_split()` w proporcji `80/20`,
+-   recepturę, w której przez `step_mutate()` tworzysz liczbowy indeks czasu
+    z kolumny `date`, następnie usuwasz `date`, stosujesz `step_zv()` i
+    `step_normalize()`,
+-   model `linear_reg()` z silnikiem `lm`,
+-   resampling typu przesuwającego się okna przez `sliding_period()` na zbiorze
+    treningowym,
+-   równoległe uruchomienie `fit_resamples()` z użyciem pakietu `future`,
+-   ocenę przez `rmse` i `rsq`,
+-   końcową ocenę tego samego workflow na zbiorze testowym przez `last_fit()`.
+
+Wskazówka: w środowiskach lokalnych na macOS/Linux można użyć
+`future::plan(future::multicore, workers = 2)`. Po zakończeniu obliczeń
+przywróć poprzedni plan.

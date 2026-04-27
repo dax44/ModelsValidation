@@ -1,0 +1,310 @@
+---
+title: "Rozwiązania do zadań z lab 8"
+subtitle: "tidymodels i resampling"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+```
+
+## Zadanie 1. Workflow klasyfikacyjny z imputacją braków
+
+Najpierw przygotowujemy podział danych.
+
+```{r}
+set.seed(2026)
+
+penguins_split <- initial_split(penguins, prop = 0.8, strata = species)
+penguins_train <- training(penguins_split)
+penguins_test <- testing(penguins_split)
+```
+
+Tworzymy recepturę z imputacją braków, kodowaniem zmiennych jakościowych i
+normalizacją.
+
+```{r}
+penguins_rec <- recipe(species ~ ., data = penguins_train) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+penguins_rec
+```
+
+Specyfikujemy model i budujemy workflow.
+
+```{r}
+penguins_spec <- multinom_reg() %>%
+  set_engine("nnet") %>%
+  set_mode("classification")
+
+penguins_wf <- workflow() %>%
+  add_recipe(penguins_rec) %>%
+  add_model(penguins_spec)
+
+penguins_fit <- fit(penguins_wf, data = penguins_train)
+```
+
+Predykcje klas i prawdopodobieństw:
+
+```{r}
+penguins_pred <- penguins_test %>%
+  select(species) %>%
+  bind_cols(predict(penguins_fit, new_data = penguins_test)) %>%
+  bind_cols(predict(penguins_fit, new_data = penguins_test, type = "prob"))
+
+penguins_pred %>%
+  slice(1:8)
+```
+
+Ocena modelu:
+
+```{r}
+conf_mat(penguins_pred, truth = species, estimate = .pred_class)
+
+accuracy(penguins_pred, truth = species, estimate = .pred_class)
+```
+
+Najwięcej trudności sprawia zwykle rozróżnienie `Adelie` i `Chinstrap`, podczas
+gdy `Gentoo` bywa klasyfikowany bardzo poprawnie.
+
+## Zadanie 2. Ekstrakcja cech przez PCA
+
+Przygotowujemy dane i podział.
+
+```{r}
+set.seed(2026)
+
+biomass_split <- initial_split(biomass, prop = 0.8, strata = HHV)
+biomass_train <- training(biomass_split)
+biomass_test <- testing(biomass_split)
+```
+
+Specyfikujemy model liniowy oraz dwa workflow.
+
+```{r}
+biomass_spec <- linear_reg() %>%
+  set_engine("lm")
+
+raw_wf <- workflow() %>%
+  add_model(biomass_spec) %>%
+  add_formula(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur)
+
+pca_rec <- recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur,
+                  data = biomass_train) %>%
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), num_comp = 3)
+
+pca_wf <- workflow() %>%
+  add_model(biomass_spec) %>%
+  add_recipe(pca_rec)
+```
+
+Dopasowujemy oba modele.
+
+```{r}
+raw_fit <- fit(raw_wf, data = biomass_train)
+pca_fit <- fit(pca_wf, data = biomass_train)
+```
+
+Porównanie na zbiorze testowym:
+
+```{r}
+raw_pred <- biomass_test %>%
+  select(HHV) %>%
+  bind_cols(predict(raw_fit, new_data = biomass_test))
+
+pca_pred <- biomass_test %>%
+  select(HHV) %>%
+  bind_cols(predict(pca_fit, new_data = biomass_test))
+
+bind_rows(
+  metrics(raw_pred, truth = HHV, estimate = .pred) %>% mutate(model = "bez_pca"),
+  metrics(pca_pred, truth = HHV, estimate = .pred) %>% mutate(model = "pca_3")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+W tym przykładzie redukcja wymiarowości pogarsza wynik, ponieważ model bez PCA
+wykorzystuje niewielki zbiór dobrze interpretowalnych predyktorów i nie cierpi
+na duży problem wymiarowości.
+
+## Zadanie 3. Trening kontra test
+
+Najpierw usuwamy kolumnę `case` i dzielimy dane.
+
+```{r}
+set.seed(2026)
+
+cells_data <- cells %>%
+  select(-case)
+
+cells_split <- initial_split(cells_data, prop = 0.8, strata = class)
+cells_train <- training(cells_split)
+cells_test <- testing(cells_split)
+```
+
+Definiujemy dwa modele.
+
+```{r}
+log_spec <- logistic_reg() %>%
+  set_engine("glm")
+
+tree_spec <- decision_tree(tree_depth = 20, min_n = 2, cost_complexity = 0) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+```
+
+Dopasowujemy modele.
+
+```{r}
+log_fit <- fit(log_spec, class ~ ., data = cells_train)
+tree_fit <- fit(tree_spec, class ~ ., data = cells_train)
+```
+
+Przygotowujemy wspólną funkcję do liczenia metryk na treningu i teście.
+
+```{r}
+class_metrics <- metric_set(accuracy, roc_auc)
+
+estimate_class_perf <- function(model, dat, model_name, sample_name) {
+  dat %>%
+    select(class) %>%
+    bind_cols(predict(model, new_data = dat)) %>%
+    bind_cols(predict(model, new_data = dat, type = "prob")) %>%
+    class_metrics(truth = class, estimate = .pred_class, .pred_PS) %>%
+    mutate(model = model_name, sample = sample_name)
+}
+```
+
+Liczymy wyniki dla obu modeli i obu zbiorów.
+
+```{r}
+bind_rows(
+  estimate_class_perf(log_fit, cells_train, "logistic_reg", "train"),
+  estimate_class_perf(log_fit, cells_test, "logistic_reg", "test"),
+  estimate_class_perf(tree_fit, cells_train, "decision_tree", "train"),
+  estimate_class_perf(tree_fit, cells_test, "decision_tree", "test")
+) %>%
+  select(model, sample, .metric, .estimate)
+```
+
+Drzewo decyzyjne daje tu niemal idealny wynik na treningu, ale dużo słabszy na
+teście. To typowy objaw przeuczenia. Regresja logistyczna ma mniejszą różnicę
+pomiędzy treningiem i testem, więc generalizuje stabilniej.
+
+## Zadanie 4. Walidacja krzyżowa i końcowa ocena na teście
+
+Przygotowujemy podział danych.
+
+```{r}
+set.seed(2026)
+
+sac_split <- initial_split(Sacramento, prop = 0.8, strata = price)
+sac_train <- training(sac_split)
+sac_test <- testing(sac_split)
+```
+
+Tworzymy recepturę.
+
+```{r}
+sac_rec <- recipe(price ~ city + beds + baths + sqft + type + latitude + longitude,
+                  data = sac_train) %>%
+  step_log(sqft, offset = 1) %>%
+  step_other(city, threshold = 0.05) %>%
+  step_novel(city, type) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+sac_rec
+```
+
+Specyfikujemy dwa modele i odpowiadające im workflow.
+
+```{r}
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+
+tree_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 8, min_n = 10) %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+
+lm_wf <- workflow() %>%
+  add_recipe(sac_rec) %>%
+  add_model(lm_spec)
+
+tree_wf <- workflow() %>%
+  add_recipe(sac_rec) %>%
+  add_model(tree_spec)
+```
+
+Budujemy `10`-krotną walidację krzyżową na zbiorze treningowym.
+
+```{r}
+set.seed(2026)
+sac_folds <- vfold_cv(sac_train, v = 10, strata = price)
+```
+
+Oceniamy oba modele przez `fit_resamples()`.
+
+```{r}
+lm_res <- fit_resamples(
+  lm_wf,
+  resamples = sac_folds,
+  metrics = metric_set(rmse, rsq)
+)
+
+tree_res <- fit_resamples(
+  tree_wf,
+  resamples = sac_folds,
+  metrics = metric_set(rmse, rsq)
+)
+```
+
+Porównanie wyników walidacji krzyżowej:
+
+```{r}
+bind_rows(
+  collect_metrics(lm_res) %>% mutate(model = "linear_reg"),
+  collect_metrics(tree_res) %>% mutate(model = "decision_tree")
+) %>%
+  select(model, .metric, mean, std_err)
+```
+
+Lepszy wynik daje model liniowy, więc jego wybieramy do końcowej oceny na
+zbiorze testowym.
+
+```{r}
+final_lm <- last_fit(lm_wf, split = sac_split)
+
+collect_metrics(final_lm)
+```
+
+Możemy zestawić wynik z walidacji krzyżowej i testu.
+
+```{r}
+cv_lm <- collect_metrics(lm_res) %>%
+  select(.metric, mean) %>%
+  rename(cv_estimate = mean)
+
+test_lm <- collect_metrics(final_lm) %>%
+  select(.metric, .estimate) %>%
+  rename(test_estimate = .estimate)
+
+left_join(cv_lm, test_lm, by = ".metric")
+```
+
+Wyniki z walidacji krzyżowej i testu są dość zbliżone, co pokazuje, że ocena
+resamplingowa dobrze przybliżyła końcową jakość modelu na nowych danych.

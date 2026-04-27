@@ -84,18 +84,18 @@ Istnieje wiele metod kwantyfikacji kształtów obiektów [@mingqiang2008]. Wiele
 nich dotyczy granic lub regionów interesującego nas obiektu. Przykładowe cechy
 obejmują:
 
--   Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w
-    obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.
--   Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również
-    prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).
--   Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne
-    części obiektu. Mała oś jest prostopadła do osi głównej.
--   Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu
-    do pola powierzchni koła o tym samym obwodzie. Na przykład symbole
-    $\bullet$ i $\times$ mają bardzo różną zwartość.
--   Istnieją również różne miary tego, jak bardzo obiekt jest podłużny. Na
-    przykład statystyka ekscentryczności to stosunek osi głównej i małej.
-    Istnieją również powiązane szacunki dla okrągłości i wypukłości.
+- Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w
+  obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.
+- Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również
+  prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).
+- Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne
+  części obiektu. Mała oś jest prostopadła do osi głównej.
+- Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu
+  do pola powierzchni koła o tym samym obwodzie. Na przykład symbole $\bullet$
+  i $\times$ mają bardzo różną zwartość.
+- Istnieją również różne miary tego, jak bardzo obiekt jest podłużny. Na
+  przykład statystyka ekscentryczności to stosunek osi głównej i małej.
+  Istnieją również powiązane szacunki dla okrągłości i wypukłości.
 
 W danych dotyczących fasoli obliczono 16 cech morfologicznych: powierzchnię,
 obwód, długość osi głównej, długość osi małej, współczynnik kształtu,
@@ -185,8 +185,8 @@ receptury i modelu, a następnie `predict()` do przetwarzania danych i tworzenia
 przewidywań modelu. W pakiecie `recipes` znajdują się analogiczne funkcje,
 które mogą być użyte do tego samego celu:
 
--   `prep(recipe, training)` dopasowuje przepis do zbioru treningowego.
--   `bake(recipe, new_data)` stosuje operacje receptury do `new_data`.
+- `prep(recipe, training)` dopasowuje przepis do zbioru treningowego.
+- `bake(recipe, new_data)` stosuje operacje receptury do `new_data`.
 
 Rysunek 16.3 podsumowuje to.
 

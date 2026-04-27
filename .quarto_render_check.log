@@ -1,0 +1,578 @@
+[1m[34m[ 1/17] index.qmd[39m[22m
+[1m[34m[ 2/17] intro.qmd[39m[22m
+[1m[34m[ 3/17] modeling.qmd[39m[22m
+[31m
+
+processing file: modeling.qmd
+[39m1/3                  
+2/3 [unnamed-chunk-1]
+3/3                  
+[31moutput file: modeling.knit.md
+
+[39m[1m[34m[ 4/17] infer.qmd[39m[22m
+[31m
+
+processing file: infer.qmd
+[39m1/33                  
+2/33 [unnamed-chunk-1]
+3/33                  
+4/33 [fig-hist1]      
+5/33                  
+6/33 [unnamed-chunk-2]
+7/33                  
+8/33 [unnamed-chunk-3]
+9/33                  
+10/33 [fig-hist3]      
+11/33                  
+12/33 [unnamed-chunk-4]
+13/33                  
+14/33 [fig-hist4]      
+15/33                  
+16/33 [fig-medians]    
+17/33                  
+18/33 [unnamed-chunk-5]
+19/33                  
+20/33 [fig-median2]    
+21/33                  
+22/33 [unnamed-chunk-6]
+23/33                  
+24/33 [fig-median3]    
+25/33                  
+Response: x (numeric)
+Explanatory: gr (factor)
+# A tibble: 1 × 1
+   stat
+  <dbl>
+1 -6.83
+26/33 [fig-median4]    
+27/33                  
+28/33 [fig-chisq]      
+29/33                  
+30/33 [fig-chisq2]     
+31/33                  
+32/33 [fig-chisq3]     
+33/33                  
+[31moutput file: infer.knit.md
+
+[39m[1m[34m[ 5/17] measures.qmd[39m[22m
+[31m
+
+processing file: measures.qmd
+[39m1/19                  
+2/19 [unnamed-chunk-1]
+3/19                  
+4/19 [fig-por1]       
+5/19                  
+6/19 [unnamed-chunk-2]
+7/19                  
+8/19 [fig-confmat]    
+9/19                  
+10/19 [unnamed-chunk-3]
+11/19                  
+12/19 [unnamed-chunk-4]
+13/19                  
+14/19 [unnamed-chunk-5]
+15/19                  
+16/19 [unnamed-chunk-6]
+17/19                  
+18/19 [unnamed-chunk-7]
+19/19                  
+[31moutput file: measures.knit.md
+
+[39m[31mKomunikat ostrzegawczy:
+W poleceniu 'readLines(input)':
+  niekompletna końcowa linia znaleziona w 'measures.qmd'
+[39m[1m[34m[ 6/17] resampling.qmd[39m[22m
+[31m
+
+processing file: resampling.qmd
+[39m1/25                   
+2/25 [unnamed-chunk-1] 
+3/25                   
+4/25 [fig-1]           
+5/25                   
+6/25 [unnamed-chunk-2] 
+7/25                   
+8/25 [unnamed-chunk-3] 
+9/25                   
+10/25 [unnamed-chunk-4] 
+11/25                   
+12/25 [unnamed-chunk-5] 
+13/25                   
+14/25 [unnamed-chunk-6] 
+15/25                   
+16/25 [unnamed-chunk-7] 
+17/25                   
+18/25 [unnamed-chunk-8] 
+19/25                   
+20/25 [unnamed-chunk-9] 
+21/25                   
+22/25 [unnamed-chunk-10]
+23/25                   
+24/25 [unnamed-chunk-11]
+25/25                   
+[31moutput file: resampling.knit.md
+
+[39m[31mKomunikat ostrzegawczy:
+W poleceniu 'readLines(input)':
+  niekompletna końcowa linia znaleziona w 'resampling.qmd'
+[39m[1m[34m[ 7/17] tidymodels.qmd[39m[22m
+[31m
+
+processing file: tidymodels.qmd
+[39m1/67                   
+2/67 [unnamed-chunk-1] 
+3/67                   
+4/67 [unnamed-chunk-2] 
+5/67                   
+6/67 [unnamed-chunk-3] 
+7/67                   
+8/67 [unnamed-chunk-4] 
+9/67                   
+10/67 [unnamed-chunk-5] 
+11/67                   
+12/67 [unnamed-chunk-6] 
+13/67                   
+14/67 [unnamed-chunk-7] 
+15/67                   
+16/67 [unnamed-chunk-8] 
+17/67                   
+18/67 [unnamed-chunk-9] 
+19/67                   
+20/67 [unnamed-chunk-10]
+21/67                   
+22/67 [unnamed-chunk-11]
+23/67                   
+24/67 [unnamed-chunk-12]
+25/67                   
+26/67 [unnamed-chunk-13]
+27/67                   
+28/67 [unnamed-chunk-14]
+29/67                   
+30/67 [unnamed-chunk-15]
+31/67                   
+32/67 [unnamed-chunk-16]
+33/67                   
+34/67 [unnamed-chunk-17]
+35/67                   
+36/67 [unnamed-chunk-18]
+37/67                   
+38/67 [unnamed-chunk-19]
+39/67                   
+40/67 [unnamed-chunk-20]
+41/67                   
+42/67 [unnamed-chunk-21]
+43/67                   
+44/67 [unnamed-chunk-22]
+45/67                   
+46/67 [unnamed-chunk-23]
+47/67                   
+48/67 [fig-sasiad]      
+49/67                   
+50/67 [unnamed-chunk-24]
+51/67                   
+52/67 [fig-inter]       
+53/67                   
+54/67 [unnamed-chunk-25]
+55/67                   
+56/67 [fig-splajn]      
+57/67                   
+58/67 [unnamed-chunk-26]
+59/67                   
+60/67 [unnamed-chunk-27]
+61/67                   
+62/67 [unnamed-chunk-28]
+63/67                   
+64/67 [unnamed-chunk-29]
+65/67                   
+66/67 [unnamed-chunk-30]
+67/67                   
+[31moutput file: tidymodels.knit.md
+
+[39m[1m[34m[ 8/17] resampling2.qmd[39m[22m
+[31m
+
+processing file: resampling2.qmd
+[39m1/45                   
+2/45 [unnamed-chunk-1] 
+3/45                   
+4/45 [unnamed-chunk-2] 
+5/45                   
+6/45 [unnamed-chunk-3] 
+7/45                   
+8/45 [unnamed-chunk-4] 
+9/45                   
+10/45 [unnamed-chunk-5] 
+11/45                   
+12/45 [unnamed-chunk-6] 
+13/45                   
+14/45 [unnamed-chunk-7] 
+15/45                   
+16/45 [unnamed-chunk-8] 
+17/45                   
+18/45 [unnamed-chunk-9] 
+19/45                   
+20/45 [unnamed-chunk-10]
+21/45                   
+22/45 [unnamed-chunk-11]
+23/45                   
+24/45 [unnamed-chunk-12]
+25/45                   
+26/45 [fig-pred-obs]    
+27/45                   
+28/45 [unnamed-chunk-13]
+29/45                   
+30/45 [unnamed-chunk-14]
+31/45                   
+32/45 [unnamed-chunk-15]
+33/45                   
+34/45 [unnamed-chunk-16]
+35/45                   
+36/45 [unnamed-chunk-17]
+37/45                   
+38/45 [unnamed-chunk-18]
+39/45                   
+40/45 [unnamed-chunk-19]
+41/45                   
+42/45 [unnamed-chunk-20]
+43/45                   
+44/45 [unnamed-chunk-21]
+45/45                   
+[31moutput file: resampling2.knit.md
+
+[39m[1m[34m[ 9/17] comparison.qmd[39m[22m
+[31m
+
+processing file: comparison.qmd
+[39m1/21                  
+2/21 [unnamed-chunk-1]
+3/21                  
+4/21 [unnamed-chunk-2]
+5/21                  
+6/21 [unnamed-chunk-3]
+7/21                  
+8/21 [unnamed-chunk-4]
+9/21                  
+10/21 [fig-comp1]      
+11/21                  
+12/21 [unnamed-chunk-5]
+13/21                  
+14/21 [unnamed-chunk-6]
+15/21                  
+16/21 [unnamed-chunk-7]
+17/21                  
+18/21 [unnamed-chunk-8]
+19/21                  
+20/21 [unnamed-chunk-9]
+21/21                  
+[31moutput file: comparison.knit.md
+
+[39m[1m[34m[10/17] tuning.qmd[39m[22m
+[31m
+
+processing file: tuning.qmd
+[39m1/39                   
+2/39 [unnamed-chunk-1] 
+3/39                   
+4/39 [unnamed-chunk-2] 
+5/39                   
+6/39 [fig-tune1]       
+7/39                   
+8/39 [unnamed-chunk-3] 
+9/39                   
+10/39 [unnamed-chunk-4] 
+11/39                   
+12/39 [unnamed-chunk-5] 
+13/39                   
+14/39 [unnamed-chunk-6] 
+15/39                   
+16/39 [unnamed-chunk-7] 
+17/39                   
+18/39 [unnamed-chunk-8] 
+19/39                   
+20/39 [unnamed-chunk-9] 
+21/39                   
+22/39 [unnamed-chunk-10]
+23/39                   
+24/39 [unnamed-chunk-11]
+25/39                   
+26/39 [unnamed-chunk-12]
+27/39                   
+28/39 [unnamed-chunk-13]
+29/39                   
+30/39 [unnamed-chunk-14]
+31/39                   
+32/39 [unnamed-chunk-15]
+33/39                   
+34/39 [unnamed-chunk-16]
+35/39                   
+36/39 [unnamed-chunk-17]
+37/39                   
+38/39 [unnamed-chunk-18]
+39/39                   
+[31moutput file: tuning.knit.md
+
+[39m[1m[34m[11/17] grid_search.qmd[39m[22m
+[31m
+
+processing file: grid_search.qmd
+[39m1/45                   
+2/45 [unnamed-chunk-1] 
+3/45                   
+4/45 [unnamed-chunk-2] 
+5/45                   
+6/45 [unnamed-chunk-3] 
+7/45                   
+8/45 [unnamed-chunk-4] 
+9/45                   
+10/45 [unnamed-chunk-5] 
+11/45                   
+12/45 [unnamed-chunk-6] 
+13/45                   
+14/45 [fig-grid1]       
+15/45                   
+16/45 [fig-grid2]       
+17/45                   
+18/45 [unnamed-chunk-7] 
+19/45                   
+20/45 [unnamed-chunk-8] 
+21/45                   
+22/45 [unnamed-chunk-9] 
+23/45                   
+24/45 [unnamed-chunk-10]
+25/45                   
+26/45 [unnamed-chunk-11]
+27/45                   
+28/45 [fig-grid3]       
+29/45                   
+30/45 [unnamed-chunk-12]
+31/45                   
+32/45 [unnamed-chunk-13]
+33/45                   
+34/45 [fig-grid4]       
+35/45                   
+36/45 [unnamed-chunk-14]
+37/45                   
+38/45 [unnamed-chunk-15]
+39/45                   
+40/45 [unnamed-chunk-16]
+41/45                   
+42/45 [unnamed-chunk-17]
+43/45                   
+44/45 [unnamed-chunk-18]
+45/45                   
+[31moutput file: grid_search.knit.md
+
+[39m[1m[34m[12/17] parallel.qmd[39m[22m
+[31m
+
+processing file: parallel.qmd
+[39m1/17                  
+2/17 [unnamed-chunk-1]
+3/17                  
+4/17 [unnamed-chunk-2]
+5/17                  
+6/17 [unnamed-chunk-3]
+7/17                  
+8/17 [unnamed-chunk-4]
+9/17                  
+10/17 [unnamed-chunk-5]
+11/17                  
+12/17 [unnamed-chunk-6]
+13/17                  
+14/17 [unnamed-chunk-7]
+15/17                  
+16/17 [unnamed-chunk-8]
+17/17                  
+[31moutput file: parallel.knit.md
+
+[39m[1m[34m[13/17] iterative.qmd[39m[22m
+[31m
+
+processing file: iterative.qmd
+[39m1/41                   
+2/41 [unnamed-chunk-1] 
+3/41                   
+4/41 [unnamed-chunk-2] 
+5/41                   
+6/41 [unnamed-chunk-3] 
+7/41                   
+8/41 [unnamed-chunk-4] 
+9/41                   
+10/41 [unnamed-chunk-5] 
+11/41                   
+12/41 [unnamed-chunk-6] 
+13/41                   
+14/41 [unnamed-chunk-7] 
+15/41                   
+16/41 [tbl-1]           
+17/41                   
+18/41 [tbl-2]           
+19/41                   
+20/41 [unnamed-chunk-8] 
+21/41                   
+22/41 [unnamed-chunk-9] 
+23/41                   
+24/41 [tbl-bo1]         
+25/41                   
+26/41 [tbl-bo2]         
+27/41                   
+28/41 [fig-bo1]         
+29/41                   
+30/41 [unnamed-chunk-10]
+31/41                   
+32/41 [unnamed-chunk-11]
+33/41                   
+34/41 [tbl-sa1]         
+35/41                   
+36/41 [tbl-sa2]         
+37/41                   
+38/41 [fig-sa3]         
+39/41                   
+40/41 [fig-sa4]         
+41/41                   
+[31moutput file: iterative.knit.md
+
+[39m[1m[34m[14/17] example.qmd[39m[22m
+[31m
+
+processing file: example.qmd
+[39m1/49                   
+2/49 [unnamed-chunk-1] 
+3/49                   
+4/49 [unnamed-chunk-2] 
+5/49                   
+6/49 [unnamed-chunk-3] 
+7/49                   
+8/49 [unnamed-chunk-4] 
+9/49                   
+10/49 [unnamed-chunk-5] 
+11/49                   
+12/49 [unnamed-chunk-6] 
+13/49                   
+14/49 [unnamed-chunk-7] 
+15/49                   
+16/49 [unnamed-chunk-8] 
+17/49                   
+18/49 [unnamed-chunk-9] 
+19/49                   
+20/49 [unnamed-chunk-10]
+21/49                   
+22/49 [unnamed-chunk-11]
+23/49                   
+24/49 [unnamed-chunk-12]
+25/49                   
+26/49 [unnamed-chunk-13]
+27/49                   
+28/49 [unnamed-chunk-14]
+29/49                   
+30/49 [unnamed-chunk-15]
+31/49                   
+32/49 [fig-mods1]       
+33/49                   
+34/49 [fig-mods2]       
+35/49                   
+36/49 [unnamed-chunk-16]
+37/49                   
+38/49 [unnamed-chunk-17]
+39/49                   
+40/49 [fig-mods3]       
+41/49                   
+42/49 [unnamed-chunk-18]
+43/49                   
+44/49 [unnamed-chunk-19]
+45/49                   
+46/49 [unnamed-chunk-20]
+47/49                   
+48/49 [fig-mods4]       
+49/49                   
+[31moutput file: example.knit.md
+
+[39m[1m[34m[15/17] dimensionality.qmd[39m[22m
+[31m
+
+processing file: dimensionality.qmd
+[39m1/49                   
+2/49 [unnamed-chunk-1] 
+3/49                   
+4/49 [unnamed-chunk-2] 
+5/49                   
+6/49 [fig-dim1]        
+7/49                   
+8/49 [unnamed-chunk-3] 
+9/49                   
+10/49 [unnamed-chunk-4] 
+11/49                   
+12/49 [unnamed-chunk-5] 
+13/49                   
+14/49 [unnamed-chunk-6] 
+15/49                   
+16/49 [fig-dim3]        
+17/49                   
+18/49 [unnamed-chunk-7] 
+19/49                   
+20/49 [unnamed-chunk-8] 
+21/49                   
+22/49 [fig-dim4]        
+23/49                   
+24/49 [fig-pca1]        
+25/49                   
+26/49 [fig-pls1]        
+27/49                   
+28/49 [fig-pls2]        
+29/49                   
+30/49 [fig-ica1]        
+31/49                   
+32/49 [unnamed-chunk-9] 
+33/49                   
+34/49 [fig-umap1]       
+35/49                   
+36/49 [fig-umap2]       
+37/49                   
+38/49 [unnamed-chunk-10]
+39/49                   
+40/49 [unnamed-chunk-11]
+41/49                   
+42/49 [unnamed-chunk-12]
+43/49                   
+44/49 [fig-all-models1] 
+45/49                   
+46/49 [unnamed-chunk-13]
+47/49                   
+48/49 [unnamed-chunk-14]
+49/49                   
+[31moutput file: dimensionality.knit.md
+
+[39m[31mRegistered S3 method overwritten by 'butcher':
+  method                 from    
+  as.character.dev_topic generics
+[39m[1m[34m[16/17] imbalance.qmd[39m[22m
+[31m
+
+processing file: imbalance.qmd
+[39m1/19                  
+2/19 [unnamed-chunk-1]
+3/19                  
+4/19 [unnamed-chunk-2]
+5/19                  
+6/19 [unnamed-chunk-3]
+7/19                  
+8/19 [unnamed-chunk-4]
+9/19                  
+10/19 [unnamed-chunk-5]
+11/19                  
+12/19 [unnamed-chunk-6]
+13/19                  
+14/19 [unnamed-chunk-7]
+15/19                  
+16/19 [unnamed-chunk-8]
+17/19                  
+18/19 [fig-rose1]      
+19/19                  
+[31moutput file: imbalance.knit.md
+
+[39m[1m[34m[17/17] references.qmd[39m[22m
+
+Output created: docs/index.html
+
+__EXIT_CODE__:0

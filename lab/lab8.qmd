@@ -1,0 +1,118 @@
+---
+title: "Laboratorium 8"
+subtitle: "tidymodels i resampling"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W zadaniach 3 i 4 wszystkie procedury resamplingu wykonuj wyłącznie na zbiorze
+treningowym. Zbiór testowy ma pozostać nietknięty aż do końcowej oceny.
+:::
+
+## Zadanie 1. Workflow klasyfikacyjny z imputacją braków
+
+Na zbiorze `penguins` z pakietu `modeldata` zbuduj model przewidujący gatunek
+pingwina (`species`).
+
+Wykonaj:
+
+-   podział `80/20` ze stratyfikacją względem `species`,
+-   recepturę, w której:
+    imputujesz braki w zmiennych numerycznych medianą,
+    imputujesz braki w zmiennych jakościowych dominantą,
+    zamieniasz zmienne jakościowe na indykatory
+    i normalizujesz predyktory numeryczne,
+-   model `multinom_reg()` z silnikiem `nnet`,
+-   połączenie modelu i receptury w `workflow`,
+-   predykcję klas i prawdopodobieństw na zbiorze testowym,
+-   macierz pomyłek oraz miarę `accuracy`,
+-   krótką interpretację, która klasa jest najtrudniejsza do rozpoznania.
+
+Wskazówka: imputację wykonaj przed kodowaniem zmiennych jakościowych.
+
+## Zadanie 2. Ekstrakcja cech przez PCA
+
+Na zbiorze `biomass` z pakietu `modeldata` przewiduj wartość opałową biomasy
+(`HHV`) na podstawie zmiennych:
+`carbon`, `hydrogen`, `oxygen`, `nitrogen`, `sulfur`.
+
+Porównaj dwa workflow z modelem `linear_reg()` i silnikiem `lm`:
+
+-   model bez ekstrakcji cech,
+-   model z recepturą zawierającą `step_normalize()` oraz `step_pca()` z
+    `num_comp = 3`.
+
+Wymagania:
+
+-   wykonaj podział `80/20` ze stratyfikacją względem `HHV`,
+-   oceń oba modele na zbiorze testowym przez `rmse`, `mae` i `rsq`,
+-   wskaż, czy redukcja wymiarowości pomogła, czy zaszkodziła.
+
+Wskazówka: PCA ma sens dopiero wtedy, gdy predyktory są porównywalne skalą.
+
+## Zadanie 3. Trening kontra test
+
+Na zbiorze `cells` z pakietu `modeldata` przewiduj klasę komórki (`class`).
+Kolumny `case` nie używaj jako predyktora.
+
+Zbuduj dwa modele klasyfikacyjne:
+
+-   `logistic_reg()` z silnikiem `glm`,
+-   `decision_tree()` z silnikiem `rpart`, ustawiając model na dość elastyczny
+    przez `tree_depth = 20`, `min_n = 2` i `cost_complexity = 0`.
+
+Następnie:
+
+-   wykonaj własny podział `80/20` ze stratyfikacją względem `class`,
+-   oblicz `accuracy` i `roc_auc` osobno na zbiorze treningowym i testowym,
+-   zestaw wyniki obu modeli w jednej tabeli,
+-   wskaż, który model wykazuje wyraźniejsze oznaki przeuczenia.
+
+Wskazówka: jeśli chcesz policzyć `roc_auc`, potrzebujesz nie tylko klas, ale
+też prawdopodobieństw.
+
+## Zadanie 4. Walidacja krzyżowa i końcowa ocena na teście
+
+Na zbiorze `Sacramento` z pakietu `modeldata` przewiduj `price`.
+
+Przygotuj:
+
+-   podział `80/20` ze stratyfikacją względem `price`,
+-   recepturę z predyktorami:
+    `city`, `beds`, `baths`, `sqft`, `type`, `latitude`, `longitude`,
+-   w recepturze zastosuj:
+    `step_log(sqft, offset = 1)`,
+    `step_other(city, threshold = 0.05)`,
+    `step_novel(city, type)`,
+    `step_dummy()`,
+    `step_zv()`,
+    `step_normalize()`.
+
+Porównaj dwa modele:
+
+-   `linear_reg()` z silnikiem `lm`,
+-   `decision_tree()` z silnikiem `rpart`.
+
+W tym celu:
+
+-   zbuduj `10`-krotną walidację krzyżową na zbiorze treningowym,
+-   użyj `fit_resamples()` i porównaj modele przez `rmse` i `rsq`,
+-   wybierz lepszy model na podstawie walidacji krzyżowej,
+-   dopasuj go na całym zbiorze treningowym i oceń na zbiorze testowym,
+-   porównaj, czy wynik z walidacji krzyżowej jest zbliżony do końcowego wyniku
+    testowego.
+
+Wskazówka: walidacja krzyżowa służy do oceny na zbiorze treningowym, a nie do
+zastępowania zbioru testowego.

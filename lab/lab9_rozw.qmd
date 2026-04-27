@@ -1,0 +1,359 @@
+---
+title: "Rozwiązania do zadań z lab 9"
+subtitle: "Przepisy i resampling"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+```
+
+## Zadanie 1. Role zmiennych, kroki wierszowe i pomijanie kroków
+
+Przygotowujemy ograniczony zbiór danych i podział trening-test.
+
+```{r}
+set.seed(2026)
+
+sac_small <- Sacramento %>%
+  slice_sample(n = 350) %>%
+  mutate(listing_id = row_number())
+
+sac_split <- initial_split(sac_small, prop = 0.8, strata = price)
+sac_train <- training(sac_split)
+sac_test <- testing(sac_split)
+```
+
+Tworzymy recepturę. Kolumna `listing_id` otrzymuje rolę informacyjną, więc nie
+trafia do modelu jako predyktor.
+
+```{r}
+sac_rec <- recipe(
+  price ~ listing_id + city + beds + baths + sqft + type + latitude + longitude,
+  data = sac_train
+) %>%
+  update_role(listing_id, new_role = "id") %>%
+  step_filter(sqft > 0, price > 50000, skip = TRUE) %>%
+  step_mutate(bath_bed_ratio = baths / pmax(beds, 1)) %>%
+  step_log(sqft, offset = 1) %>%
+  step_other(city, threshold = 0.05) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+sac_rec
+```
+
+Dopasowujemy workflow.
+
+```{r}
+sac_wf <- workflow() %>%
+  add_recipe(sac_rec) %>%
+  add_model(linear_reg() %>% set_engine("lm"))
+
+sac_fit <- fit(sac_wf, data = sac_train)
+```
+
+Sprawdzamy wykonane kroki.
+
+```{r}
+sac_fit %>%
+  extract_recipe(estimated = TRUE) %>%
+  tidy()
+```
+
+Ocena na zbiorze testowym:
+
+```{r}
+sac_pred <- sac_test %>%
+  select(price, listing_id) %>%
+  bind_cols(predict(sac_fit, new_data = sac_test))
+
+metrics(sac_pred, truth = price, estimate = .pred)
+```
+
+Identyfikator ogłoszenia można zachować razem z predykcją.
+
+```{r}
+sac_pred %>%
+  slice(1:8)
+```
+
+Rola `"id"` pozwala utrzymać kolumnę pomocniczą w analizie bez używania jej do
+dopasowania modelu.
+
+## Zadanie 2. CV kontra Repeated CV
+
+Przygotowujemy ograniczony zbiór danych i jeden workflow.
+
+```{r}
+set.seed(2026)
+
+biomass_small <- biomass %>%
+  select(HHV, carbon, hydrogen, oxygen, nitrogen, sulfur) %>%
+  slice_sample(n = 180)
+
+biomass_rec <- recipe(HHV ~ ., data = biomass_small) %>%
+  step_normalize(all_predictors())
+
+biomass_wf <- workflow() %>%
+  add_recipe(biomass_rec) %>%
+  add_model(linear_reg() %>% set_engine("lm"))
+```
+
+Tworzymy zwykłą walidację krzyżową i walidację krzyżową z powtórzeniami.
+
+```{r}
+set.seed(2026)
+biomass_cv <- vfold_cv(biomass_small, v = 5, strata = HHV)
+
+set.seed(2026)
+biomass_repeated_cv <- vfold_cv(
+  biomass_small,
+  v = 5,
+  repeats = 3,
+  strata = HHV
+)
+```
+
+Uruchamiamy obliczenia równolegle.
+
+```{r}
+library(future)
+
+old_plan <- future::plan()
+future::plan(future::multicore, workers = 2)
+
+biomass_cv_res <- fit_resamples(
+  biomass_wf,
+  resamples = biomass_cv,
+  metrics = metric_set(rmse, rsq),
+  control = control_resamples(parallel_over = "resamples")
+)
+
+biomass_repeated_cv_res <- fit_resamples(
+  biomass_wf,
+  resamples = biomass_repeated_cv,
+  metrics = metric_set(rmse, rsq),
+  control = control_resamples(parallel_over = "resamples")
+)
+
+future::plan(old_plan)
+```
+
+Porównujemy wyniki.
+
+```{r}
+bind_rows(
+  collect_metrics(biomass_cv_res) %>% mutate(method = "CV"),
+  collect_metrics(biomass_repeated_cv_res) %>% mutate(method = "Repeated CV")
+) %>%
+  select(method, .metric, mean, n, std_err)
+```
+
+Walidacja krzyżowa z powtórzeniami daje więcej oszacowań metryki, dlatego
+zwykle ma mniejszy błąd standardowy średniej. Koszt obliczeniowy jest jednak
+większy, bo dopasowywanych jest więcej modeli.
+
+## Zadanie 3. Train, test, CV i bootstrap
+
+Przygotowujemy ograniczoną próbę danych i podział trening-test.
+
+```{r}
+set.seed(2026)
+
+cells_small <- cells %>%
+  select(-case) %>%
+  slice_sample(n = 450)
+
+cells_split <- initial_split(cells_small, prop = 0.75, strata = class)
+cells_train <- training(cells_split)
+cells_test <- testing(cells_split)
+```
+
+Definiujemy model i dopasowujemy go na zbiorze treningowym.
+
+```{r}
+log_spec <- logistic_reg() %>%
+  set_engine("glm")
+
+log_fit <- fit(log_spec, class ~ ., data = cells_train)
+```
+
+Funkcja pomocnicza liczy metryki na konkretnym zbiorze danych.
+
+```{r}
+class_metrics <- metric_set(accuracy, roc_auc)
+
+estimate_class_perf <- function(model, dat, method_name) {
+  dat %>%
+    select(class) %>%
+    bind_cols(predict(model, new_data = dat)) %>%
+    bind_cols(predict(model, new_data = dat, type = "prob")) %>%
+    class_metrics(truth = class, estimate = .pred_class, .pred_PS) %>%
+    mutate(method = method_name)
+}
+```
+
+Liczymy jakość na zbiorze treningowym i testowym.
+
+```{r}
+train_metrics <- estimate_class_perf(log_fit, cells_train, "train")
+test_metrics <- estimate_class_perf(log_fit, cells_test, "test")
+```
+
+Następnie tworzymy walidację krzyżową i próby bootstrapowe na zbiorze
+treningowym.
+
+```{r}
+set.seed(2026)
+cells_cv <- vfold_cv(cells_train, v = 5, strata = class)
+
+set.seed(2026)
+cells_boot <- bootstraps(cells_train, times = 10, strata = class)
+```
+
+Oceniamy model przez `fit_resamples()`.
+
+```{r}
+cv_metrics <- fit_resamples(
+  log_spec,
+  class ~ .,
+  resamples = cells_cv,
+  metrics = class_metrics
+) %>%
+  collect_metrics() %>%
+  mutate(method = "CV")
+
+boot_metrics <- fit_resamples(
+  log_spec,
+  class ~ .,
+  resamples = cells_boot,
+  metrics = class_metrics
+) %>%
+  collect_metrics() %>%
+  mutate(method = "bootstrap")
+```
+
+Zestawiamy cztery sposoby oceny.
+
+```{r}
+bind_rows(
+  train_metrics %>% transmute(method, .metric, estimate = .estimate),
+  test_metrics %>% transmute(method, .metric, estimate = .estimate),
+  cv_metrics %>% transmute(method, .metric, estimate = mean),
+  boot_metrics %>% transmute(method, .metric, estimate = mean)
+)
+```
+
+Ocena na zbiorze treningowym jest najbardziej optymistyczna, ponieważ model
+jest sprawdzany na obserwacjach użytych do dopasowania. Oceny resamplingowe są
+bardziej konserwatywne i zwykle bliższe wynikom na zbiorze testowym.
+
+## Zadanie 4. Szereg czasowy i równoległe resamplingowanie
+
+Przygotowujemy ograniczony szereg czasowy i wykonujemy podział chronologiczny.
+
+```{r}
+set.seed(2026)
+
+chicago_small <- Chicago %>%
+  arrange(date) %>%
+  slice_tail(n = 420) %>%
+  select(date, ridership, temp, humidity, wind, weather_rain, weather_snow) %>%
+  drop_na()
+
+chicago_split <- initial_time_split(chicago_small, prop = 0.8)
+chicago_train <- training(chicago_split)
+chicago_test <- testing(chicago_split)
+```
+
+Tworzymy workflow. Data jest przekształcana do indeksu liczbowego, a następnie
+usuwana z predyktorów.
+
+```{r}
+chicago_rec <- recipe(ridership ~ ., data = chicago_train) %>%
+  step_mutate(time_index = as.numeric(date)) %>%
+  step_rm(date) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+chicago_wf <- workflow() %>%
+  add_recipe(chicago_rec) %>%
+  add_model(linear_reg() %>% set_engine("lm"))
+```
+
+Budujemy resampling z przesuwającym się oknem.
+
+```{r}
+chicago_folds <- sliding_period(
+  chicago_train,
+  index = date,
+  period = "day",
+  lookback = 180,
+  assess_stop = 30,
+  step = 60,
+  complete = TRUE
+)
+
+chicago_folds
+```
+
+Uruchamiamy obliczenia równolegle i po zakończeniu przywracamy poprzedni plan.
+
+```{r}
+library(future)
+
+old_plan <- future::plan()
+future::plan(future::multicore, workers = 2)
+
+chicago_res <- fit_resamples(
+  chicago_wf,
+  resamples = chicago_folds,
+  metrics = metric_set(rmse, rsq),
+  control = control_resamples(parallel_over = "resamples")
+)
+
+future::plan(old_plan)
+```
+
+Wyniki resamplingu:
+
+```{r}
+collect_metrics(chicago_res)
+```
+
+Końcowa ocena na zbiorze testowym:
+
+```{r}
+chicago_final <- last_fit(chicago_wf, chicago_split)
+
+collect_metrics(chicago_final)
+```
+
+Porównanie wyników:
+
+```{r}
+cv_chicago <- collect_metrics(chicago_res) %>%
+  select(.metric, mean) %>%
+  rename(cv_estimate = mean)
+
+test_chicago <- collect_metrics(chicago_final) %>%
+  select(.metric, .estimate) %>%
+  rename(test_estimate = .estimate)
+
+left_join(cv_chicago, test_chicago, by = ".metric")
+```
+
+W tym przykładzie resampling czasowy ocenia model wyłącznie na kolejnych
+fragmentach zbioru treningowego, a test pozostaje końcowym sprawdzianem na
+najnowszych obserwacjach.
