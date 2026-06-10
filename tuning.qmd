@@ -9,21 +9,21 @@ bibliography: references.bib
 # Optymalizacja modeli
 
 Część modeli, jak np. regresja liniowa, posiada wszystkie parametry, które da
-się oszacować na podstawie zbioru uczącego. Są też modele, których parametry
-(przynajmniej część z nich) nie da się oszacować na podstawie próby. Przykładem
+się oszacować na podstawie zbioru uczącego. Są też modele, których pewnych parametrów
+nie szacuje się bezpośrednio podczas dopasowania modelu. Przykładem
 może być model kNN, w którym $k$ jest parametrem, którego wartość nie jest
 estymowana w czasie uczenia modelu. Takich przykładów można mnożyć, przykładowo
-głębokość drzew czy minimalna wielkość węzła aby dokonać podziału w lesie
-losowym również są parametremi, których wartości nie da się szacować w procesie
-uczenia modelu. Takie "odmienne" parametry będziemy nazywać hiperparametrami
+głębokość drzew czy minimalna wielkość węzła, aby dokonać podziału w lesie
+losowym również są parametrami, których wartości nie szacuje się w procesie
+uczenia modelu. Takie „odmienne" parametry będziemy nazywać hiperparametrami
 modelu.
 
 Czy to oznacza, że jesteśmy zdani na ich zgadywanie? `r emo::ji("see_no_evil")`
-Na szczęście nie. Proces w którym odbywa się poszukiwanie optymalnych
-parametrów modelu nazywamy optymalizacją modelu (ang. *tuning*). Definicję tę
-można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich parametrów jak
+Na szczęście nie. Proces, w którym odbywa się poszukiwanie optymalnych
+hiperparametrów modelu nazywamy dostrajaniem modelu (ang. *tuning*). Definicję tę
+można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich hiperparametrów jak
 szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba
-iteracji/epok w procesie uczenia. Co więcej również w procesie przygotowania
+iteracji/epok w procesie uczenia. Co więcej, również w procesie przygotowania
 danych do modelowania, występują parametry, których wartość należy
 optymalizować. Przykładowo liczba składowych głównych w PCA jest
 hiperparametrem, którego wartość należy dostrajać. Nawet w kontekście
@@ -34,12 +34,12 @@ kątem wyboru funkcji łączącej.
 width="400"}
 
 Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych
-parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy
+parametrów może wpłynąć na ostateczną jego postać? To zależy od tego, co chcemy
 optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór
 najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary
 oceniającej rozwiązania. @friedman2001 pokazał, że optymalna liczba drzew
-będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów
-oceny modelu - funkcji wiarogodności i dokładności (*accuracy*).
+będzie inna, jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów
+oceny modelu — funkcji wiarygodności i dokładności (*accuracy*).
 
 ```{r}
 library(tidymodels)
@@ -54,23 +54,23 @@ training_set <- training(split)
 testing_set <- testing(split)
 
 llhood <- function(...) {
-  logistic_reg() %>% 
-    set_engine("glm", ...) %>% 
-    fit(Class ~ ., data = training_set) %>% 
-    glance() %>% 
-    select(logLik)
+    logistic_reg() %>%
+        set_engine("glm", ...) %>%
+        fit(Class ~ ., data = training_set) %>%
+        glance() %>%
+        select(logLik)
 }
 
 bind_rows(
-  llhood(),
-  llhood(family = binomial(link = "probit")),
-  llhood(family = binomial(link = "cloglog"))
-) %>% 
-  mutate(link = c("logit", "probit", "c-log-log"))  %>% 
-  arrange(desc(logLik))
+    llhood(),
+    llhood(family = binomial(link = "probit")),
+    llhood(family = binomial(link = "cloglog"))
+) %>%
+    mutate(link = c("logit", "probit", "c-log-log")) %>%
+    arrange(desc(logLik))
 ```
 
-Biorąc pod uwagę powyższe wyniki model logistyczny okazuje się być najlepszy.
+Biorąc pod uwagę powyższe wyniki, model z funkcją łączącą logit osiąga największą wartość log-wiarygodności.
 Porównanie to niestety wyrażone zostało pojedynczą statystyką dla każdego
 modelu. Zatem nie możemy stwierdzić, czy różnice te są istotne statystycznie.
 Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.
@@ -78,53 +78,53 @@ Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.
 ```{r}
 #| cache: true
 #| label: fig-tune1
-#| fig-cap: Przedziały ufności dla funkcji wiarogodności
+#| fig-cap: Przedziały ufności dla funkcji wiarygodności
 #| fig-align: center
 set.seed(1201)
 rs <- vfold_cv(training_set, repeats = 10)
 
 # Return the individual resampled performance estimates:
 lloss <- function(...) {
-  perf_meas <- metric_set(roc_auc, mn_log_loss)
-    
-  logistic_reg() %>% 
-    set_engine("glm", ...) %>% 
-    fit_resamples(Class ~ A + B, rs, metrics = perf_meas) %>% 
-    collect_metrics(summarize = FALSE) %>%
-    select(id, id2, .metric, .estimate)
+    perf_meas <- metric_set(roc_auc, mn_log_loss)
+
+    logistic_reg() %>%
+        set_engine("glm", ...) %>%
+        fit_resamples(Class ~ A + B, rs, metrics = perf_meas) %>%
+        collect_metrics(summarize = FALSE) %>%
+        select(id, id2, .metric, .estimate)
 }
 
-resampled_res <- 
-  bind_rows(
-    lloss()                                    %>% mutate(model = "logistic"),
-    lloss(family = binomial(link = "probit"))  %>% mutate(model = "probit"),
-    lloss(family = binomial(link = "cloglog")) %>% mutate(model = "c-log-log")     
-  ) %>%
-  # Convert log-loss to log-likelihood:
-  mutate(.estimate = ifelse(.metric == "mn_log_loss", -.estimate, .estimate)) %>% 
-  group_by(model, .metric) %>% 
-  summarize(
-    mean = mean(.estimate, na.rm = TRUE),
-    std_err = sd(.estimate, na.rm = TRUE) / sum(!is.na(.estimate)), 
-    .groups = "drop"
-  )
+resampled_res <-
+    bind_rows(
+        lloss() %>% mutate(model = "logistic"),
+        lloss(family = binomial(link = "probit")) %>% mutate(model = "probit"),
+        lloss(family = binomial(link = "cloglog")) %>% mutate(model = "c-log-log")
+    ) %>%
+    # Convert log-loss to log-likelihood:
+    mutate(.estimate = ifelse(.metric == "mn_log_loss", -.estimate, .estimate)) %>%
+    group_by(model, .metric) %>%
+    summarize(
+        mean = mean(.estimate, na.rm = TRUE),
+        std_err = sd(.estimate, na.rm = TRUE) / sqrt(sum(!is.na(.estimate))),
+        .groups = "drop"
+    )
 
-resampled_res %>% 
-  filter(.metric == "mn_log_loss") %>% 
-  ggplot(aes(x = mean, y = model)) + 
-  geom_point() + 
-  geom_errorbar(aes(xmin = mean - 1.96 * std_err, xmax = mean + 1.96 * std_err),
-                width = .1) + 
-  labs(y = NULL, x = "log-likelihood")
+resampled_res %>%
+    filter(.metric == "mn_log_loss") %>%
+    ggplot(aes(x = mean, y = model)) +
+    geom_point() +
+    geom_errorbar(aes(xmin = mean - 1.96 * std_err, xmax = mean + 1.96 * std_err),
+        width = .1
+    ) +
+    labs(y = NULL, x = "log-likelihood")
 ```
 
 Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na
-mniejszym zbiorze danych; wartość uzyskana przez `broom::glance()` jest sumą,
-podczas gdy `yardstick::mn_log_loss()` jest średnią. Wyniki te pokazują, że
-istnieją znaczne dowody na to, że wybór funkcji łączącej ma znaczenie i że
-model logistyczny jest lepszy.
+mniejszym zbiorze danych; wartość uzyskana przez `broom::glance()` jest sumaryczną log-wiarygodnością,
+podczas gdy `yardstick::mn_log_loss()` jest średnią stratą logarytmiczną na obserwację, a po zmianie znaku daje średnią log-wiarygodność na obserwację. Wyniki sugerują, że
+wybór funkcji łączącej ma znaczenie i że model z linkiem logit wypada najlepiej dla tej metryki.
 
-A co gdy użyjemy innej miary oceny dopasowania?
+A co, gdy użyjemy innej miary oceny dopasowania?
 
 ![Porównanie pól pod krzywą
 ROC](images/Zrzut%20ekranu%202023-02-25%20o%2020.27.01.png){#fig-tune2
@@ -140,14 +140,13 @@ dotyczących wyboru wartości parametrów. W tym przypadku jedna metryka wydaje
 się wyraźnie sortować modele, podczas gdy inna nie wykazuje żadnej różnicy.
 :::
 
-@Thomas2020 sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz "gry"
-metrykami[^tuning-1] należy używać całych zestawów metryk, które dadzą
-pełniejszy obraz oraz konsultowania wyników z odbiorcami.
+@Thomas2020 sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz „gry"
+metrykami[^tuning-1], należy używać zestawów metryk, które dają pełniejszy obraz, oraz konsultować wybór metryk z odbiorcami wyników.
 
 [^tuning-1]: to jego oryginalne określenie mające ukazać problem doboru jednej
     metryki, wg której najlepszy model osiąga wysoką jakość dopasowania
 
-## Konsekwencje złego oszacowania parametrów
+## Konsekwencje złego doboru hiperparametrów
 
 Wiele parametrów dostrajania modyfikuje stopień złożoności modelu. Większa
 złożoność często oznacza większą plastyczność wzorców, które model może
@@ -162,17 +161,17 @@ nowych danych.
 ![](images/tw1.jpeg){.column-margin fig-align="center" width="400"}
 
 Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną
-warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji.
-Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja
-logistyczna[^tuning-2]. Jednak wraz ze wzrostem liczby neuronów w warstwie
-ukrytej rośnie złożoność modelu.
+warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcją aktywacji.
+Sieć neuronowa bez warstwy ukrytej (lub z liniową transformacją prowadzącą bezpośrednio do sigmoidy) jest równoważna regresji
+logistycznej[^tuning-2]. Jednak już dodanie warstwy ukrytej z nieliniową aktywacją zwiększa złożoność modelu — wraz ze wzrostem liczby neuronów w warstwie
+ukrytej rośnie zdolność do reprezentowania złożonych granic decyzyjnych.
 
 Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych
 dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w
 warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności,
 skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych
 jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru
-treningowego. Jeśli ocena modelu jest dokonywana na podstawie wartości ROC
+treningowego. Jeśli ocena modelu jest dokonywana na podstawie ROC AUC
 zbioru treningowego, to preferuje się wiele neuronów w warstwie ukrytej, tak
 aby można było prawie całkowicie wyeliminować błędy.
 
@@ -182,7 +181,7 @@ zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj
 trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego)
 nałożone na zbiory treningowe i testowe na @fig-tune3.
 
-![Porównanie sieci neuronowych z różna liczbą neuronów w warstwie
+![Porównanie sieci neuronowych z różną liczbą neuronów w warstwie
 ukrytej](images/Zrzut%20ekranu%202023-02-25%20o%2021.01.05.png){#fig-tune3
 fig-align="center" width="600"}
 
@@ -191,13 +190,12 @@ elastycznie do danych (ponieważ jest ograniczony do bycia liniowym). Model z
 czterema jednostkami ukrytymi zaczyna wykazywać oznaki przeuczenia z
 nierealistyczną granicą dla wartości oddalonych od chmury danych. Dla 20
 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworząc małe
-wyspy wokół pojedynczych obserwacji, aby zminimalizować współczynnik błędu.
+wyspy wokół pojedynczych obserwacji, aby zminimalizować funkcję straty.
 Wzorce te nie powtarzają się w zbiorze testowym. W przypadku modelu
 składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego
 wynosi 0,944, ale wartość dla zbioru testowego to 0,855.
 
-[^tuning-2]: oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a
-    wejściem do niego jest warstwa z aktywacją liniową
+[^tuning-2]: dokładniej: sieć neuronowa bez warstwy ukrytej, z sigmoidalną funkcją aktywacji na wyjściu, jest równoważna regresji logistycznej
 
 ## Dwa podejścia do tuningu
 
@@ -208,8 +206,7 @@ Istnieją dwa sposoby realizacji tuningu modeli:
     wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie
     siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów
     siatki wymaganych do pokrycia przestrzeni parametrów może stać się
-    niemożliwa do opanowania. Z jednej strony ten fakt przemawiałby za nie
-    wybieraniem tej metody do poszukiwania optymalnych parametrów, ale jest to
+    niemożliwa do opanowania. Z jednej strony ten fakt przemawiałby za niewybieraniem tej metody do poszukiwania optymalnych parametrów, ale jest to
     najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany w
     kontekście kierunków przeszukiwania.
 -   przeszukiwanie iteracyjne lub sekwencyjne - gdy sekwencyjnie odkrywamy nowe
@@ -225,74 +222,71 @@ Można też stosować rozwiązania hybrydowe, gdzie metoda siatki jest stosowana
 wstępnego oszacowania parametrów modelu, a następnie metodami iteracyjnymi
 korygowane są wspomniane parametry.
 
-W procesie dostrajania modelu, możemy szacować hiperparametry główne oraz
-specyficzne dla danego silnika metody.
+W procesie dostrajania modelu możemy kalibrować zarówno hiperparametry główne modelu, jak i hiperparametry specyficzne dla danego silnika.
 
 ```{r}
-#| eval: false
-
-rand_forest(trees = 2000, min_n = 10) %>%                   # <- main arguments
-  set_engine("ranger", regularization.factor = 0.5)         # <- engine-specific
+rand_forest(trees = 2000, min_n = 10) %>% # <- main arguments
+    set_engine("ranger", regularization.factor = 0.5) # <- engine-specific
 ```
 
 Aby przekazać informację do przebiegu pracy, że chcemy kalibrować pewne
 parametry modelu, należy podstawić pod ich wartości funkcję `tune()`.
 
 ```{r}
-
-neural_net_spec <- 
-  mlp(hidden_units = tune()) %>%
-  set_mode("regression") %>%
-  set_engine("keras")
+neural_net_spec <-
+    mlp(hidden_units = tune()) %>%
+    set_mode("regression") %>%
+    set_engine("keras")
 ```
 
-Chcąc zobaczyć jak model interpretuje takie podstawienie możemy użyć
+Chcąc zobaczyć, jak model interpretuje takie podstawienie możemy użyć
 
 ```{r}
-extract_parameter_set_dials(neural_net_spec)
+extract_parameter_set_dials(neural_net_spec) |>
+    as_tibble()
 ```
 
 Wyniki pokazują wartość `nparam[+]`, co wskazuje, że liczba jednostek ukrytych
 jest parametrem liczbowym. Istnieje opcjonalny argument identyfikacyjny, który
 kojarzy nazwę z parametrami. Może się to przydać, gdy ten sam rodzaj parametrów
 jest dostrajany w różnych miejscach. Na przykład, w przypadku danych
-dotyczących mieszkania w Ames, przepis zakodował zarówno długość jak i
+dotyczących mieszkania w Ames, przepis zakodował zarówno długość, jak i
 szerokość geograficzną za pomocą funkcji `spline`. Jeśli chcemy dostroić dwie
 funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy
 `step_ns()` dwukrotnie, raz dla każdego predyktora. Aby parametry były
-identyfikowalne, argument "identyfikator" może przyjąć dowolny ciąg znaków:
+identyfikowalne, argument „identyfikator" może przyjąć dowolny ciąg znaków:
 
 ```{r}
 set.seed(1001)
-ames <- ames |>mutate(Sale_Price = log10(Sale_Price))
+ames <- ames |> mutate(Sale_Price = log10(Sale_Price))
 ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
 ames_train <- training(ames_split)
-ames_test  <-  testing(ames_split)
+ames_test <- testing(ames_split)
 
-ames_rec <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
-           Latitude + Longitude, data = ames_train)  %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_other(Neighborhood, threshold = tune()) %>% 
-  step_dummy(all_nominal_predictors()) %>% 
-  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
-  step_ns(Longitude, deg_free = tune("longitude df")) %>% 
-  step_ns(Latitude,  deg_free = tune("latitude df"))
+ames_rec <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+        Latitude + Longitude, data = ames_train) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_other(Neighborhood, threshold = tune()) %>%
+    step_dummy(all_nominal_predictors()) %>%
+    step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_")) %>%
+    step_ns(Longitude, deg_free = tune("longitude df")) %>%
+    step_ns(Latitude, deg_free = tune("latitude df"))
 
 recipes_param <- extract_parameter_set_dials(ames_rec)
-recipes_param
+recipes_param |> as_tibble()
 ```
 
 Gdy receptura i specyfikacja modelu są połączone za pomocą przepływu pracy, oba
 zestawy parametrów są wyświetlane.
 
 ```{r}
-wflow_param <- 
-  workflow() %>% 
-  add_recipe(ames_rec) %>% 
-  add_model(neural_net_spec) %>% 
-  extract_parameter_set_dials()
-wflow_param
+wflow_param <-
+    workflow() %>%
+    add_recipe(ames_rec) %>%
+    add_model(neural_net_spec) %>%
+    extract_parameter_set_dials()
+wflow_param |> as_tibble()
 ```
 
 W tym przypadku dodanie splajnów do sieci neuronowej jest tylko na potrzeby
@@ -304,8 +298,7 @@ Każdy argument parametru dostrajania ma odpowiadającą mu funkcję w pakiecie
 argument parametru:
 
 ```{r}
-hidden_units()
-threshold()
+parameters(hidden_units(), threshold()) |> as_tibble()
 ```
 
 Parametr `deg_free` jest kontrprzykładem - pojęcie stopni swobody pojawia się w
@@ -314,21 +307,25 @@ funkcja `dials` o nazwie `spline_degree()`, która jest domyślnie wywoływana d
 splajnów:
 
 ```{r}
-spline_degree()
+parameters(spline_degree()) |> as_tibble()
 ```
 
 Pakiet `dials` posiada również funkcję wygodną do wyodrębnienia konkretnego
 obiektu parametru:
 
 ```{r}
-wflow_param %>% extract_parameter_dials("threshold")
+wflow_param %>%
+    extract_parameter_dials("threshold") |>
+    parameters() |>
+    as_tibble()
 ```
 
 Wewnątrz zestawu parametrów, zakres parametrów może być również aktualizowany:
 
 ```{r}
-extract_parameter_set_dials(ames_rec) %>% 
-  update(threshold = threshold(c(0.8, 1.0)))
+extract_parameter_set_dials(ames_rec) %>%
+    update(threshold = threshold(c(0.01, 0.10))) |>
+    as_tibble()
 ```
 
 W niektórych przypadkach łatwo jest mieć rozsądne wartości domyślne dla zakresu
@@ -340,13 +337,13 @@ Bez znajomości liczby predyktorów, ten zakres parametrów nie może być wstę
 skonfigurowany i wymaga finalizacji.
 
 ```{r}
-rf_spec <- 
-  rand_forest(mtry = tune()) %>% 
-  set_engine("ranger", regularization.factor = tune("regularization")) %>%
-  set_mode("regression")
+rf_spec <-
+    rand_forest(mtry = tune()) %>%
+    set_engine("ranger", regularization.factor = tune("regularization")) %>%
+    set_mode("regression")
 
 rf_param <- extract_parameter_set_dials(rf_spec)
-rf_param
+rf_param |> as_tibble()
 ```
 
 Kompletne obiekty parametrów mają `[+]` w podsumowaniu; wartość `[?]` wskazuje,
@@ -355,8 +352,9 @@ radzenia sobie z tym problemem. Pierwszą jest użycie `update()`, aby dodać
 zakres na podstawie tego, co wiesz o wymiarach danych:
 
 ```{r}
-rf_param %>% 
-  update(mtry = mtry(c(1, 70)))
+rf_param %>%
+    update(mtry = mtry(c(1, 70))) |>
+    as_tibble()
 ```
 
 Jednak to podejście może nie działać, jeśli receptura jest dołączona do
@@ -365,26 +363,29 @@ te kroki nie są przeznaczone do dostrajania, funkcja `finalize()` może wykona�
 recepturę raz, aby uzyskać wymiary:
 
 ```{r}
-pca_rec <- 
-  recipe(Sale_Price ~ ., data = ames_train) %>% 
-  # Select the square-footage predictors and extract their PCA components:
-  step_normalize(contains("SF")) %>% 
-  # Select the number of components needed to capture 95% of
-  # the variance in the predictors. 
-  step_pca(contains("SF"), threshold = .95)
-  
-updated_param <- 
-  workflow() %>% 
-  add_model(rf_spec) %>% 
-  add_recipe(pca_rec) %>% 
-  extract_parameter_set_dials() %>% 
-  finalize(ames_train)
-updated_param
+pca_rec <-
+    recipe(Sale_Price ~ ., data = ames_train) %>%
+    # Select the square-footage predictors and extract their PCA components:
+    step_normalize(contains("SF")) %>%
+    # Select the number of components needed to capture 95% of
+    # the variance in the predictors.
+    step_pca(contains("SF"), threshold = .95)
 
-updated_param %>% extract_parameter_dials("mtry")
+updated_param <-
+    workflow() %>%
+    add_model(rf_spec) %>%
+    add_recipe(pca_rec) %>%
+    extract_parameter_set_dials() %>%
+    finalize(ames_train)
+updated_param |> as_tibble()
+
+updated_param %>%
+    extract_parameter_dials("mtry") |>
+    parameters() |>
+    as_tibble()
 ```
 
-Gdy receptura jest przygotowana, funkcja `finalize()` uczy się ustawiać górny
+Gdy receptura jest przygotowana, funkcja `finalize()` wykorzystuje dane treningowe do ustalenia górnej granicy
 zakres `mtry` na 74 predyktory. Dodatkowo, wyniki
 `extract_parameter_set_dials()` będą zawierały parametry specyficzne dla
 silnika (jeśli takie istnieją). Są one odkrywane w taki sam sposób jak główne
@@ -393,8 +394,8 @@ parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznyc
 dla silnika:
 
 ```{r}
-rf_param
-regularization_factor()
+rf_param |> as_tibble()
+parameters(regularization_factor()) |> as_tibble()
 ```
 
 Wreszcie, niektóre parametry dostrajania są związane z transformacjami. Dobrym
@@ -404,7 +405,13 @@ skali logarytmicznej. Podstawowy obiekt parametru `dials` wskazuje, że
 domyślnie używana jest transformacja:
 
 ```{r}
-penalty()
+tibble(
+    type = penalty()$type,
+    range = paste(penalty()$range, collapse = ", "),
+    inclusive = paste(penalty()$inclusive, collapse = ", "),
+    trans = penalty()$trans$name,
+    label = penalty()$label
+)
 ```
 
 Jest to ważna informacja, zwłaszcza przy zmianie zakresu. Nowe wartości zakresu
@@ -412,14 +419,18 @@ muszą być w przekształconych jednostkach:
 
 ```{r}
 # correct method to have penalty values between 0.1 and 1.0
-penalty(c(-1, 0)) %>% value_sample(1000) %>% summary()
+penalty(c(-1, 0)) %>%
+    value_sample(1000) %>%
+    summary()
 
 # incorrect:
-penalty(c(0.1, 1.0)) %>% value_sample(1000) %>% summary()
+penalty(c(0.1, 1.0)) %>%
+    value_sample(1000) %>%
+    summary()
 ```
 
 Skala może być zmieniona w razie potrzeby za pomocą argumentu `trans`.
 
 ```{r}
-penalty(trans = NULL, range = 10^c(-10, 0))
+parameters(penalty(trans = NULL, range = 10^c(-10, 0))) |> as_tibble()
 ```

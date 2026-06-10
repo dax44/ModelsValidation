@@ -39,9 +39,21 @@ nieznanych wartościach i ustawia ich obiekty `dials`:
 
 ```{r}
 mlp_param <- extract_parameter_set_dials(mlp_spec)
-mlp_param %>% extract_parameter_dials("hidden_units")
-mlp_param %>% extract_parameter_dials("penalty")
-mlp_param %>% extract_parameter_dials("epochs")
+mlp_param |> as_tibble()
+
+# Domyślne zakresy dla każdego parametru:
+purrr::map_dfr(
+  c("hidden_units", "penalty", "epochs"),
+  function(nm) {
+    p <- extract_parameter_dials(mlp_param, nm)
+    tibble(
+      parameter = nm,
+      type = p$type,
+      range = paste0("[", paste(p$range, collapse = ", "), "]"),
+      transformer = if (is.null(p$trans)) "-" else p$trans$name
+    )
+  }
+)
 ```
 
 To wyjście wskazuje, że obiekty parametrów są kompletne i wyświetla ich
@@ -137,11 +149,11 @@ nakładających się lub nadmiarowych wartości. Przykładami takich planów są
 hipersześciany łacińskie (ang. *Latin hypercube*) [@mckay1979], plany
 maksymalnej entropii (ang. *maximum entropy*)
 [@shewryMaximumEntropySampling1987a], plany maksymalnej projekcji (ang.
-*maximum projection*) [@joseph2015]i inne.
+*maximum projection*) [@joseph2015] i inne.
 
 ```{r}
 #| label: fig-grid2
-#| fig-cap: Siatka oparka na kwadracie łacińskim dla 20 kombinacji parametrów
+#| fig-cap: Siatka oparta na hipersześcianie łacińskim dla 20 kombinacji parametrów
 set.seed(1303)
 mlp_param %>% 
   grid_latin_hypercube(size = 20, original = FALSE) %>% 
@@ -158,7 +170,7 @@ hiperparametrów.
 
 Konstrukcje wypełniające przestrzeń mogą być bardzo skuteczne w reprezentowaniu
 przestrzeni parametrów. Domyślnym wzorem używanym przez pakiet `tune` jest plan
-kwadratu łacińskiego. Ma on tendencję do tworzenia siatek, które dobrze
+hipersześcianu łacińskiego. Ma on tendencję do tworzenia siatek, które dobrze
 pokrywają przestrzeń kandydatów i drastycznie zwiększają szanse na znalezienie
 dobrych wyników.
 
@@ -245,7 +257,7 @@ mlp_param <-
 ```
 
 ::: callout-tip
-W `step_pca()`, użycie zerowej liczby komponentów PCA oznazca pominięcie
+W `step_pca()`, użycie zerowej liczby komponentów PCA oznacza pominięcie
 ekstrakcji cech. W ten sposób oryginalne predyktory mogą być bezpośrednio
 porównywane z wynikami, które zawierają komponenty PCA.
 :::
@@ -309,7 +321,7 @@ Bazując na tych wynikach, sensowne byłoby przeprowadzenie kolejnego przebiegu
 przeszukiwania siatki z większymi wartościami kary. Aby użyć konstrukcji
 wypełniającej przestrzeń, można podać argument `grid` jako liczbę całkowitą lub
 za pomocą jednej z funkcji `grid_*()` stworzyć ramkę danych. Aby ocenić ten sam
-zakres przy użyciu planu kwadratu łacińskiego z 20 zestawami parametrów:
+zakres przy użyciu planu hipersześcianu łacińskiego z 20 zestawami parametrów:
 
 ```{r}
 #| cache: true
@@ -425,7 +437,8 @@ wykorzystać odpowiednią funkcję pakietu `usemodels`.
 
 ```{r}
 set.seed(1001)
-ames <- ames |>mutate(Sale_Price = log10(Sale_Price))
+data(ames, package = "modeldata")
+ames <- ames |> mutate(Sale_Price = log10(Sale_Price))
 ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
 ames_train <- training(ames_split)
 ames_test  <-  testing(ames_split)

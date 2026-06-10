@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>10&nbsp; Dostrajanie z przeszukiwaniem siatki – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -308,7 +310,7 @@ div.csl-indent {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -473,33 +475,59 @@ div.csl-indent {
 <li>wielkość kar w regularyzacji.</li>
 </ul>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mlp_spec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"nnet"</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Argument <code>trace = 0</code> zapobiega dodatkowemu rejestrowaniu procesu szkolenia. Funkcja <code>extract_parameter_set_dials()</code> może wyodrębnić zbiór argumentów o nieznanych wartościach i ustawia ich obiekty <code>dials</code>:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">mlp_spec</span><span class="op">)</span></span>
-<span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"hidden_units"</span><span class="op">)</span></span>
-<span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"penalty"</span><span class="op">)</span></span>
-<span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"epochs"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">mlp_spec</span><span class="op">)</span></span>
+<span><span class="va">mlp_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  name         id           source     component component_id object     
+  &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 hidden_units hidden_units model_spec mlp       main         &lt;nparam[+]&gt;
+2 penalty      penalty      model_spec mlp       main         &lt;nparam[+]&gt;
+3 epochs       epochs       model_spec mlp       main         &lt;nparam[+]&gt;</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Domyślne zakresy dla każdego parametru:</span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hidden_units"</span>, <span class="st">"penalty"</span>, <span class="st">"epochs"</span><span class="op">)</span>,</span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">nm</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="va">mlp_param</span>, <span class="va">nm</span><span class="op">)</span></span>
+<span>    <span class="fu">tibble</span><span class="op">(</span></span>
+<span>      parameter <span class="op">=</span> <span class="va">nm</span>,</span>
+<span>      type <span class="op">=</span> <span class="va">p</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>      range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"["</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">p</span><span class="op">$</span><span class="va">range</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"]"</span><span class="op">)</span>,</span>
+<span>      transformer <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">p</span><span class="op">$</span><span class="va">trans</span><span class="op">)</span><span class="op">)</span> <span class="st">"-"</span> <span class="kw">else</span> <span class="va">p</span><span class="op">$</span><span class="va">trans</span><span class="op">$</span><span class="va">name</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  parameter    type    range      transformer
+  &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;      
+1 hidden_units integer [1, 10]    -          
+2 penalty      double  [-10, 0]   log-10     
+3 epochs       integer [10, 1000] -          </code></pre>
+</div>
 </div>
 <p>To wyjście wskazuje, że obiekty parametrów są kompletne i wyświetla ich domyślne zakresy. Wartości te zostaną wykorzystane do zademonstrowania, jak tworzyć różne typy siatek parametrów.</p>
 <section id="siatki-regularne" class="level2" data-number="10.1"><h2 data-number="10.1" class="anchored" data-anchor-id="siatki-regularne">
 <span class="header-section-number">10.1</span> Siatki regularne</h2>
 <p>Regularne siatki są kombinacjami oddzielnych zestawów wartości parametrów. Najpierw użytkownik tworzy odrębny zestaw wartości dla każdego parametru. Liczba możliwych wartości nie musi być taka sama dla każdego parametru. Funkcja <code>tidyr</code> <code>crossing()</code> jest jednym ze sposobów tworzenia siatki regularnej:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">crossing</span><span class="op">(</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">crossing</span><span class="op">(</span></span>
 <span>  hidden_units <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
 <span>  penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>  epochs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 3
    hidden_units penalty epochs
@@ -520,7 +548,7 @@ div.csl-indent {
 </div>
 <p>Obiekt parametru zna zakresy parametrów. Pakiet <code>dials</code> zawiera zestaw funkcji <code>grid_*()</code>, które przyjmują obiekt parametru jako dane wejściowe, aby wytworzyć różne rodzaje siatek. Na przykład:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">grid_regular</span><span class="op">(</span><span class="va">mlp_param</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">grid_regular</span><span class="op">(</span><span class="va">mlp_param</span>, levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
   hidden_units      penalty epochs
@@ -537,8 +565,8 @@ div.csl-indent {
 </div>
 <p>Argument <code>levels</code> to liczba poziomów na parametr do utworzenia. Może również przyjąć uszczegółowiony wektor wartości:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fl">3</span>, penalty <span class="op">=</span> <span class="fl">2</span>, epochs <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fl">3</span>, penalty <span class="op">=</span> <span class="fl">2</span>, epochs <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 3
    hidden_units      penalty epochs
@@ -557,16 +585,16 @@ div.csl-indent {
 12           10 1              1000</code></pre>
 </div>
 </div>
-<p>Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują wszystkich możliwych wartości każdego zestawu parametrów. Można również wykorzystać te konstrukcje czynnikowe ułamkowe <span class="citation" data-cites="booth1979">(<a href="references.html#ref-booth1979" role="doc-biblioref">Booth i in. 1979</a>)</span>.</p>
+<p>Istnieją techniki tworzenia regularnych siatek, które nie wykorzystują wszystkich możliwych wartości każdego zestawu parametrów. Można również wykorzystać te konstrukcje czynnikowe ułamkowe <span class="citation" data-cites="booth1979">(<a href="references.html#ref-booth1979" role="doc-biblioref">Booth et al. 1979</a>)</span>.</p>
 <p>Jedną z zalet stosowania regularnej siatki jest to, że związki i wzorce między dostrajaniem parametrów i metrykami modelu są łatwo zrozumiałe. Czynnikowa natura tych planów pozwala na zbadanie każdego parametru osobno z niewielką współzależnością między parametrami.</p>
 </section><section id="siatki-nieregularne" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="siatki-nieregularne">
 <span class="header-section-number">10.2</span> Siatki nieregularne</h2>
 <p>Istnieje kilka możliwości tworzenia nieregularnych siatek. Pierwszą z nich jest użycie losowego próbkowania w całym zakresie parametrów. Funkcja <code>grid_random()</code> generuje niezależne rozkłady jednostajne wartości w całym zakresie parametrów. Jeśli parametr ma powiązane przekształcenie (takie jak mamy dla kary), liczby losowe są generowane w przekształconej skali. Utwórzmy siatkę losową dla parametrów z naszej przykładowej sieci neuronowej:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1301</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1301</span><span class="op">)</span></span>
 <span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">grid_random</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># 'size' is the number of combinations</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>  hidden_units       penalty              epochs     
  Min.   : 1.000   Min.   :0.000e+00   Min.   : 10.0  
@@ -580,7 +608,7 @@ div.csl-indent {
 <p>Dla <code>penalty()</code> liczby losowe są jednostajne w skali logarytmicznej ale wartości w siatce są w jednostkach naturalnych.</p>
 <p>Problem z siatkami losowymi polega na tym, że przy małych i średnich siatkach wartości losowe mogą powodować nakładanie się kombinacji parametrów. Ponadto siatka losowa musi pokryć całą przestrzeń parametrów, a prawdopodobieństwo dobrego pokrycia rośnie wraz z liczbą wartości siatki. Nawet dla próbki 20 obserwacji, na <a href="#fig-grid1" class="quarto-xref">Rys.&nbsp;<span>10.1</span></a> widać pewne nakładanie się punktów dla naszego przykładowego perceptronu wielowarstwowego.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1302</span><span class="op">)</span></span>
 <span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="co"># The 'original = FALSE' option keeps penalty in log10 units</span></span>
@@ -589,7 +617,7 @@ div.csl-indent {
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_blank.html">geom_blank</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/facet_matrix.html">facet_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">hidden_units</span>, <span class="va">penalty</span>, <span class="va">epochs</span><span class="op">)</span>, layer.diag <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Random design with 20 candidates"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Random design with 20 candidates"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-grid1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-grid1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -601,50 +629,50 @@ Rys.&nbsp;10.1: Siatka losowa dla 20 kombinacji parametrów
 </div>
 </div>
 </div>
-<p>Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych zwanych planami wypełniającymi przestrzeń. Chociaż różne metody projektowania mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia nakładających się lub nadmiarowych wartości. Przykładami takich planów są hipersześciany łacińskie (ang. <em>Latin hypercube</em>) <span class="citation" data-cites="mckay1979">(<a href="references.html#ref-mckay1979" role="doc-biblioref">McKay, Beckman, i Conover 1979</a>)</span>, plany maksymalnej entropii (ang. <em>maximum entropy</em>) <span class="citation" data-cites="shewryMaximumEntropySampling1987a">(<a href="references.html#ref-shewryMaximumEntropySampling1987a" role="doc-biblioref">Shewry i Wynn 1987</a>)</span>, plany maksymalnej projekcji (ang. <em>maximum projection</em>) <span class="citation" data-cites="joseph2015">(<a href="references.html#ref-joseph2015" role="doc-biblioref">Joseph, Gul, i Ba 2015</a>)</span>i inne.</p>
+<p>Znacznie lepszym podejściem jest zastosowanie zestawu planów eksperymentalnych zwanych planami wypełniającymi przestrzeń. Chociaż różne metody projektowania mają nieco inne cele, to generalnie znajdują one konfigurację punktów, które pokrywają przestrzeń parametrów z najmniejszym prawdopodobieństwem wystąpienia nakładających się lub nadmiarowych wartości. Przykładami takich planów są hipersześciany łacińskie (ang. <em>Latin hypercube</em>) <span class="citation" data-cites="mckay1979">(<a href="references.html#ref-mckay1979" role="doc-biblioref">McKay et al. 1979</a>)</span>, plany maksymalnej entropii (ang. <em>maximum entropy</em>) <span class="citation" data-cites="shewryMaximumEntropySampling1987a">(<a href="references.html#ref-shewryMaximumEntropySampling1987a" role="doc-biblioref">Shewry i Wynn 1987</a>)</span>, plany maksymalnej projekcji (ang. <em>maximum projection</em>) <span class="citation" data-cites="joseph2015">(<a href="references.html#ref-joseph2015" role="doc-biblioref">Joseph et al. 2015</a>)</span> i inne.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1303</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1303</span><span class="op">)</span></span>
 <span><span class="va">mlp_param</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">grid_latin_hypercube</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">20</span>, original <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.panel_x</span>, y <span class="op">=</span> <span class="va">.panel_y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_blank.html">geom_blank</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/facet_matrix.html">facet_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">hidden_units</span>, <span class="va">penalty</span>, <span class="va">epochs</span><span class="op">)</span>, layer.diag <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Latin Hypercube design with 20 candidates"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Latin Hypercube design with 20 candidates"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-grid2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-grid2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="grid_search_files/figure-html/fig-grid2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;10.2: Siatka oparka na kwadracie łacińskim dla 20 kombinacji parametrów"><img src="grid_search_files/figure-html/fig-grid2-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="grid_search_files/figure-html/fig-grid2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;10.2: Siatka oparta na hipersześcianie łacińskim dla 20 kombinacji parametrów"><img src="grid_search_files/figure-html/fig-grid2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-grid2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Rys.&nbsp;10.2: Siatka oparka na kwadracie łacińskim dla 20 kombinacji parametrów
+Rys.&nbsp;10.2: Siatka oparta na hipersześcianie łacińskim dla 20 kombinacji parametrów
 </figcaption></figure>
 </div>
 </div>
 </div>
 <p>Chociaż nie jest to idealne rozwiązanie, hipersześcian łaciński umieszcza punkty dalej od siebie i pozwala na lepszą eksplorację przestrzeni hiperparametrów.</p>
-<p>Konstrukcje wypełniające przestrzeń mogą być bardzo skuteczne w reprezentowaniu przestrzeni parametrów. Domyślnym wzorem używanym przez pakiet <code>tune</code> jest plan kwadratu łacińskiego. Ma on tendencję do tworzenia siatek, które dobrze pokrywają przestrzeń kandydatów i drastycznie zwiększają szanse na znalezienie dobrych wyników.</p>
+<p>Konstrukcje wypełniające przestrzeń mogą być bardzo skuteczne w reprezentowaniu przestrzeni parametrów. Domyślnym wzorem używanym przez pakiet <code>tune</code> jest plan hipersześcianu łacińskiego. Ma on tendencję do tworzenia siatek, które dobrze pokrywają przestrzeń kandydatów i drastycznie zwiększają szanse na znalezienie dobrych wyników.</p>
 </section><section id="ocena-hiperparametrów-sieci" class="level2 page-columns page-full" data-number="10.3"><h2 data-number="10.3" class="anchored" data-anchor-id="ocena-hiperparametrów-sieci">
 <span class="header-section-number">10.3</span> Ocena hiperparametrów sieci</h2>
 <p>Aby wybrać najlepszą kombinację parametrów dostrajania, każdy zestaw kandydatów jest oceniany przy użyciu danych, które nie były używane do szkolenia tego modelu. Metody ponownego próbkowania lub pojedynczy zestaw walidacyjny dobrze sprawdzają się w tym celu.</p>
 <p>Po resamplingu, użytkownik wybiera najbardziej odpowiedni zestaw parametrów. Sensowne może być wybranie empirycznie najlepszej kombinacji parametrów lub ukierunkowanie wyboru na inne aspekty dopasowania modelu, takie jak prostota modelu.</p>
-<p>W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do demonstracji tuningu modelu. Dane pochodzą od <span class="citation" data-cites="Hill2007">Hill i in. (<a href="references.html#ref-Hill2007" role="doc-biblioref">2007</a>)</span>, którzy opracowali zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad nowotworami. Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich komórkach raka piersi. Predyktory te reprezentują cechy kształtu i intensywności różnych części komórek (np. jądro, granica komórki itp.). Istnieje wysoki stopień korelacji między predyktorami. Na przykład, istnieje kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę komórki. Wiele predyktorów ma rozkłady skośne.</p>
+<p>W tym i następnym rozdziale wykorzystujemy zestaw danych klasyfikacyjnych do demonstracji tuningu modelu. Dane pochodzą od <span class="citation" data-cites="Hill2007">Hill et al. (<a href="references.html#ref-Hill2007" role="doc-biblioref">2007</a>)</span>, którzy opracowali zautomatyzowane narzędzie laboratoryjne do mikroskopii w badaniach nad nowotworami. Dane składają się z 56 pomiarów obrazowania na 2019 ludzkich komórkach raka piersi. Predyktory te reprezentują cechy kształtu i intensywności różnych części komórek (np. jądro, granica komórki itp.). Istnieje wysoki stopień korelacji między predyktorami. Na przykład, istnieje kilka różnych predyktorów, które mierzą rozmiar i kształt jądra oraz granicę komórki. Wiele predyktorów ma rozkłady skośne.</p>
 <p>Każda komórka należy do jednej z dwóch klas. Ponieważ jest to część zautomatyzowanego testu laboratoryjnego, skupiliśmy się na zdolności przewidywania, a nie wnioskowania.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span>
-<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="va">cells</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">case</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="va">cells</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">case</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Biorąc pod uwagę wymiary danych, możemy obliczyć metryki wydajności przy użyciu 10-krotnej walidacji krzyżowej:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1304</span><span class="op">)</span></span>
-<span><span class="va">cell_folds</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1304</span><span class="op">)</span></span>
+<span><span class="va">cell_folds</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ze względu na wysoki stopień korelacji pomiędzy predyktorami, sensowne jest użycie ekstrakcji cech PCA do usunięcia efektu współliniowości predyktorów. Poniższy przepis zawiera kroki przekształcenia predyktorów w celu zwiększenia symetrii, znormalizowania ich, aby były w tej samej skali, a następnie przeprowadzenia ekstrakcji cech. Liczba komponentów PCA, które mają być zachowane, jest również dostrajana wraz z parametrami modelu. Wiele predyktorów ma rozkłady skośne. Ponieważ PCA opiera się na wariancji, wartości ekstremalne mogą mieć szkodliwy wpływ na te obliczenia. Aby temu zapobiec, dodajmy krok przepisu polegający na oszacowaniu transformacji Yeo-Johnsona dla każdego predyktora. Krok <code>step_YeoJohnson()</code> występuje w recepturze tuż przed wstępną normalizacją poprzez <code>step_normalize()</code>. Następnie, połączmy recepturę transformacji cech z naszą specyfikacją modelu sieci neuronowej <code>mlp_spec</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_rec</span> <span class="op">&lt;-</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_rec</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">step_YeoJohnson</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
@@ -654,18 +682,18 @@ Rys.&nbsp;10.2: Siatka oparka na kwadracie łacińskim dla 20 kombinacji paramet
 <span><span class="va">mlp_wflow</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">mlp_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">mlp_rec</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">mlp_rec</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Utwórzmy obiekt parametrów <code>mlp_param</code>, aby dostosować kilka domyślnych zakresów. Możemy zmienić liczbę epok (50 do 200 epok). Również domyślny zakres dla <code>num_comp()</code> jest bardzo wąski (od jednej do czterech składowych); możemy zwiększyć zakres do 40 składowych i ustawić wartość minimalną na zero:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mlp_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">mlp_wflow</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span></span>
 <span>    epochs <span class="op">=</span> <span class="fu">epochs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    num_comp <span class="op">=</span> <span class="fu">num_comp</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -678,7 +706,7 @@ Wskazówka
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>W <code>step_pca()</code>, użycie zerowej liczby komponentów PCA oznazca pominięcie ekstrakcji cech. W ten sposób oryginalne predyktory mogą być bezpośrednio porównywane z wynikami, które zawierają komponenty PCA.</p>
+<p>W <code>step_pca()</code>, użycie zerowej liczby komponentów PCA oznacza pominięcie ekstrakcji cech. W ten sposób oryginalne predyktory mogą być bezpośrednio porównywane z wynikami, które zawierają komponenty PCA.</p>
 </div>
 </div>
 <p>Funkcja <code>tune_grid()</code> jest podstawową funkcją do przeprowadzania przeszukiwania siatki. Jej funkcjonalność jest bardzo podobna do <code>fit_resamples()</code>, choć posiada dodatkowe argumenty związane z siatką:</p>
@@ -690,7 +718,7 @@ Wskazówka
 </ul>
 <p>W przeciwnym razie, interfejs <code>tune_grid()</code> jest taki sam jak <code>fit_resamples()</code>. Pierwszym argumentem jest albo specyfikacja modelu, albo przepływ pracy. Gdy podany jest model, drugim argumentem może być receptura lub wzór. Drugim wymaganym argumentem jest obiekt <code>rsample</code> (taki jak np. <code>cell_folds</code>). Poniższe wywołanie przekazuje również zestaw metryk, tak aby obszar pod krzywą ROC był mierzony podczas ponownego próbkowania.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1305</span><span class="op">)</span></span>
 <span><span class="va">mlp_reg_tune</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">mlp_wflow</span> <span class="op">%&gt;%</span></span>
@@ -699,7 +727,7 @@ Wskazówka
 <span>    grid <span class="op">=</span> <span class="va">mlp_param</span> <span class="op">%&gt;%</span> <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    metrics <span class="op">=</span> <span class="va">roc_res</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="va">mlp_reg_tune</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">mlp_reg_tune</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># Tuning results
 # 10-fold cross-validation 
@@ -723,9 +751,9 @@ Wskazówka
 </figure>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">mlp_reg_tune</span><span class="op">)</span> <span class="op">+</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">mlp_reg_tune</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-grid3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-grid3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -739,8 +767,8 @@ Rys.&nbsp;10.3: Wyniki tuningu na siatce regularnej
 </div>
 <p>Dla tych danych, wielkość kary ma największy wpływ na obszar pod krzywą ROC. Liczba epok nie wydaje się mieć wyraźnego wpływu na wydajność. Zmiana liczby ukrytych jednostek wydaje się mieć największe znaczenie, gdy współczynnik regularyzacji (kara) jest niski (i szkodzi dopasowaniu). Istnieje kilka konfiguracji parametrów, które mają z grubsza podobną wydajność, jak widać przy użyciu funkcji <code>show_best()</code>:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">mlp_reg_tune</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">.estimator</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">mlp_reg_tune</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">.estimator</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 9
   hidden_units penalty epochs num_comp .metric  mean     n std_err .config      
@@ -752,9 +780,9 @@ Rys.&nbsp;10.3: Wyniki tuningu na siatce regularnej
 5           10       1    125       20 roc_auc 0.891    10 0.00867 pre2_mod26_p…</code></pre>
 </div>
 </div>
-<p>Bazując na tych wynikach, sensowne byłoby przeprowadzenie kolejnego przebiegu przeszukiwania siatki z większymi wartościami kary. Aby użyć konstrukcji wypełniającej przestrzeń, można podać argument <code>grid</code> jako liczbę całkowitą lub za pomocą jednej z funkcji <code>grid_*()</code> stworzyć ramkę danych. Aby ocenić ten sam zakres przy użyciu planu kwadratu łacińskiego z 20 zestawami parametrów:</p>
+<p>Bazując na tych wynikach, sensowne byłoby przeprowadzenie kolejnego przebiegu przeszukiwania siatki z większymi wartościami kary. Aby użyć konstrukcji wypełniającej przestrzeń, można podać argument <code>grid</code> jako liczbę całkowitą lub za pomocą jednej z funkcji <code>grid_*()</code> stworzyć ramkę danych. Aby ocenić ten sam zakres przy użyciu planu hipersześcianu łacińskiego z 20 zestawami parametrów:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1306</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1306</span><span class="op">)</span></span>
 <span><span class="va">mlp_sfd_tune</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">mlp_wflow</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">tune_grid</span><span class="op">(</span></span>
@@ -764,7 +792,7 @@ Rys.&nbsp;10.3: Wyniki tuningu na siatce regularnej
 <span>    param_info <span class="op">=</span> <span class="va">mlp_param</span>,</span>
 <span>    metrics <span class="op">=</span> <span class="va">roc_res</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="va">mlp_sfd_tune</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">mlp_sfd_tune</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># Tuning results
 # 10-fold cross-validation 
@@ -785,7 +813,7 @@ Rys.&nbsp;10.3: Wyniki tuningu na siatce regularnej
 </div>
 <p>Tym razem funkcja <code>autoplot</code> przedstawia wyniki efektów brzegowych poszczególnych parametrów. Należy zachować ostrożność podczas badania tego wykresu; ponieważ nie jest używana siatka regularna, wartości pozostałych parametrów dostrajania mogą wpływać na każdy panel.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">mlp_sfd_tune</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">mlp_sfd_tune</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-grid4" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-grid4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -799,8 +827,8 @@ Rys.&nbsp;10.4: Wynik tuningu z zastosowaniem planu kwadratu łacińskiego
 </div>
 <p>Parametr kary wydaje się skutkować lepszą wydajnością przy mniejszych wartościach. Jest to sprzeczne z wynikami z regularnej siatki. Ponieważ każdy punkt w każdym panelu jest współdzielony z pozostałymi trzema parametrami dostrajania, na trendy w jednym panelu mogą wpływać pozostałe. Przy użyciu siatki regularnej każdy punkt w każdym panelu jest uśredniony względem pozostałych parametrów. Z tego powodu efekt każdego parametru jest lepiej izolowany przy użyciu regularnych siatek.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">mlp_sfd_tune</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">.estimator</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">mlp_sfd_tune</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">.estimator</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 9
   hidden_units     penalty epochs num_comp .metric  mean     n std_err .config  
@@ -827,7 +855,7 @@ Rys.&nbsp;10.4: Wynik tuningu z zastosowaniem planu kwadratu łacińskiego
 </ul>
 <p>Na przykład <code>select_best()</code> wybierze parametry o numerycznie najlepszych wynikach dopasowania. Wróćmy do naszych zwykłych wyników siatki i zobaczmy, który z nich jest najlepszy:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">select_best</span><span class="op">(</span><span class="va">mlp_reg_tune</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">select_best</span><span class="op">(</span><span class="va">mlp_reg_tune</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 5
   hidden_units penalty epochs num_comp .config         
@@ -837,7 +865,7 @@ Rys.&nbsp;10.4: Wynik tuningu z zastosowaniem planu kwadratu łacińskiego
 </div>
 <p>Patrząc na <a href="#fig-grid3" class="quarto-xref">Rys.&nbsp;<span>10.3</span></a>, widzimy, że model z pojedynczym neuronem w warstwie ukrytej trenowany przez 125 epok na oryginalnych predyktorach z dużą wartością kary ma wydajność konkurencyjną do modelu otrzymanego z zagęszczeniem wartości parametrów, a jest prostszy. Jest to w zasadzie regularyzowana regresja logistyczna! Aby ręcznie określić te parametry, możemy utworzyć <code>tibble</code> z tymi wartościami, a następnie użyć funkcji finalizacji, aby spleść wartości z powrotem do przepływu pracy:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">logistic_param</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">logistic_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">tibble</span><span class="op">(</span></span>
 <span>    num_comp <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    epochs <span class="op">=</span> <span class="fl">125</span>,</span>
@@ -848,7 +876,7 @@ Rys.&nbsp;10.4: Wynik tuningu z zastosowaniem planu kwadratu łacińskiego
 <span><span class="va">final_mlp_wflow</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">mlp_wflow</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">finalize_workflow</span><span class="op">(</span><span class="va">logistic_param</span><span class="op">)</span></span>
-<span><span class="va">final_mlp_wflow</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">final_mlp_wflow</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
 Preprocessor: Recipe
@@ -878,17 +906,18 @@ Computational engine: nnet </code></pre>
 </div>
 <p>Żadne inne wartości funkcji tune() nie są uwzględniane w sfinalizowanym procesie pracy. Teraz model może być dopasowany do całego zestawu treningowego:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">final_mlp_fit</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">final_mlp_fit</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">final_mlp_wflow</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">cells</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Obiekt ten może być teraz użyty do przyszłych predykcji na nowych danych.</p>
 <p>Jeśli nie użyłeś przepływu pracy, finalizacja modelu i/lub receptury odbywa się za pomocą <code>finalize_model()</code> i <code>finalize_recipe()</code>.</p>
 <p>Aby automatycznie stworzyć specyfikację modelu do tuningu, wystarczy wykorzystać odpowiednią funkcję pakietu <code>usemodels</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
-<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span><span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">ames</span>, package <span class="op">=</span> <span class="st">"modeldata"</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
 <span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
@@ -899,7 +928,7 @@ Computational engine: nnet </code></pre>
 <span>              <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, </span>
 <span>            data <span class="op">=</span> <span class="va">ames_train</span>,</span>
 <span>            <span class="co"># Add comments explaining some of the code:</span></span>
-<span>            verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>            verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>xgboost_recipe &lt;- 
   recipe(formula = Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
@@ -924,7 +953,7 @@ xgboost_tune &lt;-
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-booth1979" class="csl-entry" role="listitem">
 Booth, Gordon D., George E. P. Box, William G. Hunter, i J. Stuart Hunter. 1979. <span>„Statistics for Experimenters: An Introduction to Design, Data Analysis, and Model Building.”</span> <em>Journal of the American Statistical Association</em> 74 (367): 731. <a href="https://doi.org/10.2307/2287009">https://doi.org/10.2307/2287009</a>.
 </div>
@@ -1005,13 +1034,14 @@ Shewry, M. C., i H. P. Wynn. 1987. <span>„Maximum Entropy Sampling”</span>. 
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

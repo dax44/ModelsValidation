@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>12&nbsp; Przeszukiwanie iteracyjne – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +128,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -333,7 +335,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -499,7 +501,7 @@ window.Quarto = {
 <p>Do ilustracji wykorzystujemy te same dane dotyczące charakterystyki komórek, co w poprzednim rozdziale, ale zmieniamy model. W tym rozdziale użyjemy modelu maszyny wektorów nośnych (ang. <em>Support Vector Machine</em>), ponieważ zapewnia on ładne dwuwymiarowe wizualizacje procesów wyszukiwania. Dwa dostrajane parametry w optymalizacji to wartość kosztu SVM i parametr jądra funkcji radialnej <span class="math inline">\(\sigma\)</span>. Oba parametry mogą mieć znaczący wpływ na złożoność i wydajność modelu.</p>
 <p>Model SVM wykorzystuje iloczyn skalarny i z tego powodu konieczne jest wyśrodkowanie i przeskalowanie predyktorów. Obiekty <code>tidymodels</code>: <code>svm_rec</code>, <code>svm_spec</code> i <code>svm_wflow</code> definiują proces tworzenia modelu:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/finetune">finetune</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -522,21 +524,35 @@ window.Quarto = {
 <span><span class="va">svm_wflow</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">svm_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">svm_rec</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">svm_rec</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Oto domyślne zakresy tuningowanych parametrów:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">cost</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">rbf_sigma</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>cost <span class="op">=</span> <span class="fu">cost</span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="op">~</span> <span class="fu">tibble</span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="va">.x</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>    range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"["</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">.x</span><span class="op">$</span><span class="va">range</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"]"</span><span class="op">)</span>,</span>
+<span>    transformer <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">.x</span><span class="op">$</span><span class="va">trans</span><span class="op">)</span><span class="op">)</span> <span class="st">"-"</span> <span class="kw">else</span> <span class="va">.x</span><span class="op">$</span><span class="va">trans</span><span class="op">$</span><span class="va">name</span>,</span>
+<span>    label <span class="op">=</span> <span class="va">.x</span><span class="op">$</span><span class="va">label</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  .id <span class="op">=</span> <span class="st">"parameter"</span></span>
+<span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  parameter type   range    transformer label                      
+  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;                      
+1 cost      double [-10, 5] log-2       Cost                       
+2 rbf_sigma double [-10, 0] log-10      Radial Basis Function sigma</code></pre>
+</div>
 </div>
 <p>Dla ilustracji, zmieńmy nieco zakres parametrów jądra, aby poprawić wizualizacje wyszukiwania:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">svm_param</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">svm_param</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html">extract_parameter_set_dials</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">7</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">7</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Zanim omówimy szczegóły dotyczące wyszukiwania iteracyjnego i jego działania, zbadajmy związek między dwoma parametrami dostrajania SVM a obszarem pod krzywą ROC dla tego konkretnego zestawu danych. Skonstruowaliśmy bardzo dużą regularną siatkę, składającą się z 2500 wartości kandydujących, i oceniliśmy siatkę przy użyciu resamplingu. Jest to oczywiście niepraktyczne w regularnej analizie danych i ogromnie nieefektywne. Jednakże, wyjaśnia ścieżkę, którą powinien podążać proces wyszukiwania i gdzie występuje numerycznie optymalna wartość (wartości).</p>
@@ -553,9 +569,9 @@ Rys.&nbsp;12.1: Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o du�
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://gifdb.com/images/file/confused-tigger-comic-6vr45zk3ghvf3rg4.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-2"></a></p><div class="no-row-height column-margin column-container"><a href="https://gifdb.com/images/file/confused-tigger-comic-6vr45zk3ghvf3rg4.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-2"><img src="https://gifdb.com/images/file/confused-tigger-comic-6vr45zk3ghvf3rg4.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu. W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów. Funkcja <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> dokonuje próbkowania tej siatki:</p>
+<p>Procedury wyszukiwania, które będziemy przedstawiać, wymagają przynajmniej kilku statystyk obliczonych na podstawie resamplingu. W tym celu poniższy kod tworzy małą regularną siatkę, która znajduje się w płaskiej części przestrzeni parametrów. Funkcja <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code> ocenia tę siatkę z użyciem resamplingu:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">roc_res</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1401</span><span class="op">)</span></span>
 <span><span class="va">start_grid</span> <span class="op">&lt;-</span> </span>
@@ -564,18 +580,18 @@ Rys.&nbsp;12.1: Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o du�
 <span>    cost <span class="op">=</span> <span class="fu">cost</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    rbf_sigma <span class="op">=</span> <span class="fu">rbf_sigma</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">grid_regular</span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1402</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1402</span><span class="op">)</span></span>
 <span><span class="va">svm_initial</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">svm_wflow</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid</a></span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">cell_folds</span>, grid <span class="op">=</span> <span class="va">start_grid</span>, metrics <span class="op">=</span> <span class="va">roc_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid</a></span><span class="op">(</span>resamples <span class="op">=</span> <span class="va">cell_folds</span>, grid <span class="op">=</span> <span class="va">start_grid</span>, metrics <span class="op">=</span> <span class="va">roc_res</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_initial</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_initial</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 8
     cost rbf_sigma .metric .estimator  mean     n std_err .config             
@@ -589,7 +605,7 @@ Rys.&nbsp;12.1: Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o du�
 <p>Ta początkowa siatka pokazuje dość równoważne wyniki, przy czym żaden pojedynczy punkt nie jest znacznie lepszy od pozostałych. Wyniki te mogą być wykorzystane przez funkcje iteracyjnego dostrajania jako wartości początkowe.</p>
 <section id="optymalizacja-bayesowska" class="level2 page-columns page-full" data-number="12.1"><h2 data-number="12.1" class="anchored" data-anchor-id="optymalizacja-bayesowska">
 <span class="header-section-number">12.1</span> Optymalizacja bayesowska</h2>
-<p>Techniki optymalizacji bayesowskiej analizują bieżące wyniki próbkowania i tworzą model predykcyjny, aby zasugerować wartości parametrów dostrajania, które nie zostały jeszcze ocenione. Sugerowana kombinacja parametrów jest następnie ponownie próbkowana. Wyniki te są następnie wykorzystywane w innym modelu predykcyjnym, który rekomenduje więcej wartości kandydatów do testowania, i tak dalej. Proces ten przebiega przez ustaloną liczbę iteracji lub do momentu, gdy nie pojawią się dalsze poprawy. <span class="citation" data-cites="shahriari2016">Shahriari i in. (<a href="references.html#ref-shahriari2016" role="doc-biblioref">2016</a>)</span> i <span class="citation" data-cites="Frazier2018">Frazier (<a href="references.html#ref-Frazier2018" role="doc-biblioref">2018</a>)</span> są dobrymi wprowadzeniami do optymalizacji bayesowskiej.</p>
+<p>Techniki optymalizacji bayesowskiej analizują bieżące wyniki próbkowania i tworzą model predykcyjny, aby zasugerować wartości parametrów dostrajania, które nie zostały jeszcze ocenione. Sugerowana kombinacja parametrów jest następnie ponownie próbkowana. Wyniki te są następnie wykorzystywane w innym modelu predykcyjnym, który rekomenduje więcej wartości kandydatów do testowania, i tak dalej. Proces ten przebiega przez ustaloną liczbę iteracji lub do momentu, gdy nie pojawią się dalsze poprawy. <span class="citation" data-cites="shahriari2016">Shahriari et al. (<a href="references.html#ref-shahriari2016" role="doc-biblioref">2016</a>)</span> i <span class="citation" data-cites="Frazier2018">Frazier (<a href="references.html#ref-Frazier2018" role="doc-biblioref">2018</a>)</span> są dobrymi wprowadzeniami do optymalizacji bayesowskiej.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh13rfq4kyHfc7s98sZwnlgwiC5nx4uf9ZPw&amp;usqp=CAU.png" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-3"></a></p><div class="no-row-height column-margin column-container"><a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh13rfq4kyHfc7s98sZwnlgwiC5nx4uf9ZPw&amp;usqp=CAU.png" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-3"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh13rfq4kyHfc7s98sZwnlgwiC5nx4uf9ZPw&amp;usqp=CAU.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
@@ -597,7 +613,7 @@ Rys.&nbsp;12.1: Mapa ciepła średniego obszaru pod krzywą ROC dla siatki o du�
 <p>Podczas korzystania z optymalizacji bayesowskiej, podstawowe problemy to sposób tworzenia modelu i wybór parametrów rekomendowanych przez ten model. Najpierw rozważmy technikę najczęściej stosowaną w optymalizacji bayesowskiej, czyli model procesu gaussowskiego.</p>
 <section id="model-procesu-gaussowskiego" class="level3" data-number="12.1.1"><h3 data-number="12.1.1" class="anchored" data-anchor-id="model-procesu-gaussowskiego">
 <span class="header-section-number">12.1.1</span> Model procesu gaussowskiego</h3>
-<p>Modele procesu gaussowskiego (GP) <span class="citation" data-cites="schulz2016">(<a href="references.html#ref-schulz2016" role="doc-biblioref">Schulz, Speekenbrink, i Krause 2016</a>)</span>, to techniki statystyczne, które mają swoją historię w statystyce przestrzennej (pod nazwą metod <em>krigingu</em>). Mogą być wyprowadzone na wiele sposobów, w tym jako model Bayesowski.</p>
+<p>Modele procesu gaussowskiego (GP) <span class="citation" data-cites="schulz2016">(<a href="references.html#ref-schulz2016" role="doc-biblioref">Schulz et al. 2016</a>)</span> to techniki statystyczne, które mają swoją historię w statystyce przestrzennej (pod nazwą metod <em>krigingu</em>). Mogą być wyprowadzone na wiele sposobów, w tym jako model bayesowski.</p>
 <p>Matematycznie, GP jest zbiorem zmiennych losowych, których wspólny rozkład prawdopodobieństwa jest wielowymiarowy normalny. W kontekście naszych zastosowań jest to zbiór metryk wydajności dla wartości kandydujących parametrów dostrajania. Dla początkowej siatki czterech próbek, realizacje tych czterech zmiennych losowych wynosiły 0.8639, 0.8625, 0.8627 i 0.8659. Zakłada się, że mają rozkład wielowymiarowy normalny. Wejściami definiującymi zmienne niezależne dla modelu GP są odpowiednie wartości dostrajania parametrów (przedstawione w <a href="#tbl-1" class="quarto-xref">Tab.&nbsp;<span>12.1</span></a>).</p>
 <div class="cell">
 <div id="tbl-1" class="cell quarto-float quarto-figure quarto-figure-center anchored">
@@ -1054,7 +1070,7 @@ Tab.&nbsp;12.1: Wartości startowe w procedurze poszukiwania optymalnych paramet
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="ROC" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">ROC</th>
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
@@ -1093,7 +1109,7 @@ Tab.&nbsp;12.1: Wartości startowe w procedurze poszukiwania optymalnych paramet
 <p><span id="eq-iter1"><span class="math display">\[
 \operatorname{cov}(\boldsymbol{x}_i, \boldsymbol{x}_j) = \exp\left(-\frac{1}{2}|\boldsymbol{x}_i - \boldsymbol{x}_j|^2\right) + \sigma^2_{ij}
 \tag{12.1}\]</span></span></p>
-<p>gdzie <span class="math inline">\(\sigma_{i,j}^2\)</span> jest wariancją błędu modelu równą zero jeśli <span class="math inline">\(i=j\)</span>. Możemy to interpretować jako, że wraz ze wzrostem odległości pomiędzy dwoma kombinacjami parametrów, kowariancja pomiędzy metrykami wydajności rośnie wykładniczo. Z równania wynika również, że zmienność metryki wynikowej jest minimalizowana w punktach, które już zostały zaobserwowane (tzn. gdy <span class="math inline">\(|x_i - x_j|^2\)</span> wynosi zero). Charakter tej funkcji kowariancji pozwala procesowi gaussowskiemu reprezentować wysoce nieliniowe zależności między wydajnością modelu a dostrajaniem parametrów, nawet jeśli istnieje tylko niewielka ilość danych.</p>
+<p>gdzie <span class="math inline">\(\sigma_{i,j}^2\)</span> jest wariancją błędu modelu (tzw. <em>nugget</em>), równą <span class="math inline">\(\sigma^2\)</span> jeśli <span class="math inline">\(i=j\)</span> i zero w przeciwnym razie. Możemy to interpretować jako, że wraz ze wzrostem odległości pomiędzy dwoma kombinacjami parametrów, kowariancja pomiędzy metrykami wydajności maleje wykładniczo. Z równania wynika również, że zmienność metryki wynikowej jest minimalizowana w punktach, które już zostały zaobserwowane (tzn. gdy <span class="math inline">\(|x_i - x_j|^2\)</span> wynosi zero). Charakter tej funkcji kowariancji pozwala procesowi gaussowskiemu reprezentować wysoce nieliniowe zależności między wydajnością modelu a dostrajaniem parametrów, nawet jeśli istnieje tylko niewielka liczba danych.</p>
 <p>Ważną zaletą tego modelu jest to, że ponieważ określony jest pełny model prawdopodobieństwa, przewidywania dla nowych wejść mogą odzwierciedlać cały rozkład wyniku. Innymi słowy, nowe statystyki wydajności mogą być przewidywane zarówno pod względem średniej jak i wariancji.</p>
 <p>Na podstawie początkowej siatki czterech wyników, model GP jest dopasowywany, następnie są obliczane z modelu predykcje dla kandydatów, a piąta kombinacja parametrów dostrajania jest wybierana. Obliczamy szacunkową wydajność dla nowej konfiguracji, GP jest ponownie dopasowywany do pięciu istniejących wyników (i tak dalej).</p>
 </section><section id="funkcja-akwizycji" class="level3 page-columns page-full" data-number="12.1.2"><h3 data-number="12.1.2" class="anchored" data-anchor-id="funkcja-akwizycji">
@@ -1106,7 +1122,7 @@ Tab.&nbsp;12.1: Wartości startowe w procedurze poszukiwania optymalnych paramet
 <p>Klasa funkcji celu, zwanych funkcjami akwizycji, ułatwia kompromis pomiędzy średnią a wariancją. Przypomnijmy, że przewidywana wariancja modeli GP zależy głównie od tego, jak bardzo są one oddalone od istniejących danych. Kompromis pomiędzy przewidywaną średnią i wariancją dla nowych kandydatów jest często postrzegany przez pryzmat eksploracji i eksploatacji:</p>
 <ul>
 <li>Eksploracja (ang. <em>exploration</em>) - powoduje wybór tych regionów, w których jest mniej obserwowanych modeli kandydujących. W ten sposób nadaje się większą wagę kandydatom o wyższej wariancji i koncentruje się na poszukiwaniu nowych wyników.</li>
-<li>Eksploatacja (ang. <em>exploitation</em>) - zasadniczo opiera się istniejących wynikach, w celu odnalezienia najlepszej wartości średniej.</li>
+<li>Eksploatacja (ang. <em>exploitation</em>) - zasadniczo opiera się na istniejących wynikach, w celu odnalezienia najlepszej wartości średniej.</li>
 </ul>
 <p>Aby zademonstrować, spójrzmy na przykład z jednym parametrem, który ma wartości pomiędzy [0, 1], a metryką wydajności jest <span class="math inline">\(R^2\)</span>. Prawdziwa funkcja jest pokazana na <a href="#fig-iter2" class="quarto-xref">Rys.&nbsp;<span>12.2</span></a> wraz z pięcioma wartościami kandydującymi, które mają istniejące wyniki jako punkty.</p>
 <div id="fig-iter2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1117,7 +1133,7 @@ Tab.&nbsp;12.1: Wartości startowe w procedurze poszukiwania optymalnych paramet
 Rys.&nbsp;12.2: Hipotetyczny rzeczywisty profil wydajności dla arbitralnie wybranego parametru dostrajania, z pięcioma szacowanymi punktami
 </figcaption></figure>
 </div>
-<p>Dla tych danych dopasowanie modelu GP przedstawiono na <a href="#fig-iter3" class="quarto-xref">Rys.&nbsp;<span>12.3</span></a>. Zacieniowany obszar wskazuje średnią <span class="math inline">\(\pm\)</span> 1 błąd standardowy. Dwie pionowe linie wskazują dwa punkty kandydujące, które są później bardziej szczegółowo badane. Zacieniowany obszar ufności pokazuje funkcję wykładniczej wariancji kwadratowej; staje się ona bardzo duża między punktami i zbiega do zera w istniejących punktach danych.</p>
+<p>Dla tych danych dopasowanie modelu GP przedstawiono na <a href="#fig-iter3" class="quarto-xref">Rys.&nbsp;<span>12.3</span></a>. Zacieniowany obszar wskazuje średnią <span class="math inline">\(\pm\)</span> 1 błąd standardowy. Dwie pionowe linie wskazują dwa punkty kandydujące, które są później bardziej szczegółowo badane. Zacieniowany obszar ufności odzwierciedla charakter funkcji kowariancji wykładniczej kwadratowej; staje się ona bardzo duża między punktami i zbiega do zera w istniejących punktach danych.</p>
 <div id="fig-iter3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-iter3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-03-9 o 22.44.09.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Rys.&nbsp;12.3: Przykładowy przebieg procesu gaussowskiego z zaznaczoną funkcją średniej i wariancji"><img src="images/Zrzut ekranu 2023-03-9 o 22.44.09.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -1139,14 +1155,14 @@ Rys.&nbsp;12.3: Przykładowy przebieg procesu gaussowskiego z zaznaczoną funkcj
 Rys.&nbsp;12.4: Przewidywane rozkłady wydajności dla dwóch próbkowanych wartości parametrów dostrajania
 </figcaption></figure>
 </div>
-<p>Rozpatrując tylko średnią <span class="math inline">\(R^2\)</span> lepszym wyborem jest wartość parametru 0,10 (patrz <a href="#tbl-1" class="quarto-xref">Tab.&nbsp;<span>12.1</span></a>). Rekomendacja parametru dostrajania dla 0,25 ma gorsze przewidywanie średnie niż aktualny najlepszy kandydat. Jednakże, ponieważ ma wyższą wariancję, ma większy ogólny obszar prawdopodobieństwa powyżej aktualnego najlepszego. W rezultacie ma większą oczekiwaną poprawę:</p>
+<p>Rozpatrując tylko średnią <span class="math inline">\(R^2\)</span> lepszym wyborem jest wartość parametru 0,10 (patrz <a href="#tbl-2" class="quarto-xref">Tab.&nbsp;<span>12.2</span></a>). Rekomendacja parametru dostrajania dla 0,25 ma gorsze przewidywanie średnie niż aktualny najlepszy kandydat. Jednakże, ponieważ ma wyższą wariancję, ma większy ogólny obszar prawdopodobieństwa powyżej aktualnego najlepszego. W rezultacie ma większą oczekiwaną poprawę:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tab2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
-<span>  <span class="op">~</span><span class="va">Parameter.Value</span>,  <span class="op">~</span><span class="va">Mean</span>,  <span class="op">~</span><span class="va">Std.Dev</span>, <span class="op">~</span><span class="va">Expected.Improvment</span>,</span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tab2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">Parameter.Value</span>,  <span class="op">~</span><span class="va">Mean</span>,  <span class="op">~</span><span class="va">Std.Dev</span>, <span class="op">~</span><span class="va">Expected.Improvement</span>,</span>
 <span>               <span class="fl">0.1</span>, <span class="fl">0.8679</span>, <span class="fl">0.0004317</span>,              <span class="fl">0.00019</span>,</span>
 <span>              <span class="fl">0.25</span>, <span class="fl">0.8671</span>, <span class="fl">0.0039301</span>,             <span class="fl">0.001216</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="fu">gt</span><span class="op">(</span><span class="va">tab2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">gt</span><span class="op">(</span><span class="va">tab2</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div id="tbl-2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tab.&nbsp;12.2: Oczekiwana poprawa dla dwóch kandydujących parametrów dostrajania.
@@ -1601,25 +1617,25 @@ Tab.&nbsp;12.2: Oczekiwana poprawa dla dwóch kandydujących parametrów dostraj
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="Parameter.Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Parameter.Value</th>
 <th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Mean</th>
 <th id="Std.Dev" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Std.Dev</th>
-<th id="Expected.Improvment" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Expected.Improvment</th>
+<th id="Expected.Improvement" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Expected.Improvement</th>
 </tr></thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_right" headers="Parameter.Value">0.10</td>
 <td class="gt_row gt_right" headers="Mean">0.8679</td>
 <td class="gt_row gt_right" headers="Std.Dev">0.0004317</td>
-<td class="gt_row gt_right" headers="Expected.Improvment">0.000190</td>
+<td class="gt_row gt_right" headers="Expected.Improvement">0.000190</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_right" headers="Parameter.Value">0.25</td>
 <td class="gt_row gt_right" headers="Mean">0.8671</td>
 <td class="gt_row gt_right" headers="Std.Dev">0.0039301</td>
-<td class="gt_row gt_right" headers="Expected.Improvment">0.001216</td>
+<td class="gt_row gt_right" headers="Expected.Improvement">0.001216</td>
 </tr>
 </tbody>
 </table>
@@ -1659,7 +1675,7 @@ Rys.&nbsp;12.5: Szacowany profil wydajności wygenerowany przez model procesu ga
 </ul>
 <p>Użyjmy pierwszych wyników SVM jako początkowego podłoża dla modelu GP. Przypomnijmy, że w tym zastosowaniu chcemy zmaksymalizować obszar pod krzywą ROC.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_bayes.html">control_bayes</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tune.tidymodels.org/reference/control_bayes.html">control_bayes</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1403</span><span class="op">)</span></span>
 <span><span class="va">svm_bo</span> <span class="op">&lt;-</span></span>
@@ -1671,15 +1687,15 @@ Rys.&nbsp;12.5: Szacowany profil wydajności wygenerowany przez model procesu ga
 <span>    param_info <span class="op">=</span> <span class="va">svm_param</span>,</span>
 <span>    iter <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>    control <span class="op">=</span> <span class="va">ctrl</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div id="tbl-bo1" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bo1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Tab.&nbsp;12.3: Przebieg optymalizacji baysowskiej
+Tab.&nbsp;12.3: Przebieg optymalizacji bayesowskiej
 </figcaption><div aria-describedby="tbl-bo1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <div id="argozolhlp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2131,7 +2147,7 @@ Tab.&nbsp;12.3: Przebieg optymalizacji baysowskiej
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -2472,8 +2488,8 @@ Tab.&nbsp;12.3: Przebieg optymalizacji baysowskiej
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_bo</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div id="tbl-bo2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bo2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tab.&nbsp;12.4: Zestaw optymalnych parametrów na podstawie OB
@@ -2928,7 +2944,7 @@ Tab.&nbsp;12.4: Zestaw optymalnych parametrów na podstawie OB
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -3005,7 +3021,7 @@ Tab.&nbsp;12.4: Zestaw optymalnych parametrów na podstawie OB
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_bo</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_bo</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-bo1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-bo1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3027,13 +3043,13 @@ Rys.&nbsp;12.7: Przykład działania optymalizacji bayesowskiej
 </figcaption></figure>
 </div>
 <p>Powierzchnia przewidywanej średniej jest bardzo niedokładna w pierwszych kilku iteracjach wyszukiwania. Pomimo tego, pomaga ona poprowadzić proces w rejon dobrej wydajności. W ciągu pierwszych dziesięciu iteracji, wyszukiwanie jest dokonywane w pobliżu optymalnego miejsca.</p>
-<p>Podczas gdy najlepsza kombinacja dostrajania parametrów znajduje się na granicy przestrzeni parametrów, optymalizacja bayesowska często wybierze nowe punkty poza granicami przestrzeni parametrów.</p>
+<p>Podczas gdy najlepsza kombinacja dostrajania parametrów znajduje się na granicy przestrzeni parametrów, optymalizacja bayesowska często wybierze nowe punkty na różnych stronach granicy przestrzeni parametrów.</p>
 <p>Powyższy przykład startował z punktów startowych wybranych nieco arbitralnie ale nieco lepsze wyniki można osiągnąć stosując losowe wypełnienie przestrzeni parametrów.</p>
 </section></section><section id="symulowane-wyżarzanie" class="level2 page-columns page-full" data-number="12.2"><h2 data-number="12.2" class="anchored" data-anchor-id="symulowane-wyżarzanie">
 <span class="header-section-number">12.2</span> Symulowane wyżarzanie</h2>
-<p>Symulowane wyżarzanie (ang. <em>simulated annealing</em>) <span class="citation" data-cites="kirkpatrickOptimizationSimulatedAnnealing1983 vanlaarhoven1987">(<a href="references.html#ref-kirkpatrickOptimizationSimulatedAnnealing1983" role="doc-biblioref">Kirkpatrick, Gelatt, i Vecchi 1983</a>; <a href="references.html#ref-vanlaarhoven1987" role="doc-biblioref">Laarhoven i Aarts 1987</a>)</span>; jest nieliniową procedurą wyszukiwania zainspirowaną procesem stygnięcia metalu. Jest to metoda globalnego wyszukiwania, która może efektywnie poruszać się po wielu różnych obszarach poszukiwań, w tym po funkcjach nieciągłych. W przeciwieństwie do większości procedur optymalizacji opartych na gradiencie, symulowane wyżarzanie może ponownie ocenić poprzednie rozwiązania.</p>
+<p>Symulowane wyżarzanie (ang. <em>simulated annealing</em>) <span class="citation" data-cites="kirkpatrickOptimizationSimulatedAnnealing1983 vanlaarhoven1987">(<a href="references.html#ref-kirkpatrickOptimizationSimulatedAnnealing1983" role="doc-biblioref">Kirkpatrick et al. 1983</a>; <a href="references.html#ref-vanlaarhoven1987" role="doc-biblioref">Laarhoven i Aarts 1987</a>)</span> jest nieliniową procedurą wyszukiwania zainspirowaną procesem stygnięcia metalu. Jest to metoda globalnego wyszukiwania, która może efektywnie poruszać się po wielu różnych obszarach poszukiwań, w tym po funkcjach nieciągłych. W przeciwieństwie do większości procedur optymalizacji opartych na gradiencie, symulowane wyżarzanie może ponownie ocenić poprzednie rozwiązania.</p>
 <p>Proces użycia symulowanego wyżarzania rozpoczyna się od wartości początkowej i rozpoczyna kontrolowany losowy spacer przez przestrzeń parametrów. Każda nowa wartość parametru-kandydata jest niewielką perturbacją poprzedniej wartości, która utrzymuje nowy punkt w lokalnym sąsiedztwie.</p>
-<p>Punkt kandydujący jest oceniana przy zastosowaniu resamplingu, aby uzyskać odpowiadającą mu wartość wydajności. Jeśli osiąga ona lepsze wyniki niż poprzednie parametry, jest akceptowana jako nowa najlepsza i proces jest kontynuowany. Jeśli wyniki są gorsze niż poprzednia wartość, procedura wyszukiwania może nadal używać tego parametru do określenia dalszych kroków. Zależy to od dwóch czynników. Po pierwsze, prawdopodobieństwo zatrzymania złego kandydata maleje wraz z pogorszeniem się wyników. Innymi słowy, tylko nieco gorszy wynik od obecnie najlepszego ma większą szansę na akceptację niż ten z dużym spadkiem wydajności. Drugim czynnikiem jest liczba iteracji wyszukiwania. Symulowane wyżarzanie próbuje zaakceptować mniej suboptymalnych wartości w miarę postępu wyszukiwania. Z tych dwóch czynników prawdopodobieństwo akceptacji złego wyniku można sformalizować jako:</p>
+<p>Punkt kandydujący jest oceniany przy zastosowaniu resamplingu, aby uzyskać odpowiadającą mu wartość wydajności. Jeśli osiąga ona lepsze wyniki niż poprzednie parametry, jest akceptowana jako nowa najlepsza i proces jest kontynuowany. Jeśli wyniki są gorsze niż poprzednia wartość, procedura wyszukiwania może nadal używać tego parametru do określenia dalszych kroków. Zależy to od dwóch czynników. Po pierwsze, prawdopodobieństwo zatrzymania złego kandydata maleje wraz z pogorszeniem się wyników. Innymi słowy, tylko nieco gorszy wynik od obecnie najlepszego ma większą szansę na akceptację niż ten z dużym spadkiem wydajności. Drugim czynnikiem jest liczba iteracji wyszukiwania. Symulowane wyżarzanie próbuje zaakceptować mniej suboptymalnych wartości w miarę postępu wyszukiwania. Z tych dwóch czynników prawdopodobieństwo akceptacji złego wyniku można sformalizować jako:</p>
 <p><span id="eq-simulated-annealing"><span class="math display">\[
 \operatorname{Pr}[\text{accept suboptimal parameters at iteration } i] = \exp(c\times D_i \times i)
 \tag{12.2}\]</span></span></p>
@@ -3061,19 +3077,19 @@ Rys.&nbsp;12.8: Mapa ciepła prawdopodobieństwa akceptacji symulowanego wyżarz
 </figcaption></figure>
 </div>
 <p>Użytkownik może dostosować współczynniki <span class="math inline">\(c\)</span>, aby znaleźć profil prawdopodobieństwa, który odpowiada jego potrzebom. W <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">finetune::control_sim_anneal()</a></code>, domyślnym dla tego argumentu <code>cooling_coef</code> jest 0.02. Zmniejszenie tego współczynnika zachęci wyszukiwanie do bycia bardziej wyrozumiałym dla słabych wyników.</p>
-<p>Proces ten trwa przez określoną ilość iteracji, ale może zostać zatrzymany, jeśli w ciągu określonej liczby iteracji nie pojawią się globalnie najlepsze wyniki. Bardzo pomocne może być ustawienie progu restartu. Jeśli wystąpi ciąg niepowodzeń, funkcja ta powraca do ostatnich globalnie najlepszych ustawień parametrów i zaczyna od nowa.</p>
+<p>Proces ten trwa przez określoną liczbę iteracji, ale może zostać zatrzymany, jeśli w ciągu określonej liczby iteracji nie pojawią się globalnie najlepsze wyniki. Bardzo pomocne może być ustawienie progu restartu. Jeśli wystąpi ciąg niepowodzeń, funkcja ta powraca do ostatnich globalnie najlepszych ustawień parametrów i zaczyna od nowa.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.pinimg.com/originals/66/5d/14/665d149267356ca2a1edb36b20414122.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-12"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.pinimg.com/originals/66/5d/14/665d149267356ca2a1edb36b20414122.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-12"><img src="https://i.pinimg.com/originals/66/5d/14/665d149267356ca2a1edb36b20414122.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>Najważniejszym szczegółem jest określenie sposobu perturbacji parametrów dostrajania z iteracji na iterację. W literaturze można znaleźć wiele metod na to. My stosujemy metodę podaną przez <span class="citation" data-cites="bohachevsky1986">Bohachevsky, Johnson, i Stein (<a href="references.html#ref-bohachevsky1986" role="doc-biblioref">1986</a>)</span> zwaną uogólnionym symulowanym wyżarzaniem. Dla ciągłych parametrów dostrajania definiujemy mały promień, aby określić lokalne “sąsiedztwo”. Na przykład załóżmy, że są dwa parametry dostrajania i każdy z nich jest ograniczony przez zero i jeden. Proces symulowanego wyżarzania generuje losowe wartości na otaczającym promieniu i losowo wybiera jedną z nich jako aktualną wartość kandydacką.</p>
-<p>Wielkość promienia kontroluje, jak szybko wyszukiwanie bada przestrzeń parametrów. Im większy jest promień tym szybciej przestrzeń parametrów będzie przeszukiwana przez algorytm ale jednocześnie mniej dokładnie.</p>
+<p>Najważniejszym szczegółem jest określenie sposobu perturbacji parametrów dostrajania z iteracji na iterację. W literaturze można znaleźć wiele metod na to. My stosujemy metodę podaną przez <span class="citation" data-cites="bohachevsky1986">Bohachevsky et al. (<a href="references.html#ref-bohachevsky1986" role="doc-biblioref">1986</a>)</span> zwaną uogólnionym symulowanym wyżarzaniem. Dla ciągłych parametrów dostrajania definiujemy mały promień, aby określić lokalne “sąsiedztwo”. Na przykład załóżmy, że są dwa parametry dostrajania i każdy z nich jest ograniczony przez zero i jeden. Proces symulowanego wyżarzania generuje losowe wartości na otaczającym promieniu i losowo wybiera jedną z nich jako aktualną wartość kandydacką.</p>
+<p>Wielkość promienia kontroluje, jak szybko wyszukiwanie bada przestrzeń parametrów. Im większy jest promień, tym szybciej przestrzeń parametrów będzie przeszukiwana przez algorytm ale jednocześnie mniej dokładnie.</p>
 <p>Dla zilustrowania użyjemy dwóch głównych parametrów dostrajania <code>glmnet</code>:</p>
 <ul>
 <li>Wielkość kary (<code>penalty</code>). Domyślny zakres tego parametru to od <span class="math inline">\(10^{-10}\)</span> do <span class="math inline">\(10^0\)</span>. Najczęściej jest podawany w skali logarytmicznej o podstawie 10.</li>
 <li>Proporcja kary lasso (<code>mixture</code>) - wartość pomiędzy 0 i 1 określająca balans pomiędzy karą L1 i L2.</li>
 </ul>
-<p>Proces rozpoczyna się od wartości początkowych <code>penalty</code> = 0,025 i <code>mixture</code> = 0,050. Używając promienia, który losowo waha się między 0,050 a 0,015, dane są odpowiednio skalowane, losowe wartości są generowane na promieniach wokół punktu początkowego, a następnie jedna jest losowo wybierana jako kandydat. Dla ilustracji przyjmiemy, że wszystkie wartości kandydujące faktycznie poprawiają wydajność modelu. Korzystając z nowej wartości, generowany jest zestaw nowych losowych sąsiadów, wybierany jest jeden, i tak dalej. <a href="#fig-sa2" class="quarto-xref">Rys.&nbsp;<span>12.9</span></a> przedstawia sześć iteracji sukcesywnie podążających do lewego górnego rogu.</p>
+<p>Proces rozpoczyna się od wartości początkowych <code>penalty</code> = 0,025 i <code>mixture</code> = 0,050. Używając promienia, który losowo waha się od 0,015 do 0,050, dane są odpowiednio skalowane, losowe wartości są generowane na promieniach wokół punktu początkowego, a następnie jedna jest losowo wybierana jako kandydat. Dla ilustracji przyjmiemy, że wszystkie wartości kandydujące faktycznie poprawiają wydajność modelu. Korzystając z nowej wartości, generowany jest zestaw nowych losowych sąsiadów, wybierany jest jeden, i tak dalej. <a href="#fig-sa2" class="quarto-xref">Rys.&nbsp;<span>12.9</span></a> przedstawia sześć iteracji sukcesywnie podążających do lewego górnego rogu.</p>
 <div id="fig-sa2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sa2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-03-10 o 19.46.04.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;12.9: Kilka iteracji procesu symulowanego wyżarzania"><img src="images/Zrzut ekranu 2023-03-10 o 19.46.04.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -3084,7 +3100,7 @@ Rys.&nbsp;12.9: Kilka iteracji procesu symulowanego wyżarzania
 </div>
 <p>Zauważmy, że podczas niektórych iteracji zestawy kandydatów wzdłuż promienia wykluczają punkty poza granicami parametrów. Ponadto, nasza implementacja przesuwa wybór kolejnych konfiguracji dostrajania parametrów od nowych wartości, które są bardzo podobne do poprzednich konfiguracji.</p>
 <p>Dla parametrów kategorycznych i całkowitych, każdy z nich jest generowany z określonym wcześniej prawdopodobieństwem. Argument <code>flip</code> w <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal()</a></code> może być użyty do określenia tego prawdopodobieństwa. Dla parametrów całkowitoliczbowych, używana jest najbliższa wartość całkowita.</p>
-<p>Przeszukiwanie metodą symulowanego wyżarzania może nie być optymalna w przypadku, gdy wiele parametrów jest nienumerycznych lub całkowitoliczbowych o niewielu unikalnych wartościach. W tych przypadkach jest prawdopodobne, że ten sam zestaw kandydatów może być testowany więcej niż raz.</p>
+<p>Przeszukiwanie metodą symulowanego wyżarzania może nie być optymalne w przypadku, gdy wiele parametrów jest nienumerycznych lub całkowitoliczbowych o niewielu unikalnych wartościach. W tych przypadkach jest prawdopodobne, że ten sam zestaw kandydatów może być testowany więcej niż raz.</p>
 <p>Aby zaimplementować wyszukiwanie iteracyjne poprzez symulowane wyżarzanie, użyj funkcji <code><a href="https://finetune.tidymodels.org/reference/tune_sim_anneal.html">tune_sim_anneal()</a></code>. Składnia tej funkcji jest niemal identyczna jak <code><a href="https://tune.tidymodels.org/reference/tune_bayes.html">tune_bayes()</a></code>. Nie ma żadnych opcji dotyczących funkcji akwizycji czy próbkowania niepewności. Funkcja <code><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal()</a></code> posiada pewne szczegóły, które definiują lokalne sąsiedztwo i harmonogram chłodzenia:</p>
 <ul>
 <li>
@@ -3100,7 +3116,7 @@ Rys.&nbsp;12.9: Kilka iteracji procesu symulowanego wyżarzania
 </ul>
 <p>Dla danych dotyczących segmentacji komórek składnia jest bardzo spójna z poprzednio stosowanymi funkcjami:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl_sa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span>, no_improve <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl_sa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_sim_anneal.html">control_sim_anneal</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span>, no_improve <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1404</span><span class="op">)</span></span>
 <span><span class="va">svm_sa</span> <span class="op">&lt;-</span></span>
@@ -3112,13 +3128,13 @@ Rys.&nbsp;12.9: Kilka iteracji procesu symulowanego wyżarzania
 <span>    param_info <span class="op">=</span> <span class="va">svm_param</span>,</span>
 <span>    iter <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>    control <span class="op">=</span> <span class="va">ctrl_sa</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Dane wyjściowe dla poszczególnych iteracji:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div id="tbl-sa1" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sa1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tab.&nbsp;12.5: Podsumowanie symulowanego wyżarzania
@@ -3573,7 +3589,7 @@ Tab.&nbsp;12.5: Podsumowanie symulowanego wyżarzania
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -4189,8 +4205,8 @@ Tab.&nbsp;12.5: Podsumowanie symulowanego wyżarzania
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_sa</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">gt</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div id="tbl-sa2" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sa2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tab.&nbsp;12.6: Najlepsze kombinacje parametrów na podstawie SA
@@ -4645,7 +4661,7 @@ Tab.&nbsp;12.6: Najlepsze kombinacje parametrów na podstawie SA
   height: 0px !important;
 }
 </style>
-<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<table class="gt_table cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
 <th id="cost" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">cost</th>
 <th id="rbf_sigma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rbf_sigma</th>
@@ -4723,7 +4739,7 @@ Tab.&nbsp;12.6: Najlepsze kombinacje parametrów na podstawie SA
 </div>
 <p>Podobnie jak w przypadku innych funkcji <code>tune_*()</code>, odpowiadająca im funkcja <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot()</a></code> tworzy wizualną ocenę wyników. Użycie <code>autoplot(svm_sa, type = "performance")</code> pokazuje wydajność w czasie iteracji (<a href="#fig-sa3" class="quarto-xref">Rys.&nbsp;<span>12.10</span></a>), podczas gdy <code>autoplot(svm_sa, type = "parameters")</code> przedstawia wydajność w zależności od konkretnych wartości dostrajania parametrów (<a href="#fig-sa4" class="quarto-xref">Rys.&nbsp;<span>12.11</span></a>).</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-sa3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sa3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -4736,7 +4752,7 @@ Rys.&nbsp;12.10: Przebieg procesu symulowanego wyżarzania
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">svm_sa</span>, type <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-sa4" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-sa4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -4759,21 +4775,21 @@ Rys.&nbsp;12.12: Wizualizacja przebiegu symulowanego wyżarzania
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-bohachevsky1986" class="csl-entry" role="listitem">
 Bohachevsky, Ihor O., Mark E. Johnson, i Myron L. Stein. 1986. <span>„Generalized Simulated Annealing for Function Optimization”</span>. <em>Technometrics</em> 28 (3): 209–17. <a href="https://doi.org/10.1080/00401706.1986.10488128">https://doi.org/10.1080/00401706.1986.10488128</a>.
 </div>
 <div id="ref-Frazier2018" class="csl-entry" role="listitem">
-Frazier, Peter I. 2018. <span>„A Tutorial on Bayesian Optimization”</span>. <a href="https://doi.org/10.48550/ARXIV.1807.02811">https://doi.org/10.48550/ARXIV.1807.02811</a>.
+Frazier, Peter I. 2018. <em>A Tutorial on Bayesian Optimization</em>. <a href="https://doi.org/10.48550/ARXIV.1807.02811">https://doi.org/10.48550/ARXIV.1807.02811</a>.
 </div>
 <div id="ref-kirkpatrickOptimizationSimulatedAnnealing1983" class="csl-entry" role="listitem">
 Kirkpatrick, S., C. D. Gelatt, i M. P. Vecchi. 1983. <span>„Optimization by Simulated Annealing”</span>. <em>Science</em> 220 (4598): 671–80. <a href="https://doi.org/10.1126/science.220.4598.671">https://doi.org/10.1126/science.220.4598.671</a>.
 </div>
 <div id="ref-vanlaarhoven1987" class="csl-entry" role="listitem">
-Laarhoven, Peter J. M. van, i Emile H. L. Aarts. 1987. <span>„Simulated annealing”</span>. W, 7–15. Springer Netherlands. <a href="https://doi.org/10.1007/978-94-015-7744-1_2">https://doi.org/10.1007/978-94-015-7744-1_2</a>.
+Laarhoven, Peter J. M. van, i Emile H. L. Aarts. 1987. <em>Simulated annealing</em>. Springer Netherlands. <a href="https://doi.org/10.1007/978-94-015-7744-1_2">https://doi.org/10.1007/978-94-015-7744-1_2</a>.
 </div>
 <div id="ref-schulz2016" class="csl-entry" role="listitem">
-Schulz, Eric, Maarten Speekenbrink, i Andreas Krause. 2016. <span>„A tutorial on Gaussian process regression: Modelling, exploring, and exploiting functions”</span>. <a href="http://dx.doi.org/10.1101/095190">http://dx.doi.org/10.1101/095190</a>.
+Schulz, Eric, Maarten Speekenbrink, i Andreas Krause. 2016. <em>A tutorial on Gaussian process regression: Modelling, exploring, and exploiting functions</em>. <a href="http://dx.doi.org/10.1101/095190">http://dx.doi.org/10.1101/095190</a>.
 </div>
 <div id="ref-shahriari2016" class="csl-entry" role="listitem">
 Shahriari, Bobak, Kevin Swersky, Ziyu Wang, Ryan P. Adams, i Nando de Freitas. 2016. <span>„Taking the Human Out of the Loop: A Review of Bayesian Optimization”</span>. <em>Proceedings of the IEEE</em> 104 (1): 148–75. <a href="https://doi.org/10.1109/jproc.2015.2494218">https://doi.org/10.1109/jproc.2015.2494218</a>.
@@ -4843,13 +4859,14 @@ Shahriari, Bobak, Kevin Swersky, Ziyu Wang, Ryan P. Adams, i Nando de Freitas. 2
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

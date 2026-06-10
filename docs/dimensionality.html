@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>14&nbsp; Redukcja wymiarowości – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +128,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -333,7 +335,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -498,13 +500,13 @@ window.Quarto = {
 
 
 </header><p>Redukcja wymiarowości (ang. <em>dimensionality reduction</em>) jest przekształceniem zbioru danych z przestrzeni wielowymiarowej w przestrzeń niskowymiarową i może być dobrym wyborem, gdy podejrzewamy, że jest “za dużo” zmiennych. Nadmiar zmiennych, zwykle predyktorów, może być problemem, ponieważ trudno jest zrozumieć lub wizualizować dane w wyższych wymiarach.</p>
-<p>Redukcja wymiarowości może być stosowana zarówno w inżynierii cech, jak i w eksploracyjnej analizie danych. Na przykład, w wielowymiarowych eksperymentach biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty niezwiązane z interesującym nas zagadnieniem, takie jak różnice między laboratoriami). Eksploracja danych jest trudna, gdy istnieją setki tysięcy wymiarów, a redukcja wymiarowości może być pomocą w analizie danych.</p>
-<p>Inną potencjalną konsekwencją posiadania wielu predyktorów jest model nadmiarową liczbą predyktorów. Najprostszym przykładem jest regresja liniowa, gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do dopasowania modelu. Innym problemem jest współliniowość, gdzie korelacje między predyktorami mogą negatywnie wpływać na operacje matematyczne używane do oszacowania modelu. Jeśli istnieje bardzo duża liczba predyktorów, jest mało prawdopodobne, że istnieje taka sama liczba rzeczywistych efektów leżących u podstaw. Predyktory mogą mierzyć ten sam ukryty efekt (efekty), a zatem takie predyktory będą wysoko skorelowane. Wiele technik redukcji wymiarowości sprawdza się w tej sytuacji. W rzeczywistości większość z nich może być skuteczna tylko wtedy, gdy istnieją takie relacje między predyktorami, które można wykorzystać.</p>
-<p>Analiza składowych głównych (PCA) jest jedną z najprostszych metod redukcji liczby zmiennych w zbiorze danych, ponieważ opiera się na metodach liniowych i jest nienadzorowana. W przypadku wielowymiarowego problemu klasyfikacji, początkowy wykres głównych komponentów PCA może pokazać wyraźny podział między klasami. Jeśli tak jest, to można bezpiecznie założyć, że klasyfikator liniowy może się sprawdzić w takim zadaniu. Jednak nie jest prawdą, że brak separacji nie oznacza, że problem jest nie do pokonania.</p>
+<p>Redukcja wymiarowości może być stosowana zarówno w inżynierii cech, jak i w eksploracyjnej analizie danych. Na przykład, w wielowymiarowych eksperymentach biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty niezwiązane z interesującym nas zagadnieniem, takie jak różnice między laboratoriami). Eksploracja danych jest trudna, gdy istnieją setki tysięcy wymiarów, a redukcja wymiarowości może być pomocna w analizie danych.</p>
+<p>Inną potencjalną konsekwencją posiadania wielu predyktorów jest model z nadmiarową liczbą predyktorów. Najprostszym przykładem jest regresja liniowa, gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do dopasowania modelu. Innym problemem jest współliniowość, gdzie korelacje między predyktorami mogą negatywnie wpływać na operacje matematyczne używane do oszacowania modelu. Jeśli istnieje bardzo duża liczba predyktorów, jest mało prawdopodobne, że istnieje taka sama liczba rzeczywistych efektów leżących u podstaw. Predyktory mogą mierzyć ten sam ukryty efekt (efekty), a zatem takie predyktory będą wysoko skorelowane. Wiele technik redukcji wymiarowości sprawdza się w tej sytuacji. W rzeczywistości większość z nich może być skuteczna tylko wtedy, gdy istnieją takie relacje między predyktorami, które można wykorzystać.</p>
+<p>Analiza składowych głównych (PCA) jest jedną z najprostszych metod redukcji liczby zmiennych w zbiorze danych, ponieważ opiera się na metodach liniowych i jest nienadzorowana. W przypadku wielowymiarowego problemu klasyfikacji, początkowy wykres głównych komponentów PCA może pokazać wyraźny podział między klasami. Jeśli tak jest, to można bezpiecznie założyć, że klasyfikator liniowy może się sprawdzić w takim zadaniu. Jednak brak separacji nie oznacza, że problem jest nie do pokonania.</p>
 <p>Metody redukcji wymiarowości omawiane w tym rozdziale nie są na ogół metodami selekcji cech. Metody takie jak PCA reprezentują oryginalne predyktory za pomocą mniejszego podzbioru nowych cech. Wszystkie oryginalne predyktory są wymagane do obliczenia tych nowych cech. Wyjątkiem są metody rzadkie, które mają zdolność do całkowitego usunięcia wpływu predyktorów podczas tworzenia nowych cech.</p>
 <section id="opis-danych" class="level2 page-columns page-full" data-number="14.1"><h2 data-number="14.1" class="anchored" data-anchor-id="opis-danych">
 <span class="header-section-number">14.1</span> Opis danych</h2>
-<p>Do celów ilustracji, jak używać redukcji wymiarowości z przepisami wykorzystamy przykładowy zestaw danych. <span class="citation" data-cites="koklu2020">Koklu i Ozkan (<a href="references.html#ref-koklu2020" role="doc-biblioref">2020</a>)</span> opublikowali zestaw danych dotyczących wizualnych cech suszonej fasoli i opisali metody określania odmian suszonej fasoli na obrazie. Chociaż wymiarowość tych danych nie jest bardzo duża w porównaniu z wieloma problemami modelowania w świecie rzeczywistym, zapewnia ładny przykład roboczy, aby zademonstrować, jak zmniejszyć liczbę cech. W swojej pracy napisali:</p>
+<p>Aby zilustrować, jak używać redukcji wymiarowości z przepisami, wykorzystamy przykładowy zestaw danych. <span class="citation" data-cites="koklu2020">Koklu i Ozkan (<a href="references.html#ref-koklu2020" role="doc-biblioref">2020</a>)</span> opublikowali zestaw danych dotyczących wizualnych cech suszonej fasoli i opisali metody określania odmian suszonej fasoli na obrazie. Chociaż wymiarowość tych danych nie jest bardzo duża w porównaniu z wieloma problemami modelowania w świecie rzeczywistym, zapewnia ładny przykład roboczy, aby zademonstrować, jak zmniejszyć liczbę cech. W swojej pracy napisali:</p>
 <blockquote class="blockquote">
 <p>Podstawowym celem niniejszej pracy jest dostarczenie metody uzyskiwania jednolitych odmian nasion z produkcji roślinnej, która ma postać populacji, więc nasiona nie są certyfikowane jako jedyna odmiana. W związku z tym opracowano system wizji komputerowej do rozróżniania siedmiu różnych zarejestrowanych odmian suchej fasoli o podobnych cechach w celu uzyskania jednolitej klasyfikacji nasion. Dla modelu klasyfikacji wykonano obrazy 13 611 ziaren 7 różnych zarejestrowanych suchych odmian fasoli za pomocą kamery o wysokiej rozdzielczości.</p>
 </blockquote>
@@ -513,25 +515,25 @@ window.Quarto = {
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://i.pinimg.com/originals/8f/7f/6a/8f7f6a8946cae848d9d5a497b2da93ec.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>Istnieje wiele metod kwantyfikacji kształtów obiektów <span class="citation" data-cites="mingqiang2008">(<a href="references.html#ref-mingqiang2008" role="doc-biblioref">Mingqiang, Kidiyo, i Joseph 2008</a>)</span>. Wiele z nich dotyczy granic lub regionów interesującego nas obiektu. Przykładowe cechy obejmują:</p>
+<p>Istnieje wiele metod kwantyfikacji kształtów obiektów <span class="citation" data-cites="mingqiang2008">(<a href="references.html#ref-mingqiang2008" role="doc-biblioref">Mingqiang et al. 2008</a>)</span>. Wiele z nich dotyczy granic lub regionów interesującego nas obiektu. Przykładowe cechy obejmują:</p>
 <ul>
-<li>Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.</li>
+<li>Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w obiekcie lub rozmiaru otoczki wypukłej wokół obiektu.</li>
 <li>Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).</li>
-<li>Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne części obiektu. Mała oś jest prostopadła do osi głównej.</li>
+<li>Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne części obiektu. Oś mniejsza jest prostopadła do osi głównej.</li>
 <li>Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu do pola powierzchni koła o tym samym obwodzie. Na przykład symbole <span class="math inline">\(\bullet\)</span> i <span class="math inline">\(\times\)</span> mają bardzo różną zwartość.</li>
 <li>Istnieją również różne miary tego, jak bardzo obiekt jest podłużny. Na przykład statystyka ekscentryczności to stosunek osi głównej i małej. Istnieją również powiązane szacunki dla okrągłości i wypukłości.</li>
 </ul>
 <p>W danych dotyczących fasoli obliczono 16 cech morfologicznych: powierzchnię, obwód, długość osi głównej, długość osi małej, współczynnik kształtu, ekscentryczność, powierzchnię wypukłą, średnicę równoważną, rozległość, zwartość, krągłość, zwięzłość, współczynnik kształtu 1, współczynnik kształtu 2, współczynnik kształtu 3 i współczynnik kształtu 4.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">beans</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">beans</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Dla naszych analiz zaczynamy od podziału zbioru za pomocą <code>initial_split()</code>. Pozostałe dane są dzielone na zbiory treningowe i walidacyjne:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1601</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1601</span><span class="op">)</span></span>
 <span><span class="va">bean_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">beans</span>, strata <span class="op">=</span> <span class="va">class</span>, prop <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bean_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">bean_split</span><span class="op">)</span></span>
@@ -539,7 +541,7 @@ window.Quarto = {
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1602</span><span class="op">)</span></span>
 <span><span class="va">bean_val</span> <span class="op">&lt;-</span> <span class="fu">validation_split</span><span class="op">(</span><span class="va">bean_train</span>, strata <span class="op">=</span> <span class="va">class</span>, prop <span class="op">=</span> <span class="fl">4</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>&lt;Training/Validation/Total&gt;
 &lt;8163/2043/10206&gt;</code></pre>
@@ -548,12 +550,12 @@ window.Quarto = {
 <p>Aby wizualnie ocenić, jak dobrze działają różne metody, możemy oszacować metody na zbiorze treningowym (n = 8163 ziaren) i wyświetlić wyniki przy użyciu zbioru walidacyjnego (n = 2043).</p>
 <p>Przed rozpoczęciem jakiejkolwiek redukcji wymiarowości możemy poświęcić trochę czasu na zbadanie naszych danych. Ponieważ wiemy, że wiele z tych cech kształtu prawdopodobnie mierzy podobne koncepcje, przyjrzyjmy się strukturze korelacyjnej danych na <a href="#fig-dim1" class="quarto-xref">Rys.&nbsp;<span>14.1</span></a>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot">corrplot</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot">corrplot</a></span><span class="op">)</span></span>
 <span><span class="va">tmwr_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#91CBD765"</span>, <span class="st">"#CA225E"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">bean_train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu">tmwr_cols</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, tl.col <span class="op">=</span> <span class="st">"black"</span>, method <span class="op">=</span> <span class="st">"ellipse"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu">tmwr_cols</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, tl.col <span class="op">=</span> <span class="st">"black"</span>, method <span class="op">=</span> <span class="st">"ellipse"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-dim1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -568,13 +570,13 @@ Rys.&nbsp;14.1: Macierz korelacji
 <p>Wiele z tych predyktorów jest silnie skorelowanych, jak np. powierzchnia i obwód lub współczynniki kształtu 2 i 3. Chociaż nie poświęcamy temu czasu tutaj, ważne jest również, aby zobaczyć, czy ta struktura korelacji znacząco zmienia się w różnych kategoriach wyników. Może to pomóc w stworzeniu lepszych modeli.</p>
 <p>Zacznijmy od podstawowego przepisu wstępnego przetwarzania danych, który często stosujemy przed jakimikolwiek krokami redukcji wymiarowości. Kilka predyktorów to współczynniki, a więc prawdopodobnie będą miały skośne rozkłady. Takie rozkłady mogą siać spustoszenie w obliczeniach wariancji (takich jak te używane w PCA). Pakiet <code>bestNormalize</code> posiada krok, który może wymusić symetryczny rozkład predyktorów. Użyjemy tego, aby złagodzić problem skośnych rozkładów:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://petersonr.github.io/bestNormalize/">bestNormalize</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://petersonr.github.io/bestNormalize/">bestNormalize</a></span><span class="op">)</span></span>
 <span><span class="va">bean_rec</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Use the training data from the bean_val split object</span></span>
 <span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="fu">analysis</span><span class="op">(</span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_zv</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://petersonr.github.io/bestNormalize/reference/step_orderNorm.html">step_orderNorm</a></span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -612,17 +614,17 @@ Rys.&nbsp;14.2: Zasada działania poszczególnych czasowników
 </figcaption></figure>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">&lt;-</span> <span class="fu">prep</span><span class="op">(</span><span class="va">bean_rec</span><span class="op">)</span></span>
-<span><span class="va">bean_rec_trained</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op">&lt;-</span> <span class="fu">prep</span><span class="op">(</span><span class="va">bean_rec</span><span class="op">)</span></span>
+<span><span class="va">bean_rec_trained</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj. <code><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors()</a></code>); teraz pokazują rzeczywiste kolumny, które zostały wybrane. Również, <code>prep(bean_rec)</code> nie wymaga argumentu <code>training</code>. Możesz przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte zostaną oryginalne dane z wywołania <code><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe()</a></code>. W naszym przypadku były to dane ze zbioru treningowego.</p>
+<p>Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj. <code><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors()</a></code>); teraz pokazują rzeczywiste kolumny, które zostały wybrane. Ponadto, <code>prep(bean_rec)</code> nie wymaga argumentu <code>training</code>. Możesz przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte zostaną oryginalne dane z wywołania <code><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe()</a></code>. W naszym przypadku były to dane ze zbioru treningowego.</p>
 <p>Jednym z ważnych argumentów funkcji <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> jest <code>retain</code>. Kiedy <code>retain = TRUE</code> (domyślnie), szacunkowa wersja zbioru treningowego jest przechowywana wewnątrz receptury. Ten zestaw danych został wstępnie przetworzony przy użyciu wszystkich kroków wymienionych w recepturze. Ponieważ funkcja <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> musi wykonywać recepturę w trakcie jej wykonywania, korzystne może być zachowanie tej wersji zbioru treningowego, tak że jeśli ten zbiór danych ma być użyty później, można uniknąć zbędnych obliczeń. Jednakże, jeśli zestaw treningowy jest duży, może być problematyczne przechowywanie tak dużej ilości danych w pamięci. Użyj wówczas <code>retain = FALSE</code>, aby tego uniknąć.</p>
-<p>Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> oszacuje tylko niewykształcone kroki. Przyda się to, gdy będziemy próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć, co dzieje się w analizie, jest <code>log_changes</code>:</p>
+<p>Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code> oszacuje tylko jeszcze nieoszacowane kroki. Przyda się to, gdy będziemy próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć, co dzieje się w analizie, jest <code>log_changes</code>:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">show_variables</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">show_variables</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">bean_rec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">prep</span><span class="op">(</span>log_changes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">prep</span><span class="op">(</span>log_changes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>step_zv (zv_6JtxV): same number of columns
 
@@ -646,13 +648,13 @@ Wskazówka
 </div>
 <p>Na przykład, próbki zbioru walidacyjnego mogą być przetwarzane następująco:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_validation</span> <span class="op">&lt;-</span> <span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">assessment</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">bean_val_processed</span> <span class="op">&lt;-</span> <span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="va">bean_validation</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_validation</span> <span class="op">&lt;-</span> <span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">assessment</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">bean_val_processed</span> <span class="op">&lt;-</span> <span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="va">bean_validation</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p><a href="#fig-dim3" class="quarto-xref">Rys.&nbsp;<span>14.3</span></a> przedstawia histogramy predyktora powierzchni przed i po przygotowaniu receptury.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">bean_validation</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -665,7 +667,7 @@ Wskazówka
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, color <span class="op">=</span> <span class="st">"white"</span>, fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Processed validation set data"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-dim3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -677,13 +679,13 @@ Rys.&nbsp;14.3: Rozkłady przed i po transformacji
 </div>
 </div>
 </div>
-<p>Warto tutaj zwrócić uwagę na dwa ważne aspekty <code>bake().</code> Po pierwsze, jak wcześniej wspomniano, użycie <code>prep(recipe, retain = TRUE)</code> zachowuje istniejącą przetworzoną wersję zbioru treningowego w recepturze. Dzięki temu użytkownik może użyć <code>bake(recipe, new_data = NULL)</code>, która zwraca ten zestaw danych bez dalszych obliczeń. Na przykład:</p>
+<p>Warto tutaj zwrócić uwagę na dwa ważne aspekty <code><a href="https://recipes.tidymodels.org/reference/bake.html">bake()</a></code>. Po pierwsze, jak wcześniej wspomniano, użycie <code>prep(recipe, retain = TRUE)</code> zachowuje istniejącą przetworzoną wersję zbioru treningowego w recepturze. Dzięki temu użytkownik może użyć <code>bake(recipe, new_data = NULL)</code>, które zwraca ten zestaw danych bez dalszych obliczeń. Na przykład:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bake</span><span class="op">(</span><span class="va">bean_rec_trained</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>[1] 8163</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">analysis</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">analysis</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>[1] 8163</code></pre>
 </div>
@@ -697,7 +699,7 @@ Rys.&nbsp;14.3: Rozkłady przed i po transformacji
 </figure>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
 <span><span class="va">plot_validation_results</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">recipe</span>, <span class="va">dat</span> <span class="op">=</span> <span class="fu">assessment</span><span class="op">(</span><span class="va">bean_val</span><span class="op">$</span><span class="va">splits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">recipe</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="co"># Estimate any additional steps</span></span>
@@ -711,7 +713,7 @@ Rys.&nbsp;14.3: Rozkłady przed i po transformacji
 <span>    <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/facet_matrix.html">facet_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="op">-</span><span class="va">class</span><span class="op">)</span>, layer.diag <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="op">}</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Funkcji tej użyjemy wielokrotnie do wizualizacji wyników po zastosowaniu różnych metod ekstrakcji cech.</p>
@@ -719,10 +721,10 @@ Rys.&nbsp;14.3: Rozkłady przed i po transformacji
 <span class="header-section-number">14.2.1</span> PCA</h3>
 <p>PCA jest metodą bez nadzoru, która wykorzystuje liniowe kombinacje predyktorów do określenia nowych cech. Cechy te starają się uwzględnić jak najwięcej zmienności w oryginalnych danych. Dodajemy <code><a href="https://recipes.tidymodels.org/reference/step_pca.html">step_pca()</a></code> do oryginalnego przepisu i wykorzystujemy naszą funkcję do wizualizacji wyników na zbiorze walidacyjnym na <a href="#fig-dim4" class="quarto-xref">Rys.&nbsp;<span>14.4</span></a> za pomocą:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-dim4" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dim4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -735,15 +737,15 @@ Rys.&nbsp;14.4: Wynik działania PCA dla pierwszych czterech składowych główn
 </div>
 </div>
 <p>Widzimy, że pierwsze dwie składowe PC1 i PC2, zwłaszcza gdy są używane razem, skutecznie rozróżniają lub oddzielają klasy. To może nas skłonić do oczekiwania, że ogólny problem klasyfikacji tych ziaren nie będzie szczególnie trudny.</p>
-<p>Przypomnijmy, że PCA jest metodą bez nadzoru. Dla tych danych okazuje się, że składowe PCA, które wyjaśniają największe różnice w predyktorach, są również predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet <code>learntidymodels</code> posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla każdego komponentu. Będziemy potrzebowali przygotowanego przepisu; krok PCA jest dodany w poniższym kodzie wraz z wywołaniem <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code>:</p>
+<p>Przypomnijmy, że PCA jest metodą bez nadzoru. Dla tych danych okazuje się, że składowe PCA, które wyjaśniają największe różnice w predyktorach, są również dobrymi predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet <code>learntidymodels</code> posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla każdego komponentu. Będziemy potrzebowali przygotowanego przepisu; krok PCA jest dodany w poniższym kodzie wraz z wywołaniem <code><a href="https://recipes.tidymodels.org/reference/prep.html">prep()</a></code>:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">learntidymodels</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">learntidymodels</span><span class="op">)</span></span>
 <span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">prep</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/learntidymodels/man/plot_top_loadings.html">plot_top_loadings</a></span><span class="op">(</span><span class="va">component_number</span> <span class="op">&lt;=</span> <span class="fl">4</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Component Analysis"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-pca1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pca1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -760,10 +762,10 @@ Rys.&nbsp;14.5: Ładunki predyktorów w transformacji PCA
 <span class="header-section-number">14.2.2</span> PLS</h3>
 <p><em>Partial Least Squares</em> jest nadzorowaną wersją PCA. Próbuje znaleźć składowe, które jednocześnie maksymalizują zmienność predyktorów, a jednocześnie maksymalizują związek między tymi składowymi a wynikiem. <a href="#fig-pls1" class="quarto-xref">Rys.&nbsp;<span>14.6</span></a> przedstawia wyniki tej nieco zmodyfikowanej wersji kodu PCA:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_pls</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-pls1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pls1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -777,12 +779,12 @@ Rys.&nbsp;14.6: Oceny składowych PLS dla zbioru walidacyjnego fasoli, pokolorow
 </div>
 <p>Pierwsze dwie składowe PLS wykreślone na <a href="#fig-pls1" class="quarto-xref">Rys.&nbsp;<span>14.6</span></a> są niemal identyczne z pierwszymi dwiema składowymi PCA! Pozostałe składowe różnią się nieco od PCA. <a href="#fig-pls2" class="quarto-xref">Rys.&nbsp;<span>14.7</span></a> wizualizuje ładunki, czyli najwyższe cechy dla każdej składowej.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_pls</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">prep</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/learntidymodels/man/plot_top_loadings.html">plot_top_loadings</a></span><span class="op">(</span><span class="va">component_number</span> <span class="op">&lt;=</span> <span class="fl">4</span>, n <span class="op">=</span> <span class="fl">5</span>, type <span class="op">=</span> <span class="st">"pls"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Paired"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Partial Least Squares"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-pls2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pls2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -796,12 +798,12 @@ Rys.&nbsp;14.7: Ładunki predyktorów w transformacji PLS
 </div>
 </section><section id="ica" class="level3" data-number="14.2.3"><h3 data-number="14.2.3" class="anchored" data-anchor-id="ica">
 <span class="header-section-number">14.2.3</span> ICA</h3>
-<p>Metoda składowych niezależnych różni się nieco od PCA tym, że znajduje składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe (w przeciwieństwie do bycia nieskorelowanym). Można o tym myśleć jako o rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA. Użyjmy funkcji <code><a href="https://recipes.tidymodels.org/reference/step_ica.html">step_ica()</a></code> do wykonania dekompozycji (patrz <a href="#fig-ica1" class="quarto-xref">Rys.&nbsp;<span>14.8</span></a>):</p>
+<p>Analiza składowych niezależnych (ICA) różni się nieco od PCA tym, że znajduje składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe (w przeciwieństwie do samej nieskorelowaności). Można o tym myśleć jako o rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA. Użyjmy funkcji <code><a href="https://recipes.tidymodels.org/reference/step_ica.html">step_ica()</a></code> do wykonania dekompozycji (patrz <a href="#fig-ica1" class="quarto-xref">Rys.&nbsp;<span>14.8</span></a>):</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">step_ica</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Independent Component Analysis"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Independent Component Analysis"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-ica1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ica1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -816,17 +818,17 @@ Rys.&nbsp;14.8: Oceny komponentów ICA dla zbioru walidacyjnego fasoli, pokoloro
 <p>Analiza wyników nie wskazuje na wyraźne różnice między klasami w pierwszych kilku komponentach ICA. Te niezależne (lub tak niezależne, jak to możliwe) komponenty nie separują typów fasoli.</p>
 </section><section id="umap" class="level3" data-number="14.2.4"><h3 data-number="14.2.4" class="anchored" data-anchor-id="umap">
 <span class="header-section-number">14.2.4</span> UMAP</h3>
-<p><em>Uniform manifold approximation and projection</em> jest podobna do innej znanej metody t-SNE służącej do nieliniowej redukcji wymiarów. W oryginalnej przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z dużym prawdopodobieństwem są powiązane. Relacje między punktami danych są zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest połączona. Stąd UMAP tłumaczy punkty w grafie na przestrzeń o zmniejszonym wymiarze. Aby to zrobić, algorytm posiada proces optymalizacji, który wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego zestawu cech, tak aby graf był dobrze przybliżony.</p>
+<p><em>Uniform manifold approximation and projection</em> jest podobna do innej znanej metody t-SNE służącej do nieliniowej redukcji wymiarów. W oryginalnej przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z dużym prawdopodobieństwem są powiązane. Relacje między punktami danych są zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest połączona. Następnie UMAP odwzorowuje ten graf w przestrzeń o zmniejszonym wymiarze. Aby to zrobić, algorytm posiada proces optymalizacji, który wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego zestawu cech, tak aby graf był dobrze przybliżony.</p>
 <p>Pakiet <code>embed</code> zawiera funkcję krokową dla tej metody, zwizualizowaną na <a href="#fig-umap1" class="quarto-xref">Rys.&nbsp;<span>14.9</span></a>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://embed.tidymodels.org">embed</a></span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://embed.tidymodels.org">embed</a></span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-umap1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-umap1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -841,17 +843,17 @@ Rys.&nbsp;14.9: Oceny komponentów UMAP dla zestawu walidacyjnego fasoli, pokolo
 <p>Widać wyraźne przestrzenie pomiędzy skupieniami, choć te dalej mogą być heterogeniczne.</p>
 <p>Istnieje też odmiana UMAP nadzorowana, która zamiast używać podobieństwa do określenia skupień w wielowymiarowej przestrzeni, używa etykiet.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec_trained</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://embed.tidymodels.org/reference/step_umap.html">step_umap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span>, outcome <span class="op">=</span> <span class="st">"class"</span>, num_comp <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">plot_validation_results</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP (supervised)"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"UMAP (supervised)"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-umap2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-umap2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="dimensionality_files/figure-html/fig-umap2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="dimensionality_files/figure-html/fig-umap2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Rys.&nbsp;14.10: Oceny komponentów UMAP (wersja nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas"><img src="dimensionality_files/figure-html/fig-umap2-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-umap2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas
+Rys.&nbsp;14.10: Oceny komponentów UMAP (wersja nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas
 </figcaption></figure>
 </div>
 </div>
@@ -859,14 +861,14 @@ Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walida
 <p>UMAP jest wydajną metodą redukcji przestrzeni cech. Jednak może być bardzo wrażliwa na dostrajanie parametrów (np. liczba sąsiadów). Z tego powodu pomocne byłoby eksperymentowanie z kilkoma parametrami, aby ocenić, jak wiarygodne są wyniki dla tych danych.</p>
 </section></section><section id="modelowanie-ze-wstępną-ekstrakcją-cech" class="level2 page-columns page-full" data-number="14.3"><h2 data-number="14.3" class="anchored" data-anchor-id="modelowanie-ze-wstępną-ekstrakcją-cech">
 <span class="header-section-number">14.3</span> Modelowanie ze wstępną ekstrakcją cech</h2>
-<p>Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi modelami. Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa, <em>bagged trees</em>, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i regularyzowana analiza dyskryminacyjna (RDA).</p>
+<p>Zarówno metoda PLS, jak i UMAP są warte zbadania w połączeniu z różnymi modelami. Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa, <em>bagged trees</em>, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i regularyzowana analiza dyskryminacyjna (RDA).</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-14"></a></p><div class="no-row-height column-margin column-container"><a href="https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-14"><img src="https://1.bp.blogspot.com/-1HTEMN6gmOk/XuPEo4_FF2I/AAAAAAAAK0Y/SIFmr52jJdUF-H3RRfLy0vJ0lI6ChxvbgCLcBGAsYHQ/s1600/Funny%252BCat%252BGIF%252B%2525E2%252580%2525A2%252BSuper%252Bfat%252Bcat%252Bsqueezing%252Bthrough%252Bcat%252Bdoor%25252C%252Bhaha%252Bwhat%252Ba%252Bshame%252521.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
 <p>Stworzymy serię specyfikacji modeli, a następnie użyjemy zestawu przepływów pracy do dostrojenia modeli w poniższym kodzie. Zauważ, że parametry modelu są dostrajane w połączeniu z parametrami receptury (np. rozmiar zredukowanego wymiaru, parametry UMAP).</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://baguette.tidymodels.org">baguette</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://baguette.tidymodels.org">baguette</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/discrim">discrim</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mlp_spec</span> <span class="op">&lt;-</span></span>
@@ -891,12 +893,12 @@ Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walida
 <span></span>
 <span><span class="va">bayes_spec</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/naive_Bayes.html">naive_Bayes</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'klaR'</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">'klaR'</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Potrzebujemy również receptur dla metod redukcji wymiarowości, które będziemy testować. Zacznijmy od bazowego przepisu <code>bean_rec</code>, a następnie rozszerzmy go o różne kroki redukcji wymiarowości:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec</span> <span class="op">&lt;-</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_rec</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">bean_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://petersonr.github.io/bestNormalize/reference/step_orderNorm.html">step_orderNorm</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -914,16 +916,16 @@ Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walida
 <span>    num_comp <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    min_dist <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Po raz kolejny pakiet <code>workflowsets</code> bierze reguły wstępnego przetwarzani oraz modele i krzyżuje je. Opcja kontrolna <code>parallel_over</code> jest ustawiona tak, aby przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach dostrajania parametrów. Funkcja <code>workflow_map()</code> stosuje przeszukiwanie siatki w celu optymalizacji parametrów modelu/przetwarzania wstępnego (jeśli istnieją) w 10 kombinacjach parametrów. Obszar pod krzywą ROC jest szacowany na zbiorze walidacyjnym.</p>
+<p>Po raz kolejny pakiet <code>workflowsets</code> przyjmuje reguły wstępnego przetwarzania oraz modele i krzyżuje je. Opcja kontrolna <code>parallel_over</code> jest ustawiona tak, aby przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach dostrajania parametrów. Funkcja <code>workflow_map()</code> stosuje przeszukiwanie siatki w celu optymalizacji parametrów modelu/przetwarzania wstępnego (jeśli istnieją) w 10 kombinacjach parametrów. Obszar pod krzywą ROC jest szacowany na zbiorze walidacyjnym.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_grid</span><span class="op">(</span>parallel_over <span class="op">=</span> <span class="st">"resamples"</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu">control_grid</span><span class="op">(</span>parallel_over <span class="op">=</span> <span class="st">"resamples"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bean_res</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">workflow_set</span><span class="op">(</span></span>
-<span>    preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>basic <span class="op">=</span> <span class="va">class</span> <span class="op">~</span><span class="va">.</span>, pls <span class="op">=</span> <span class="va">pls_rec</span>, umap <span class="op">=</span> <span class="va">umap_rec</span><span class="op">)</span>, </span>
+<span>    preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>basic <span class="op">=</span> <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, pls <span class="op">=</span> <span class="va">pls_rec</span>, umap <span class="op">=</span> <span class="va">umap_rec</span><span class="op">)</span>, </span>
 <span>    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>bayes <span class="op">=</span> <span class="va">bayes_spec</span>, fda <span class="op">=</span> <span class="va">fda_spec</span>,</span>
 <span>                  rda <span class="op">=</span> <span class="va">rda_spec</span>, bag <span class="op">=</span> <span class="va">bagging_spec</span>,</span>
 <span>                  mlp <span class="op">=</span> <span class="va">mlp_spec</span><span class="op">)</span></span>
@@ -935,19 +937,19 @@ Rys.&nbsp;14.10: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walida
 <span>    grid <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>    metrics <span class="op">=</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span>,</span>
 <span>    control <span class="op">=</span> <span class="va">ctrl</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"models/bean_res.rds"</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bean_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"models/bean_res.rds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span></span>
-<span><span class="va">bean_res</span>,</span>
-<span>rank_metric <span class="op">=</span> <span class="st">"roc_auc"</span>,  <span class="co"># &lt;- how to order models</span></span>
-<span>metric <span class="op">=</span> <span class="st">"roc_auc"</span>,       <span class="co"># &lt;- which metric to visualize</span></span>
-<span>select_best <span class="op">=</span> <span class="cn">TRUE</span>     <span class="co"># &lt;- one point per workflow</span></span>
+<span>  <span class="va">bean_res</span>,</span>
+<span>  rank_metric <span class="op">=</span> <span class="st">"roc_auc"</span>,  <span class="co"># &lt;- how to order models</span></span>
+<span>  metric <span class="op">=</span> <span class="st">"roc_auc"</span>,       <span class="co"># &lt;- which metric to visualize</span></span>
+<span>  select_best <span class="op">=</span> <span class="cn">TRUE</span>        <span class="co"># &lt;- one point per workflow</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">0.02</span>, label <span class="op">=</span> <span class="va">wflow_id</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span>, hjust <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">lims</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">0.02</span>, label <span class="op">=</span> <span class="va">wflow_id</span><span class="op">)</span>, angle <span class="op">=</span> <span class="fl">90</span>, hjust <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">lims</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-all-models1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-all-models1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -961,12 +963,12 @@ Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
 </div>
 <p>Możemy uszeregować modele według ich oszacowań obszaru pod krzywą ROC w zbiorze walidacyjnym:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rankings</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rankings</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">rank_results</span><span class="op">(</span><span class="va">bean_res</span>, select_best <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">wflow_id</span>, <span class="op">~</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_split.html">str_split</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"_"</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">rankings</span>, <span class="va">rank</span> <span class="op">&lt;=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">rank</span>, <span class="va">mean</span>, <span class="va">model</span>, <span class="va">method</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">rankings</span>, <span class="va">rank</span> <span class="op">&lt;=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">rank</span>, <span class="va">mean</span>, <span class="va">model</span>, <span class="va">method</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
    rank  mean model               method
@@ -980,7 +982,7 @@ Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
 </div>
 <p>Z tych wyników jasno wynika, że większość modeli daje bardzo dobre wyniki; niewiele jest tu złych wyborów. Dla demonstracji użyjemy modelu RDA z cechami PLS jako modelu końcowego.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rda_res</span> <span class="op">&lt;-</span> </span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rda_res</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="va">bean_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">extract_workflow</span><span class="op">(</span><span class="st">"pls_rda"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">finalize_workflow</span><span class="op">(</span></span>
@@ -992,19 +994,19 @@ Rys.&nbsp;14.11: Obszar pod krzywą ROC ze zbioru walidacyjnego
 <span></span>
 <span><span class="va">rda_wflow_fit</span> <span class="op">&lt;-</span> <span class="fu">extract_workflow</span><span class="op">(</span><span class="va">rda_res</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">rda_res</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">rda_res</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>NULL</code></pre>
 </div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-koklu2020" class="csl-entry" role="listitem">
-Koklu, Murat, i Ilker Ali Ozkan. 2020. <span>„Multiclass Classification of Dry Beans Using Computer Vision and Machine Learning Techniques”</span>. <em>Computers and Electronics in Agriculture</em> 174 (lipiec): 105507. <a href="https://doi.org/10.1016/j.compag.2020.105507">https://doi.org/10.1016/j.compag.2020.105507</a>.
+Koklu, Murat, i Ilker Ali Ozkan. 2020. <span>„Multiclass Classification of Dry Beans Using Computer Vision and Machine Learning Techniques”</span>. <em>Computers and Electronics in Agriculture</em> 174 (lipca): 105507. <a href="https://doi.org/10.1016/j.compag.2020.105507">https://doi.org/10.1016/j.compag.2020.105507</a>.
 </div>
 <div id="ref-mingqiang2008" class="csl-entry" role="listitem">
-Mingqiang, Yang, Kpalma Kidiyo, i Ronsin Joseph. 2008. <span>„A Survey of Shape Feature Extraction Techniques”</span>. W. InTech. <a href="https://doi.org/10.5772/6237">https://doi.org/10.5772/6237</a>.
+Mingqiang, Yang, Kpalma Kidiyo, i Ronsin Joseph. 2008. <em>A Survey of Shape Feature Extraction Techniques</em>. InTech. <a href="https://doi.org/10.5772/6237">https://doi.org/10.5772/6237</a>.
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -1071,13 +1073,14 @@ Mingqiang, Yang, Kpalma Kidiyo, i Ronsin Joseph. 2008. <span>„A Survey of Shap
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

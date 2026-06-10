@@ -10,7 +10,7 @@ editor_options:
 Filozofia jaką przyjęli twórcy pakietu `tidymodels`, wraz z wszystkimi pakietami towarzyszącymi, miała na celu ujednolicenie procesu modelowania, bez względu na to jaki aktualnie model jest uczony.
 Jest to odpowiedź na powszechnie pojawiające się problemy z modelowaniem w R, gdzie praktycznie każdy model ma swoją charakterystyczną formę wywołania, predykcji czy podsumowania.
 Co więcej, zdarza się nierzadko, że ten sam rodzaj modelu, np.
-regresja liniowa, może być budowany z wykorzystaniem różnych "silników": `stats`, `glm`, `glmnet` , `rstanarm`.
+regresja liniowa, może być budowany z wykorzystaniem różnych "silników": `stats`, `glm`, `glmnet`, `rstanarm` (korzystający z estymacji bayesowskiej).
 W każdym z nich model będzie budowany nieco inaczej.
 Dodatkowo niektóre z wymienionych pakietów wymagają podczas uczenia ustalenia pewnych parametrów, jak rodzina rozkładów, parametr regularyzacji itp., co więcej w różnych pakietach mogą mieć inne nazwy.
 
@@ -21,26 +21,25 @@ Dodatkowo niektóre z wymienionych pakietów wymagają podczas uczenia ustalenia
 Z pewnością powoduje to dodatkową komplikację podczas budowy modelu nie mającą bezpośredniego związku z modelowaniem.
 Podobnych przykładów różnic pomiędzy modelami można mnożyć.
 Nie tylko parametry modelu, czy funkcje wywoławcze się różnią, czasami format w jakim dane muszą być aplikowane do modelu - jako formuła czy jako para $(X,y)$ - czy nawet sposób predykcji mogą się znacząco różnić pomiędzy modelami.
-To wszystko sprawiło, że autorzy pakiety `tidymodels` dokonali pewnego rodzaju standaryzacji modeli.
-Sprawiło, to że badacz już nie musi się zastanawiać nad różnym nazewnictwem tego samego parametru w różnych modelach tego samego typu, czy jak przeprowadzić predykcję aby w wyniku otrzymać prawdopodobieństwa poszczególnych klas.
+To wszystko sprawiło, że autorzy pakietu `tidymodels` dokonali pewnego rodzaju standaryzacji modeli.
+Sprawiło to, że badacz już nie musi się zastanawiać nad różnym nazewnictwem tego samego parametru w różnych modelach tego samego typu, czy jak przeprowadzić predykcję aby w wyniku otrzymać prawdopodobieństwa poszczególnych klas.
 W tym rozdziale postaramy się przybliżyć ten sposób unifikacji w budowie modelu uczenia maszynowego.
 
 ## Budowa modelu
 
 Oddzielny pakiet przeznaczony do budowy modeli zawarty w ekosystemie `tidymodels` o nazwie `parsnip` pozwala w uniwersalny sposób budować i dopasowywać modele.
 Wracając do przykładu modelu liniowego postaramy się pokazać wszystkie zalety tego podejścia.
-Choć regresje liniową możemy zbudować z wykorzystaniem 11 różnych pakietów, to my się ograniczymy tylko do `stats`, `glmnet` i `rstanarm.`
+Choć regresję liniową możemy zbudować z wykorzystaniem 11 różnych pakietów, to my się ograniczymy tylko do `stats`, `glmnet` i `rstanarm`.
 
 ```{r}
 #| eval: false
-
 # w wersji klasycznej należałoby je budować następująco
 mod_stat <- lm(formula, data = ...)
 mod_glmnet <- glmnet(x = matrix, y = vector, family = "gaussian", ...)
 mod_stan <- stan_glm(formula, data, family = "gaussian", ...)
 ```
 
-Już na poziomie definiowana modeli widzimy różnice w definicjach, np.
+Już na poziomie definiowania modeli widzimy różnice w definicjach, np.
 glmnet potrzebuje danych w formacie $(X,y)$.
 W przypadku `tidymodels` podejście do określania modelu ma być bardziej zunifikowane:
 
@@ -48,7 +47,7 @@ W przypadku `tidymodels` podejście do określania modelu ma być bardziej zunif
 2.  Określenie silnika do dopasowania modelu. Najczęściej odzwierciedla to pakiet, który powinien być użyty, jak `stan`[^tidymodels-1] lub `glmnet`. Są to modele same w sobie, a `parsnip` zapewnia spójne interfejsy, używając ich jako silników do modelowania.
 3.  Jeśli jest to wymagane, zadeklaruj tryb pracy modelu[^tidymodels-2]. Tryb odzwierciedla typ przewidywanego wyniku. Dla wyników liczbowych trybem jest regresja; dla wyników jakościowych jest to klasyfikacja. Jeśli algorytm modelu może realizować tylko jeden typ wyniku, takim jak regresja liniowa, tryb jest już ustawiony.
 
-[^tidymodels-1]: jest to bibliotek języka C++
+[^tidymodels-1]: korzysta z estymacji bayesowskiej pakietu `rstanarm`
 
 [^tidymodels-2]: klasyfikacja czy regresja
 
@@ -61,7 +60,7 @@ linear_reg() %>% set_engine("glmnet")
 linear_reg() %>% set_engine("stan")
 ```
 
-Po ustaleniu modeli można je podać uczeniu, za pomocą funkcji `fit` w przypadku gdy określaliśmy zależność formułą lub `fit_xy` gdy zmienne niezależne i zależna były określone oddzielnie.
+Po ustaleniu modeli można je dopasować do danych, za pomocą funkcji `fit` w przypadku gdy określaliśmy zależność formułą lub `fit_xy` gdy zmienne niezależne i zależna były określone oddzielnie.
 Drugi przypadek ma miejsce gdy w procedurze przygotowania danych mamy je w postaci $(X,y)$.
 Nie mniej jednak pakiet `parsnip` pozwala na użycie `fit` nawet gdy oryginalna funkcja wymagała podania zmiennych niezależnych i zależnej.
 Ponadto funkcja `translate` pozwala na przetłumaczenie modelu `parsnip` na język danego pakietu.
@@ -71,9 +70,15 @@ Ponadto funkcja `translate` pozwala na przetłumaczenie modelu `parsnip` na jęz
 :::
 
 ```{r}
-linear_reg() %>% set_engine("lm") |> translate()
-linear_reg(penalty = 1) %>% set_engine("glmnet") |> translate()
-linear_reg() %>% set_engine("stan") |> translate()
+linear_reg() %>%
+    set_engine("lm") |>
+    translate()
+linear_reg(penalty = 1) %>%
+    set_engine("glmnet") |>
+    translate()
+linear_reg() %>%
+    set_engine("stan") |>
+    translate()
 ```
 
 Wykorzystując dane `ames` dopasujemy cenę (`Sale_Price`) na podstawie długości i szerokości geograficznej domu.
@@ -83,27 +88,26 @@ set.seed(44)
 ames <- ames %>% mutate(Sale_Price = log10(Sale_Price))
 ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
 ames_train <- training(ames_split)
-ames_test  <-  testing(ames_split)
+ames_test <- testing(ames_split)
 
-lm_model <- 
-  linear_reg() %>% 
-  set_engine("lm")
+lm_model <-
+    linear_reg() %>%
+    set_engine("lm")
 
-lm_form_fit <- 
-  lm_model %>% 
-  fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
+lm_form_fit <-
+    lm_model %>%
+    fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
 
-lm_xy_fit <- 
-  lm_model %>% 
-  fit_xy(
-    x = ames_train %>% select(Longitude, Latitude),
-    y = ames_train %>% pull(Sale_Price)
-  )
+lm_xy_fit <-
+    lm_model %>%
+    fit_xy(
+        x = ames_train %>% select(Longitude, Latitude),
+        y = ames_train %>% pull(Sale_Price)
+    )
 
 lm_form_fit
 
 lm_xy_fit
-
 ```
 
 Kolejną zaletą pakietu `parsnip` jest unifikacja nazw parametrów modeli.
@@ -117,25 +121,25 @@ W przypadku budowy w `parsnip` nazwy parametrów zostały zunifikowane:
 -   `trees` - liczba drzew;
 -   `min_n` - minimalna liczba obserwacji aby dokonać podziału węzła.
 
-Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który nie koniecznie musi się znać na różnicach pomiędzy pakietami.
+Unifikacja po pierwsze pozwala lepiej zapamiętać nazwy parametrów, a po drugie ich nazwy są zrozumiałe dla czytelnika, który niekoniecznie musi się znać na różnicach pomiędzy pakietami.
 
 Dla wspomnianego przykładu lasów losowych, model można zdefiniować następująco.
 
 ```{r}
-rand_forest(trees = 1000, min_n = 5) %>% 
-  set_engine("ranger") %>% 
-  set_mode("regression") %>% 
-  translate() # translate nie musi być używane, w tym przypadku było
-# użyte aby pokazać jak parsnip zamienił z unikalnej funkcji 
+rand_forest(trees = 1000, min_n = 5) %>%
+    set_engine("ranger") %>%
+    set_mode("regression") %>%
+    translate() # translate nie musi być używane, w tym przypadku było
+# użyte aby pokazać jak parsnip zamienił z unikalnej funkcji
 # rand_forest na model ranger
 ```
 
 Główne parametry modelu są przekazywane przez główną funkcję (w przykładzie była to `rand_forest`), ale pozostałe parametry, charakterystyczne dla danego silnika można przekazać przez argumenty silnika.
 
 ```{r}
-rand_forest(trees = 1000, min_n = 5) %>% 
-  set_engine("ranger", verbose = TRUE) %>% 
-  set_mode("regression") # parametr verbose = T przekazany został oddzielnie
+rand_forest(trees = 1000, min_n = 5) %>%
+    set_engine("ranger", verbose = TRUE) %>%
+    set_mode("regression") # parametr verbose = T przekazany został oddzielnie
 ```
 
 ## Użycie modelu
@@ -146,20 +150,21 @@ Można go znaleźć w elemencie o nazwie `fit`, który może być zwrócony za p
 
 ```{r}
 lm_form_fit %>% extract_fit_engine()
-lm_form_fit %>% extract_fit_engine() %>% vcov()
+lm_form_fit %>%
+    extract_fit_engine() %>%
+    vcov()
 ```
 
 ::: callout-caution
-Nigdy nie przekazuj elementu `fit` modelu `parsnip` do funkcji `predict(lm_form_fit)`, tzn.
-nie używaj `predict(lm_form_fit$fit)`.
-Jeśli dane zostały wstępnie przetworzone w jakikolwiek sposób, zostaną wygenerowane nieprawidłowe predykcje (czasami bez błędów).
-Funkcja predykcji modelu bazowego nie ma pojęcia czy jakiekolwiek przekształcenia zostały dokonane na danych przed uruchomieniem modelu.
+Nie należy wykonywać predykcji bezpośrednio na modelu bazowym, np. `predict(lm_form_fit$fit, ...)`.
+Zamiast tego używaj `predict(lm_form_fit, new_data = ...)` lub predykcji z poziomu obiektu workflow.
+Dlaczego? Funkcja predykcji modelu bazowego nie ma pojęcia, czy jakiekolwiek przekształcenia (np. z przepisu `recipes`) zostały dokonane na danych i pominie je, generując nieprawidłowe predykcje (czasami bez błędów).
 :::
 
 Kolejną zaletę unifikacji `parsnip` możemy dostrzec przeglądając podsumowanie modeli.
 Nie zawsze wyniki modelu są przedstawiane w jednakowy sposób.
 Czasami różnice są niewielkie, gdy w jednym podsumowaniu zobaczymy `p-value` a w innym `Pr(>|t|)` ale czasem mogą być większe.
-I o ile nie da się zunifikować wszystkich podsumować modeli, ponieważ zawierają różne elementy, to w pakiecie `parsnip` korzysta się z funkcji `tidy` pakietu `broom` do podsumowania modelu.
+I o ile nie da się zunifikować wszystkich podsumowań modeli, ponieważ zawierają różne elementy, to w pakiecie `parsnip` korzysta się z funkcji `tidy` pakietu `broom` do podsumowania modelu.
 
 ::: column-margin
 ![](images/broom_package.png){fig-align="center" width="500"}
@@ -192,28 +197,28 @@ predict(lm_form_fit, new_data = ames_test_small)
 To sprawia, że łatwiej można korzystać z wyników predykcji, ponieważ zawsze jesteśmy pewni jaki układ ramki danych predykcji się pojawi.
 
 ```{r}
-ames_test_small %>% 
-  select(Sale_Price) %>% 
-  bind_cols(predict(lm_form_fit, ames_test_small)) %>% 
-  # Add 95% prediction intervals to the results:
-  bind_cols(predict(lm_form_fit, ames_test_small, type = "pred_int")) 
+ames_test_small %>%
+    select(Sale_Price) %>%
+    bind_cols(predict(lm_form_fit, ames_test_small)) %>%
+    # Add 95% prediction intervals to the results:
+    bind_cols(predict(lm_form_fit, ames_test_small, type = "pred_int"))
 ```
 
 ![Nazwy zmiennych jakie mogą się pojawić w wyniku predykcji](images/Zrzut%20ekranu%202023-02-17%20o%2020.41.43.png){fig-align="center" width="400"}
 
 ```{r}
-tree_model <- 
-  decision_tree(min_n = 2) %>% 
-  set_engine("rpart") %>% 
-  set_mode("regression")
+tree_model <-
+    decision_tree(min_n = 2) %>%
+    set_engine("rpart") %>%
+    set_mode("regression")
 
-tree_fit <- 
-  tree_model %>% 
-  fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
+tree_fit <-
+    tree_model %>%
+    fit(Sale_Price ~ Longitude + Latitude, data = ames_train)
 
-ames_test_small %>% 
-  select(Sale_Price) %>% 
-  bind_cols(predict(tree_fit, ames_test_small))
+ames_test_small %>%
+    select(Sale_Price) %>%
+    bind_cols(predict(tree_fit, ames_test_small))
 ```
 
 ### Rozszerzenia
@@ -250,36 +255,32 @@ dobierając optymalny poziom odcięcia dla regresji logistycznej.
 
 To wszystko powoduje, że procedura modelowania składa się z kilku elementów.
 Do ich połączenia w ekosystemie `tidymodels` używa się przepływów (ang. *workflow*).
-Pakiet `workflow` zawiera szereg funkcji pozwalających skutecznie obsługiwać potoki `workflow`[^tidymodels-6].
+Pakiet `workflows` zawiera szereg funkcji pozwalających skutecznie obsługiwać potoki `workflow`[^tidymodels-6].
 
 [^tidymodels-6]: tak nazywa się funkcja do tworzenia potoku
 
-Pomimo złożoności procedury modelowania można się dalej zastawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie.
+Pomimo złożoności procedury modelowania można się dalej zastanawiać nad koniecznością stosowania przepływów, skoro można te czynności wykonywać oddzielnie.
 Postaramy się na przykładzie pokazać zasadności stosowania przepływów.
 
 Weźmy, dajmy na to, że predyktory w zbiorze danych są wysoce skorelowane.
 Wiem, że zjawisko współliniowości może przeszkodzić w modelowaniu zjawiska, np.
 za pomocą modelu liniowego, ponieważ znacznie rosną wówczas błędy standardowe estymacji.
 Jednym ze sposobów radzenia sobie z tym problemem jest zrzutowanie danych na nową przestrzeń mniej wymiarową za pomocą PCA.
-I gdyby PCA była metodą deterministyczną, czyli nie towarzyszyła jej żadna niepewność[^tidymodels-7], to tę procedurę *preprocessingu* użyli byśmy do zbioru uczącego w procesie uczenia modelu, a w predykcji do zbioru testowego, bez konsekwencji w postaci niedokładnego oszacowania wartości wynikowych.
-Jednak PCA wiąże się z niepewnością, dlatego procedura ta powinna być włączona do przepływu, czyli być immanentną częścią procesu modelowania.
+PCA jest procedurą zależną od danych: kierunki głównych składowych są estymowane na zbiorze treningowym. Dlatego PCA powinna być włączona do przepływu modelowania, aby w trakcie resamplingu lub predykcji nowe dane były przekształcane przy użyciu parametrów wyznaczonych wyłącznie na danych treningowych, a nie szacowanych za każdym razem od nowa.
 
-[^tidymodels-7]: jak np.
-    logarytmowanie zmiennej
-
-Choć `workflow` pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie `workflow` do prostego ucznia modelu bez tych elementów.
+Choć `workflow` pozwalają na łączenie preprocessingu, tuningu i postprocessingu, to w następnym przykładzie pokażemy zastosowanie `workflow` do prostego uczenia modelu bez tych elementów.
 
 ```{r}
 # określenie modelu
-lm_model <- 
-  linear_reg() |> 
-  set_engine("lm")
+lm_model <-
+    linear_reg() |>
+    set_engine("lm")
 
 # zebranie elementów w workflow
-lm_wflow <- 
-  workflow() |> 
-  add_model(lm_model) |> 
-  add_formula(Sale_Price ~ Longitude + Latitude)
+lm_wflow <-
+    workflow() |>
+    add_model(lm_model) |>
+    add_formula(Sale_Price ~ Longitude + Latitude)
 
 # workflow
 lm_wflow
@@ -296,16 +297,16 @@ Pomimo tego, że model został zebrany w jedną całość (przepływ), to cały 
 Przykładowo ujmijmy jeden z predyktorów.
 
 ```{r}
-lm_fit %>% update_formula(Sale_Price ~ Longitude)
+lm_wflow %>% update_formula(Sale_Price ~ Longitude)
 ```
 
 Jeszcze inny przykład modyfikacji przepływu pokazuje przeformatowanie zależności opisywanej modelem.
 
 ```{r}
-lm_wflow <- 
-  lm_wflow %>% 
-  remove_formula() %>% 
-  add_variables(outcome = Sale_Price, predictors = c(Longitude, Latitude))
+lm_wflow <-
+    lm_wflow %>%
+    remove_formula() %>%
+    add_variables(outcome = Sale_Price, predictors = c(Longitude, Latitude))
 
 lm_wflow
 
@@ -329,27 +330,28 @@ library(multilevelmod)
 
 multilevel_spec <- linear_reg() %>% set_engine("lmer")
 
-multilevel_workflow <- 
-  workflow() %>% 
-  # Pass the data along as-is: 
-  add_variables(outcome = distance, predictors = c(Sex, age, Subject)) %>% 
-  add_model(multilevel_spec, 
-            # This formula is given to the model
-            formula = distance ~ Sex + (age | Subject))
+multilevel_workflow <-
+    workflow() %>%
+    # Pass the data along as-is:
+    add_variables(outcome = distance, predictors = c(Sex, age, Subject)) %>%
+    add_model(multilevel_spec,
+        # This formula is given to the model
+        formula = distance ~ Sex + (age | Subject)
+    )
 
 multilevel_fit <- fit(multilevel_workflow, data = Orthodont)
 multilevel_fit
 ```
 
-Kolejną zaletą pakietu `workflowset` jest możliwość jednoczesnego uczenia wielu wariantów modeli.
+Kolejną zaletą pakietu `workflowsets` jest możliwość jednoczesnego uczenia wielu wariantów modeli.
 
 ```{r}
 # określamy potencjalne formuły modeli
 location <- list(
-  longitude = Sale_Price ~ Longitude,
-  latitude = Sale_Price ~ Latitude,
-  coords = Sale_Price ~ Longitude + Latitude,
-  neighborhood = Sale_Price ~ Neighborhood
+    longitude = Sale_Price ~ Longitude,
+    latitude = Sale_Price ~ Latitude,
+    coords = Sale_Price ~ Longitude + Latitude,
+    neighborhood = Sale_Price ~ Neighborhood
 )
 
 
@@ -367,8 +369,8 @@ extract_workflow(location_models, id = "coords_lm")
 
 # uczymy modele
 location_models <-
-   location_models %>%
-   mutate(fit = map(info, ~ fit(.x$workflow[[1]], ames_train)))
+    location_models %>%
+    mutate(fit = map(info, ~ fit(.x$workflow[[1]], ames_train)))
 
 # wyniki uczenia wszystkich modeli
 location_models
@@ -377,7 +379,7 @@ location_models
 location_models$fit[[1]]
 ```
 
-Jeszcze jedną wygodną funkcja do oceny ostatecznego modelu jest funkcja `last_fit`, której używamy do ostatecznego modelu.
+Jeszcze jedną wygodną funkcją do oceny ostatecznego modelu jest funkcja `last_fit`, której używamy dopiero po zakończeniu wyboru modelu i tuningu.
 Wywołanie jej powoduje uczenie modelu na zbiorze uczącym i predykcje na zbiorze testowym.
 
 ```{r}
@@ -390,7 +392,7 @@ final_lm_res
 # podsumowanie modelu
 collect_metrics(final_lm_res)
 
-# predykjca na pierwszych pięciu obserwacjach
+# predykcja na pierwszych pięciu obserwacjach
 collect_predictions(final_lm_res) %>% slice(1:5)
 ```
 
@@ -440,26 +442,27 @@ Ze względu na asymetrię rozkładu zmiennej `Gr_Liv_Area` załóżmy, że pocz�
 lm(Sale_Price ~ Neighborhood + log10(Gr_Liv_Area) + Year_Built + Bldg_Type, data = ames_train)
 ```
 
-Wywołanie tej funkcji dokonało by następujących czynności na predyktorach i zmiennej zależnej:
+Wywołanie tej funkcji dokonałoby następujących czynności na predyktorach i zmiennej zależnej:
 
--   zmienna `Sale_Price` została by przypisana jako zależna;
--   zmienna `Gr_Liv_Area` została by przekształcona logarytmicznie;
--   zmienne `Neighborhood` i `Bldg_Type` zostały by zamienione na indykatory stanów.
+-   zmienna `Sale_Price` zostałaby przypisana jako zależna;
+-   zmienna `Gr_Liv_Area` zostałaby przekształcona logarytmicznie;
+-   zmienne `Neighborhood` i `Bldg_Type` zostałyby zamienione na indykatory stanów.
 
 Te czynności byłyby wykonane również podczas predykcji na podstawie tego modelu.
 Chcąc przeprowadzić te czynności w pakiecie `recipes` wykorzystujemy kroki `step_`:
 
 ```{r}
-simple_ames <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
-         data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_dummy(all_nominal_predictors())
+simple_ames <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+        data = ames_train
+    ) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_dummy(all_nominal_predictors())
 
 simple_ames
 ```
 
-Jaka jest przewaga stosowania przepisów, nad prostą formułą lub surowymi predykatorami?
+Jaka jest przewaga stosowania przepisów, nad prostą formułą lub surowymi predyktorami?
 Jest ich kilka, w tym:
 
 -   Obliczenia te mogą być przetwarzane w różnych modelach, ponieważ nie są ściśle sprzężone z funkcją modelowania.
@@ -471,10 +474,10 @@ Jest ich kilka, w tym:
 Oczywiście przepisy można (a nawet trzeba) łączyć z przepływami.
 
 ```{r}
-lm_wflow <- 
-  lm_wflow %>% 
-  remove_variables() %>% # musieliśmy usunąć wcześniejszy preprocessing
-  add_recipe(simple_ames)
+lm_wflow <-
+    lm_wflow %>%
+    remove_variables() %>% # musieliśmy usunąć wcześniejszy preprocessing
+    add_recipe(simple_ames)
 
 lm_wflow
 
@@ -490,17 +493,17 @@ predict(lm_fit, ames_test %>% slice(1:3))
 Możemy się przekonać, że faktycznie przepisy zostały wykonane podczas uczenia modelu.
 
 ```{r}
-lm_fit %>% 
-  extract_recipe(estimated = TRUE)
+lm_fit %>%
+    extract_recipe(estimated = TRUE)
 ```
 
 Otrzymany model jest postaci:
 
 ```{r}
-lm_fit %>% 
-  extract_fit_parsnip() %>% 
-  tidy() %>% 
-  slice(1:5) # oczywiście parametrów modelu jest dużo więcej
+lm_fit %>%
+    extract_fit_parsnip() %>%
+    tidy() %>%
+    slice(1:5) # oczywiście parametrów modelu jest dużo więcej
 ```
 
 Dane są przekazywane do receptur na różnych etapach.
@@ -524,15 +527,15 @@ W przeciwnym razie wyciek informacji może negatywnie wpłynąć na wydajność 
 
 ### Kodowanie faktorów
 
-Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (`step_nomalize()`), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (`step_holiday()`).
+Czynności, które można wykonać przy użyciu kroków/przepisów jest bardzo wiele, od bardzo prostych, jak centrowanie i skalowanie (`step_normalize()`), po wyrafinowane, jak wybór spośród dni tygodnia tylko tych, które nie wypadały w święta (`step_holiday()`).
 W trakcie budowania modelu różne czynności będą wymagane, a wśród nich bardzo często zdarza się, że trzeba obsłużyć zmienne niezależne typu faktor.
 Możemy to zrobić na kilka sposobów.
 Oczywiście najczęściej stosowaną jest zamiana poziomów czynnika na indykatory.
-Co jednak w przypadku gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym.
+Co jednak w przypadku, gdy pewien poziom czynnika nie wystąpił w zbiorze uczącym?
 Zamiana go na indykator powoduje powstanie stałej zmiennej, która jest bezużyteczna w uczeniu modelu.
-Można oczywiście przystąpić do imputacji takiej wartości, a sposobów na jej realizację jest bardzo wiele.
-Pomijając techniki korzystające z modeli pomocniczych, jak `step_impute_knn` czy `step_impute_bag`, można też zastąpić brak stałą wartością (`step_unknown`).
-Podobnie, jeśli przewidujemy, że w testowych danych może pojawić się nowy poziom czynnika, `step_novel()` może w tym celu przydzielić mu nowy poziom czynnika.
+Aby temu zaradzić, można zastąpić brakujące wartości stałą wartością (`step_unknown()`).
+Jeśli natomiast w nowych danych pojawi się poziom czynnika nieobecny w zbiorze treningowym, `step_novel()` przydzieli mu nowy poziom czynnika.
+Rzadkie poziomy można z kolei połączyć w kategorię „inne" przy użyciu `step_other()`.
 
 Dodatkowo, funkcja `step_other()` może być użyta do przeanalizowania częstotliwości poziomów czynników w zbiorze treningowym i przekonwertowania rzadko występujących wartości do poziomu "inne", z progiem, który można określić.
 Dobrym przykładem jest predyktor `Neighborhood` w naszych danych, pokazany na @fig-sasiad.
@@ -540,33 +543,34 @@ Dobrym przykładem jest predyktor `Neighborhood` w naszych danych, pokazany na @
 ```{r}
 #| label: fig-sasiad
 #| fig-cap: Wykres częstości występowania poszczególnych dzielnic
-ames_train |> 
-  ggplot(aes(Neighborhood))+
-  geom_bar()+
-  coord_flip()
+ames_train |>
+    ggplot(aes(Neighborhood)) +
+    geom_bar() +
+    coord_flip()
 ```
 
 Widzimy, że dwie dzielnice mają mniej niż pięć nieruchomości w danych treningowych (Landmark i Green Hills); w tym przypadku żadne domy w dzielnicy Landmark nie zostały włączone do zbioru testowego.
 Dla niektórych modeli może być problematyczne posiadanie zmiennych dummy z jednym niezerowym wpisem w kolumnie.
 Przynajmniej jest wysoce nieprawdopodobne, że te cechy byłyby ważne dla modelu.
-Jeśli dodamy `step_other(Neighborhood, threshold = 0.01)` do naszego przepisu, 1% dzielnic[^tidymodels-9] zostanie wrzucony do nowego poziomu o nazwie "inne".
+Jeśli dodamy `step_other(Neighborhood, threshold = 0.01)` do naszego przepisu, poziomy czynnika występujące w mniej niż 1% obserwacji[^tidymodels-9] zostaną wrzucone do nowego poziomu o nazwie „inne".
 W tym zbiorze treningowym próg ten obejmie siedem sąsiedztw.
 
 [^tidymodels-9]: najrzadziej występujący
 
 ```{r}
-simple_ames <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
-         data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_other(Neighborhood, threshold = 0.01) %>% 
-  step_dummy(all_nominal_predictors())
+simple_ames <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+        data = ames_train
+    ) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_other(Neighborhood, threshold = 0.01) %>%
+    step_dummy(all_nominal_predictors())
 ```
 
 W kodowaniu zmiennych typu faktor na indykatory stanów zazwyczaj korzysta się z pełno-rzędowego przekształcenia, czyli dla faktora z 5 kategoriami, jeden traktuje się jako referencyjny, a pozostałe się koduje indykatorami.
 Powstała w ten sposób macierz modelu jest pełnego rzędu.
 Takie zachowanie jest domyślne używając funkcji `step_dummy`.
-Jednak niektóre modele wymagają kodowania *one-hot edcoding*, które tworzy indykatory wszystkich kategorii.
+Jednak niektóre modele wymagają kodowania *one-hot encoding*, które tworzy indykatory wszystkich kategorii.
 Chcąc wywołać kodowanie *one-hot* używamy funkcji `step_dummy(…, one_hot = TRUE)`.
 
 ### Interakcje efektów
@@ -578,31 +582,31 @@ W naszym przykładzie domów `ames` też możemy podejrzewać istnienie interakc
 ```{r}
 #| label: fig-inter
 #| fig-cap: Potencjalne interakcje zmiennych `Gr_Liv_Area` i `Bldg_Type`
-ggplot(ames_train, aes(x = Gr_Liv_Area, y = 10^Sale_Price)) + 
-  geom_point(alpha = .2) + 
-  facet_wrap(~ Bldg_Type) + 
-  geom_smooth(method = lm, formula = y ~ x, se = FALSE, color = "lightblue") + 
-  scale_x_log10() + 
-  scale_y_log10() + 
-  labs(x = "Gross Living Area", y = "Sale Price (USD)")
+ggplot(ames_train, aes(x = Gr_Liv_Area, y = 10^Sale_Price)) +
+    geom_point(alpha = .2) +
+    facet_wrap(~Bldg_Type) +
+    geom_smooth(method = lm, formula = y ~ x, se = FALSE, color = "lightblue") +
+    scale_x_log10() +
+    scale_y_log10() +
+    labs(x = "Gross Living Area", y = "Sale Price (USD)")
 ```
 
-W pakiecie `recipes` istnieje oddzielny krok to tworzenia interakcji.
+W pakiecie `recipes` istnieje oddzielny krok do tworzenia interakcji.
 
 ```{r}
-simple_ames <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
-         data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_other(Neighborhood, threshold = 0.01) %>% 
-  step_dummy(all_nominal_predictors()) %>% 
-  # Gr_Liv_Area is on the log scale from a previous step
-  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") )
+simple_ames <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+        data = ames_train
+    ) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_other(Neighborhood, threshold = 0.01) %>%
+    step_dummy(all_nominal_predictors()) %>%
+    # Gr_Liv_Area is on the log scale from a previous step
+    step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_"))
 ```
 
 Można ją było również dodać w klasyczny sposób `+var1:var2` wpisując do formuły.
-Jednak w naszym przypadku ten sposób nie byłby poprawny, ponieważ to kazałoby funkcji `step_interact()`, aby stworzyła indykatory, a następnie utworzyć interakcje.
-W rzeczywistości, program nie miałby jak stworzyć interakcji, ponieważ powstałyby już nowe zmienne z prefiksem `Bldg_Type_`.
+Zapis `+var1:var2` w formule modelu wymagałby znajomości kolumn przed wykonaniem `step_dummy()`, co nie ma miejsca w przepisach. W `recipes` interakcje tworzy się z kolumn istniejących na danym etapie przepisu — dlatego `step_dummy()` musi poprzedzać `step_interact()`, aby kolumny z prefiksem `Bldg_Type_` były już dostępne. Bez tego program nie miałby jak stworzyć interakcji.
 
 ::: callout-important
 Powyższy przykład pokazuje, że kolejność włączania kroków jest bardzo ważna.
@@ -620,48 +624,50 @@ Innym sposobem obsługi tego zjawiska jest odpowiednie przekształcenie predykto
 Często w tym miejscu są polecane funkcje wielomianowe.
 Mają one jednak jedną poważną wadę, ponieważ o ile mogą dobrze opisywać zależność w analizowanej dziedzinie, to ekstrapolacja tej zależności często nie ma sensu.
 Z pomocą mogą przyjść splajny (ang. *spline*), czyli funkcje bazowe modeli GAM (ang. *Generalized Additive Models*).
-Nie wchodząc w szczegóły modeli GAM, splajny pozwalają na lokalną estymację zależności[^tidymodels-11]
-.
+Nie wchodząc w szczegóły modeli GAM, splajny pozwalają na lokalną estymację zależności[^tidymodels-11].
 
 [^tidymodels-10]: przykładem może być sieć neuronowa
 
-[^tidymodels-11]: lokalną - czyli pomiędzy punktami węzłowymi, im więcej punktów węzłowych wym większa elastyczność splajnów
+[^tidymodels-11]: parametr `deg_free` oznacza stopnie swobody splajnu (złożoność), nie liczbę punktów węzłowych; większa wartość oznacza większą elastyczność
 
 ```{r}
 #| label: fig-splajn
-#| fig-cap: Opis zależności za pomocą splajnów z różna liczbą punktów węzłowych
+#| fig-cap: Opis zależności za pomocą splajnów z różną złożonością (stopnie swobody)
 library(patchwork)
 library(splines)
 
 plot_smoother <- function(deg_free) {
-  ggplot(ames_train, aes(x = Latitude, y = 10^Sale_Price)) + 
-    geom_point(alpha = .2) + 
-    scale_y_log10() +
-    geom_smooth(
-      method = lm,
-      formula = y ~ ns(x, df = deg_free),
-      color = "lightblue",
-      se = FALSE
-    ) +
-    labs(title = paste(deg_free, "Spline Terms"),
-         y = "Sale Price (USD)")
+    ggplot(ames_train, aes(x = Latitude, y = 10^Sale_Price)) +
+        geom_point(alpha = .2) +
+        scale_y_log10() +
+        geom_smooth(
+            method = lm,
+            formula = y ~ ns(x, df = deg_free),
+            color = "lightblue",
+            se = FALSE
+        ) +
+        labs(
+            title = paste(deg_free, "Spline Terms"),
+            y = "Sale Price (USD)"
+        )
 }
 
-( plot_smoother(2) + plot_smoother(5) ) / ( plot_smoother(20) + plot_smoother(100) )
+(plot_smoother(2) + plot_smoother(5)) / (plot_smoother(20) + plot_smoother(100))
 ```
 
-Rozwiązanie z 2 i 100 punktami węzłowymi wykazuje niedopasowanie i nadmierne dopasowanie odpowiednio.
-Wybór 5 lub 20 punktów wydaje się dużo lepszy.
+Rozwiązanie z 2 i 100 stopniami swobody wykazuje odpowiednio niedopasowanie i nadmierne dopasowanie.
+Wybór 5 lub 20 stopni swobody wydaje się dużo lepszy.
 Ostatecznie ten hiperparametr modelu można kalibrować, ale to nie będzie naszym celem w tym przykładzie.
 
 ```{r}
 recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + Latitude,
-         data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_other(Neighborhood, threshold = 0.01) %>% 
-  step_dummy(all_nominal_predictors()) %>% 
-  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
-  step_ns(Latitude, deg_free = 20)
+    data = ames_train
+) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_other(Neighborhood, threshold = 0.01) %>%
+    step_dummy(all_nominal_predictors()) %>%
+    step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_")) %>%
+    step_ns(Latitude, deg_free = 20)
 ```
 
 ### Ekstrakcja cech
@@ -682,8 +688,7 @@ Oprócz powierzchni mieszkalnej brutto, predyktory mają przyrostek SF w swoich 
 step_pca(matches("(SF$)|(Gr_Liv)"))
 ```
 
-Zauważmy, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych, a PCA zakłada, że wszystkie predyktory są w tej samej skali.
-W tym przypadku to prawda, ale często ten krok musi być poprzedzony przez `step_normalize()`.
+Zauważmy, że wszystkie wspomniane kolumny są mierzone w stopach kwadratowych. Mimo że zmienne są w tych samych jednostkach, PCA jest wrażliwa na różnice wariancji, dlatego i tak zaleca się poprzedzenie jej `step_normalize()`.
 
 Istnieją kroki przepisów dla innych metod ekstrakcji, takie jak: analiza składowych niezależnych (ICA), faktoryzacja macierzy nieujemnej (NNMF), skalowanie wielowymiarowe (MDS), jednolita aproksymacja i projekcja (UMAP) i inne.
 
@@ -698,13 +703,13 @@ Istnieją inne funkcje krokowe, które są również oparte na wierszach, jak: `
 ::: callout-caution
 Tylko zestaw treningowy powinien być poddany wpływowi tych technik.
 Zbiór testowy lub inne próbki powinny być pozostawione w niezmienionym stanie, czyli ten krok przepisu nie powinien być do nich stosowany.
-Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument `skip` na wartość `TRUE.`
+Z tego powodu, wszystkie kroki podpróbkowania i filtrowania domyślnie ustawiają argument `skip` na wartość `TRUE`.
 :::
 
 ### Przekształcenia ogólne
 
 Przekształcenia, które mają swoje korzenie w pakiecie `dplyr` jak `step_mutate` też mogą być stosowane w przepisach.
-Najlepiej używać ich do prostych przekształceń, takich jak obliczanie stosunku dwóch zmiennych, (np. `Bedroom_AbvGr / Full_Bath)`, stosunek sypialni do łazienek dla danych mieszkaniowych `ames`.
+Najlepiej używać ich do prostych przekształceń, takich jak obliczanie stosunku dwóch zmiennych, np. `Bedroom_AbvGr / Full_Bath` (stosunek sypialni do łazienek dla danych mieszkaniowych `ames`).
 
 ::: callout-caution
 Podczas korzystania z tego kroku należy zachować szczególną ostrożność, aby uniknąć wycieku danych w swoim wstępnym przetwarzaniu.
@@ -723,7 +728,6 @@ Dlaczego nie użyliśmy zamiast tego kroku
 
 ```{r}
 #| eval: false
-
 step_log(Sale_Price, base = 10)
 ```
 
@@ -740,25 +744,25 @@ Wszystkie te kroki, które chcemy wyłączyć z przetwarzania podczas predykcji 
 Na koniec części dotyczącej inżynierii cech nauczymy model.
 
 ```{r}
-ames_rec <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
-           Latitude + Longitude, data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_other(Neighborhood, threshold = 0.01, id = "my_id") %>% 
-  step_dummy(all_nominal_predictors()) %>% 
-  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
-  step_ns(Latitude, Longitude, deg_free = 20)
+ames_rec <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+        Latitude + Longitude, data = ames_train) %>%
+    step_log(Gr_Liv_Area, base = 10) %>%
+    step_other(Neighborhood, threshold = 0.01, id = "my_id") %>%
+    step_dummy(all_nominal_predictors()) %>%
+    step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_")) %>%
+    step_ns(Latitude, Longitude, deg_free = 20)
 
-lm_wflow <- 
-  workflow() %>% 
-  add_model(lm_model) %>% 
-  add_recipe(ames_rec)
+lm_wflow <-
+    workflow() %>%
+    add_model(lm_model) %>%
+    add_recipe(ames_rec)
 
 lm_fit <- fit(lm_wflow, ames_train)
 
-estimated_recipe <- 
-  lm_fit %>% 
-  extract_recipe(estimated = TRUE)
+estimated_recipe <-
+    lm_fit %>%
+    extract_recipe(estimated = TRUE)
 
 tidy(estimated_recipe)
 

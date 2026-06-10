@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>11&nbsp; Paralelizacja resamplingu – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/videojs/video.min.js"></script>
 <link href="site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -128,7 +130,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -139,7 +141,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -335,7 +337,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -490,18 +492,18 @@ window.Quarto = {
   
 
 
-</header><p>Poszukiwanie optymalnego modelu za pomocą siatek parametrów jest czynnością żmudną i zajmuje sporo czasu. Same funkcje pakietu <code>tune</code> są już w pewnym stopniu zoptymalizowane pod kątem poszukiwania najlepszych rozwiązań. W przypadku modeli, których parametry można przeszukiwać bazując na wiedzy pochodzącej z wcześniejszych epok estymacji, to funkcje <code>tune</code> z tego korzystają. Przykładowo, dajmy na to, że uczymy model PLS (ang. <em>Partial Least Squares</em>), który co do zasady jest podobny do zastosowania PCA na predyktorach, a następnie przewidywaniu wartości wynikowej, z tą różnicą, że w PLS tworzone składowe są dobierane tak aby zmaksymalizować korelację pomiędzy nimi a zmienną wynikową. Wówczas do obliczenia budowy modelu z 10 składowymi procedura przebiega identycznie jak w modelu z 9 składowymi, z tą różnicą, że dodatkowo ostatnia składowa jest obliczana. Wówczas aby zaoszczędzić czas procedura tuningu modelu względem liczby składowych, których zakres przeszukiwania był powiedzmy [0,10], korzysta ze wspomnianej iteracyjnej metody budowania modelu PLS. To znacząco przyspiesza czas dostrajania modelu. Oczywiście nie wszystkie modele mają tą własność, ale te które mają korzystają z tej procedury nazywanej optymalizacją podprocesów (ang. <em>submodel optimization</em>).</p>
+</header><p>Poszukiwanie optymalnego modelu za pomocą siatek parametrów jest czynnością żmudną i zajmuje sporo czasu. Same funkcje pakietu <code>tune</code> są już w pewnym stopniu zoptymalizowane pod kątem poszukiwania najlepszych rozwiązań. W przypadku modeli, które w ramach jednego dopasowania wytwarzają wiele podmodeli, funkcje <code>tune</code> potrafią to wykorzystać. Przykładowo model PLS (ang. <em>Partial Least Squares</em>) jest podobny do zastosowania PCA na predyktorach, a następnie przewidywania wartości wynikowej, z tą różnicą, że w PLS tworzone składowe są dobierane tak, aby zmaksymalizować korelację pomiędzy nimi a zmienną wynikową. Model PLS z 10 składowymi jest rozszerzeniem modelu z 9 składowymi — wystarczy dopasować model z maksymalną liczbą składowych, a predykcje dla mniejszej liczby składowych można uzyskać bez ponownego uczenia. Dzięki temu dostrajanie liczby składowych w zakresie np. od 1 do 10 jest znacznie szybsze. Taki mechanizm nazywamy optymalizacją podmodeli (ang. <em>submodel optimization</em>).</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
 <p>W innych przypadkach, chcąc przyspieszyć procedurę tuningu, musimy stosować paralelizację procedury dostrajania. W pakiecie <code>tune</code> możliwe jest zastosowanie paralelizacji na dwa sposoby. Podczas dostrajania modeli poprzez wyszukiwanie w siatce, istnieją dwie odrębne pętle: jedna nad foldami (zewnętrzna pętla) i druga nad unikalnymi kombinacjami parametrów (wewnętrzna pętla).</p>
-<p>Domyślnie pakiet <code>tune</code> paralelizuje tylko nad próbkami (pętla zewnętrzna). Jest to optymalny scenariusz, gdy metody wstępnego przetwarzania (<em>preprocessing</em>) są kosztowne oblczeniowo. Istnieją jednak dwa potencjalne minusy tego podejścia:</p>
+<p>Domyślnie pakiet <code>tune</code> paralelizuje tylko nad próbkami (pętla zewnętrzna). Jest to optymalny scenariusz, gdy metody wstępnego przetwarzania (<em>preprocessing</em>) są kosztowne obliczeniowo. Istnieją jednak dwa potencjalne minusy tego podejścia:</p>
 <ul>
 <li>Ogranicza osiągalne przyspieszenia, gdy preprocessing nie jest wymagający obliczeniowo.</li>
 <li>Liczba równoległych rdzeni jest ograniczona przez liczbę foldów. Na przykład przy 10-krotnej walidacji krzyżowej można użyć tylko 10 równoległych rdzeni, nawet jeśli komputer ma więcej.</li>
 </ul>
-<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1" class="quarto-xref">Rys.&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom robotniczym.</p>
+<p>Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej walidacji krzyżowej. <a href="#fig-parallel1" class="quarto-xref">Rys.&nbsp;<span>11.1</span></a> pokazuje, jak zadania są przydzielane procesom roboczym.</p>
 <div id="fig-parallel1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.12.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -510,10 +512,10 @@ window.Quarto = {
 Rys.&nbsp;11.1: Paralelizacja w zewnętrznej pętli
 </figcaption></figure>
 </div>
-<p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymaliby do przeliczenia kilka foldów.</p>
+<p>Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie otrzymałyby do przeliczenia kilka foldów.</p>
 <p>W funkcjach sterujących <code>tune_*()</code> argument <code>parallel_over</code> kontroluje sposób wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest <code>parallel_over = "resamples"</code>.</p>
 <p>Zamiast równoległego przetwarzania tylko nad zewnętrzną pętlą, alternatywny schemat łączy pętle nad foldami i modelami w jedną pętlę. W tym przypadku paralelizacja występuje teraz nad pojedynczą pętlą. Na przykład, jeśli używamy 5-krotnej walidacji krzyżowej z <span class="math inline">\(M\)</span> wartościami parametrów dostrajania, pętla jest wykonywana przez <span class="math inline">\(5 \times M\)</span> iteracji. Zwiększa to liczbę potencjalnych rdzeni, które można wykorzystać. Jednak praca związana ze wstępnym przetwarzaniem danych jest powtarzana wielokrotnie. Jeśli te kroki są wymagające obliczeniowo, to podejście to będzie nieefektywne. W <code>tidymodels</code>, zestawy walidacyjne są traktowane jako pojedynczy fold. W takich przypadkach ten schemat paralelizacji byłby najlepszy.</p>
-<p><a href="#fig-parallel2" class="quarto-xref">Rys.&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do robotników w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
+<p><a href="#fig-parallel2" class="quarto-xref">Rys.&nbsp;<span>11.2</span></a> ilustruje delegowanie zadań do procesów roboczych w tym schemacie; użyty jest ten sam przykład, ale z 10 rdzeniami.</p>
 <div id="fig-parallel2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;11.2: Paralelizacja nad foldami i parametrami"><img src="images/Zrzut ekranu 2023-02-26 o 16.34.21.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -545,9 +547,9 @@ Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy
 <p>Ponieważ było tylko pięć foldów, liczba rdzeni używanych, gdy <code>parallel_over = "resamples"</code> jest ograniczona do pięciu. Porównanie krzywych w pierwszych dwóch panelach dla “none” i “light” daje następujące wnioski:</p>
 <ul>
 <li>Istnieje niewielka różnica w czasach wykonania między panelami. Wskazuje to, dla tych danych, że nie ma wyraźnej kary obliczeniowej za wykonywanie kroków przetwarzania wstępnego w recepturze.</li>
-<li>Istnieje pewna korzyść z używania <code>parallel_over = "wszystko"</code> z wieloma rdzeniami. Jednak, jak widać na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>, większość korzyści z przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.</li>
+<li>Istnieje pewna korzyść z używania <code>parallel_over = "everything"</code> z wieloma rdzeniami. Jednak, jak widać na <a href="#fig-parallel3" class="quarto-xref">Rys.&nbsp;<span>11.3</span></a>, większość korzyści z przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.</li>
 </ul>
-<p>W przypadku z drogim krokiem wstępnego przetwarzania, istnieje znaczna różnica w czasach wykonywania. Użycie <code>parallel_over = "everything"</code> jest problematyczne, ponieważ nawet przy użyciu wszystkich rdzeni, nigdy nie osiąga czasu wykonania, który <code>parallel_over = "everything"</code> osiąga przy użyciu tylko pięciu rdzeni. Dzieje się tak dlatego, że kosztowny krok wstępnego przetwarzania jest niepotrzebnie powtarzany w schemacie obliczeniowym.</p>
+<p>W przypadku z drogim krokiem wstępnego przetwarzania, istnieje znaczna różnica w czasach wykonywania. Użycie <code>parallel_over = "everything"</code> jest problematyczne, ponieważ nawet przy użyciu wszystkich rdzeni, nigdy nie osiąga czasu wykonania, który <code>parallel_over = "resamples"</code> osiąga przy użyciu tylko pięciu rdzeni. Dzieje się tak dlatego, że kosztowny krok wstępnego przetwarzania jest niepotrzebnie powtarzany w schemacie obliczeniowym.</p>
 <p>Na <a href="#fig-parallel4" class="quarto-xref">Rys.&nbsp;<span>11.4</span></a> możemy również obejrzeć te dane w kategoriach przyrostu prędkości.</p>
 <div id="fig-parallel4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -557,8 +559,8 @@ Rys.&nbsp;11.3: Porównanie czasów tuningu dla różnych scenariuszy
 Rys.&nbsp;11.4: Porównanie prędkości obliczeń dla różnych schematów
 </figcaption></figure>
 </div>
-<p>Najlepsze przyspieszenie pracy, dla tych danych, występują, gdy <code>parallel_over = "resamples"</code> i gdy obliczenia wstępne są drogie. Jednak w tym ostatnim przypadku należy pamiętać, że poprzednia analiza wskazuje, że ogólne dopasowanie modelu jest wolniejsze.</p>
-<p>Jaka jest korzyść z zastosowania metody optymalizacji submodelu w połączeniu z przetwarzaniem równoległym? Model klasyfikacyjny C5.0 został również uruchomiony równolegle przy użyciu dziesięciu rdzeni. Obliczenia równoległe zajęły 13,3 sekundy, co oznacza 7,5-krotne przyspieszenie (w obu przypadkach zastosowano sztuczkę optymalizacji submodelu). Dzięki sztuczce optymalizacji podmodelu i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w stosunku do najbardziej podstawowego kodu przeszukiwania siatki.</p>
+<p>Najlepsze przyspieszenie pracy, dla tych danych, występuje, gdy <code>parallel_over = "resamples"</code> i gdy obliczenia wstępne są drogie. Jednak w tym ostatnim przypadku należy pamiętać, że poprzednia analiza wskazuje, że ogólne dopasowanie modelu jest wolniejsze.</p>
+<p>Jaka jest korzyść z zastosowania metody optymalizacji podmodeli w połączeniu z przetwarzaniem równoległym? Model klasyfikacyjny C5.0 został również uruchomiony równolegle przy użyciu dziesięciu rdzeni. Obliczenia równoległe zajęły 13,3 sekundy, co oznacza 7,5-krotne przyspieszenie (w obu przypadkach zastosowano optymalizację podmodeli). Dzięki optymalizacji podmodeli i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w stosunku do najbardziej podstawowego kodu przeszukiwania siatki.</p>
 <div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -576,16 +578,16 @@ Zagrożenie
 <span class="header-section-number">11.1</span> Dostęp do zmiennych globalnych</h2>
 <p>Jeśli definiujemy zmienną, która ma być użyta jako parametr modelu, a następnie przekazujemy ją do funkcji takiej jak <code>linear_reg()</code>, zmienna ta jest zazwyczaj zdefiniowana w środowisku globalnym.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">coef_penalty</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
-<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Modele utworzone za pomocą pakietu <code>parsnip</code> zapisują argumenty takie jak te jako <em>quosures</em>; są to obiekty śledzące zarówno nazwę obiektu, jak i środowisko, w którym istnieje:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>&lt;quosure&gt;
 expr: ^coef_penalty
@@ -594,19 +596,19 @@ env:  global</code></pre>
 </div>
 <p>Zauważ, że mamy <code>env: global</code>, ponieważ ta zmienna została utworzona w środowisku globalnym. Specyfikacja modelu zdefiniowana przez <code>spec</code> działa poprawnie, gdy jest uruchamiana w zwykłej sesji użytkownika, ponieważ sesja ta również korzysta ze środowiska globalnego; R może łatwo znaleźć obiekt <code>coef_penalty</code>. Kiedy taki model jest szacowany z równoległymi rdzeniami, może zawieść. W zależności od konkretnej technologii, która jest używana do przetwarzania równoległego, rdzenie mogą nie mieć dostępu do globalnego środowiska. Podczas pisania kodu, który będzie uruchamiany równolegle, dobrym pomysłem jest wstawianie rzeczywistych danych do obiektów, a nie referencji do obiektu. Pakiety <code>rlang</code> i <code>dplyr</code> mogą być w tym bardzo pomocne. Na przykład, operator <code>!!</code> może wstawić pojedynczą wartość do obiektu:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span>
-<span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">linear_reg</span><span class="op">(</span>penalty <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">coef_penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glmnet"</span><span class="op">)</span></span>
+<span><span class="va">spec</span><span class="op">$</span><span class="va">args</span><span class="op">$</span><span class="va">penalty</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>&lt;quosure&gt;
 expr: ^0.1
 env:  empty</code></pre>
 </div>
 </div>
-<p>Teraz wyjście to <code>^0,1</code>, wskazując, że jest to wartość zamiast odniesienia do obiektu. Kiedy masz wiele zewnętrznych wartości do wstawienia do obiektu, operator <code>!!!</code> może pomóc:</p>
+<p>Teraz wyjście to <code>&lt;0.1&gt;</code>, wskazując, że jest to wartość zamiast odniesienia do obiektu. Kiedy masz wiele zewnętrznych wartości do wstawienia do obiektu, operator <code>!!!</code> może pomóc:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mcmc_args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>chains <span class="op">=</span> <span class="fl">3</span>, iter <span class="op">=</span> <span class="fl">1000</span>, cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mcmc_args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>chains <span class="op">=</span> <span class="fl">3</span>, iter <span class="op">=</span> <span class="fl">1000</span>, cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"stan"</span>, <span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">mcmc_args</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">linear_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">set_engine</span><span class="op">(</span><span class="st">"stan"</span>, <span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">mcmc_args</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>Linear Regression Model Specification (regression)
 
@@ -620,22 +622,24 @@ Computational engine: stan </code></pre>
 </div>
 <p>Selektory receptur to kolejne miejsce, w którym możesz chcieć uzyskać dostęp do zmiennych globalnych. Załóżmy, że masz krok receptury, który powinien użyć wszystkich predyktorów w danych komórkowych (<code>cells</code>), które zostały zmierzone za pomocą drugiego kanału optycznego. Możemy utworzyć wektor tych nazw kolumn:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span>
-<span><span class="va">ch_2_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_subset.html">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span>, <span class="st">"ch_2"</span><span class="op">)</span></span>
-<span><span class="va">ch_2_vars</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cells</span>, package <span class="op">=</span> <span class="st">"modeldata"</span><span class="op">)</span></span>
+<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="va">cells</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">case</span><span class="op">)</span></span>
+<span><span class="va">ch_2_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html">str_subset</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cells</span><span class="op">)</span>, <span class="st">"ch_2"</span><span class="op">)</span></span>
+<span><span class="va">ch_2_vars</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>[1] "avg_inten_ch_2"   "total_inten_ch_2"</code></pre>
 </div>
 </div>
-<p>Moglibyśmy twardo zakodować je w kroku receptury, ale lepiej byłoby odwołać się do nich programowo na wypadek zmiany danych. Mamy dwa sposoby, aby to zrobić to:</p>
+<p>Moglibyśmy twardo zakodować je w kroku receptury, ale lepiej byłoby odwołać się do nich programowo na wypadek zmiany danych. Mamy dwa sposoby, aby to zrobić:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Still uses a reference to global data (~_~;)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Still uses a reference to global data (~_~;)</span></span>
 <span><span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">step_spatialsign</span><span class="op">(</span><span class="fu">all_of</span><span class="op">(</span><span class="va">ch_2_vars</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Inserts the values into the step ヽ(•‿•)ノ</span></span>
 <span><span class="fu">recipe</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">step_spatialsign</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">ch_2_vars</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">step_spatialsign</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">ch_2_vars</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ten ostatni jest lepszy dla przetwarzania równoległego, ponieważ wszystkie potrzebne informacje są osadzone w obiekcie receptury.</p>
@@ -646,8 +650,8 @@ Computational engine: stan </code></pre>
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"></a></p><div class="no-row-height column-margin column-container"><a href="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-7"><img src="https://media3.giphy.com/media/9jt3LFeS9QfaE/giphy.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="references.html#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
-<p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na rysunku 13.9.</p>
+<p>W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami wyścigowymi (ang. <em>racing method</em>) <span class="citation" data-cites="NIPS1993_02a32ad2">(<a href="references.html#ref-NIPS1993_02a32ad2" role="doc-biblioref">Maron i Moore 1993</a>)</span>. W tym przypadku proces dostrajania ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę w kolejnych etapach dostrajania.</p>
+<p>Na przykład, w procesie tuningu perceptronu wielowarstwowego z siatką regularną, badamy jak wyglądałyby wyniki tylko po pierwszych trzech foldach? Używając technik podobnych do tych z rozdziału o porównywaniu modeli, możemy dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt <em>resample-to-resample</em> i tworzy oszacowania punktowe i przedziałowe dla każdej kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności, które mierzą spadek ROC AUC w stosunku do aktualnie najlepiej działających parametrów, jak pokazano na <a href="#fig-parallel5" class="quarto-xref">Rys.&nbsp;<span>11.5</span></a>.</p>
 <div id="fig-parallel5" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-parallel5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej"><img src="images/Zrzut ekranu 2023-02-26 o 17.17.55.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -656,12 +660,12 @@ Computational engine: stan </code></pre>
 Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
 </figcaption></figure>
 </div>
-<p>Każdy zestaw parametrów, którego przedział ufności zawiera zero, nie daje podstaw by twierdzić, że jego wydajność jest statystycznie różna od najlepszych wyników. Zachowujemy 6 najlepszych ustawień i są one ponownie próbkowane. Pozostałe 14 podmodeli nie jest już rozpatrywane.</p>
-<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.tmwr.org/race_results.mp4"></video></div>
-<p>Metody wyścigowe mogą być bardziej efektywne niż podstawowe przeszukiwanie siatki, o ile analiza pośrednia jest szybka, a niektóre ustawienia parametrów mają słabą wydajność. Jest to również najbardziej pomocne, gdy model nie ma możliwości wykorzystania predykcji submodelu.</p>
+<p>Każdy zestaw parametrów, którego przedział ufności zawiera zero, nie daje podstaw, by twierdzić, że jego wydajność jest statystycznie różna od najlepszych wyników. Zachowujemy 6 najlepszych ustawień i są one ponownie próbkowane. Pozostałe 14 podmodeli nie jest już rozpatrywane.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-big-play-centered vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.tmwr.org/race_results.mp4"></video></div>
+<p>Metody wyścigowe mogą być bardziej efektywne niż podstawowe przeszukiwanie siatki, o ile analiza pośrednia jest szybka, a niektóre ustawienia parametrów mają słabą wydajność. Jest to również najbardziej pomocne, gdy model nie ma możliwości wykorzystania predykcji podmodeli.</p>
 <p>Pakiet <code>finetune</code> zawiera funkcje dla metody wyścigowej. Funkcja <code><a href="https://finetune.tidymodels.org/reference/tune_race_anova.html">tune_race_anova()</a></code> przeprowadza model ANOVA w celu przetestowania statystycznej istotności różnych konfiguracji modelu. Składnia pozwalająca odtworzyć pokazane wcześniej filtrowanie to:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/finetune">finetune</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/finetune">finetune</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mlp_spec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -707,12 +711,12 @@ Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
 <span>    param_info <span class="op">=</span> <span class="va">mlp_param</span>,</span>
 <span>    metrics <span class="op">=</span> <span class="va">roc_res</span>,</span>
 <span>    control <span class="op">=</span> <span class="fu"><a href="https://finetune.tidymodels.org/reference/control_race.html">control_race</a></span><span class="op">(</span>verbose_elim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Argumenty są odzwierciedleniem argumentów funkcji <code><a href="https://tune.tidymodels.org/reference/tune_grid.html">tune_grid()</a></code>. Funkcja <code><a href="https://finetune.tidymodels.org/reference/control_race.html">control_race()</a></code> posiada opcje dotyczące procedury eliminacji. Jak pokazano na powyższej animacji, rozważane były dwie kombinacje parametrów po ocenie pełnego zestawu próbek. <code><a href="https://tune.tidymodels.org/reference/show_best.html">show_best()</a></code> zwraca najlepsze modele (uszeregowane według wydajności), ale zwraca tylko konfiguracje, które nigdy nie zostały wyeliminowane:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">mlp_sfd_race</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tune.tidymodels.org/reference/show_best.html">show_best</a></span><span class="op">(</span><span class="va">mlp_sfd_race</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 10
    hidden_units  penalty epochs num_comp .metric .estimator  mean     n std_err
@@ -733,9 +737,9 @@ Rys.&nbsp;11.5: Przykład zastosowania metody wyścigowej
 <p>Istnieją również inne techniki analizy pośredniej do odrzucania pewnych konfiguracji parametrów.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-NIPS1993_02a32ad2" class="csl-entry" role="listitem">
-Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating</span> Model Selection Search for Classification and Function Approximation”</span>. W <em>Advances in Neural Information Processing Systems</em>, zredagowane przez J. Cowan, G. Tesauro, i J. Alspector. T. 6. <span>Morgan-Kaufmann</span>.
+Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating</span> Model Selection Search for Classification and Function Approximation”</span>. W <em>Advances in Neural Information Processing Systems</em>, zredagowane przez J. Cowan, G. Tesauro, i J. Alspector, t. 6. <span>Morgan-Kaufmann</span>.
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -802,13 +806,14 @@ Maron, Oded, i Andrew Moore. 1993. <span>„Hoeffding Races: <span>Accelerating<
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

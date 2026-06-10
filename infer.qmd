@@ -86,10 +86,9 @@ jak wygląda rozkład badanej cechy.
 ```{r}
 #| label: fig-hist1
 #| fig-cap: Histogram wieku
-
-gss |> 
-  ggplot(aes(age))+
-  geom_histogram(color = "white", bins = 15)
+gss |>
+    ggplot(aes(age)) +
+    geom_histogram(color = "white", bins = 15)
 ```
 
 Można mieć pewne wątpliwości co do normalności rozkładu, ponieważ zarysowuje
@@ -106,16 +105,16 @@ badanej populacji wynosi 40 lat. Przeprowadzimy teraz wnioskowanie w oparciu o
 techniki bootstrap i permutacyjną.
 
 ```{r}
-null_mean <- gss |> 
-  specify(response = age) |> # określenie zmiennej
-  hypothesise(null = "point", mu = 40) |> # ustalienie hipotezy
-  generate(1000, type = "bootstrap") |> # generujemy dane
-  calculate(stat = "mean")
+null_mean <- gss |>
+    specify(response = age) |> # określenie zmiennej
+    hypothesise(null = "point", mu = 40) |> # ustalienie hipotezy
+    generate(1000, type = "bootstrap") |> # generujemy dane
+    calculate(stat = "mean")
 null_mean
 
-sample_mean <- gss |> 
-  specify(response = age) |> 
-  calculate(stat = "mean")
+sample_mean <- gss |>
+    specify(response = age) |>
+    calculate(stat = "mean")
 sample_mean
 ```
 
@@ -124,14 +123,16 @@ Teraz możemy przyjrzeć się rozkładowi średnich w próbach bootstrapowych.
 ```{r}
 #| label: fig-hist3
 #| fig-cap: Histogram średnich bootstrapowych wraz z 95% przedziałem ufności dla średniej
-ci <- null_mean |> 
-  get_confidence_interval(point_estimate = sample_mean,
-                          level = .95,
-                          type = "se")
+ci <- null_mean |>
+    get_confidence_interval(
+        point_estimate = sample_mean,
+        level = .95,
+        type = "se"
+    )
 
-null_mean |> 
-  visualise() + 
-  shade_ci(endpoints = ci)
+null_mean |>
+    visualise() +
+    shade_ci(endpoints = ci)
 ```
 
 Koncentracja wokół wartości 40 może przemawiać za przyjęciem hipotezy $H_0$.
@@ -153,8 +154,8 @@ bootstrapowego odbywa się wg następujących kroków:
     otrzymania wartości mniejszej niż $-\bar{x}$ (patrz @fig-hist4)
 
 ```{r}
-null_mean |> 
-  get_p_value(obs_stat = sample_mean, direction = "two.sided")
+null_mean |>
+    get_p_value(obs_stat = sample_mean, direction = "two.sided")
 ```
 
 Wartość otrzymana z testu bootstrapowego różni się tylko nieznacznie od
@@ -163,10 +164,9 @@ otrzymanej testem klasycznym.
 ```{r}
 #| label: fig-hist4
 #| fig-cap: Histogram średnich bootstrapowych z zacienonym obszarem ilustrującym na ile ekstremalna jest średnia naszej próby w stosunku do średniej wynikającej z hipotezy zerowej
-
-null_mean |> 
-  visualise()+
-  shade_p_value(obs_stat = sample_mean, direction = "two-sided")
+null_mean |>
+    visualise() +
+    shade_p_value(obs_stat = sample_mean, direction = "two-sided")
 ```
 :::
 
@@ -186,17 +186,17 @@ przypadkach porównywanie median ma więcej sensu niż średnich.
 #| fig-cap: Porównanie rozkładów obu prób
 set.seed(44)
 x1 <- rchisq(20, 2)
-x2 <- -rchisq(15, 2)+10
+x2 <- -rchisq(15, 2) + 10
 
-dt <- tibble(x = c(x1,x2)) |> 
-  mutate(gr = rep(c("A", "B"), times = c(20,15)))
+dt <- tibble(x = c(x1, x2)) |>
+    mutate(gr = rep(c("A", "B"), times = c(20, 15)))
 
-dt |> 
-  ggplot(aes(x, fill = gr))+
-  geom_density(alpha = 0.6)+
-  xlim(c(-2, 12))+
-  scale_fill_nord(palette = "victory_bonds")+
-  theme_minimal()
+dt |>
+    ggplot(aes(x, fill = gr)) +
+    geom_density(alpha = 0.6) +
+    xlim(c(-2, 12)) +
+    scale_fill_nord(palette = "victory_bonds") +
+    theme_minimal()
 ```
 
 Jak widać na @fig-medians rozkłady różnią się zarówno położeniem, jak i
@@ -209,9 +209,9 @@ metodami próbkowania. Najpierw techniką bootstrapową.
 
 ```{r}
 set.seed(44)
-sample_diff <- dt |> 
-  specify(x~gr) |> 
-  calculate(stat = "diff in medians", order = c("A","B"))
+sample_diff <- dt |>
+    specify(x ~ gr) |>
+    calculate(stat = "diff in medians", order = c("A", "B"))
 sample_diff
 
 # Mediana globalna
@@ -223,15 +223,15 @@ median_B <- median(dt$x[dt$gr == "B"])
 
 # Skorygowanie danych przez przesunięcie median do globalnej mediany
 dt_null <- dt |>
-  mutate(x_null = case_when(
-    gr == "A" ~ x - median_A + global_median,
-    gr == "B" ~ x - median_B + global_median
-  ))
+    mutate(x_null = case_when(
+        gr == "A" ~ x - median_A + global_median,
+        gr == "B" ~ x - median_B + global_median
+    ))
 
-null_bootstrap <- dt_null |> 
-  specify(x_null ~ gr) |> 
-  generate(reps = 1000, type = "bootstrap") |> 
-  calculate(stat = "diff in medians", order = c("A", "B"))
+null_bootstrap <- dt_null |>
+    specify(x_null ~ gr) |>
+    generate(reps = 1000, type = "bootstrap") |>
+    calculate(stat = "diff in medians", order = c("A", "B"))
 
 null_bootstrap
 ```
@@ -242,24 +242,26 @@ zgodnie z hipotezą zerową.
 ```{r}
 #| label: fig-median2
 #| fig-cap: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
-ci <- null_bootstrap |> 
-  get_confidence_interval(level = .95, type = "percentile")
+ci <- null_bootstrap |>
+    get_confidence_interval(level = .95, type = "percentile")
 
-null_bootstrap |> 
-  visualise()+
-  shade_ci(endpoints = ci)+
-  geom_vline(xintercept = sample_diff$stat, 
-             linewidth = 2,
-             color = "red")
+null_bootstrap |>
+    visualise() +
+    shade_ci(endpoints = ci) +
+    geom_vline(
+        xintercept = sample_diff$stat,
+        linewidth = 2,
+        color = "red"
+    )
 ```
 
 Widać wyraźnie, że próbkowa różnica median znacznie odbiega od rozkładu
 zgodnego z hipotezą zerową, co jej przeczy.
 
 ```{r}
-null_bootstrap |> 
-  get_p_value(obs_stat = sample_diff$stat, direction = "two-sided")
-wilcox.test(x1,x2)
+null_bootstrap |>
+    get_p_value(obs_stat = sample_diff$stat, direction = "two-sided")
+wilcox.test(x1, x2)
 ```
 
 Wartość $p$ mniejsza od $\alpha$ każe odrzucić hipotezę zerową na korzyść
@@ -270,24 +272,27 @@ Teraz przeprowadzimy test permutacyjny.
 ```{r}
 #| label: fig-median3
 #| fig-cap: Rozkład różnic pomiędzy medianami z 95% przedziałem ufności
-
 set.seed(44)
-null_diff <- dt |> 
-  specify(x~gr) |> 
-  hypothesise(null = "independence") |> 
-  generate(reps = 1000, type = "permute") |> 
-  calculate(stat = "diff in medians", order = c("A","B"))
+null_diff <- dt |>
+    specify(x ~ gr) |>
+    hypothesise(null = "independence") |>
+    generate(reps = 1000, type = "permute") |>
+    calculate(stat = "diff in medians", order = c("A", "B"))
 
-ci <- null_diff |> 
-  get_ci(level = .95, 
-         type = "percentile")
+ci <- null_diff |>
+    get_ci(
+        level = .95,
+        type = "percentile"
+    )
 
-null_diff |> 
-  visualise()+
-  shade_ci(endpoints = ci)+
-  geom_vline(xintercept = sample_diff$stat,
-             linewidth = 2,
-             color = "red")
+null_diff |>
+    visualise() +
+    shade_ci(endpoints = ci) +
+    geom_vline(
+        xintercept = sample_diff$stat,
+        linewidth = 2,
+        color = "red"
+    )
 ```
 
 Jak widać z @fig-median3 rozkład różnic pomiędzy medianami dla całkowicie
@@ -299,12 +304,12 @@ median. Potwierdza to wynik testu permutacyjnego.
 ```{r}
 #| label: fig-median4
 #| fig-cap: Rozkład różnic pomiędzy medianami z naniesionym p-value
-null_diff |> 
-  visualise() +
-  shade_p_value(obs_stat = sample_diff, direction = "two-sided")
+null_diff |>
+    visualise() +
+    shade_p_value(obs_stat = sample_diff, direction = "two-sided")
 
-null_diff |> 
-  get_p_value(obs_stat = sample_diff, direction = "two-sided")
+null_diff |>
+    get_p_value(obs_stat = sample_diff, direction = "two-sided")
 ```
 :::
 
@@ -317,14 +322,16 @@ subiektywną identyfikację klasy społeczno-ekonomicznej.
 #| label: fig-chisq
 #| fig-cap: Wykres słupkowy ilustrujący udziały poszczególnych grup wraz z wynikiem testu $\chi^2$ niezależności
 library(ggstatsplot)
-gss |> 
-  drop_na(partyid, class) |> 
-  droplevels() %>% 
-  ggbarstats(x = class,
-           y = partyid, 
-           label = "count",
-           proportion.test = F, 
-           bf.message = F)
+gss |>
+    drop_na(partyid, class) |>
+    droplevels() %>%
+    ggbarstats(
+        x = class,
+        y = partyid,
+        label = "count",
+        proportion.test = F,
+        bf.message = F
+    )
 ```
 
 Powyższy test każe odrzucić hipotezę o niezależności cech, a ponieważ nie
@@ -338,31 +345,31 @@ tym bardziej warto przeprowadzić testowanie tej hipotezy za pomocą próbkowani
 #| fig-cap: Porównanie rozkładu statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
 set.seed(44)
 # obliczamy statystykę testową dla próby
-sample_stat <- gss |> 
-  drop_na(partyid, class) |> 
-  droplevels() |> 
-  specify(partyid~class) |> 
-  hypothesise(null = "independence") |>
-  calculate(stat = "Chisq")
+sample_stat <- gss |>
+    drop_na(partyid, class) |>
+    droplevels() |>
+    specify(partyid ~ class) |>
+    hypothesise(null = "independence") |>
+    calculate(stat = "Chisq")
 
 # generujemy próby zgodne z hipotezą zerową za pomocą próbkowania
-null_chisq_sim <- gss |> 
-  drop_na(partyid, class) |> 
-  droplevels() |>
-  specify(formula = partyid ~ class) |> 
-  hypothesise(null = "independence") |> 
-  generate(1000, type = "permute") |> 
-  calculate(stat = "Chisq")
+null_chisq_sim <- gss |>
+    drop_na(partyid, class) |>
+    droplevels() |>
+    specify(formula = partyid ~ class) |>
+    hypothesise(null = "independence") |>
+    generate(1000, type = "permute") |>
+    calculate(stat = "Chisq")
 
 # porównujemy rozkład wynikający z hipotezy zerowej z
 # z wartością statystyki obliczoną z próby
-null_chisq_sim |> 
-  visualise() + 
-  shade_p_value(obs_stat = sample_stat, direction = "right")
+null_chisq_sim |>
+    visualise() +
+    shade_p_value(obs_stat = sample_stat, direction = "right")
 
 # obliczamy p-value
-null_chisq_sim |> 
-  get_p_value(obs_stat = sample_stat, direction = "right")
+null_chisq_sim |>
+    get_p_value(obs_stat = sample_stat, direction = "right")
 ```
 
 Widzimy, że test każe odrzucić hipotezę o niezależności cech, podobnie jak test
@@ -373,14 +380,16 @@ resamplingu.
 ```{r}
 #| label: fig-chisq3
 #| fig-cap: Porównanie rozkładu teoretycznego statystyki testowej przy założeniu prawdziwości hipotezy zerowej z wartością statystyki testowej z próby
-null_chisq_theory <- gss |> 
-  specify(partyid~class) |> 
-  assume(distribution = "Chisq", df = 9)
+null_chisq_theory <- gss |>
+    specify(partyid ~ class) |>
+    assume(distribution = "Chisq", df = 9)
 
-null_chisq_theory |> 
-  visualise() + 
-  shade_p_value(obs_stat = sample_stat, 
-                direction = "right")
+null_chisq_theory |>
+    visualise() +
+    shade_p_value(
+        obs_stat = sample_stat,
+        direction = "right"
+    )
 pchisq(sample_stat$stat, df = 9, lower.tail = F)
 ```
 

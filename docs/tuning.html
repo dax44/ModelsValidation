@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>9&nbsp; Optymalizacja modeli – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +128,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -333,7 +335,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -466,7 +468,7 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Spis treści</h2>
    
   <ul>
-<li><a href="#konsekwencje-z%C5%82ego-oszacowania-parametr%C3%B3w" id="toc-konsekwencje-złego-oszacowania-parametrów" class="nav-link active" data-scroll-target="#konsekwencje-z%C5%82ego-oszacowania-parametr%C3%B3w"><span class="header-section-number">9.1</span> Konsekwencje złego oszacowania parametrów</a></li>
+<li><a href="#konsekwencje-z%C5%82ego-doboru-hiperparametr%C3%B3w" id="toc-konsekwencje-złego-doboru-hiperparametrów" class="nav-link active" data-scroll-target="#konsekwencje-z%C5%82ego-doboru-hiperparametr%C3%B3w"><span class="header-section-number">9.1</span> Konsekwencje złego doboru hiperparametrów</a></li>
   <li><a href="#dwa-podej%C5%9Bcia-do-tuningu" id="toc-dwa-podejścia-do-tuningu" class="nav-link" data-scroll-target="#dwa-podej%C5%9Bcia-do-tuningu"><span class="header-section-number">9.2</span> Dwa podejścia do tuningu</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></nav>
     </div>
@@ -488,39 +490,39 @@ window.Quarto = {
   
 
 
-</header><p>Część modeli, jak np. regresja liniowa, posiada wszystkie parametry, które da się oszacować na podstawie zbioru uczącego. Są też modele, których parametry (przynajmniej część z nich) nie da się oszacować na podstawie próby. Przykładem może być model kNN, w którym <span class="math inline">\(k\)</span> jest parametrem, którego wartość nie jest estymowana w czasie uczenia modelu. Takich przykładów można mnożyć, przykładowo głębokość drzew czy minimalna wielkość węzła aby dokonać podziału w lesie losowym również są parametremi, których wartości nie da się szacować w procesie uczenia modelu. Takie “odmienne” parametry będziemy nazywać hiperparametrami modelu.</p>
-<p>Czy to oznacza, że jesteśmy zdani na ich zgadywanie? 🙈 Na szczęście nie. Proces w którym odbywa się poszukiwanie optymalnych parametrów modelu nazywamy optymalizacją modelu (ang. <em>tuning</em>). Definicję tę można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich parametrów jak szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba iteracji/epok w procesie uczenia. Co więcej również w procesie przygotowania danych do modelowania, występują parametry, których wartość należy optymalizować. Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego wartość należy dostrajać. Nawet w kontekście wspomnianych klasycznych modeli jak np. regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.</p>
+</header><p>Część modeli, jak np. regresja liniowa, posiada wszystkie parametry, które da się oszacować na podstawie zbioru uczącego. Są też modele, których pewnych parametrów nie szacuje się bezpośrednio podczas dopasowania modelu. Przykładem może być model kNN, w którym <span class="math inline">\(k\)</span> jest parametrem, którego wartość nie jest estymowana w czasie uczenia modelu. Takich przykładów można mnożyć, przykładowo głębokość drzew czy minimalna wielkość węzła, aby dokonać podziału w lesie losowym również są parametrami, których wartości nie szacuje się w procesie uczenia modelu. Takie „odmienne” parametry będziemy nazywać hiperparametrami modelu.</p>
+<p>Czy to oznacza, że jesteśmy zdani na ich zgadywanie? 🙈 Na szczęście nie. Proces, w którym odbywa się poszukiwanie optymalnych hiperparametrów modelu nazywamy dostrajaniem modelu (ang. <em>tuning</em>). Definicję tę można nawet rozszerzyć, jeśli pomyślimy o dostosowaniu takich hiperparametrów jak szybkość uczenia sieci neuronowej, rodzaj metody gradientowej, czy liczba iteracji/epok w procesie uczenia. Co więcej, również w procesie przygotowania danych do modelowania, występują parametry, których wartość należy optymalizować. Przykładowo liczba składowych głównych w PCA jest hiperparametrem, którego wartość należy dostrajać. Nawet w kontekście wspomnianych klasycznych modeli jak np. regresja możemy optymalizować model pod kątem wyboru funkcji łączącej.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="https://i.imgflip.com/38dyzf.jpg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"></a></p><div class="no-row-height column-margin column-container"><a href="https://i.imgflip.com/38dyzf.jpg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-1"><img src="https://i.imgflip.com/38dyzf.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu - funkcji wiarogodności i dokładności (<em>accuracy</em>).</p>
+<p>Jak zatem przeprowadzić optymalizację modelu, skoro tak wiele różnych parametrów może wpłynąć na ostateczną jego postać? To zależy od tego, co chcemy optymalizować. Przykładowo jeśli obiektem naszych zainteresowań jest wybór najlepszej funkcji łączącej, to powinniśmy użyć do tego funkcji celu jako miary oceniającej rozwiązania. <span class="citation" data-cites="friedman2001">Friedman (<a href="references.html#ref-friedman2001" role="doc-biblioref">2001</a>)</span> pokazał, że optymalna liczba drzew będzie inna, jeśli w procesie optymalizacji użyjemy dwóch różnych kryteriów oceny modelu — funkcji wiarygodności i dokładności (<em>accuracy</em>).</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
 <span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">two_class_dat</span>, prop <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span><span class="va">training_set</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span><span class="va">testing_set</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">llhood</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span>, <span class="va">...</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">fit</span><span class="op">(</span><span class="va">Class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">training_set</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">glance</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">logLik</span><span class="op">)</span></span>
+<span>    <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span>, <span class="va">...</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">fit</span><span class="op">(</span><span class="va">Class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">training_set</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">glance</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">select</span><span class="op">(</span><span class="va">logLik</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">bind_rows</span><span class="op">(</span></span>
-<span>  <span class="fu">llhood</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  <span class="fu">llhood</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="fu">llhood</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"cloglog"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"logit"</span>, <span class="st">"probit"</span>, <span class="st">"c-log-log"</span><span class="op">)</span><span class="op">)</span>  <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">logLik</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>    <span class="fu">llhood</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu">llhood</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu">llhood</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"cloglog"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"logit"</span>, <span class="st">"probit"</span>, <span class="st">"c-log-log"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">logLik</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   logLik link     
@@ -530,57 +532,58 @@ window.Quarto = {
 3  -286. c-log-log</code></pre>
 </div>
 </div>
-<p>Biorąc pod uwagę powyższe wyniki model logistyczny okazuje się być najlepszy. Porównanie to niestety wyrażone zostało pojedynczą statystyką dla każdego modelu. Zatem nie możemy stwierdzić, czy różnice te są istotne statystycznie. Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.</p>
+<p>Biorąc pod uwagę powyższe wyniki, model z funkcją łączącą logit osiąga największą wartość log-wiarygodności. Porównanie to niestety wyrażone zostało pojedynczą statystyką dla każdego modelu. Zatem nie możemy stwierdzić, czy różnice te są istotne statystycznie. Aby tego dokonać porównamy funkcje straty na podstawie resamplingu.</p>
 <div class="cell" data-layout-align="center">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1201</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1201</span><span class="op">)</span></span>
 <span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">training_set</span>, repeats <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Return the individual resampled performance estimates:</span></span>
 <span><span class="va">lloss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">perf_meas</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span>, <span class="va">mn_log_loss</span><span class="op">)</span></span>
-<span>    </span>
-<span>  <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span>, <span class="va">...</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">fit_resamples</span><span class="op">(</span><span class="va">Class</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">B</span>, <span class="va">rs</span>, metrics <span class="op">=</span> <span class="va">perf_meas</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>    <span class="fu">collect_metrics</span><span class="op">(</span>summarize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>    <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">id2</span>, <span class="va">.metric</span>, <span class="va">.estimate</span><span class="op">)</span></span>
+<span>    <span class="va">perf_meas</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span>, <span class="va">mn_log_loss</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span>, <span class="va">...</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">fit_resamples</span><span class="op">(</span><span class="va">Class</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">B</span>, <span class="va">rs</span>, metrics <span class="op">=</span> <span class="va">perf_meas</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">collect_metrics</span><span class="op">(</span>summarize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>        <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">id2</span>, <span class="va">.metric</span>, <span class="va">.estimate</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">resampled_res</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">bind_rows</span><span class="op">(</span></span>
-<span>    <span class="fu">lloss</span><span class="op">(</span><span class="op">)</span>                                    <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"logistic"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">lloss</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span><span class="op">)</span>  <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">lloss</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"cloglog"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"c-log-log"</span><span class="op">)</span>     </span>
-<span>  <span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="co"># Convert log-loss to log-likelihood:</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>.estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"mn_log_loss"</span>, <span class="op">-</span><span class="va">.estimate</span>, <span class="va">.estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">.metric</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">summarize</span><span class="op">(</span></span>
-<span>    mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">.estimate</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    std_err <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">.estimate</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.estimate</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span></span>
+<span><span class="va">resampled_res</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>        <span class="fu">lloss</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>        <span class="fu">lloss</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"probit"</span><span class="op">)</span>,</span>
+<span>        <span class="fu">lloss</span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"cloglog"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"c-log-log"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Convert log-loss to log-likelihood:</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>.estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"mn_log_loss"</span>, <span class="op">-</span><span class="va">.estimate</span>, <span class="va">.estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">.metric</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">summarize</span><span class="op">(</span></span>
+<span>        mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">.estimate</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>        std_err <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">.estimate</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.estimate</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>    <span class="op">)</span></span>
 <span></span>
-<span><span class="va">resampled_res</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"mn_log_loss"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">mean</span>, y <span class="op">=</span> <span class="va">model</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">geom_errorbar</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">std_err</span>, xmax <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">std_err</span><span class="op">)</span>,</span>
-<span>                width <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="st">"log-likelihood"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">resampled_res</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"mn_log_loss"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">mean</span>, y <span class="op">=</span> <span class="va">model</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_errorbar</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">std_err</span>, xmax <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">std_err</span><span class="op">)</span>,</span>
+<span>        width <span class="op">=</span> <span class="fl">.1</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, x <span class="op">=</span> <span class="st">"log-likelihood"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-tune1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="tuning_files/figure-html/fig-tune1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności"><img src="tuning_files/figure-html/fig-tune1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></a>
+<a href="tuning_files/figure-html/fig-tune1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarygodności"><img src="tuning_files/figure-html/fig-tune1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarogodności
+Rys.&nbsp;9.1: Przedziały ufności dla funkcji wiarygodności
 </figcaption></figure>
 </div>
 </div>
 </div>
-<p>Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na mniejszym zbiorze danych; wartość uzyskana przez <code><a href="https://generics.r-lib.org/reference/glance.html">broom::glance()</a></code> jest sumą, podczas gdy <code><a href="https://yardstick.tidymodels.org/reference/mn_log_loss.html">yardstick::mn_log_loss()</a></code> jest średnią. Wyniki te pokazują, że istnieją znaczne dowody na to, że wybór funkcji łączącej ma znaczenie i że model logistyczny jest lepszy.</p>
-<p>A co gdy użyjemy innej miary oceny dopasowania?</p>
+<p>Skala tych wartości jest inna niż poprzednich, ponieważ są one obliczane na mniejszym zbiorze danych; wartość uzyskana przez <code><a href="https://generics.r-lib.org/reference/glance.html">broom::glance()</a></code> jest sumaryczną log-wiarygodnością, podczas gdy <code><a href="https://yardstick.tidymodels.org/reference/mn_log_loss.html">yardstick::mn_log_loss()</a></code> jest średnią stratą logarytmiczną na obserwację, a po zmianie znaku daje średnią log-wiarygodność na obserwację. Wyniki sugerują, że wybór funkcji łączącej ma znaczenie i że model z linkiem logit wypada najlepiej dla tej metryki.</p>
+<p>A co, gdy użyjemy innej miary oceny dopasowania?</p>
 <div id="fig-tune2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Rys.&nbsp;9.2: Porównanie pól pod krzywą ROC"><img src="images/Zrzut ekranu 2023-02-25 o 20.27.01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
@@ -603,31 +606,31 @@ Ostrzeżenie
 <p>To ćwiczenie pokazuje, że różne metryki mogą prowadzić do różnych decyzji dotyczących wyboru wartości parametrów. W tym przypadku jedna metryka wydaje się wyraźnie sortować modele, podczas gdy inna nie wykazuje żadnej różnicy.</p>
 </div>
 </div>
-<p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="references.html#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz “gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> należy używać całych zestawów metryk, które dadzą pełniejszy obraz oraz konsultowania wyników z odbiorcami.</p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></div></div><section id="konsekwencje-złego-oszacowania-parametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-oszacowania-parametrów">
-<span class="header-section-number">9.1</span> Konsekwencje złego oszacowania parametrów</h2>
+<p><span class="citation" data-cites="Thomas2020">Thomas i Uminsky (<a href="references.html#ref-Thomas2020" role="doc-biblioref">2020</a>)</span> sugeruje, że aby uniknąć pewnego rodzaju dwuznaczności oraz „gry” metrykami<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, należy używać zestawów metryk, które dają pełniejszy obraz, oraz konsultować wybór metryk z odbiorcami wyników.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;to jego oryginalne określenie mające ukazać problem doboru jednej metryki, wg której najlepszy model osiąga wysoką jakość dopasowania</p></div></div><section id="konsekwencje-złego-doboru-hiperparametrów" class="level2 page-columns page-full" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="konsekwencje-złego-doboru-hiperparametrów">
+<span class="header-section-number">9.1</span> Konsekwencje złego doboru hiperparametrów</h2>
 <p>Wiele parametrów dostrajania modyfikuje stopień złożoności modelu. Większa złożoność często oznacza większą plastyczność wzorców, które model może naśladować. Na przykład, dodanie stopni swobody w funkcji splajnu zwiększa złożoność predykcji. Choć jest to zaleta, gdy motywacją są leżące u podstaw danych złożone zależności, może to również prowadzić do nadinterpretacji przypadkowych wzorców, które nie powtarzałyby się w nowych danych. <em>Overfitting</em> to sytuacja, w której model zbytnio dostosowuje się do danych treningowych; działa dobrze dla danych użytych do budowy modelu, ale słabo dla nowych danych.</p>
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full"><p class="page-columns page-full"><a href="images/tw1.jpeg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"></a></p><div class="no-row-height column-margin column-container"><a href="images/tw1.jpeg" class="lightbox page-columns page-full" data-gallery="quarto-lightbox-gallery-4"><img src="images/tw1.jpeg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></a></div><p></p>
 </figure>
 </div>
-<p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcjach aktywacji. Taka sieć neuronowa to, na dobrą sprawę, po prostu regresja logistyczna<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie złożoność modelu.</p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;oczywiście tylko wtedy gdy warstwa ukryta ma jeden neuron, a wejściem do niego jest warstwa z aktywacją liniową</p></div></div><p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli ocena modelu jest dokonywana na podstawie wartości ROC zbioru treningowego, to preferuje się wiele neuronów w warstwie ukrytej, tak aby można było prawie całkowicie wyeliminować błędy.</p>
+<p>Przyjrzyjmy się przykładowo modelowi jednowarstwowej sieci neuronowej z jedną warstwą wejściową i jedną warstwą ukrytą z sigmoidalną funkcją aktywacji. Sieć neuronowa bez warstwy ukrytej (lub z liniową transformacją prowadzącą bezpośrednio do sigmoidy) jest równoważna regresji logistycznej<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Jednak już dodanie warstwy ukrytej z nieliniową aktywacją zwiększa złożoność modelu — wraz ze wzrostem liczby neuronów w warstwie ukrytej rośnie zdolność do reprezentowania złożonych granic decyzyjnych.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;dokładniej: sieć neuronowa bez warstwy ukrytej, z sigmoidalną funkcją aktywacji na wyjściu, jest równoważna regresji logistycznej</p></div></div><p>Dopasowaliśmy modele klasyfikacyjne sieci neuronowych do tych samych dwuklasowych danych z poprzedniego przykładu, zmieniając liczbę neuronów w warstwie ukrytej. Używając obszaru pod krzywą ROC jako metryki wydajności, skuteczność modelu na zbiorze treningowym rośnie wraz z dodawaniem kolejnych jednostek ukrytych. Model sieci dokładnie i skrupulatnie uczy się zbioru treningowego. Jeśli ocena modelu jest dokonywana na podstawie ROC AUC zbioru treningowego, to preferuje się wiele neuronów w warstwie ukrytej, tak aby można było prawie całkowicie wyeliminować błędy.</p>
 <p>Rozdziały wcześniejsze pokazały, że ocena dopasowania na zbiorze uczącym jest złym podejściem do oceny modelu. W tym przypadku sieć neuronowa bardzo szybko zaczyna nadinterpretować wzorce, które widzi w zbiorze treningowym. Porównaj trzy przykładowe granice klas (opracowane na podstawie zbioru treningowego) nałożone na zbiory treningowe i testowe na <a href="#fig-tune3" class="quarto-xref">Rys.&nbsp;<span>9.3</span></a>.</p>
 <div id="fig-tune3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-tune3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej"><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
+<a href="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Rys.&nbsp;9.3: Porównanie sieci neuronowych z różną liczbą neuronów w warstwie ukrytej"><img src="images/Zrzut ekranu 2023-02-25 o 21.01.05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="600"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tune3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Rys.&nbsp;9.3: Porównanie sieci neuronowych z różna liczbą neuronów w warstwie ukrytej
+Rys.&nbsp;9.3: Porównanie sieci neuronowych z różną liczbą neuronów w warstwie ukrytej
 </figcaption></figure>
 </div>
-<p>Model z pojedynczym neuronem w warstwie ukrytej nie dostosowuje się zbyt elastycznie do danych (ponieważ jest ograniczony do bycia liniowym). Model z czterema jednostkami ukrytymi zaczyna wykazywać oznaki przeuczenia z nierealistyczną granicą dla wartości oddalonych od chmury danych. Dla 20 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworząc małe wyspy wokół pojedynczych obserwacji, aby zminimalizować współczynnik błędu. Wzorce te nie powtarzają się w zbiorze testowym. W przypadku modelu składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego wynosi 0,944, ale wartość dla zbioru testowego to 0,855.</p>
+<p>Model z pojedynczym neuronem w warstwie ukrytej nie dostosowuje się zbyt elastycznie do danych (ponieważ jest ograniczony do bycia liniowym). Model z czterema jednostkami ukrytymi zaczyna wykazywać oznaki przeuczenia z nierealistyczną granicą dla wartości oddalonych od chmury danych. Dla 20 neuronów ukrytych model zaczyna zapamiętywać zbiór treningowy, tworząc małe wyspy wokół pojedynczych obserwacji, aby zminimalizować funkcję straty. Wzorce te nie powtarzają się w zbiorze testowym. W przypadku modelu składającego się z 20 jednostek, współczynnik ROC AUC dla zbioru treningowego wynosi 0,944, ale wartość dla zbioru testowego to 0,855.</p>
 </section><section id="dwa-podejścia-do-tuningu" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="dwa-podejścia-do-tuningu">
 <span class="header-section-number">9.2</span> Dwa podejścia do tuningu</h2>
 <p>Istnieją dwa sposoby realizacji tuningu modeli:</p>
 <ul>
-<li>przeszukiwanie siatki - gdy wstępnie określamy zestaw wartości parametrów do oceny. Głównymi problemami związanymi z przeszukiwaniem siatki są sposób wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów siatki wymaganych do pokrycia przestrzeni parametrów może stać się niemożliwa do opanowania. Z jednej strony ten fakt przemawiałby za nie wybieraniem tej metody do poszukiwania optymalnych parametrów, ale jest to najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany w kontekście kierunków przeszukiwania.</li>
+<li>przeszukiwanie siatki - gdy wstępnie określamy zestaw wartości parametrów do oceny. Głównymi problemami związanymi z przeszukiwaniem siatki są sposób wykonania siatki i liczba kombinacji parametrów do oceny. Przeszukiwanie siatki jest często oceniane jako nieefektywne, ponieważ liczba punktów siatki wymaganych do pokrycia przestrzeni parametrów może stać się niemożliwa do opanowania. Z jednej strony ten fakt przemawiałby za niewybieraniem tej metody do poszukiwania optymalnych parametrów, ale jest to najbardziej uzasadniona metoda, gdy proces nie jest zoptymalizowany w kontekście kierunków przeszukiwania.</li>
 <li>przeszukiwanie iteracyjne lub sekwencyjne - gdy sekwencyjnie odkrywamy nowe kombinacje parametrów na podstawie poprzednich wyników. W niektórych przypadkach do rozpoczęcia procesu optymalizacji wymagany jest wstępny zestaw wyników dla jednej lub więcej kombinacji parametrów.</li>
 </ul>
 <div id="fig-tune4" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -639,139 +642,251 @@ Rys.&nbsp;9.4: Porównanie metod przeszukiwania
 </figcaption></figure>
 </div>
 <p>Można też stosować rozwiązania hybrydowe, gdzie metoda siatki jest stosowana do wstępnego oszacowania parametrów modelu, a następnie metodami iteracyjnymi korygowane są wspomniane parametry.</p>
-<p>W procesie dostrajania modelu, możemy szacować hiperparametry główne oraz specyficzne dla danego silnika metody.</p>
+<p>W procesie dostrajania modelu możemy kalibrować zarówno hiperparametry główne modelu, jak i hiperparametry specyficzne dla danego silnika.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">2000</span>, min_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span>                   <span class="co"># &lt;- main arguments</span></span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>         <span class="co"># &lt;- engine-specific</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">rand_forest</span><span class="op">(</span>trees <span class="op">=</span> <span class="fl">2000</span>, min_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># &lt;- main arguments</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="co"># &lt;- engine-specific</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Random Forest Model Specification (unknown mode)
+
+Main Arguments:
+  trees = 2000
+  min_n = 10
+
+Engine-Specific Arguments:
+  regularization.factor = 0.5
+
+Computational engine: ranger </code></pre>
+</div>
 </div>
 <p>Aby przekazać informację do przebiegu pracy, że chcemy kalibrować pewne parametry modelu, należy podstawić pod ich wartości funkcję <code>tune()</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">neural_net_spec</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"keras"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">neural_net_spec</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">mlp</span><span class="op">(</span>hidden_units <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"keras"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Chcąc zobaczyć jak model interpretuje takie podstawienie możemy użyć</p>
+<p>Chcąc zobaczyć, jak model interpretuje takie podstawienie możemy użyć</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name         id           source     component component_id object     
+  &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 hidden_units hidden_units model_spec mlp       main         &lt;nparam[+]&gt;</code></pre>
 </div>
-<p>Wyniki pokazują wartość <code>nparam[+]</code>, co wskazuje, że liczba jednostek ukrytych jest parametrem liczbowym. Istnieje opcjonalny argument identyfikacyjny, który kojarzy nazwę z parametrami. Może się to przydać, gdy ten sam rodzaj parametrów jest dostrajany w różnych miejscach. Na przykład, w przypadku danych dotyczących mieszkania w Ames, przepis zakodował zarówno długość jak i szerokość geograficzną za pomocą funkcji <code>spline</code>. Jeśli chcemy dostroić dwie funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy <code>step_ns()</code> dwukrotnie, raz dla każdego predyktora. Aby parametry były identyfikowalne, argument “identyfikator” może przyjąć dowolny ciąg znaków:</p>
+</div>
+<p>Wyniki pokazują wartość <code>nparam[+]</code>, co wskazuje, że liczba jednostek ukrytych jest parametrem liczbowym. Istnieje opcjonalny argument identyfikacyjny, który kojarzy nazwę z parametrami. Może się to przydać, gdy ten sam rodzaj parametrów jest dostrajany w różnych miejscach. Na przykład, w przypadku danych dotyczących mieszkania w Ames, przepis zakodował zarówno długość, jak i szerokość geograficzną za pomocą funkcji <code>spline</code>. Jeśli chcemy dostroić dwie funkcje splajnu, aby potencjalnie miały różne poziomy gładkości, wywołujemy <code>step_ns()</code> dwukrotnie, raz dla każdego predyktora. Aby parametry były identyfikowalne, argument „identyfikator” może przyjąć dowolny ciąg znaków:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
-<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span><span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">ames</span>, prop <span class="op">=</span> <span class="fl">0.80</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
 <span><span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
-<span><span class="va">ames_test</span>  <span class="op">&lt;-</span>  <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
+<span><span class="va">ames_test</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span> </span>
-<span>           <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span>  <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_interact</span><span class="op">(</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span> <span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"longitude df"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>,  deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"latitude df"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ames_rec</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Neighborhood</span> <span class="op">+</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Year_Built</span> <span class="op">+</span> <span class="va">Bldg_Type</span> <span class="op">+</span></span>
+<span>        <span class="va">Latitude</span> <span class="op">+</span> <span class="va">Longitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_log</span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_other</span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_dummy</span><span class="op">(</span><span class="fu">all_nominal_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_interact</span><span class="op">(</span><span class="op">~</span> <span class="va">Gr_Liv_Area</span><span class="op">:</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"Bldg_Type_"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_ns</span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"longitude df"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">step_ns</span><span class="op">(</span><span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"latitude df"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">recipes_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
-<span><span class="va">recipes_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span><span class="va">recipes_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  name      id           source component  component_id object     
+  &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;        &lt;list&gt;     
+1 threshold threshold    recipe step_other other_vYl2r  &lt;nparam[+]&gt;
+2 deg_free  longitude df recipe step_ns    ns_6F43w     &lt;nparam[+]&gt;
+3 deg_free  latitude df  recipe step_ns    ns_5HmxS     &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Gdy receptura i specyfikacja modelu są połączone za pomocą przepływu pracy, oba zestawy parametrów są wyświetlane.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">wflow_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">add_model</span><span class="op">(</span><span class="va">neural_net_spec</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">wflow_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  name         id           source     component  component_id object     
+  &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;        &lt;list&gt;     
+1 hidden_units hidden_units model_spec mlp        main         &lt;nparam[+]&gt;
+2 threshold    threshold    recipe     step_other other_vYl2r  &lt;nparam[+]&gt;
+3 deg_free     longitude df recipe     step_ns    ns_6F43w     &lt;nparam[+]&gt;
+4 deg_free     latitude df  recipe     step_ns    ns_5HmxS     &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>W tym przypadku dodanie splajnów do sieci neuronowej jest tylko na potrzeby przykładu, ponieważ sama sieć neuronowa jest w stanie zamodelować dowolnie złożone zależności (w tym splajny) 🙉.</p>
 <p>Każdy argument parametru dostrajania ma odpowiadającą mu funkcję w pakiecie <code>dials</code>. W zdecydowanej większości przypadków funkcja ma taką samą nazwę jak argument parametru:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">hidden_units</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">threshold</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parameters</span><span class="op">(</span><span class="fu">hidden_units</span><span class="op">(</span><span class="op">)</span>, <span class="fu">threshold</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name         id           source component component_id object     
+  &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 hidden_units hidden_units list   unknown   unknown      &lt;nparam[+]&gt;
+2 threshold    threshold    list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Parametr <code>deg_free</code> jest kontrprzykładem - pojęcie stopni swobody pojawia się w wielu różnych kontekstach. Gdy używamy splajnów, istnieje wyspecjalizowana funkcja <code>dials</code> o nazwie <code>spline_degree()</code>, która jest domyślnie wywoływana dla splajnów:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">spline_degree</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parameters</span><span class="op">(</span><span class="fu">spline_degree</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name          id            source component component_id object     
+  &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 spline_degree spline_degree list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Pakiet <code>dials</code> posiada również funkcję wygodną do wyodrębnienia konkretnego obiektu parametru:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"threshold"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wflow_param</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"threshold"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">parameters</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name      id        source component component_id object     
+  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 threshold threshold list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Wewnątrz zestawu parametrów, zakres parametrów może być również aktualizowany:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fu">threshold</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fu">threshold</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  name      id           source component  component_id object     
+  &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;        &lt;list&gt;     
+1 threshold threshold    recipe step_other other_vYl2r  &lt;nparam[+]&gt;
+2 deg_free  longitude df recipe step_ns    ns_6F43w     &lt;nparam[+]&gt;
+3 deg_free  latitude df  recipe step_ns    ns_5HmxS     &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>W niektórych przypadkach łatwo jest mieć rozsądne wartości domyślne dla zakresu możliwych wartości. W innych przypadkach zakres parametrów jest zależny od zbioru danych i nie można go założyć. Podstawowym parametrem dostrajania parametrów dla modeli lasu losowego jest liczba kolumn predyktorów, które są losowo próbkowane dla każdego podziału drzewa, zwykle oznaczana jako <code>mtry()</code>. Bez znajomości liczby predyktorów, ten zakres parametrów nie może być wstępnie skonfigurowany i wymaga finalizacji.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_spec</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">rand_forest</span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"regularization"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_spec</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">rand_forest</span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"ranger"</span>, regularization.factor <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="st">"regularization"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rf_param</span> <span class="op">&lt;-</span> <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span></span>
-<span><span class="va">rf_param</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span><span class="va">rf_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name                  id             source component component_id object     
+  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 mtry                  mtry           model… rand_for… main         &lt;nparam[?]&gt;
+2 regularization.factor regularization model… rand_for… engine       &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Kompletne obiekty parametrów mają <code>[+]</code> w podsumowaniu; wartość <code>[?]</code> wskazuje, że brakuje przynajmniej jednego końca możliwego zakresu. Istnieją dwie metody radzenia sobie z tym problemem. Pierwszą jest użycie <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code>, aby dodać zakres na podstawie tego, co wiesz o wymiarach danych:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">mtry</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>mtry <span class="op">=</span> <span class="fu">mtry</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">70</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name                  id             source component component_id object     
+  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 mtry                  mtry           model… rand_for… main         &lt;nparam[+]&gt;
+2 regularization.factor regularization model… rand_for… engine       &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Jednak to podejście może nie działać, jeśli receptura jest dołączona do przepływu pracy, który używa kroków dodających lub odejmujących kolumny. Jeśli te kroki nie są przeznaczone do dostrajania, funkcja <code>finalize()</code> może wykonać recepturę raz, aby uzyskać wymiary:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="co"># Select the square-footage predictors and extract their PCA components:</span></span>
-<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="co"># Select the number of components needed to capture 95% of</span></span>
-<span>  <span class="co"># the variance in the predictors. </span></span>
-<span>  <span class="fu">step_pca</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span>, threshold <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
-<span>  </span>
-<span><span class="va">updated_param</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_model</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">pca_rec</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">finalize</span><span class="op">(</span><span class="va">ames_train</span><span class="op">)</span></span>
-<span><span class="va">updated_param</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">recipe</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Select the square-footage predictors and extract their PCA components:</span></span>
+<span>    <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="co"># Select the number of components needed to capture 95% of</span></span>
+<span>    <span class="co"># the variance in the predictors.</span></span>
+<span>    <span class="fu">step_pca</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"SF"</span><span class="op">)</span>, threshold <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">updated_param</span> <span class="op">%&gt;%</span> <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"mtry"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span><span class="va">updated_param</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">add_model</span><span class="op">(</span><span class="va">rf_spec</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">add_recipe</span><span class="op">(</span><span class="va">pca_rec</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">extract_parameter_set_dials</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">finalize</span><span class="op">(</span><span class="va">ames_train</span><span class="op">)</span></span>
+<span><span class="va">updated_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name                  id             source component component_id object     
+  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 mtry                  mtry           model… rand_for… main         &lt;nparam[+]&gt;
+2 regularization.factor regularization model… rand_for… engine       &lt;nparam[+]&gt;</code></pre>
 </div>
-<p>Gdy receptura jest przygotowana, funkcja <code>finalize()</code> uczy się ustawiać górny zakres <code>mtry</code> na 74 predyktory. Dodatkowo, wyniki <code>extract_parameter_set_dials()</code> będą zawierały parametry specyficzne dla silnika (jeśli takie istnieją). Są one odkrywane w taki sam sposób jak główne argumenty i włączane do zestawu parametrów. Pakiet <code>dials</code> zawiera funkcje parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznych dla silnika:</p>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">updated_param</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">extract_parameter_dials</span><span class="op">(</span><span class="st">"mtry"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">parameters</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name  id    source component component_id object     
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 mtry  mtry  list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
+</div>
+<p>Gdy receptura jest przygotowana, funkcja <code>finalize()</code> wykorzystuje dane treningowe do ustalenia górnej granicy zakres <code>mtry</code> na 74 predyktory. Dodatkowo, wyniki <code>extract_parameter_set_dials()</code> będą zawierały parametry specyficzne dla silnika (jeśli takie istnieją). Są one odkrywane w taki sam sposób jak główne argumenty i włączane do zestawu parametrów. Pakiet <code>dials</code> zawiera funkcje parametrów dla wszystkich potencjalnie przestrajalnych parametrów specyficznych dla silnika:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span></span>
-<span><span class="fu">regularization_factor</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rf_param</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name                  id             source component component_id object     
+  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 mtry                  mtry           model… rand_for… main         &lt;nparam[?]&gt;
+2 regularization.factor regularization model… rand_for… engine       &lt;nparam[+]&gt;</code></pre>
+</div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parameters</span><span class="op">(</span><span class="fu">regularization_factor</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name                  id             source component component_id object     
+  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 regularization_factor regularizatio… list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 <p>Wreszcie, niektóre parametry dostrajania są związane z transformacjami. Dobrym przykładem jest parametr kary związany z wieloma modelami regresji regularyzowanej. Ten parametr jest nieujemny i często przedstawia się go w skali logarytmicznej. Podstawowy obiekt parametru <code>dials</code> wskazuje, że domyślnie używana jest transformacja:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tibble</span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="fu">penalty</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>    range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">range</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>    inclusive <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu">penalty</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">inclusive</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>    trans <span class="op">=</span> <span class="fu">penalty</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">trans</span><span class="op">$</span><span class="va">name</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu">penalty</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">label</span></span>
+<span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  type   range  inclusive  trans  label                   
+  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;                   
+1 double -10, 0 TRUE, TRUE log-10 Amount of Regularization</code></pre>
+</div>
 </div>
 <p>Jest to ważna informacja, zwłaszcza przy zmianie zakresu. Nowe wartości zakresu muszą być w przekształconych jednostkach:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correct method to have penalty values between 0.1 and 1.0</span></span>
-<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correct method to have penalty values between 0.1 and 1.0</span></span>
+<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.1001  0.1805  0.3115  0.3905  0.5582  0.9919 </code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># incorrect:</span></span>
-<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># incorrect:</span></span>
+<span><span class="fu">penalty</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1.0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">value_sample</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   1.260   2.126   3.454   4.132   5.812   9.905 </code></pre>
@@ -779,17 +894,22 @@ Rys.&nbsp;9.4: Porównanie metod przeszukiwania
 </div>
 <p>Skala może być zmieniona w razie potrzeby za pomocą argumentu <code>trans</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">penalty</span><span class="op">(</span>trans <span class="op">=</span> <span class="cn">NULL</span>, range <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">parameters</span><span class="op">(</span><span class="fu">penalty</span><span class="op">(</span>trans <span class="op">=</span> <span class="cn">NULL</span>, range <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  name    id      source component component_id object     
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;list&gt;     
+1 penalty penalty list   unknown   unknown      &lt;nparam[+]&gt;</code></pre>
+</div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-friedman2001" class="csl-entry" role="listitem">
 Friedman, Jerome H. 2001. <span>„Greedy function approximation: A gradient boosting machine.”</span> <em>The Annals of Statistics</em> 29 (5). <a href="https://doi.org/10.1214/aos/1013203451">https://doi.org/10.1214/aos/1013203451</a>.
 </div>
 <div id="ref-Thomas2020" class="csl-entry" role="listitem">
-Thomas, Rachel, i David Uminsky. 2020. <span>„The Problem with Metrics is a Fundamental Problem for AI”</span>. <a href="https://doi.org/10.48550/ARXIV.2002.08512">https://doi.org/10.48550/ARXIV.2002.08512</a>.
+Thomas, Rachel, i David Uminsky. 2020. <em>The Problem with Metrics is a Fundamental Problem for AI</em>. <a href="https://doi.org/10.48550/ARXIV.2002.08512">https://doi.org/10.48550/ARXIV.2002.08512</a>.
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -856,13 +976,14 @@ Thomas, Rachel, i David Uminsky. 2020. <span>„The Problem with Metrics is a Fu
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

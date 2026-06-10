@@ -10,20 +10,16 @@ editor_options:
 Poszukiwanie optymalnego modelu za pomocą siatek parametrów jest czynnością
 żmudną i zajmuje sporo czasu. Same funkcje pakietu `tune` są już w pewnym
 stopniu zoptymalizowane pod kątem poszukiwania najlepszych rozwiązań. W
-przypadku modeli, których parametry można przeszukiwać bazując na wiedzy
-pochodzącej z wcześniejszych epok estymacji, to funkcje `tune` z tego
-korzystają. Przykładowo, dajmy na to, że uczymy model PLS (ang. *Partial Least
-Squares*), który co do zasady jest podobny do zastosowania PCA na predyktorach,
-a następnie przewidywaniu wartości wynikowej, z tą różnicą, że w PLS tworzone
-składowe są dobierane tak aby zmaksymalizować korelację pomiędzy nimi a zmienną
-wynikową. Wówczas do obliczenia budowy modelu z 10 składowymi procedura
-przebiega identycznie jak w modelu z 9 składowymi, z tą różnicą, że dodatkowo
-ostatnia składowa jest obliczana. Wówczas aby zaoszczędzić czas procedura
-tuningu modelu względem liczby składowych, których zakres przeszukiwania był
-powiedzmy \[0,10\], korzysta ze wspomnianej iteracyjnej metody budowania modelu
-PLS. To znacząco przyspiesza czas dostrajania modelu. Oczywiście nie wszystkie
-modele mają tą własność, ale te które mają korzystają z tej procedury nazywanej
-optymalizacją podprocesów (ang. *submodel optimization*).
+przypadku modeli, które w ramach jednego dopasowania wytwarzają wiele
+podmodeli, funkcje `tune` potrafią to wykorzystać. Przykładowo model PLS (ang.
+*Partial Least Squares*) jest podobny do zastosowania PCA na predyktorach, a
+następnie przewidywania wartości wynikowej, z tą różnicą, że w PLS tworzone
+składowe są dobierane tak, aby zmaksymalizować korelację pomiędzy nimi a zmienną
+wynikową. Model PLS z 10 składowymi jest rozszerzeniem modelu z 9 składowymi —
+wystarczy dopasować model z maksymalną liczbą składowych, a predykcje dla
+mniejszej liczby składowych można uzyskać bez ponownego uczenia. Dzięki temu
+dostrajanie liczby składowych w zakresie np. od 1 do 10 jest znacznie szybsze.
+Taki mechanizm nazywamy optymalizacją podmodeli (ang. *submodel optimization*).
 
 ![](https://www.jottr.org/presentations/satrdayparis2019/imgs/formula_one_pitstop_724x412.gif){.column-margin
 fig-align="center" width="400"}
@@ -37,7 +33,7 @@ pętla).
 
 Domyślnie pakiet `tune` paralelizuje tylko nad próbkami (pętla zewnętrzna).
 Jest to optymalny scenariusz, gdy metody wstępnego przetwarzania
-(*preprocessing*) są kosztowne oblczeniowo. Istnieją jednak dwa potencjalne
+(*preprocessing*) są kosztowne obliczeniowo. Istnieją jednak dwa potencjalne
 minusy tego podejścia:
 
 -   Ogranicza osiągalne przyspieszenia, gdy preprocessing nie jest wymagający
@@ -49,7 +45,7 @@ minusy tego podejścia:
 Aby zilustrować działanie przetwarzania równoległego, użyjemy przypadku, w
 którym istnieje 7 wartości parametrów dostrajania modelu, przy 5-krotnej
 walidacji krzyżowej. @fig-parallel1 pokazuje, jak zadania są przydzielane
-procesom robotniczym.
+procesom roboczym.
 
 ![Paralelizacja w zewnętrznej
 pętli](images/Zrzut%20ekranu%202023-02-26%20o%2016.34.12.png){#fig-parallel1
@@ -58,7 +54,7 @@ fig-align="center" width="600"}
 Zauważ, że każdy fold jest przypisany do własnego procesu roboczego, a ponieważ
 dostrajane są tylko parametry modelu, przetwarzanie wstępne jest przeprowadzane
 raz na fold/rdzeń. Jeśli użyto by mniej niż pięciu rdzeni, niektóre rdzenie
-otrzymaliby do przeliczenia kilka foldów.
+otrzymałyby do przeliczenia kilka foldów.
 
 W funkcjach sterujących `tune_*()` argument `parallel_over` kontroluje sposób
 wykonania procesu. Aby użyć tej strategii paralelizacji, argumentem jest
@@ -75,7 +71,7 @@ wymagające obliczeniowo, to podejście to będzie nieefektywne. W `tidymodels`,
 zestawy walidacyjne są traktowane jako pojedynczy fold. W takich przypadkach
 ten schemat paralelizacji byłby najlepszy.
 
-@fig-parallel2 ilustruje delegowanie zadań do robotników w tym schemacie; użyty
+@fig-parallel2 ilustruje delegowanie zadań do procesów roboczych w tym schemacie; użyty
 jest ten sam przykład, ale z 10 rdzeniami.
 
 ![Paralelizacja nad foldami i
@@ -119,14 +115,14 @@ pierwszych dwóch panelach dla "none" i "light" daje następujące wnioski:
 -   Istnieje niewielka różnica w czasach wykonania między panelami. Wskazuje
     to, dla tych danych, że nie ma wyraźnej kary obliczeniowej za wykonywanie
     kroków przetwarzania wstępnego w recepturze.
--   Istnieje pewna korzyść z używania `parallel_over = "wszystko"` z wieloma
+-   Istnieje pewna korzyść z używania `parallel_over = "everything"` z wieloma
     rdzeniami. Jednak, jak widać na @fig-parallel3, większość korzyści z
     przetwarzania równoległego występuje w pierwszych pięciu rdzeniach.
 
 W przypadku z drogim krokiem wstępnego przetwarzania, istnieje znaczna różnica
 w czasach wykonywania. Użycie `parallel_over = "everything"` jest
 problematyczne, ponieważ nawet przy użyciu wszystkich rdzeni, nigdy nie osiąga
-czasu wykonania, który `parallel_over = "everything"` osiąga przy użyciu tylko
+czasu wykonania, który `parallel_over = "resamples"` osiąga przy użyciu tylko
 pięciu rdzeni. Dzieje się tak dlatego, że kosztowny krok wstępnego
 przetwarzania jest niepotrzebnie powtarzany w schemacie obliczeniowym.
 
@@ -137,17 +133,17 @@ prędkości.
 schematów](images/Zrzut%20ekranu%202023-02-26%20o%2016.34.41.png){#fig-parallel4
 fig-align="center" width="600"}
 
-Najlepsze przyspieszenie pracy, dla tych danych, występują, gdy
+Najlepsze przyspieszenie pracy, dla tych danych, występuje, gdy
 `parallel_over = "resamples"` i gdy obliczenia wstępne są drogie. Jednak w tym
 ostatnim przypadku należy pamiętać, że poprzednia analiza wskazuje, że ogólne
 dopasowanie modelu jest wolniejsze.
 
-Jaka jest korzyść z zastosowania metody optymalizacji submodelu w połączeniu z
+Jaka jest korzyść z zastosowania metody optymalizacji podmodeli w połączeniu z
 przetwarzaniem równoległym? Model klasyfikacyjny C5.0 został również
 uruchomiony równolegle przy użyciu dziesięciu rdzeni. Obliczenia równoległe
 zajęły 13,3 sekundy, co oznacza 7,5-krotne przyspieszenie (w obu przypadkach
-zastosowano sztuczkę optymalizacji submodelu). Dzięki sztuczce optymalizacji
-podmodelu i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w
+zastosowano optymalizację podmodeli). Dzięki optymalizacji
+podmodeli i przetwarzaniu równoległemu uzyskano 282-krotny wzrost prędkości w
 stosunku do najbardziej podstawowego kodu przeszukiwania siatki.
 
 ::: callout-caution
@@ -195,7 +191,7 @@ spec <- linear_reg(penalty = !!coef_penalty) %>% set_engine("glmnet")
 spec$args$penalty
 ```
 
-Teraz wyjście to `^0,1`, wskazując, że jest to wartość zamiast odniesienia do
+Teraz wyjście to `<0.1>`, wskazując, że jest to wartość zamiast odniesienia do
 obiektu. Kiedy masz wiele zewnętrznych wartości do wstawienia do obiektu,
 operator `!!!` może pomóc:
 
@@ -212,13 +208,14 @@ za pomocą drugiego kanału optycznego. Możemy utworzyć wektor tych nazw kolum
 
 ```{r}
 library(stringr)
+data(cells, package = "modeldata")
+cells <- cells %>% select(-case)
 ch_2_vars <- str_subset(names(cells), "ch_2")
 ch_2_vars
 ```
 
 Moglibyśmy twardo zakodować je w kroku receptury, ale lepiej byłoby odwołać się
-do nich programowo na wypadek zmiany danych. Mamy dwa sposoby, aby to zrobić
-to:
+do nich programowo na wypadek zmiany danych. Mamy dwa sposoby, aby to zrobić:
 
 ```{r}
 # Still uses a reference to global data (~_~;)
@@ -249,7 +246,7 @@ fig-align="center" width="400"}
 
 W uczeniu maszynowym podobną funkcję zapewnia zbiór technik zwanych metodami
 wyścigowymi (ang. *racing method*) [@NIPS1993_02a32ad2]. W tym przypadku proces
-strojenia ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o
+dostrajania ocenia wszystkie modele na początkowym podzbiorze foldów. W oparciu o
 wartości metryk wydajności, niektóre zestawy parametrów nie są brane pod uwagę
 w kolejnych etapach dostrajania.
 
@@ -260,15 +257,15 @@ dopasować model, w którym zmienną wynikową jest obszar pod krzywą ROC, a
 predyktorem jest wskaźnik dla kombinacji parametrów. Model uwzględnia efekt
 *resample-to-resample* i tworzy oszacowania punktowe i przedziałowe dla każdej
 kombinacji parametrów. Wynikiem modelu są jednostronne 95% przedziały ufności,
-które mierzą stratę wartości ROC w stosunku do aktualnie najlepiej działających
-parametrów, jak pokazano na rysunku 13.9.
+które mierzą spadek ROC AUC w stosunku do aktualnie najlepiej działających
+parametrów, jak pokazano na @fig-parallel5.
 
 ![Przykład zastosowania metody
 wyścigowej](images/Zrzut%20ekranu%202023-02-26%20o%2017.17.55.png){#fig-parallel5
 fig-align="center" width="600"}
 
 Każdy zestaw parametrów, którego przedział ufności zawiera zero, nie daje
-podstaw by twierdzić, że jego wydajność jest statystycznie różna od najlepszych
+podstaw, by twierdzić, że jego wydajność jest statystycznie różna od najlepszych
 wyników. Zachowujemy 6 najlepszych ustawień i są one ponownie próbkowane.
 Pozostałe 14 podmodeli nie jest już rozpatrywane.
 
@@ -277,7 +274,7 @@ Pozostałe 14 podmodeli nie jest już rozpatrywane.
 Metody wyścigowe mogą być bardziej efektywne niż podstawowe przeszukiwanie
 siatki, o ile analiza pośrednia jest szybka, a niektóre ustawienia parametrów
 mają słabą wydajność. Jest to również najbardziej pomocne, gdy model nie ma
-możliwości wykorzystania predykcji submodelu.
+możliwości wykorzystania predykcji podmodeli.
 
 Pakiet `finetune` zawiera funkcje dla metody wyścigowej. Funkcja
 `tune_race_anova()` przeprowadza model ANOVA w celu przetestowania

@@ -86,7 +86,7 @@ poly_recipe <-
 
 ## Określenie modeli
 
-Teraz zdefiniujmy model, które chcemy przetestować:
+Teraz zdefiniujmy modele, które chcemy przetestować:
 
 ```{r}
 library(rules)
@@ -147,7 +147,7 @@ cubist_spec <-
    set_engine("Cubist") 
 ```
 
-Autorzy w @khun2013a określa, że sieć neuronowa powinna mieć do 27 jednostek
+Autorzy w @khun2013a określają, że sieć neuronowa powinna mieć do 27 jednostek
 ukrytych w warstwie. Funkcja `extract_parameter_set_dials()` wyodrębnia zbiór
 parametrów, który modyfikujemy, aby miał prawidłowy zakres parametrów:
 
@@ -170,7 +170,7 @@ normalized <-
 normalized
 ```
 
-Ponieważ zastosowaliśmy tylko jedna funkcję wstępnej obróbki danych
+Ponieważ zastosowaliśmy tylko jedną funkcję wstępnej obróbki danych
 (`normalized_rec`), to w podsumowaniu występują tylko kombinacje tego
 preprocesora i modeli. Kolumna `wflow_id` tworzona jest automatycznie, ale może
 być modyfikowana poprzez wywołanie `mutate()`. Kolumna info zawiera `tibble` z
@@ -238,7 +238,7 @@ all_workflows
 
 Prawie wszystkie modele ujęte w `all_workflows` zawierają parametry
 dostrajania. Aby ocenić ich wydajność, możemy użyć standardowych funkcji
-strojenia lub resamplingu (np. `tune_grid()` i tak dalej). Funkcja
+dostrajania lub resamplingu (np. `tune_grid()` i tak dalej). Funkcja
 `workflow_map()` zastosuje tę samą funkcję do wszystkich przepływów w zestawie;
 domyślnie jest to `tune_grid()`.
 
@@ -295,7 +295,7 @@ zawiodły.
 Istnieje kilka wygodnych funkcji do badania wyników, takich jak `grid_results`.
 Funkcja `rank_results()` uporządkuje modele według wybranej metryki wydajności.
 Domyślnie używa ona pierwszej metryki w zestawie metryk (w tym przypadku RMSE).
-Przefiltrujmy wyniki, aby analizować tylko na RMSE:
+Przefiltrujmy wyniki, aby analizować tylko RMSE:
 
 ```{r}
 grid_results %>% 
@@ -307,7 +307,7 @@ grid_results %>%
 Domyślnie funkcja szereguje wszystkie zestawy kandydatów, dlatego ten sam model
 może pojawić się wielokrotnie na wyjściu. Opcja `select_best` może być użyta do
 uszeregowania modeli przy użyciu najlepszej kombinacji dostrajania parametrów.
-Metoda `autoplot()` tworzy wykresy rankingowy; posiada ona również argument
+Metoda `autoplot()` tworzy wykres rankingowy; posiada ona również argument
 `select_best`. Wykres na @fig-mods1 wizualizuje najlepsze wyniki dla każdego
 modelu i jest generowany za pomocą:
 
@@ -327,7 +327,7 @@ autoplot(
 
 W przypadku, gdy chcesz zobaczyć wyniki dostrajania parametrów dla konkretnego
 modelu, tak jak na @fig-mods2, argument `id` może przyjąć pojedynczą wartość z
-kolumny `wflow_id` dla którego modelu ma być wykreślony:
+kolumny `wflow_id` wskazującą, który model ma być wykreślony:
 
 ```{r}
 #| label: fig-mods2
@@ -336,13 +336,13 @@ autoplot(grid_results, id = "Cubist", metric = "rmse")
 ```
 
 Funkcje `collect_metrics()` i `collect_predictions()` również pozwalają
-przejrzenie wyników optymalizacji.
+przejrzeć wyniki optymalizacji.
 
-W powyższym procesie optymalizacji przeuczono 12600 modeli, co zajęło około 2
+W powyższym procesie optymalizacji dopasowano 12600 modeli, co zajęło około 2
 godzin przy wykorzystaniu 4 rdzeni procesora. Pokazuje to, że zagadnienie
-tuningu nawet kilku kandydackich modeli zajmuje sporo czasu.
+dostrajania nawet kilku kandydackich modeli zajmuje sporo czasu.
 
-## Efektywna filtracja modeli
+## Efektywne filtrowanie modeli
 
 Jedną z metod efektywnego przesiewania dużego zbioru modeli jest zastosowanie
 podejścia wyścigowego opisanego wcześniej. Mając zestaw przepływów pracy,
@@ -381,7 +381,7 @@ race_results
 
 ```{r}
 #| label: fig-mods3
-#| fig-cap: Oszacowane RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w poszukiwaniu za pomocą metody wyścigowej.
+#| fig-cap: Oszacowane RMSE (i przybliżone przedziały ufności) dla najlepszej konfiguracji modelu w przeszukiwaniu metodą wyścigową.
 autoplot(
    race_results,
    rank_metric = "rmse",  
@@ -397,7 +397,7 @@ Podejście wyścigowe oszacowało łącznie 1050 modeli, 8,33% z pełnego zestaw
 12600 modeli w pełnej siatce. W rezultacie podejście wyścigowe trwało nieco
 ponad 17 min., więc było 7-krotnie szybsze[^example-1].
 
-Na ile zbliżone wyniki otrzymaliśmy stosując obie metody tuningu?
+Na ile zbliżone wyniki otrzymaliśmy stosując obie metody dostrajania?
 
 ```{r}
 matched_results <- 
@@ -422,21 +422,21 @@ matched_results %>%
    labs(x = "Complete Grid RMSE", y = "Racing RMSE") 
 ```
 
-Podczas gdy podejście wyścigowe wybrało te same parametry kandydata co
-kompletna siatka tylko dla 41,67% modeli, metryki wydajności modeli wybranych
-przez wyścig były prawie równe. Korelacja wartości RMSE wyniosła 0,968, a
+Podczas gdy podejście wyścigowe wybrało te same konfiguracje kandydackie co
+pełna siatka tylko dla 41,67% modeli, metryki wydajności modeli wybranych
+przez metodę wyścigową były prawie równe. Korelacja wartości RMSE wyniosła 0,968, a
 korelacja rangowa 0,951. Wskazuje to, że w obrębie modelu istniało wiele
 kombinacji dostrajania parametrów, które dawały niemal identyczne wyniki.
 
-[^example-1]: Wartości te będą zależały od sprzętu na jakim wykonuje się
+[^example-1]: Wartości te będą zależały od sprzętu, na jakim wykonuje się
     obliczenia
 
 ## Finalizacja modelu
 
 Podobnie do tego, co pokazaliśmy w poprzednich rozdziałach, proces wyboru
-ostatecznego modelu i dopasowania go na zbiorze treningowym jest prosty.
+ostatecznego modelu i dopasowania go do zbioru treningowego jest prosty.
 Pierwszym krokiem jest wybranie zbioru treningowego do sfinalizowania. Ponieważ
-model `boosted tree` działał dobrze, wyodrębnimy go ze zbioru, zaktualizujemy
+model drzew wzmacnianych (`boosting`) działał dobrze, wyodrębnimy go ze zbioru, zaktualizujemy
 parametry o numerycznie najlepsze ustawienia i dopasujemy do zbioru
 treningowego. W przypadku gdy mamy wątpliwości dotyczące siatki hiperparametrów
 dobranych podczas filtrowania modeli, np. że pomija ona ważne kombinacje,
@@ -457,8 +457,8 @@ boosting_test_results <-
    last_fit(split = concrete_split)
 ```
 
-Wyniki metryki dla zbioru testowego oraz wizualizację predykcji możemy zobaczyć
-stosując.
+Wyniki metryki dla zbioru testowego oraz wizualizację predykcji możemy zobaczyć,
+stosując poniższy kod.
 
 ```{r}
 collect_metrics(boosting_test_results)

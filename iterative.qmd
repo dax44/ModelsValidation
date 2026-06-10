@@ -58,8 +58,16 @@ svm_wflow <-
 Oto domyślne zakresy tuningowanych parametrów:
 
 ```{r}
-cost()
-rbf_sigma()
+purrr::map_dfr(
+  list(cost = cost(), rbf_sigma = rbf_sigma()),
+  ~ tibble(
+    type = .x$type,
+    range = paste0("[", paste(.x$range, collapse = ", "), "]"),
+    transformer = if (is.null(.x$trans)) "-" else .x$trans$name,
+    label = .x$label
+  ),
+  .id = "parameter"
+)
 ```
 
 Dla ilustracji, zmieńmy nieco zakres parametrów jądra, aby poprawić
@@ -99,10 +107,10 @@ krzywą ROC tuż po prawej stronie grzbietu.
 ![](https://gifdb.com/images/file/confused-tigger-comic-6vr45zk3ghvf3rg4.gif){.column-margin
 fig-align="center" width="400"}
 
-Procedury wyszukiwania, które będziemy przestawiać, wymagają przynajmniej kilku
+Procedury wyszukiwania, które będziemy przedstawiać, wymagają przynajmniej kilku
 statystyk obliczonych na podstawie resamplingu. W tym celu poniższy kod tworzy
 małą regularną siatkę, która znajduje się w płaskiej części przestrzeni
-parametrów. Funkcja `tune_grid()` dokonuje próbkowania tej siatki:
+parametrów. Funkcja `tune_grid()` ocenia tę siatkę z użyciem resamplingu:
 
 ```{r}
 roc_res <- metric_set(roc_auc)
@@ -160,10 +168,10 @@ model procesu gaussowskiego.
 
 ### Model procesu gaussowskiego
 
-Modele procesu gaussowskiego (GP) [@schulz2016], to techniki statystyczne,
+Modele procesu gaussowskiego (GP) [@schulz2016] to techniki statystyczne,
 które mają swoją historię w statystyce przestrzennej (pod nazwą metod
 *krigingu*). Mogą być wyprowadzone na wiele sposobów, w tym jako model
-Bayesowski.
+bayesowski.
 
 Matematycznie, GP jest zbiorem zmiennych losowych, których wspólny rozkład
 prawdopodobieństwa jest wielowymiarowy normalny. W kontekście naszych
@@ -199,15 +207,15 @@ $$
 \operatorname{cov}(\boldsymbol{x}_i, \boldsymbol{x}_j) = \exp\left(-\frac{1}{2}|\boldsymbol{x}_i - \boldsymbol{x}_j|^2\right) + \sigma^2_{ij}
 $$ {#eq-iter1}
 
-gdzie $\sigma_{i,j}^2$ jest wariancją błędu modelu równą zero jeśli $i=j$.
+gdzie $\sigma_{i,j}^2$ jest wariancją błędu modelu (tzw. *nugget*), równą $\sigma^2$ jeśli $i=j$ i zero w przeciwnym razie.
 Możemy to interpretować jako, że wraz ze wzrostem odległości pomiędzy dwoma
-kombinacjami parametrów, kowariancja pomiędzy metrykami wydajności rośnie
+kombinacjami parametrów, kowariancja pomiędzy metrykami wydajności maleje
 wykładniczo. Z równania wynika również, że zmienność metryki wynikowej jest
 minimalizowana w punktach, które już zostały zaobserwowane (tzn. gdy
 $|x_i - x_j|^2$ wynosi zero). Charakter tej funkcji kowariancji pozwala
 procesowi gaussowskiemu reprezentować wysoce nieliniowe zależności między
 wydajnością modelu a dostrajaniem parametrów, nawet jeśli istnieje tylko
-niewielka ilość danych.
+niewielka liczba danych.
 
 Ważną zaletą tego modelu jest to, że ponieważ określony jest pełny model
 prawdopodobieństwa, przewidywania dla nowych wejść mogą odzwierciedlać cały
@@ -242,7 +250,7 @@ postrzegany przez pryzmat eksploracji i eksploatacji:
     jest mniej obserwowanych modeli kandydujących. W ten sposób nadaje się
     większą wagę kandydatom o wyższej wariancji i koncentruje się na
     poszukiwaniu nowych wyników.
--   Eksploatacja (ang. *exploitation*) - zasadniczo opiera się istniejących
+-   Eksploatacja (ang. *exploitation*) - zasadniczo opiera się na istniejących
     wynikach, w celu odnalezienia najlepszej wartości średniej.
 
 Aby zademonstrować, spójrzmy na przykład z jednym parametrem, który ma wartości
@@ -258,7 +266,7 @@ fig-align="center" width="600"}
 Dla tych danych dopasowanie modelu GP przedstawiono na @fig-iter3. Zacieniowany
 obszar wskazuje średnią $\pm$ 1 błąd standardowy. Dwie pionowe linie wskazują
 dwa punkty kandydujące, które są później bardziej szczegółowo badane.
-Zacieniowany obszar ufności pokazuje funkcję wykładniczej wariancji
+Zacieniowany obszar ufności odzwierciedla charakter funkcji kowariancji wykładniczej
 kwadratowej; staje się ona bardzo duża między punktami i zbiega do zera w
 istniejących punktach danych.
 
@@ -297,7 +305,7 @@ dostrajania](images/Zrzut%20ekranu%202023-03-9%20o%2022.57.54.png){#fig-iter4
 fig-align="center" width="600"}
 
 Rozpatrując tylko średnią $R^2$ lepszym wyborem jest wartość parametru 0,10
-(patrz @tbl-1). Rekomendacja parametru dostrajania dla 0,25 ma gorsze
+(patrz @tbl-2). Rekomendacja parametru dostrajania dla 0,25 ma gorsze
 przewidywanie średnie niż aktualny najlepszy kandydat. Jednakże, ponieważ ma
 wyższą wariancję, ma większy ogólny obszar prawdopodobieństwa powyżej
 aktualnego najlepszego. W rezultacie ma większą oczekiwaną poprawę:
@@ -307,7 +315,7 @@ aktualnego najlepszego. W rezultacie ma większą oczekiwaną poprawę:
 #| tbl-cap: Oczekiwana poprawa dla dwóch kandydujących parametrów dostrajania.
 
 tab2 <- tibble::tribble(
-  ~Parameter.Value,  ~Mean,  ~Std.Dev, ~Expected.Improvment,
+  ~Parameter.Value,  ~Mean,  ~Std.Dev, ~Expected.Improvement,
                0.1, 0.8679, 0.0004317,              0.00019,
               0.25, 0.8671, 0.0039301,             0.001216
   )
@@ -377,7 +385,7 @@ svm_bo <- readRDS("models/svm_bo.rds")
 
 ```{r}
 #| label: tbl-bo1
-#| tbl-cap: Przebieg optymalizacji baysowskiej
+#| tbl-cap: Przebieg optymalizacji bayesowskiej
 collect_metrics(svm_bo) |> 
   gt()
 ```
@@ -414,7 +422,7 @@ dokonywane w pobliżu optymalnego miejsca.
 
 Podczas gdy najlepsza kombinacja dostrajania parametrów znajduje się na granicy
 przestrzeni parametrów, optymalizacja bayesowska często wybierze nowe punkty
-poza granicami przestrzeni parametrów.
+na różnych stronach granicy przestrzeni parametrów.
 
 Powyższy przykład startował z punktów startowych wybranych nieco arbitralnie
 ale nieco lepsze wyniki można osiągnąć stosując losowe wypełnienie przestrzeni
@@ -423,7 +431,7 @@ parametrów.
 ## Symulowane wyżarzanie
 
 Symulowane wyżarzanie (ang. *simulated annealing*)
-[@kirkpatrickOptimizationSimulatedAnnealing1983; @vanlaarhoven1987]; jest
+[@kirkpatrickOptimizationSimulatedAnnealing1983; @vanlaarhoven1987] jest
 nieliniową procedurą wyszukiwania zainspirowaną procesem stygnięcia metalu.
 Jest to metoda globalnego wyszukiwania, która może efektywnie poruszać się po
 wielu różnych obszarach poszukiwań, w tym po funkcjach nieciągłych. W
@@ -435,7 +443,7 @@ rozpoczyna kontrolowany losowy spacer przez przestrzeń parametrów. Każda nowa
 wartość parametru-kandydata jest niewielką perturbacją poprzedniej wartości,
 która utrzymuje nowy punkt w lokalnym sąsiedztwie.
 
-Punkt kandydujący jest oceniana przy zastosowaniu resamplingu, aby uzyskać
+Punkt kandydujący jest oceniany przy zastosowaniu resamplingu, aby uzyskać
 odpowiadającą mu wartość wydajności. Jeśli osiąga ona lepsze wyniki niż
 poprzednie parametry, jest akceptowana jako nowa najlepsza i proces jest
 kontynuowany. Jeśli wyniki są gorsze niż poprzednia wartość, procedura
@@ -482,7 +490,7 @@ prawdopodobieństwa, który odpowiada jego potrzebom. W
 jest 0.02. Zmniejszenie tego współczynnika zachęci wyszukiwanie do bycia
 bardziej wyrozumiałym dla słabych wyników.
 
-Proces ten trwa przez określoną ilość iteracji, ale może zostać zatrzymany,
+Proces ten trwa przez określoną liczbę iteracji, ale może zostać zatrzymany,
 jeśli w ciągu określonej liczby iteracji nie pojawią się globalnie najlepsze
 wyniki. Bardzo pomocne może być ustawienie progu restartu. Jeśli wystąpi ciąg
 niepowodzeń, funkcja ta powraca do ostatnich globalnie najlepszych ustawień
@@ -501,7 +509,7 @@ Proces symulowanego wyżarzania generuje losowe wartości na otaczającym
 promieniu i losowo wybiera jedną z nich jako aktualną wartość kandydacką.
 
 Wielkość promienia kontroluje, jak szybko wyszukiwanie bada przestrzeń
-parametrów. Im większy jest promień tym szybciej przestrzeń parametrów będzie
+parametrów. Im większy jest promień, tym szybciej przestrzeń parametrów będzie
 przeszukiwana przez algorytm ale jednocześnie mniej dokładnie.
 
 Dla zilustrowania użyjemy dwóch głównych parametrów dostrajania `glmnet`:
@@ -512,7 +520,7 @@ Dla zilustrowania użyjemy dwóch głównych parametrów dostrajania `glmnet`:
     balans pomiędzy karą L1 i L2.
 
 Proces rozpoczyna się od wartości początkowych `penalty` = 0,025 i `mixture` =
-0,050. Używając promienia, który losowo waha się między 0,050 a 0,015, dane są
+0,050. Używając promienia, który losowo waha się od 0,015 do 0,050, dane są
 odpowiednio skalowane, losowe wartości są generowane na promieniach wokół
 punktu początkowego, a następnie jedna jest losowo wybierana jako kandydat. Dla
 ilustracji przyjmiemy, że wszystkie wartości kandydujące faktycznie poprawiają
@@ -534,7 +542,7 @@ określonym wcześniej prawdopodobieństwem. Argument `flip` w
 `control_sim_anneal()` może być użyty do określenia tego prawdopodobieństwa.
 Dla parametrów całkowitoliczbowych, używana jest najbliższa wartość całkowita.
 
-Przeszukiwanie metodą symulowanego wyżarzania może nie być optymalna w
+Przeszukiwanie metodą symulowanego wyżarzania może nie być optymalne w
 przypadku, gdy wiele parametrów jest nienumerycznych lub całkowitoliczbowych o
 niewielu unikalnych wartościach. W tych przypadkach jest prawdopodobne, że ten
 sam zestaw kandydatów może być testowany więcej niż raz.

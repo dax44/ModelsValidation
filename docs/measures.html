@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>4&nbsp; Przegląd miar dopasowania modelu – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +128,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -333,7 +335,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -517,7 +519,7 @@ window.Quarto = {
 </header><blockquote class="blockquote">
 <p><em>Wszystkie modele są błędne, ale niektóre są przydatne</em> - George E.P. Box</p>
 </blockquote>
-<p>Ocenę jakości dopasowania modelu można dokonywać na różne sposoby:</p>
+<p>Oceny jakości dopasowania modelu można dokonywać na różne sposoby:</p>
 <ul>
 <li>porównując przewidywaną klasę lub wartość na podstawie modelu z obserwowaną prawdziwą klasą lub wartością;</li>
 <li>korzystając z ilustracji graficznej przedstawiając np. na osi odciętych wartości przewidywane na podstawie modelu, a na osi rzędnych wartości obserwowane w danych<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>; choć można się też spotkać z innymi wykresami, jak np. krzywe <em>ROC</em>, czy <em>Precision-Recall</em>;</li>
@@ -540,7 +542,7 @@ R^2=1-\frac{\sum_i(y_i-\hat{y}_i)^2}{\sum_i(y_i-\bar{y})^2},
 <p><span id="eq-r2cor"><span class="math display">\[
 \tilde{R}^2=[\operatorname{Cor}(Y, \hat{Y})]^2.
 \tag{4.2}\]</span></span></p>
-<p>Miara zdefiniowana w (<a href="#eq-r2cor" class="quarto-xref"><span>4.2</span></a>) zapewnia nam wartości w przedziale (0,1), a klasyczna miara (<a href="#eq-r2trad" class="quarto-xref"><span>4.1</span></a>) nie <span class="citation" data-cites="kvalsethCautionaryNoteR21985">(<a href="references.html#ref-kvalsethCautionaryNoteR21985" role="doc-biblioref">Kvalseth 1985</a>)</span>. Tradycyjna jest zdefiniowana w bibliotece <code>yardstick</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> pod nazwą <code>rsq_trad</code>, natomiast miara oparta na korelacji jako <code>rsq</code>. Oczywiście interpretacja jest następująca, że jeśli wartość <span class="math inline">\(\tilde{R}^2\)</span> jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.</p>
+<p>Miara zdefiniowana w (<a href="#eq-r2cor" class="quarto-xref"><span>4.2</span></a>) przyjmuje wartości w przedziale <span class="math inline">\([0,1]\)</span>, a klasyczna miara (<a href="#eq-r2trad" class="quarto-xref"><span>4.1</span></a>) może być ujemna <span class="citation" data-cites="kvalsethCautionaryNoteR21985">(<a href="references.html#ref-kvalsethCautionaryNoteR21985" role="doc-biblioref">Kvalseth 1985</a>)</span>. Należy jednak pamiętać, że <span class="math inline">\(\tilde{R}^2\)</span> opiera się na korelacji liniowej i nie mierzy kalibracji predykcji – model może mieć wysoką korelację, a jednocześnie systematycznie zawyżać lub zaniżać przewidywania. Tradycyjna jest zdefiniowana w bibliotece <code>yardstick</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> pod nazwą <code>rsq_trad</code>, natomiast miara oparta na korelacji jako <code>rsq</code>. Oczywiście interpretacja jest następująca, że jeśli wartość <span class="math inline">\(\tilde{R}^2\)</span> jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.</p>
 <div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;będącej częścią ekosystemu <code>tidymodels</code></p></div></div></section><section id="rmse" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="rmse">
 <span class="header-section-number">4.1.2</span> RMSE</h3>
 <p>Inną powszechnie stosowaną miarą do oceny dopasowania modeli regresyjnych jest pierwiastek błędu średnio-kwadratowego (ang. <em>Root Mean Square Error</em>), zdefiniowany następująco:</p>
@@ -556,7 +558,7 @@ RMSE = \sqrt{\frac{\sum_{i=1}^n(y_i-\hat{y}_i)^2}{n}},
 <p><a href="https://media.tenor.com/qsthhHhdjsQAAAAd/error-windows.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="https://media.tenor.com/qsthhHhdjsQAAAAd/error-windows.gif" class="img-fluid"></a></p>
 </div></div></section><section id="mae" class="level3" data-number="4.1.4"><h3 data-number="4.1.4" class="anchored" data-anchor-id="mae">
 <span class="header-section-number">4.1.4</span> MAE</h3>
-<p>Chcąc uniknąć (choćby w części) wrażliwości na wartości odstające stosuje się miarę średniego absolutnego błędu (ang. <em>Mean Absolut Error</em>). Definiujemy go następująco:</p>
+<p>Chcąc uniknąć (choćby w części) wrażliwości na wartości odstające stosuje się miarę średniego absolutnego błędu (ang. <em>Mean Absolute Error</em>). Definiujemy go następująco:</p>
 <p><span id="eq-mae"><span class="math display">\[
 MAE=\frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{n}.
 \tag{4.4}\]</span></span></p>
@@ -573,47 +575,52 @@ MAPE=\frac{1}{n}\sum_{i=1}^n\left|\frac{y_i-\hat{y}_i}{y_i}\right|\cdot 100\%.
 <span class="header-section-number">4.1.6</span> MASE</h3>
 <p>Średni bezwzględny błąd skalowany (ang. <em>Mean Absolute Scaled Error</em>) jest miarą dokładności prognoz. Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako “ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach” <span class="citation" data-cites="hyndmanAnotherLookMeasures2006">(<a href="references.html#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>)</span>. Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych <span class="citation" data-cites="fransesNoteMeanAbsolute2016">(<a href="references.html#ref-fransesNoteMeanAbsolute2016" role="doc-biblioref">Franses 2016</a>)</span>. Definiujemy go następująco</p>
 <p><span id="eq-mase"><span class="math display">\[
-MASE = \frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{\sum_{i=1}^n\vert y_i-\bar{y}_i\vert}.
+MASE = \frac{\frac{1}{n}\sum_{i=1}^n|y_i-\hat{y}_i|}{\frac{1}{T-1}\sum_{t=2}^{T}|y_t-y_{t-1}|},
 \tag{4.6}\]</span></span></p>
-<p>Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej <span class="citation" data-cites="hyndmanAnotherLookMeasures2006 EvaluatingForecastAccuracy">(<a href="references.html#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>; <a href="references.html#ref-EvaluatingForecastAccuracy" role="doc-biblioref"><em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>, b.d.</a>)</span>. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów. Wywołujemy go funkcją <code>mase</code>.</p>
+<p>gdzie <span class="math inline">\(T\)</span> jest długością szeregu treningowego, a mianownik oznacza średni błąd bezwzględny naiwnej prognozy opartej na ostatniej znanej obserwacji. Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej <span class="citation" data-cites="hyndmanAnotherLookMeasures2006 EvaluatingForecastAccuracy">(<a href="references.html#ref-hyndmanAnotherLookMeasures2006" role="doc-biblioref">Hyndman i Koehler 2006</a>; <a href="references.html#ref-EvaluatingForecastAccuracy" role="doc-biblioref"><em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span></em>, b.d.</a>)</span>. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów — wartości poniżej 1 oznaczają, że model radzi sobie lepiej niż prognoza naiwna. Wywołujemy go funkcją <code>mase</code>.</p>
 </section><section id="mpe" class="level3" data-number="4.1.7"><h3 data-number="4.1.7" class="anchored" data-anchor-id="mpe">
 <span class="header-section-number">4.1.7</span> MPE</h3>
-<p>Średni błąd procentowy (ang. <em>Mean Percentage Error</em>) jest miarą błędu względnego definiowaną nastepująco</p>
+<p>Średni błąd procentowy (ang. <em>Mean Percentage Error</em>) jest miarą błędu względnego definiowaną następująco</p>
 <p><span id="eq-mpe"><span class="math display">\[
-MPE = \frac{1}{n}\sum_{i=1}^n\frac{y_i-\hat{y}_i}{y_i}.
+MPE = \frac{1}{n}\sum_{i=1}^n\frac{y_i-\hat{y}_i}{y_i}\cdot 100\%.
 \tag{4.7}\]</span></span></p>
-<p>Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować. W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach. Wadą tej miary jest to, że jest ona zawsze określona, gdy pojedyncza wartość rzeczywista wynosi zero. Wywołujemy ją za pomocą <code>mpe</code>.</p>
+<p>Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować. W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach. Wadą tej miary jest to, że nie jest ona określona, gdy choć jedna wartość rzeczywista wynosi zero. Wywołujemy ją za pomocą <code>mpe</code>.</p>
 </section><section id="msd" class="level3" data-number="4.1.8"><h3 data-number="4.1.8" class="anchored" data-anchor-id="msd">
 <span class="header-section-number">4.1.8</span> MSD</h3>
 <p>Średnia znakowa różnic (ang. <em>Mean Signed Deviation</em>), znana również jako średnie odchylenie znakowe i średni błąd znakowy, jest statystyką próbkową, która podsumowuje, jak dobrze szacunki <span class="math inline">\(\hat{Y}\)</span> pasują do wielkości obserwowanych <span class="math inline">\(Y\)</span>. Definiujemy ją następująco:</p>
 <p><span id="eq-msd"><span class="math display">\[
 MSD = \frac{1}{n}\sum_{i=1}^n(\hat{y}_i-y_i).
 \tag{4.8}\]</span></span></p>
-<p>Interpretacja podobnie jak w przypadku innych błędów i mniej wynosi miara tym lepiej dopasowany model. Wywołujemy go funkcją <code>msd</code>.</p>
+<p>Ponieważ MSD jest miarą ze znakiem, wartości dodatnie i ujemne mogą się wzajemnie znosić. Interpretacja: im wartość MSD jest bliższa zeru, tym mniejszy średni błąd systematyczny modelu. Wywołujemy go funkcją <code>msd</code>.</p>
 <p>Istnieje cały szereg miar specjalistycznych rzadziej stosowanych w zagadnieniach regresyjnych. Wśród nich należy wymienić</p>
 </section><section id="funkcja-straty-hubera" class="level3" data-number="4.1.9"><h3 data-number="4.1.9" class="anchored" data-anchor-id="funkcja-straty-hubera">
 <span class="header-section-number">4.1.9</span> Funkcja straty Hubera</h3>
 <p>Funkcja straty Hubera (ang. <em>Huber loss</em>) jest miarą błędu nieco bardziej odporną na punkty odstające niż RMSE. Definiujemy ją następująco:</p>
 <p><span id="eq-huber"><span class="math display">\[
-L_{\delta}(y, \hat{y})= \begin{cases}
+\ell_\delta(y, \hat{y})= \begin{cases}
   \frac12 (y_i-\hat{y}_i)^2, &amp;\text{ jeśli }\vert y_i-\hat{y}_i\vert\leq\delta\\
-  \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta, &amp;\text{ w przeciwnym przypadku}.
+   \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta^2, &amp;\text{ w przeciwnym przypadku}.
 \end{cases}
 \tag{4.9}\]</span></span></p>
-<p>W implementacji <code>yardstick</code> <span class="math inline">\(\delta=1\)</span> natomiast wyliczanie funkcji straty następuje przez uśrednienie po wszystkich obserwacjach. Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości. Wywołujemy ją przez funkcję <code>huber_loss</code>.</p>
+<p>Wzór definiuje stratę <span class="math inline">\(\ell_\delta\)</span> dla pojedynczej obserwacji. Dla całego zbioru danych wartość funkcji straty Hubera oblicza się jako średnią:</p>
+<p><span class="math display">\[
+L_\delta = \frac{1}{n}\sum_{i=1}^n \ell_\delta(y_i-\hat{y}_i).
+\]</span></p>
+<p>W implementacji <code>yardstick</code> <span class="math inline">\(\delta=1\)</span>. Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości. Wywołujemy ją przez funkcję <code>huber_loss</code>.</p>
 </section><section id="funkcja-straty-pseudo-hubera" class="level3 page-columns page-full" data-number="4.1.10"><h3 data-number="4.1.10" class="anchored" data-anchor-id="funkcja-straty-pseudo-hubera">
 <span class="header-section-number">4.1.10</span> Funkcja straty Pseudo-Hubera</h3>
-<p>Funkcja straty Pseudo-Hubera (ang. <em>Pseudo-Huber loss</em>) może być stosowana jako gładkie przybliżenie funkcji straty Hubera. Łączy ona najlepsze właściwości straty kwadratowej<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> i straty bezwzględnej<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych . Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr <span class="math inline">\(\delta\)</span>. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni . Definiujemy ją następująco :</p>
+<p>Funkcja straty Pseudo-Hubera (ang. <em>Pseudo-Huber loss</em>) może być stosowana jako gładkie przybliżenie funkcji straty Hubera. Łączy ona najlepsze właściwości straty kwadratowej<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> i straty bezwzględnej<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych. Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr <span class="math inline">\(\delta\)</span>. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni. Definiujemy ją następująco:</p>
 <div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;inaczej w normie L2</p></div><div id="fn7"><p><sup>7</sup>&nbsp;w normie L1</p></div></div><p><span id="eq-huber2"><span class="math display">\[
 L_{\delta}(y-\hat{y})=\delta^2\left(\sqrt{1+((y-\hat{y})/\delta)^2}-1\right).
-\tag{4.10}\]</span></span> Wywołujemy ją za pomocą funkcji <code>huber_loss_pseudo</code>.</p>
+\tag{4.10}\]</span></span></p>
+<p>Wywołujemy ją za pomocą funkcji <code>huber_loss_pseudo</code>.</p>
 </section><section id="logarytm-funkcji-straty-dla-rozkładu-poissona" class="level3" data-number="4.1.11"><h3 data-number="4.1.11" class="anchored" data-anchor-id="logarytm-funkcji-straty-dla-rozkładu-poissona">
 <span class="header-section-number">4.1.11</span> Logarytm funkcji straty dla rozkładu Poissona</h3>
 <p>Logarytm funkcji straty dla rozkładu Poissona (ang. <em>Mean log-loss for Poisson data</em>) definiowany jest w następujący sposób:</p>
 <p><span class="math display">\[
-\mathcal{L}=\frac1n\sum_{i=11}^n(\hat{y}_i-y_i\cdot \ln(\hat{y}_i)).
+\mathcal{L}=\frac1n\sum_{i=1}^n(\hat{y}_i-y_i\cdot \ln(\hat{y}_i)).
 \]</span></p>
-<p>Wywołujemy go funkcją <code>poisson_log_los</code>.</p>
+<p>Wywołujemy go funkcją <code>poisson_log_loss</code>.</p>
 </section><section id="smape" class="level3" data-number="4.1.12"><h3 data-number="4.1.12" class="anchored" data-anchor-id="smape">
 <span class="header-section-number">4.1.12</span> SMAPE</h3>
 <p>Symetryczny średni bezwzględny błąd procentowy (ang. <em>Symmetric Mean Absolute Percentage Error</em>) jest miarą dokładności opartą na błędach procentowych (lub względnych). Definiujemy ją następująco:</p>
@@ -628,14 +635,14 @@ SMAPE = \frac1n\sum_{i=1}^n\frac{\vert y_i-\hat{y}_i\vert}{(|y_i|+|\hat{y}_i|)/2
 RPD = \frac{SD}{RMSE},
 \tag{4.12}\]</span></span></p>
 <p>gdzie <span class="math inline">\(SD\)</span> oczywiście oznacza odchylenie standardowe zmiennej zależnej. Tym razem interpretujemy go w ten sposób, że im wyższa jest wartość RPD tym lepiej dopasowany model. Wywołujemy za pomocą <code>rpd</code>.</p>
-<p>W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu. Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model. Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku zbiorów danych z asymetrią rozkładów. Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez <span class="citation" data-cites="bellon-maurelCriticalReviewChemometric2010">Bellon-Maurel i in. (<a href="references.html#ref-bellon-maurelCriticalReviewChemometric2010" role="doc-biblioref">2010</a>)</span> w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.</p>
+<p>W szczególności w dziedzinie spektroskopii, stosunek wydajności do odchylenia (RPD) został użyty jako standardowy sposób raportowania jakości modelu. Jest to stosunek odchylenia standardowego zmiennej do błędu standardowego przewidywania tej zmiennej przez dany model. Jednak jego systematyczne stosowanie zostało skrytykowane przez kilku autorów, ponieważ użycie odchylenia standardowego do reprezentowania rozrzutu zmiennej może być niewłaściwe w przypadku zbiorów danych z asymetrią rozkładów. Stosunek wydajności do rozstępu międzykwartylowego został wprowadzony przez <span class="citation" data-cites="bellon-maurelCriticalReviewChemometric2010">Bellon-Maurel et al. (<a href="references.html#ref-bellon-maurelCriticalReviewChemometric2010" role="doc-biblioref">2010</a>)</span> w celu rozwiązania niektórych z tych problemów i uogólnienia RPD na zmienne o rozkładzie nienormalnym.</p>
 </section><section id="rpiq" class="level3" data-number="4.1.14"><h3 data-number="4.1.14" class="anchored" data-anchor-id="rpiq">
 <span class="header-section-number">4.1.14</span> RPIQ</h3>
 <p>Stosunek wartości do rozstępu międzykwartylowego (ang. <em>Ratio of Performance to Inter-Quartile</em>) definiujemy następująco:</p>
 <p><span id="eq-rpiq"><span class="math display">\[
 RPIQ = \frac{IQ}{RMSE},
 \tag{4.13}\]</span></span></p>
-<p>gdzie <span class="math inline">\(IQ\)</span> oznacza rozstęp kwartylowy zmiennej zależnej. Wywołujemy go przez funkcję <code>rpiq.</code></p>
+<p>gdzie <span class="math inline">\(IQ\)</span> oznacza rozstęp kwartylowy zmiennej zależnej. Wywołujemy go przez funkcję <code>rpiq</code>.</p>
 </section><section id="ccc" class="level3" data-number="4.1.15"><h3 data-number="4.1.15" class="anchored" data-anchor-id="ccc">
 <span class="header-section-number">4.1.15</span> CCC</h3>
 <p>Korelacyjny współczynnik zgodności (ang. <em>Concordance Correlation Coefficient</em>) mierzy zgodność pomiędzy wartościami predykcji i obserwowanymi. Definiujemy go w następujący sposób:</p>
@@ -649,10 +656,10 @@ CCC = \frac{2\rho\sigma_y\sigma_{\hat{y}}}{\sigma^2_{y}+\sigma^2_{\hat{y}}+(\mu_
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 4.1</strong></span> Dla zilustrowania działania wspomnianych miar przeanalizujemy przykład modelu regresyjnego. Dla przykładu rozwiążemy zadanie przewidywania wytrzymałości betonu na podstawie jego parametrów. Do tego celu użyjemy danych ze zbioru <code>concrete</code> pakietu <code>modeldata</code>.<span class="citation" data-cites="yehAnalysisStrengthConcrete2006">(<a href="references.html#ref-yehAnalysisStrengthConcrete2006" role="doc-biblioref">Yeh 2006</a>)</span></p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># charakterystyka danych</span></span>
-<span><span class="fu">glimpse</span><span class="op">(</span><span class="va">concrete</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">glimpse</span><span class="op">(</span><span class="va">concrete</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1,030
 Columns: 9
@@ -666,60 +673,68 @@ $ fine_aggregate       &lt;dbl&gt; 676.0, 676.0, 594.0, 594.0, 825.5, 670.0, 594
 $ age                  &lt;int&gt; 28, 28, 270, 365, 360, 90, 365, 28, 28, 28, 90, 2…
 $ compressive_strength &lt;dbl&gt; 79.99, 61.89, 40.27, 41.05, 44.30, 47.03, 43.70, …</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># modelowania dokonamy bez szczególnego uwzględnienia charakteru zmiennych,</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># modelowania dokonamy bez szczególnego uwzględnienia charakteru zmiennych,</span></span>
 <span><span class="co"># tuningowania i innych czynności, które będą nam towarzyszyć w normalnej</span></span>
 <span><span class="co"># budowie modelu</span></span>
 <span></span>
 <span><span class="co"># podział danych na uczące i testowe</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
-<span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span>data <span class="op">=</span> <span class="va">concrete</span>,</span>
-<span>                       prop <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">concrete</span>,</span>
+<span>    prop <span class="op">=</span> <span class="fl">0.7</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># określenie modeli, wybrałem kNN</span></span>
 <span><span class="va">knn5</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">nearest_neighbor</span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">'kknn'</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">'regression'</span><span class="op">)</span></span>
+<span>    <span class="fu">nearest_neighbor</span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">knn25</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">nearest_neighbor</span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">'kknn'</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">'regression'</span><span class="op">)</span></span>
+<span>    <span class="fu">nearest_neighbor</span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">set_mode</span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># uczymy modele</span></span>
-<span><span class="va">fit5</span> <span class="op">&lt;-</span> <span class="va">knn5</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">compressive_strength</span><span class="op">~</span><span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
+<span><span class="va">fit5</span> <span class="op">&lt;-</span> <span class="va">knn5</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">fit</span><span class="op">(</span><span class="va">compressive_strength</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit25</span> <span class="op">&lt;-</span> <span class="va">knn25</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">compressive_strength</span><span class="op">~</span><span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
+<span><span class="va">fit25</span> <span class="op">&lt;-</span> <span class="va">knn25</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">fit</span><span class="op">(</span><span class="va">compressive_strength</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># obliczamy predykcję dla obu modeli na obu zbiorach</span></span>
 <span><span class="va">pred_train5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit5</span>, <span class="va">train_data</span><span class="op">)</span></span>
 <span><span class="va">pred_train25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit25</span>, <span class="va">train_data</span><span class="op">)</span></span>
 <span><span class="va">pred_test5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit5</span>, <span class="va">test_data</span><span class="op">)</span></span>
-<span><span class="va">pred_test25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit25</span>, <span class="va">test_data</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">pred_test25</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit25</span>, <span class="va">test_data</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bind_cols</span><span class="op">(</span>obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
-<span>          pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
-<span>          pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
-<span>               names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
-<span>               values_to <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
-<span>    <span class="va">model</span> <span class="op">==</span> <span class="st">"pred5"</span> <span class="op">~</span> <span class="st">"knn5"</span>,</span>
-<span>    <span class="va">model</span> <span class="op">==</span> <span class="st">"pred25"</span> <span class="op">~</span> <span class="st">"knn25"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">obs</span>, y <span class="op">=</span> <span class="va">pred</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_abline</span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">0</span>, </span>
-<span>              slope <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">facet_grid</span><span class="op">(</span><span class="va">sample</span><span class="op">~</span><span class="va">model</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">coord_obs_pred</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">bind_cols</span><span class="op">(</span></span>
+<span>    obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
+<span>    pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
+<span>    pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pivot_longer</span><span class="op">(</span></span>
+<span>        cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
+<span>        names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
+<span>        values_to <span class="op">=</span> <span class="st">"pred"</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>model <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>        <span class="va">model</span> <span class="op">==</span> <span class="st">"pred5"</span> <span class="op">~</span> <span class="st">"knn5"</span>,</span>
+<span>        <span class="va">model</span> <span class="op">==</span> <span class="st">"pred25"</span> <span class="op">~</span> <span class="st">"knn25"</span></span>
+<span>    <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">obs</span>, y <span class="op">=</span> <span class="va">pred</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_abline</span><span class="op">(</span></span>
+<span>        intercept <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        slope <span class="op">=</span> <span class="fl">1</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">facet_grid</span><span class="op">(</span><span class="va">sample</span> <span class="op">~</span> <span class="va">model</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">coord_obs_pred</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-por1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-por1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -732,17 +747,21 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podsumowanie za pomocą miary R2</span></span>
-<span><span class="fu">bind_cols</span><span class="op">(</span>obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
-<span>          pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
-<span>          pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
-<span>               names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
-<span>               values_to <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">rsq</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podsumowanie za pomocą miary R2</span></span>
+<span><span class="fu">bind_cols</span><span class="op">(</span></span>
+<span>    obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
+<span>    pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
+<span>    pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pivot_longer</span><span class="op">(</span></span>
+<span>        cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
+<span>        names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
+<span>        values_to <span class="op">=</span> <span class="st">"pred"</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">rsq</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   model  sample .metric .estimator .estimate
@@ -752,18 +771,22 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 3 pred5  test   rsq     standard       0.737
 4 pred5  train  rsq     standard       0.929</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># można też podsumować od razu kilkoma miarami</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># można też podsumować od razu kilkoma miarami</span></span>
 <span><span class="co"># będa miary domyślne dla modelu regresyjnego</span></span>
-<span><span class="fu">bind_cols</span><span class="op">(</span>obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
-<span>          pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
-<span>          pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
-<span>               names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
-<span>               values_to <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span>, <span class="va">.metric</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">bind_cols</span><span class="op">(</span></span>
+<span>    obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
+<span>    pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
+<span>    pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pivot_longer</span><span class="op">(</span></span>
+<span>        cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
+<span>        names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
+<span>        values_to <span class="op">=</span> <span class="st">"pred"</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span>, <span class="va">.metric</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 5
    model  sample .metric .estimator .estimate
@@ -781,23 +804,27 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 11 pred5  test   rsq     standard       0.737
 12 pred5  train  rsq     standard       0.929</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># możemy zmienić parametry niektórych miar</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># możemy zmienić parametry niektórych miar</span></span>
 <span><span class="va">huber_loss2</span> <span class="op">&lt;-</span> <span class="fu">metric_tweak</span><span class="op">(</span><span class="st">"huber_loss2"</span>, <span class="va">huber_loss</span>, delta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># można również wybrać jakie miary zostana użyte</span></span>
 <span><span class="va">selected_metrics</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">ccc</span>, <span class="va">rpd</span>, <span class="va">mape</span>, <span class="va">huber_loss2</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="fu">bind_cols</span><span class="op">(</span>obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
-<span>          pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
-<span>          pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
-<span>               names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
-<span>               values_to <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">selected_metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">bind_cols</span><span class="op">(</span></span>
+<span>    obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">$</span><span class="va">compressive_strength</span>, <span class="va">test_data</span><span class="op">$</span><span class="va">compressive_strength</span><span class="op">)</span>,</span>
+<span>    pred5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train5</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test5</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span>,</span>
+<span>    pred25 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred_train25</span><span class="op">$</span><span class="va">.pred</span>, <span class="va">pred_test25</span><span class="op">$</span><span class="va">.pred</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">train_data</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">test_data</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pivot_longer</span><span class="op">(</span></span>
+<span>        cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pred5</span>, <span class="va">pred25</span><span class="op">)</span>,</span>
+<span>        names_to <span class="op">=</span> <span class="st">"model"</span>,</span>
+<span>        values_to <span class="op">=</span> <span class="st">"pred"</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">selected_metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">model</span>, <span class="va">sample</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 16 × 5
    model  sample .metric     .estimator .estimate
@@ -828,11 +855,11 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 <p>Do wyliczenia miar probabilistycznych konieczne jest wyliczenie predykcji z prawdopodobieństwami poszczególnych stanów. Aby uzyskać taki efekt wystarczy w predykcji modelu użyć parametru <code>type = "prob"</code>. W przykładzie podsumowującym miary będzie to zilustrowane.</p>
 <p>Na to, aby przybliżyć miary dopasowania opartych o prawdopodobieństwa stanów, konieczne jest wprowadzenie pojęcia macierzy klasyfikacji (ang. <em>confusion matrix</em>). Można je stosować zarówno do klasyfikacji dwustanowej, jak i wielostanowej. Użyjemy przykładu binarnego aby zilustrować szczegóły tej macierzy.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># import danych do przykładu</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># import danych do przykładu</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">two_class_example</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># kilka pierwszych wierszy wyników predykcji</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">two_class_example</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">two_class_example</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   truth      Class1       Class2 predicted
 1 Class2 0.003589243 0.9964107574    Class2
@@ -842,10 +869,10 @@ Rys.&nbsp;4.1: Graficzne porównanie obu modeli na obu zbiorach
 5 Class2 0.016239960 0.9837600397    Class2
 6 Class1 0.999275071 0.0007249286    Class1</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># confusion matrix</span></span>
-<span><span class="va">two_class_example</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">conf_mat</span><span class="op">(</span><span class="va">truth</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">autoplot</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># confusion matrix</span></span>
+<span><span class="va">two_class_example</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">conf_mat</span><span class="op">(</span><span class="va">truth</span>, <span class="va">predicted</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">autoplot</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-confmat" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-confmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -868,23 +895,31 @@ Rys.&nbsp;4.3: Macierz klasyfikacji
 </div>
 <p>Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:</p>
 <ul>
-<li><p><em>accuacy</em> - informuje o odsetku poprawnie zaklasyfikowanych obserwacji. Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę. Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał <em>accuracy</em> na poziomie 95%.</p></li>
-<li><p><em>kappa -</em> miara podobna miarą do <em>accuracy</em> i jest bardzo przydatna, gdy jedna lub więcej klas dominuje. Definiujemy ją następująco <span class="math inline">\(\kappa = \frac{p_o-p_e}{1-p_e}\)</span>, gdzie <span class="math inline">\(p_o,p_e\)</span> są odpowiednio zgodnością obserwowaną i oczekiwaną. Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.</p></li>
+<li><p><em>accuracy</em> - informuje o odsetku poprawnie zaklasyfikowanych obserwacji. Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę. Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał <em>accuracy</em> na poziomie 95%.</p></li>
+<li><p><em>kappa -</em> miara podobna do <em>accuracy</em> i jest bardzo przydatna, gdy jedna lub więcej klas dominuje. Definiujemy ją następująco <span class="math inline">\(\kappa = \frac{p_o-p_e}{1-p_e}\)</span>, gdzie <span class="math inline">\(p_o,p_e\)</span> są odpowiednio zgodnością obserwowaną i oczekiwaną. Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.</p></li>
 <li><p><em>precision</em> - oznaczana też czasem jako PPV (ang. <em>Positive Predictive Value</em>) oznacza stosunek poprawnie zaklasyfikowanych wartości <em>true positive</em> (TP) do wszystkich przewidywanych wartości pozytywnych (ang. <em>positive predictive</em>).</p></li>
 <li><p><em>recall -</em> nazywany także <em>sensitivity</em> lub <em>True Positive Rate</em> (TPR), który stanowi stosunek <em>true positive</em> do wszystkich przypadków <em>positive</em>.</p></li>
 <li><p><em>specificity</em> - nazywane również <em>True Negative Rate</em> (TNR), wyraża się stosunkiem pozycji <em>true negative</em> do wszystkich obserwacji <em>negative</em>.</p></li>
-<li><p><em>negative predictive value</em> (NPV) - oznaczane czasem też jako <em>false omission rate</em> jest liczone jako stosunek <em>false negative</em> do wszystkich przewidywanych <em>negative</em> (PN).</p></li>
+<li><p><em>negative predictive value</em> (NPV) - liczone jako stosunek <em>true negative</em> do wszystkich przewidywanych <em>negative</em> (TN+FN). Natomiast <em>false omission rate</em> jest dopełnieniem NPV, czyli <span class="math inline">\(FN/(FN+TN)\)</span>.</p></li>
 <li><p><span class="math inline">\(F_1\)</span> - jest miarą zdefiniowaną jako <span class="math inline">\(\frac{2PPV*TPR}{PPV+TPR}\)</span>.</p></li>
-<li><p>MCC - <em>Mathews Correlation Coeficient -</em> jest zdefiniowany jako <span class="math inline">\(\sqrt{TPR*TNR*PPV*NPV}-\sqrt{FNR*FPR*NPV*FDR}\)</span>. Istnieje również odmiana tej miary dla przypadku wielostanowej zmiennej wynikowej.</p></li>
+<li>
+<p>MCC - <em>Matthews Correlation Coefficient</em> - jest zdefiniowany jako</p>
+<p><span class="math display">\[
+MCC =
+\frac{TP\cdot TN - FP\cdot FN}
+{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}.
+\]</span></p>
+<p>Istnieje również odmiana tej miary dla przypadku wielostanowej zmiennej wynikowej.</p>
+</li>
 <li><p><em>balanced accuracy</em> - liczona jako średnia <em>sensitivity</em> i <em>specificity</em>.</p></li>
-<li><p><em>detection prevalence</em> - zdefiniowana jako stosunek poprawnie przewidywanych obserwacji do liczby wszystkich przewidywanych wartości.</p></li>
+<li><p><em>detection prevalence</em> - zdefiniowana jako odsetek obserwacji przewidzianych jako pozytywne, tj. <span class="math inline">\((TP+FP)/N\)</span>.</p></li>
 <li><p><em>J index</em> - metryka Youden’a definiowana jako <em>sensitivity + specificity -1</em>, często jest wykorzystywana do określenia poziomu odcięcia prawdopodobieństwa zdarzenia wyróżnionego (ang. <em>threshold</em>).</p></li>
 <li><p>koszt niepoprawnej klasyfikacji - czasami niektóre błędy klasyfikacji są mniej kosztowne z punktu widzenie badacza, a inne bardziej. Wówczas można przypisać koszty błędnych klasyfikacji do poszczególnych klas, nakładając kary za błędne przypisane do innej klasy i w ten sposób zapobiegać takim sytuacjom.</p></li>
 <li>
 <p>średnia logarytmu funkcji straty (ang. <em>log loss</em>) - określana też w literaturze jako <em>binary cross-entropy</em> dla przypadku zmiennej wynikowej dwustanowej i <em>multilevel cross-entropy</em> albo <em>categorical cross-entropy</em> w przypadku wielostanowej klasyfikacji. Definiuje się ją następująco:</p>
 <p><span id="eq-crossentropy"><span class="math display">\[
-    \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
-\tag{4.14}\]</span></span> gdzie <span class="math inline">\(y_i\)</span> jest indykatorem klasy wyróżnionej dla <span class="math inline">\(i\)</span>-tej obserwacji, a <span class="math inline">\(\hat{y}_i\)</span> prawdopodobieństwem wyróżnionego stanu <span class="math inline">\(i\)</span>-tej obserwacji. Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera. Entropia mierzy nieprzewidywalność czegoś. Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy. Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć “dodatkowy szum”, który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet. Minimalizując entropię krzyżową, maksymalizujemy dokładność klasyfikatora. Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.</p>
+    \mathcal{L} = -\frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
+\tag{4.14}\]</span></span> gdzie <span class="math inline">\(y_i\)</span> jest indykatorem klasy wyróżnionej dla <span class="math inline">\(i\)</span>-tej obserwacji, a <span class="math inline">\(\hat{y}_i\)</span> prawdopodobieństwem wyróżnionego stanu <span class="math inline">\(i\)</span>-tej obserwacji. Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera. Entropia mierzy nieprzewidywalność czegoś. Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy. Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć „dodatkowy szum”, który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet. Minimalizując entropię krzyżową, poprawiamy jakość predykcji probabilistycznych klasyfikatora. Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.</p>
 <p>Prawdopodobieństwo można rozumieć jako miernik zaufania. Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki błąd, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5. Log-loss jest subtelną miarą dokładności.</p>
 </li>
 </ul>
@@ -901,16 +936,16 @@ Rys.&nbsp;4.3: Macierz klasyfikacji
 <li>miary:
 <ul>
 <li><p>AUC - <em>Area Under ROC Curve</em> - mierzy pole pod krzywą ROC. Krzywa ROC nie jest pojedynczą liczbą ale całą krzywą. Dostarcza ona szczegółowych informacji o zachowaniu klasyfikatora, ale trudno jest szybko porównać wiele krzywych ROC ze sobą. W szczególności, jeśli ktoś chciałby zastosować jakiś automatyczny mechanizm tuningowania hiperparametrów, maszyna potrzebowałaby wymiernego wyniku zamiast wykresu, który wymaga wizualnej inspekcji. AUC jest jednym ze sposobów podsumowania krzywej ROC w jedną liczbę, tak aby można było ją łatwo i automatycznie porównać. Dobra krzywa ROC ma dużo miejsca pod sobą (ponieważ prawdziwy wskaźnik pozytywny bardzo szybko wzrasta do 100%). Zła krzywa ROC obejmuje bardzo mały obszar. Tak więc wysokie AUC jest sygnałem dobrego dopasowania modelu.</p></li>
-<li><p>PRAUC - <em>Area Under Precision-Racall Curve</em> - mierzy pole pod krzywą P-R.</p></li>
-<li><p>Pole pod krzywą wzrosu.</p></li>
+<li><p>PRAUC - <em>Area Under Precision-Recall Curve</em> - mierzy pole pod krzywą P-R.</p></li>
+<li><p>Pole pod krzywą wzrostu.</p></li>
 <li><p>Pole pod krzywą wyniesienia.</p></li>
 </ul>
 </li>
 </ul>
 <div id="exm-2" class="theorem example">
-<p><span class="theorem-title"><strong>Przykład 4.2</strong></span> Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej. Dane pochodzą ze zbioru <code>attrition</code> pakietu <code>modeldata</code>. Naszym zadaniem będzie zbudować modeli przewidujący odejścia z pracy.</p>
+<p><span class="theorem-title"><strong>Przykład 4.2</strong></span> Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej. Dane pochodzą ze zbioru <code>attrition</code> pakietu <code>modeldata</code>. Naszym zadaniem będzie zbudować model przewidujący odejścia z pracy.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">attrition</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">attrition</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   1470 obs. of  31 variables:
  $ Age                     : int  41 49 37 33 27 32 59 30 38 36 ...
@@ -945,24 +980,24 @@ Rys.&nbsp;4.3: Macierz klasyfikacji
  $ YearsSinceLastPromotion : int  0 1 0 3 2 3 0 0 1 7 ...
  $ YearsWithCurrManager    : int  5 7 0 0 2 6 0 0 8 7 ...</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podział zbioru na uczący i testowy</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># podział zbioru na uczący i testowy</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
 <span><span class="va">split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">attrition</span>, prop <span class="op">=</span> <span class="fl">0.7</span>, strata <span class="op">=</span> <span class="st">"Attrition"</span><span class="op">)</span></span>
 <span><span class="va">train_data</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># określam model</span></span>
-<span><span class="va">lr_mod</span> <span class="op">&lt;-</span> <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
+<span><span class="va">lr_mod</span> <span class="op">&lt;-</span> <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">set_engine</span><span class="op">(</span><span class="st">"glm"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">set_mode</span><span class="op">(</span><span class="st">"classification"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># uczę model</span></span>
-<span><span class="va">lr_fit</span> <span class="op">&lt;-</span> <span class="va">lr_mod</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Attrition</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
+<span><span class="va">lr_fit</span> <span class="op">&lt;-</span> <span class="va">lr_mod</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">fit</span><span class="op">(</span><span class="va">Attrition</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># podsumowanie modelu</span></span>
-<span><span class="va">lr_fit</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">lr_fit</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 58 × 5
    term                             estimate   std.error statistic   p.value
@@ -982,27 +1017,27 @@ Rys.&nbsp;4.3: Macierz klasyfikacji
 </div>
 <p>Teraz korzystając z różnych miar podsumujemy dopasowanie modelu.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja z modelu przyjmując threshold = 0.5</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja z modelu przyjmując threshold = 0.5</span></span>
 <span><span class="va">pred_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lr_fit</span>, new_data <span class="op">=</span> <span class="va">test_data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># predkcja (prawdopodobieństwa klas)</span></span>
+<span><span class="co"># predykcja (prawdopodobieństwa klas)</span></span>
 <span><span class="va">pred_prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">lr_fit</span>, new_data <span class="op">=</span> <span class="va">test_data</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ale można też tak</span></span>
-<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu">augment</span><span class="op">(</span><span class="va">lr_fit</span>, <span class="va">test_data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_class</span>, <span class="va">.pred_No</span>, <span class="va">.pred_Yes</span><span class="op">)</span></span>
+<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu">augment</span><span class="op">(</span><span class="va">lr_fit</span>, <span class="va">test_data</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_class</span>, <span class="va">.pred_No</span>, <span class="va">.pred_Yes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># macierz klasyfikacji</span></span>
-<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">.pred_class</span><span class="op">)</span></span>
-<span><span class="va">cm</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">.pred_class</span><span class="op">)</span></span>
+<span><span class="va">cm</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction  No Yes
        No  352  39
        Yes  18  33</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 3
    .metric              .estimator .estimate
@@ -1024,38 +1059,38 @@ Prediction  No Yes
 </div>
 <p>Możemy też narysować krzywe, które nam pokażą, czy dla innych wartości progu model też dobrze przewiduje klasy wynikowe.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#ROC</span></span>
-<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ROC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="measures_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="measures_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#PRC</span></span>
-<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pr_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># PRC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pr_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="measures_files/figure-html/unnamed-chunk-5-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="measures_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#AUC</span></span>
-<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># AUC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
 1 roc_auc binary         0.808</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#PRAUC</span></span>
-<span><span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">pr_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># PRAUC</span></span>
+<span><span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pr_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -1065,16 +1100,16 @@ Prediction  No Yes
 </div>
 <p>Wybór optymalnego progu odcięcia.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably">probably</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/probably">probably</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ustalam zakres threshold</span></span>
-<span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># poszukuje najlepszego progu ze względu kryterium Youden'a</span></span>
 <span><span class="va">pred</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://probably.tidymodels.org/reference/threshold_perf.html">threshold_perf</a></span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, <span class="va">thresholds</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">.metric</span>, values_from <span class="op">=</span> <span class="va">.estimate</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="op">-</span><span class="va">j_index</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>    <span class="fu"><a href="https://probably.tidymodels.org/reference/threshold_perf.html">threshold_perf</a></span><span class="op">(</span><span class="va">Attrition</span>, <span class="va">.pred_Yes</span>, <span class="va">thresholds</span>, event_level <span class="op">=</span> <span class="st">"second"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">.metric</span>, values_from <span class="op">=</span> <span class="va">.estimate</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="op">-</span><span class="va">j_index</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 100 × 6
    .threshold .estimator sensitivity specificity j_index distance
@@ -1091,21 +1126,21 @@ Prediction  No Yes
 10       0.26 binary           0.639       0.884   0.523    0.144
 # ℹ 90 more rows</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykjca dla optymalnego progu</span></span>
-<span><span class="va">pred.optim</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://generics.r-lib.org/reference/coercion-factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">.pred_Yes</span> <span class="op">&gt;</span> <span class="fl">0.19</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja dla optymalnego progu</span></span>
+<span><span class="va">pred.optim</span> <span class="op">&lt;-</span> <span class="va">pred</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://generics.r-lib.org/reference/coercion-factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">.pred_Yes</span> <span class="op">&gt;</span> <span class="fl">0.19</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># macierz klasyfikacji</span></span>
-<span><span class="va">cm2</span> <span class="op">&lt;-</span> <span class="va">pred.optim</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">class</span><span class="op">)</span></span>
-<span><span class="va">cm2</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">cm2</span> <span class="op">&lt;-</span> <span class="va">pred.optim</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">Attrition</span>, estimate <span class="op">=</span> <span class="va">class</span><span class="op">)</span></span>
+<span><span class="va">cm2</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction  No Yes
        No  310  20
        Yes  60  52</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm2</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm2</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 3
    .metric              .estimator .estimate
@@ -1131,7 +1166,7 @@ Prediction  No Yes
 <p>Wspomniane zostało, że miary dedykowane dla modeli binarnych można również wykorzystać do modeli ze zmienną zależną wielostanową. Oczywiście wówczas trzeba użyć pewnego rodzaju uśredniania. Implementacje wieloklasowe wykorzystują mikro, makro i makro-ważone uśrednianie, a niektóre metryki mają swoje własne wyspecjalizowane implementacje wieloklasowe.</p>
 <section id="makro-uśrednianie" class="level4" data-number="4.2.1.1"><h4 data-number="4.2.1.1" class="anchored" data-anchor-id="makro-uśrednianie">
 <span class="header-section-number">4.2.1.1</span> Makro uśrednianie</h4>
-<p>Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych. Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki. Jako przykład, rozważmy <em>precision</em>. W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden do jednego. Kolumny <em>truth</em> i <em>estimate</em> są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie <em>precision</em> jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest “wyróżnioną” kolumną. Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji. Wyniki są następnie uśredniane.</p>
+<p>Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych. Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki. Jako przykład, rozważmy <em>precision</em>. W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden kontra reszta (<em>one-vs-all</em>). Kolumny <em>truth</em> i <em>estimate</em> są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie <em>precision</em> jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest “wyróżnioną” kolumną. Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji. Wyniki są następnie uśredniane.</p>
 <p>Formuła dla <span class="math inline">\(k\)</span> klas wynikowych prezentuje się następująco:</p>
 <p><span id="eq-macro"><span class="math display">\[
 Pr_{macro} = \frac{Pr_1+Pr_2+\ldots+Pr_k}{k},
@@ -1154,9 +1189,9 @@ Pr_{micro} = \frac{TP_1+TP_2+\ldots TP_k}{(TP_1+TP_2+\ldots TP_k)+(FP_1+FP_2+\ld
 <div id="exm-3" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 4.3</strong></span> Przykład użycia miar dopasowania modelu dla zmiennych wynikowych wieloklasowych.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja wykonana dla sprawdzianu krzyżowego</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># predykcja wykonana dla sprawdzianu krzyżowego</span></span>
 <span><span class="co"># bedzie nas interesować tylko wynik pierwszego folda</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">hpc_cv</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">hpc_cv</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>  obs pred        VF          F           M            L Resample
 1  VF   VF 0.9136340 0.07786694 0.008479147 1.991225e-05   Fold01
@@ -1166,10 +1201,10 @@ Pr_{micro} = \frac{TP_1+TP_2+\ldots TP_k}{(TP_1+TP_2+\ldots TP_k)+(FP_1+FP_2+\ld
 5  VF   VF 0.9418764 0.05430830 0.003808013 7.294581e-06   Fold01
 6  VF   VF 0.9510978 0.04618223 0.002716177 3.841455e-06   Fold01</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># macierz klasyfikacji</span></span>
-<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span></span>
-<span><span class="va">cm</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># macierz klasyfikacji</span></span>
+<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="va">hpc_cv</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">conf_mat</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, estimate <span class="op">=</span> <span class="va">pred</span><span class="op">)</span></span>
+<span><span class="va">cm</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction   VF    F    M    L
@@ -1178,8 +1213,8 @@ Prediction   VF    F    M    L
         M     6   24   79   28
         L     2   36   50  111</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 3
    .metric              .estimator .estimate
@@ -1198,8 +1233,8 @@ Prediction   VF    F    M    L
 12 recall               macro          0.560
 13 f_meas               macro          0.570</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span>, estimator <span class="op">=</span> <span class="st">"micro"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># poniższe miary są makro uśrednione</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cm</span>, estimator <span class="op">=</span> <span class="st">"micro"</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 3
    .metric              .estimator .estimate
@@ -1218,19 +1253,19 @@ Prediction   VF    F    M    L
 12 recall               micro          0.709
 13 f_meas               micro          0.709</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ROC</span></span>
-<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># ROC</span></span>
+<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">roc_curve</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">autoplot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="measures_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="measures_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># AUC</span></span>
-<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># AUC</span></span>
+<span><span class="va">hpc_cv</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">roc_auc</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">obs</span>, <span class="va">VF</span><span class="op">:</span><span class="va">L</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -1241,7 +1276,7 @@ Prediction   VF    F    M    L
 </div>
 </section></section></section><section id="uwagi-końcowe" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="uwagi-końcowe">
 <span class="header-section-number">4.3</span> Uwagi końcowe</h2>
-<p>Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na <span class="math inline">\(R^2\)</span> będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz <a href="#fig-por" class="quarto-xref">Rys.&nbsp;<span>4.4</span></a>).</p>
+<p>Stosując jedną miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na <span class="math inline">\(R^2\)</span> będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz <a href="#fig-por" class="quarto-xref">Rys.&nbsp;<span>4.4</span></a>).</p>
 <div id="fig-por" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-por-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar"><img src="images/Zrzut ekranu 2023-02-20 o 17.08.24.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a>
@@ -1253,7 +1288,7 @@ Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
 <p>Model zoptymalizowany pod kątem RMSE ma większą zmienność, ale ma stosunkowo jednolitą dokładność w całym zakresie wyników. Prawy panel pokazuje, że istnieje silniejsza korelacja między wartościami obserwowanymi i przewidywanymi, ale model ten słabo radzi sobie w przewidywaniu skrajnych wartości. Na marginesie można dodać, że jeśli model miałby być stosowany do predykcji (co zdarza się bardzo często w modelach ML), to miara RMSE jest lepsza, natomiast gdy interesują nas poszczególne efekty modelu regresji, wówczas <span class="math inline">\(R^2\)</span> jest częściej stosowaną miarą oceny dopasowania modelu.</p>
 <p>Podobny przykład można przytoczyć również dla modeli klasyfikacyjnych.</p>
 <p>Ocena skuteczności danego modelu zależy od tego, do czego będzie on wykorzystywany. Model inferencyjny jest używany przede wszystkim do zrozumienia związków i zazwyczaj kładzie nacisk na wybór (i ważność) rozkładów probabilistycznych i innych cech generatywnych, które definiują model. Dla modelu używanego głównie do przewidywania, w przeciwieństwie do tego, siła predykcyjna ma podstawowe znaczenie, a inne obawy dotyczące podstawowych właściwości statystycznych mogą być mniej ważne. Siła predykcyjna jest zwykle określana przez to, jak blisko nasze przewidywania zbliżają się do obserwowanych danych, tj. wierność przewidywań modelu do rzeczywistych wyników. W tym rozdziale skupiono się na funkcjach, które można wykorzystać do pomiaru siły predykcji. Jednakże naszą radą dla osób opracowujących modele inferencyjne jest stosowanie tych technik nawet wtedy, gdy model nie będzie używany z głównym celem przewidywania.</p>
-<p>Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu. Na przykład, rozważ dane dotyczące choroby Alzheimera z <span class="citation" data-cites="Craig-Schapiro2011">Craig-Schapiro i in. (<a href="references.html#ref-Craig-Schapiro2011" role="doc-biblioref">2011</a>)</span>, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych. W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony). Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E. Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu. Wiadomym jest, że apolipoproteina E ma związek z demencją <span class="citation" data-cites="Kim2009">(<a href="references.html#ref-Kim2009" role="doc-biblioref">Kim, Basak, i Holtzman 2009</a>)</span>.</p>
+<p>Od dawna problemem w praktyce statystyki inferencyjnej jest to, że skupiając się wyłącznie na wnioskowaniu, trudno jest ocenić wiarygodność modelu. Na przykład, rozważ dane dotyczące choroby Alzheimera z <span class="citation" data-cites="Craig-Schapiro2011">Craig-Schapiro et al. (<a href="references.html#ref-Craig-Schapiro2011" role="doc-biblioref">2011</a>)</span>, gdzie 333 pacjentów było badanych w celu określenia czynników wpływających na upośledzenie funkcji poznawczych. W analizie można uwzględnić znane czynniki ryzyka i zbudować model regresji logistycznej, w którym wynik jest binarny (upośledzony/nieupośledzony). Rozważmy predyktory wieku, płci i genotypu apolipoproteiny E. Ta ostatnia jest zmienną kategoryczną zawierającą sześć możliwych kombinacji trzech głównych wariantów tego genu. Wiadomym jest, że apolipoproteina E ma związek z demencją <span class="citation" data-cites="Kim2009">(<a href="references.html#ref-Kim2009" role="doc-biblioref">Kim et al. 2009</a>)</span>.</p>
 <p>Powierzchowne, ale nierzadkie podejście do tej analizy polegałoby na dopasowaniu dużego modelu z głównymi efektami i interakcjami, a następnie zastosowaniu testów statystycznych w celu znalezienia minimalnego zestawu efektów modelu, które są statystycznie istotne na jakimś wcześniej zdefiniowanym poziomie. Jeśli użyto pełnego modelu z trzema czynnikami i ich dwu- i trójstronnymi interakcjami, wstępnym etapem byłoby przetestowanie interakcji przy użyciu sekwencyjnych testów ilorazu prawdopodobieństwa <span class="citation" data-cites="hosmer2000">(<a href="references.html#ref-hosmer2000" role="doc-biblioref">Hosmer i Lemeshow 2000</a>)</span>. Przejdźmy przez takie podejście dla przykładowych danych dotyczących choroby Alzheimera:</p>
 <ul>
 <li>Porównując model ze wszystkimi interakcjami dwukierunkowymi z modelem z dodatkową interakcją trójkierunkową, testy ilorazu wiarygodności dają wartość <span class="math inline">\(p\)</span> równą 0,888. Oznacza to, że nie ma dowodów na to, że cztery dodatkowe terminy modelu związane z interakcją trójkierunkową wyjaśniają wystarczająco dużo zmienności w danych, aby zachować je w modelu.</li>
@@ -1264,7 +1299,7 @@ Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
 <p>Jedną z brakujących informacji w tym podejściu jest to, jak blisko model ten pasuje do rzeczywistych danych. Stosując metody resamplingu, omówione w rozdziale 10, możemy oszacować dokładność tego modelu na około 73,4%. Dokładność jest często słabą miarą wydajności modelu; używamy jej tutaj, ponieważ jest powszechnie rozumiana. Jeśli model ma 73,4% dokładności w stosunku do danych, to czy powinniśmy zaufać wnioskom, które produkuje? Moglibyśmy tak myśleć, dopóki nie zdamy sobie sprawy, że wskaźnik bazowy nieupośledzonych pacjentów w danych wynosi 72,7%. Oznacza to, że pomimo naszej analizy statystycznej, model dwuczynnikowy okazuje się być tylko o 0,8% lepszy od prostej heurystyki, która zawsze przewiduje, że pacjenci nie są upośledzeni, niezależnie od obserwowanych danych.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-EvaluatingForecastAccuracy" class="csl-entry" role="listitem">
 <em>3.4 <span>Evaluating</span> Forecast Accuracy | <span>Forecasting</span>: <span>Principles</span> and <span>Practice</span> (2nd Ed)</em>. b.d.
 </div>
@@ -1272,7 +1307,7 @@ Rys.&nbsp;4.4: Porównanie jakości modeli z wykorzystaniem różnych miar
 Bellon-Maurel, Véronique, Elvira Fernandez-Ahumada, Bernard Palagos, Jean-Michel Roger, i Alex McBratney. 2010. <span>„Critical Review of Chemometric Indicators Commonly Used for Assessing the Quality of the Prediction of Soil Attributes by <span>NIR</span> Spectroscopy”</span>. <em>TrAC Trends in Analytical Chemistry</em> 29 (9): 1073–81. <a href="https://doi.org/10.1016/j.trac.2010.05.006">https://doi.org/10.1016/j.trac.2010.05.006</a>.
 </div>
 <div id="ref-Craig-Schapiro2011" class="csl-entry" role="listitem">
-Craig-Schapiro, Rebecca, Max Kuhn, Chengjie Xiong, Eve H. Pickering, Jingxia Liu, Thomas P. Misko, Richard J. Perrin, i in. 2011. <span>„Multiplexed Immunoassay Panel Identifies Novel CSF Biomarkers for Alzheimer’s Disease Diagnosis and Prognosis”</span>. Zredagowane przez Ashley I. Bush. <em>PLoS ONE</em> 6 (4): e18850. <a href="https://doi.org/10.1371/journal.pone.0018850">https://doi.org/10.1371/journal.pone.0018850</a>.
+Craig-Schapiro, Rebecca, Max Kuhn, Chengjie Xiong, et al. 2011. <span>„Multiplexed Immunoassay Panel Identifies Novel CSF Biomarkers for Alzheimer’s Disease Diagnosis and Prognosis”</span>. <em>PLoS ONE</em> 6 (4): e18850. <a href="https://doi.org/10.1371/journal.pone.0018850">https://doi.org/10.1371/journal.pone.0018850</a>.
 </div>
 <div id="ref-fransesNoteMeanAbsolute2016" class="csl-entry" role="listitem">
 Franses, Philip Hans. 2016. <span>„A Note on the <span>Mean Absolute Scaled Error</span>”</span>. <em>International Journal of Forecasting</em> 32 (1): 20–22. <a href="https://doi.org/10.1016/j.ijforecast.2015.03.008">https://doi.org/10.1016/j.ijforecast.2015.03.008</a>.
@@ -1357,13 +1392,14 @@ Yeh, I.-Cheng. 2006. <span>„Analysis of <span>Strength</span> of <span>Concret
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

@@ -10,7 +10,7 @@ editor_options:
 W celu przedstawienia zasad próbkowania przytoczymy przykład z zestawem danych
 `ames`, na którym dokonywaliśmy już modelowania (regresja
 liniowa)[^resampling2-1]. Oprócz modelu liniowego zbudujemy również las losowy,
-który jest bardzo elastycznym modelem nie wymagającym wstępnego przetwarzania.
+który jest bardzo elastycznym modelem niewymagającym skalowania ani normalizacji predyktorów.
 
 ::: {#exm-1}
 ```{r}
@@ -18,42 +18,43 @@ library(tidymodels)
 tidymodels_prefer()
 
 set.seed(44)
-ames <- ames |>mutate(Sale_Price = log10(Sale_Price))
+ames <- ames |> mutate(Sale_Price = log10(Sale_Price))
 ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
 ames_train <- training(ames_split)
-ames_test  <-  testing(ames_split)
+ames_test <- testing(ames_split)
 
-lm_model <- 
-  linear_reg() |>
-  set_engine("lm")
+lm_model <-
+    linear_reg() |>
+    set_engine("lm")
 
-ames_rec <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
-           Latitude + Longitude, data = ames_train) %>%
-  step_log(Gr_Liv_Area, base = 10) |>
-  step_other(Neighborhood, threshold = 0.01, id = "my_id") |>
-  step_dummy(all_nominal_predictors()) |>
-  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) |>
-  step_ns(Latitude, Longitude, deg_free = 20)
+ames_rec <-
+    recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+        Latitude + Longitude, data = ames_train) %>%
+    step_log(Gr_Liv_Area, base = 10) |>
+    step_other(Neighborhood, threshold = 0.01, id = "my_id") |>
+    step_dummy(all_nominal_predictors()) |>
+    step_interact(~ Gr_Liv_Area:starts_with("Bldg_Type_")) |>
+    step_ns(Latitude, Longitude, deg_free = 20)
 
-lm_wflow <- 
-  workflow() |>
-  add_model(lm_model) |>
-  add_recipe(ames_rec)
+lm_wflow <-
+    workflow() |>
+    add_model(lm_model) |>
+    add_recipe(ames_rec)
 
 lm_fit <- fit(lm_wflow, ames_train)
 
-rf_model <- 
-  rand_forest(trees = 1000) |> 
-  set_engine("ranger") |> 
-  set_mode("regression")
+rf_model <-
+    rand_forest(trees = 1000) |>
+    set_engine("ranger") |>
+    set_mode("regression")
 
-rf_wflow <- 
-  workflow() |> 
-  add_formula(
-    Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + 
-      Latitude + Longitude) |> 
-  add_model(rf_model) 
+rf_wflow <-
+    workflow() |>
+    add_formula(
+        Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+            Latitude + Longitude
+    ) |>
+    add_model(rf_model)
 
 rf_fit <- rf_wflow |> fit(data = ames_train)
 ```
@@ -63,21 +64,21 @@ to stworzymy funkcję, którą będziemy mogli stosować wielokrotnie.
 
 ```{r}
 estimate_perf <- function(model, dat) {
-  # Capture the names of the `model` and `dat` objects
-  cl <- match.call()
-  obj_name <- as.character(cl$model)
-  data_name <- as.character(cl$dat)
-  data_name <- gsub("ames_", "", data_name)
-  
-  # Estimate these metrics:
-  reg_metrics <- metric_set(rmse, rsq)
-  
-  model |>
-    predict(dat) |>
-    bind_cols(dat |> select(Sale_Price)) |>
-    reg_metrics(Sale_Price, .pred) |>
-    select(-.estimator) |>
-    mutate(object = obj_name, data = data_name)
+    # Capture the names of the `model` and `dat` objects
+    cl <- match.call()
+    obj_name <- as.character(cl$model)
+    data_name <- as.character(cl$dat)
+    data_name <- gsub("ames_", "", data_name)
+
+    # Estimate these metrics:
+    reg_metrics <- metric_set(rmse, rsq)
+
+    model |>
+        predict(dat) |>
+        bind_cols(dat |> select(Sale_Price)) |>
+        reg_metrics(Sale_Price, .pred) |>
+        select(-.estimator) |>
+        mutate(object = obj_name, data = data_name)
 }
 ```
 
@@ -90,7 +91,7 @@ estimate_perf(lm_fit, ames_train)
 ```
 
 Na podstawie powyższych wyników można by wyciągnąć wniosek, że model lasu
-losowego jest znacznie lepszy, ponieważ obie miary wyraźnie lepsze są w tym
+losowego jest znacznie lepszy, ponieważ obie miary są wyraźnie lepsze w tym
 przypadku. W taką pułapkę łapie się większość osób stawiających pierwsze kroki
 w ML. Ale już porównując te modele na próbie testowej widzimy, że różnice
 pomiędzy modelami się zacierają.
@@ -108,20 +109,20 @@ Skąd takie różnice?
 
 Wiele modeli predykcyjnych jest w stanie uczyć się złożonych zależności. W
 statystyce są one powszechnie określane jako *low bias models*. Wiele modeli
-uczenia maszynowego typu *black-box* ma niski poziom błędu systematycznego, co
+uczenia maszynowego typu *black-box* ma niski poziom obciążenia, co
 oznacza, że mogą one odtwarzać złożone relacje. Inne modele (takie jak regresja
 liniowa/logistyczna, analiza dyskryminacyjna i inne) nie są tak elastyczne i są
-uważane za modele o wysokim współczynniku błędu (ang. *high bias models*).
+uważane za modele o wysokim obciążeniu (ang. *high bias models*).
 
 W przypadku modelu o niskim obciążeniu, wysoki stopień zdolności predykcyjnej
 może czasami spowodować, że model prawie zapamiętuje dane ze zbioru
 treningowego. Jako oczywisty przykład, można rozważyć model 1-najbliższego
 sąsiada. Zawsze będzie zapewniał doskonałe przewidywania dla zestawu
 treningowego, niezależnie od tego, jak dobrze naprawdę działa dla innych
-zestawów danych. Modele losowego lasu są podobne; predykcja na zbiorze uczącym
-zawsze spowoduje nieprawdziwie optymistyczne oszacowanie wydajności.
+zestawów danych. Modele lasu losowego są podobne; predykcja na zbiorze uczącym
+zwykle prowadzi do zbyt optymistycznego oszacowania jakości modelu.
 
-Brak znaczących różnic w dopasowaniu modelu regresji na obu zbiorach wynika z
+Brak znaczących różnic w dopasowaniu modelu liniowego na obu zbiorach wynika z
 małej złożoności modelu, a co za tym idzie niskiej wariancji modelu.
 :::
 
@@ -164,8 +165,7 @@ Załóżmy, że przeprowadzono 20 iteracji ponownego próbkowania. Oznacza to, �
 oddzielnych modeli jest dopasowywanych do zbiorów analiz, a odpowiadające im
 zbiory oceny dają 20 zbiorów statystyk wydajności. Ostateczne oszacowanie
 wydajności dla modelu jest średnią z 20 powtórzeń statystyki. Średnia ta ma
-bardzo dobre właściwości uogólniające i jest znacznie lepsza niż szacunki na
-zbiorze uczącym.
+lepsze właściwości uogólniające niż ocena na zbiorze uczącym, choć nadal może być obciążona w zależności od schematu próbkowania.
 
 ::: column-margin
 ![](https://i.pinimg.com/564x/5d/40/fe/5d40febb383da04ada236afede0ab996.jpg){fig-align="center"
@@ -182,7 +182,7 @@ walidacji krzyżowej jest $V$-krotna walidacja krzyżowa. Dane są losowo dzielo
 na $V$ zbiorów o mniej więcej równej wielkości (zwanych krotkami lub foldami).
 Dla ilustracji, $V = 3$ jest pokazane na @fig-cross1 dla zbioru danych
 składającego się z 30 punktów zbioru treningowego z losowym przydziałem foldów.
-Liczba wewnątrz symboli to numer próbki.
+Liczba wewnątrz symbolu to numer próbki.
 
 ![3-krotny sprawdzian
 krzyżowy](images/Zrzut%20ekranu%202023-02-20%20o%2020.01.18.png){#fig-cross1
@@ -214,10 +214,7 @@ wiarygodne szacunki. W praktyce wartości $V$ to najczęściej 5 lub 10; raczej
 preferujemy 10-krotną walidację krzyżową jako domyślną, ponieważ jest ona
 wystarczająco duża, aby uzyskać dobre wyniki w większości sytuacji.
 
-Jakie są skutki zmiany $V$? Większe wartości powodują, że szacunki z
-próbkowania mają mały błąd/obciążenie, ale znaczną wariancję. Mniejsze wartości
-$V$ mają duży błąd, ale niską wariancję. Preferujemy 10-krotne, ponieważ szum
-jest zmniejszony przez replikacje, ale obciążenie już nie.
+Jakie są skutki zmiany $V$? Większe wartości $V$ zwykle zmniejszają obciążenie oszacowania (zbiór analizy jest bliższy rozmiarowi całego zbioru treningowego), ale zwiększają wariancję pojedynczych ocen (foldy są bardziej skorelowane). Mniejsze wartości $V$ dają większe obciążenie, ale mniejszą wariancję. W praktyce preferujemy $V=10$, ponieważ replikacje redukują wariancję średniej, natomiast obciążenia już nie.
 
 ```{r}
 set.seed(1001)
@@ -268,9 +265,7 @@ walidacji
 krzyżowych](images/Zrzut%20ekranu%202023-02-20%20o%2021.09.46.png){#fig-cross3
 fig-align="center" width="600"}
 
-Generalnie zwiększanie liczby replikacji nie ma dużego wpływu na błąd
-standardowy estymacji, chyba że bazowa wartość $\sigma$ jest duża, wówczas
-faktycznie warto zwiększać liczbę replikacji.
+Generalnie dodatkowe replikacje zmniejszają błąd standardowy estymacji proporcjonalnie do $1/\sqrt{R}$, więc ich wpływ maleje wraz z rosnącą liczbą powtórzeń. Są najbardziej przydatne, gdy bazowa wartość $\sigma$ jest duża.
 
 ```{r}
 vfold_cv(ames_train, v = 10, repeats = 5)
@@ -288,23 +283,22 @@ prognoz jest łączonych w celu uzyskania pojedynczej statystyki dopasowania
 ![](images/chap_41.png){fig-align="center" width="400"}
 :::
 
-Metody LOO są gorsza w porównaniu z prawie każdą inną metodą oceny dopasowania.
+Metody LOO są często mniej praktyczne w porównaniu z $V$-krotną walidacją krzyżową.
 Dla wszystkich oprócz patologicznie małych próbek, LOO jest obliczeniowo
-złożony i może nie mieć dobrych właściwości statystycznych. Chociaż pakiet
-`rsample` zawiera funkcję `loo_cv()`, obiekty te nie są mocno zintegrowane z
-pakietami `tidymodels`.
+kosztowna i może mieć dużą wariancję. Pakiet
+`rsample` zawiera funkcję `loo_cv()`, jednak w praktyce częściej stosuje się 5- lub 10-krotną CV.
 
 ## Walidacja metodą Monte-Carlo
 
-Innym wariantem $V$-krotnej walidacji krzyżowej jest walidacja krzyżowa
-Monte-Carlo (ang. *Monte-Carlo Cross-Validation* - MCCV) [@xu2001]. Podobnie
+Inną metodą resamplingu jest walidacja
+Monte Carlo (ang. *Monte Carlo Cross-Validation* – MCCV) [@xu2001]. Podobnie
 jak w sprawdzianie krzyżowym, przydziela ona ustaloną część danych do zbiorów
 oceny. Różnica między MCCV a zwykłą walidacją krzyżową polega na tym, że w
 przypadku MCCV ta część danych jest za każdym razem wybierana losowo. Przez to
 powstają zestawy oceny, które nie wykluczają się wzajemnie.
 
 ```{r}
-mc_cv(ames_train, prop = 9/10, times = 20)
+mc_cv(ames_train, prop = 9 / 10, times = 20)
 ```
 
 ## Zbiór walidacyjny
@@ -333,7 +327,7 @@ iteracji próbkowania.
 
 ```{r}
 set.seed(1002)
-val_set <- validation_split(ames_train, prop = 3/4)
+val_set <- validation_split(ames_train, prop = 3 / 4)
 val_set
 ```
 
@@ -351,10 +345,10 @@ analitycznego. Każdy punkt danych ma 63,2% szans na włączenie do zbioru
 uczącego przynajmniej raz. Zestaw oceny zawiera wszystkie próbki zestawu
 treningowego, które nie zostały wybrane do zestawu analitycznego (średnio 36,8%
 zestawu treningowego). Podczas *bootstrappingu* zestaw oceny jest często
-nazywany próbką poza workiem (ang. *Out-Of-Bag)*.
+nazywany próbką poza workiem (ang. *out-of-bag*, OOB).
 
 Dla zbioru treningowego składającego się z 30 próbek, schemat trzech próbek
-bootstrapowych przedstawiono na @fig-boot1
+bootstrapowych przedstawiono na @fig-boot1.
 
 ![Trzy próby
 bootstrapowe](images/Zrzut%20ekranu%202023-02-20%20o%2021.45.08.png){#fig-boot1
@@ -387,8 +381,8 @@ treningowego, nie pozwoli na oszacowanie tych wzorców.
 
 Kroczące próbkowanie źródła (ang. *rolling forecast origin resampling*) jest
 metodą, która emuluje sposób, w jaki dane szeregów czasowych są często
-partycjonowane w praktyce, estymując parametry modelu na danymych historycznych
-i oceniając go z najnowszymi danymi [@hyndman]. Dla tego typu resamplingu
+partycjonowane w praktyce, estymując parametry modelu na danych historycznych
+i oceniając go na nowszych danych [@hyndman]. Dla tego typu resamplingu
 określa się rozmiar zbiorów analiz i ocen. Pierwsza iteracja resamplingu
 wykorzystuje te rozmiary, zaczynając od początku serii. Druga iteracja
 wykorzystuje te same rozmiary danych, ale przesuwa się o ustaloną liczbę
@@ -426,7 +420,7 @@ library(tidymodels)
 library(lubridate)
 
 df <- df |>
-  arrange(date)
+    arrange(date)
 ```
 
 Sortowanie jest krytyczne. Funkcje czasowe zakładają, że dane są uporządkowane chronologicznie. W przypadku `sliding_index()` indeks musi być rosnący; może mieć powtórzone wartości, ale nie powinien zawierać braków danych.
@@ -439,7 +433,7 @@ set.seed(123)
 split_time <- initial_time_split(df, prop = 0.8)
 
 train_data <- training(split_time)
-test_data  <- testing(split_time)
+test_data <- testing(split_time)
 ```
 
 Ten schemat odpowiada sytuacji:
@@ -621,7 +615,7 @@ resamples_index_gap <- sliding_index(
 
 Przerwa między treningiem i testem jest przydatna, gdy cechy są obliczane z długich okien, zmienna wynikowa jest zdefiniowana jako zdarzenie w przyszłym okresie albo obserwacje są bardzo silnie autokorelacyjne.
 
-Opisując cele podziału danych, wyróżniliśmy zbiór testowy jako dane, które powinny być wykorzystane do właściwej oceny działania modelu na modelu końcowym (modelach). To rodzi pytanie: "Jak możemy określić, co jest najlepsze, jeśli nie mierzymy wydajności aż do zbioru testowego?".
+Opisując cele podziału danych, wyróżniliśmy zbiór testowy jako dane, które powinny być wykorzystane wyłącznie do końcowej oceny ostatecznie wybranego modelu. To rodzi pytanie: „Jak możemy określić, który model jest najlepszy, jeśli nie mierzymy wydajności aż do zbioru testowego?"
 
 ## Oszacowanie dopasowania z wykorzystaniem resamplingu
 
@@ -630,12 +624,10 @@ oceny procesu modelowania (w tym przetwarzania wstępnego, dopasowania modelu
 itp.). Metody te są skuteczne, ponieważ do trenowania modelu i oceny modelu
 wykorzystywane są różne grupy danych. Przebiega on w następujący sposób:
 
-1.  Podczas *resamplingu* zbiór analityczny jest używany do wstępnego
-    przetwarzania danych, a następnie przetworzonych danych używa do
-    dopasowania modelu.
-2.  Statystyki przetwarzania wstępnego opracowane przez zbiór analiz są
-    stosowane do zbioru oceny. Prognozy ze zbioru oceny wskazują wydajność
-    modelu na nowych danych.
+1.  Podczas *resamplingu* zbiór analizy jest używany do estymacji parametrów
+    przetwarzania wstępnego (np. średnich, skalowań, poziomów faktora), a następnie do dopasowania modelu na tak przetworzonych danych.
+2.  Parametry przetwarzania wstępnego wyznaczone na zbiorze analizy są
+    stosowane do zbioru oceny — w ten sposób zbiór oceny jest przetwarzany identycznie jak dane analizy, ale bez podglądania jego wartości. Prognozy ze zbioru oceny wskazują wydajność modelu na nowych danych.
 
 Ta sekwencja powtarza się dla każdej próby. Jeśli istnieje $B$ prób, wówczas
 mamy $B$ powtórzeń każdej z metryk dopasowania. Ostateczna ocena jest średnią
@@ -648,7 +640,7 @@ pojedyncze statystyki reprezentują ogólne dopasowanie.
 
 ```{r}
 #| cache: true
-# ustawiamy kontrolę resamplingu w ten sposbów aby zapisać predykcje i 
+# ustawiamy kontrolę resamplingu w ten sposób, aby zapisać predykcje i 
 # nauczony przepływ - domyślnie nie są zapisywane
 keep_pred <- control_resamples(save_pred = TRUE, save_workflow = TRUE)
 
@@ -667,7 +659,12 @@ wydajności w bardziej użytecznym formacie:
 collect_metrics(rf_res)
 ```
 
-Aby uzyskać metryki dla każdej próby, należy użyć opcji `summarize = FALSE`.
+Aby uzyskać metryki dla każdej próby, należy użyć opcji `summarize = FALSE`:
+
+```{r}
+collect_metrics(rf_res, summarize = FALSE)
+```
+
 Natomiast aby uzyskać predykcje z poszczególnych foldów użyjemy:
 
 ```{r}
@@ -727,7 +724,7 @@ val_res
 collect_metrics(val_res)
 ```
 
-Jak widać wyniki te są zbliżone do otrzymanych z wykorzystaniem próby testowej.
+Jak widać, w tym przykładzie wyniki te są zbliżone do otrzymanych na zbiorze testowym.
 
 ## Przetwarzanie równoległe
 
@@ -738,7 +735,7 @@ komputerze lub na różnych komputerach, w zależności od wybranej technologii.
 Liczbę dostępnych rdzeni można wykryć za pomocą:
 
 ```{r}
-#| evel: false
+#| eval: false
 # Liczba fizycznych rdzeni
 parallel::detectCores(logical = FALSE)
 
@@ -797,7 +794,7 @@ Jeszcze innym pakietem R, który ułatwia przetwarzanie równoległe, jest pakie
 na wybranej liczbie rdzeni. Pakiet ten jest używany w połączeniu z `foreach`
 poprzez pakiet `doFuture`.
 
-Przetwarzanie równoległe z pakietem `tune` ma tendencję do zapewnienia
+Przetwarzanie równoległe z pakietem `tune` zwykle zapewnia
 liniowego przyspieszenia dla pierwszych kilku rdzeni. Oznacza to, że przy dwóch
 rdzeniach obliczenia są dwukrotnie szybsze. W zależności od typu danych i
 modelu, wzrost prędkości spada, tak że po włączeniu czterech czy pięciu rdzeni
@@ -823,13 +820,10 @@ dla naszego zestawu danych, wtedy najlepszym wyborem jest ponowne dopasowanie
 modelu do całego zestawu uczącego, aby parametry modelu mogły być oszacowane
 przy użyciu większej ilości danych.
 
-Podczas gdy te modele utworzone podczas resamplingu nie są zachowywane,
-istnieje metoda na zapisanie ich lub części składników. Opcja `extract` funkcji
-`control_resamples()` określa funkcję, która przyjmuje pojedynczy argument; my
-użyjemy `x`. Gdy zostanie wykonana, `x` przekazuje w wyniku dopasowany obiekt
-przepływu, niezależnie od tego, czy przekazałeś `fit_resamples()` z przepływem.
-Przypomnijmy, że pakiet `workflows` posiada funkcje, które mogą wyciągać różne
-składniki obiektów (np. model, recepturę itp.).
+Podczas gdy modele utworzone podczas resamplingu nie są domyślnie zachowywane,
+istnieje sposób na zapisanie ich lub wybranych składników. Opcja `extract` funkcji
+`control_resamples()` przyjmuje funkcję, która jest wywoływana dla każdego dopasowanego przepływu w resamplingu.
+Argumentem tej funkcji jest obiekt workflow. Pozwala to wyciągnąć z niego dowolne elementy — model, recepturę, współczynniki itp.
 
 ```{r}
 ames_rec <- 
@@ -868,16 +862,16 @@ lm_res <- lm_wflow |>
 lm_res
 ```
 
-Teraz z każdego folda możemy wyciągnąć szczegóły modelu.
+Teraz z każdego folda możemy wyciągnąć szczegóły modelu za pomocą `collect_extracts()`:
 
 ```{r}
-lm_res$.extracts[[1]][[1]]
+collect_extracts(lm_res)
 ```
 
-Może się to wydawać zawiłą metodą zapisywania wyników modelu. Jednakże,
+Może się to wydawać zawiłą metodą zapisywania wyników modelu. Jednakże
 `extract` jest elastyczna i nie zakłada, że użytkownik będzie zapisywał tylko
-jedną `tibble` dla każdej próbki. Na przykład, metoda `tidy()` może być
-uruchomiona zarówno na przepisie jak i na modelu. W tym przypadku zwrócona
+jedną `tibble` dla każdej próbki. Na przykład metoda `tidy()` może być
+uruchomiona zarówno na przepisie, jak i na modelu. W tym przypadku zwrócona
 zostanie lista dwóch `tibble`.
 
 ```{r}

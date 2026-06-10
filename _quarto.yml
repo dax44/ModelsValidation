@@ -72,5 +72,5 @@ format:
 execute: 
   warning: false
 
-editor: visual
+editor: source
 

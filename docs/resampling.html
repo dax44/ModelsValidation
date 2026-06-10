@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>5&nbsp; Zarządzanie danymi – Metody walidacji modeli statystycznych</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -56,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -90,14 +92,14 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ef56b68f8fa1e9d2ba328e99e439f80.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-f7ccbded210020a5533f6fd86e3f20c2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-2d449610c6da6b3fd31ed0a9984c1b47.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c84f4249ebe5bde6a406a74c1334a68b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-666135433cace59c5973edf2e2f39c5b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
@@ -126,7 +128,7 @@ div.csl-indent {
     "search-submit-button-title": "Zatwierdź",
     "search-label": "Szukaj"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -137,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -333,7 +335,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
+      <img src="./images/logo.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none"><img src="./images/logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Metody walidacji modeli statystycznych</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -467,6 +469,7 @@ window.Quarto = {
    
   <ul>
 <li><a href="#podzia%C5%82-na-pr%C3%B3b%C4%99-ucz%C4%85c%C4%85-i-testow%C4%85" id="toc-podział-na-próbę-uczącą-i-testową" class="nav-link active" data-scroll-target="#podzia%C5%82-na-pr%C3%B3b%C4%99-ucz%C4%85c%C4%85-i-testow%C4%85"><span class="header-section-number">5.1</span> Podział na próbę uczącą i testową</a></li>
+  <li><a href="#zbi%C3%B3r-walidacyjny" id="toc-zbiór-walidacyjny" class="nav-link" data-scroll-target="#zbi%C3%B3r-walidacyjny"><span class="header-section-number">5.2</span> Zbiór walidacyjny</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/dax44/ModelsValidation/issues/new" class="toc-action"><i class="bi bi-github"></i>Zgłoś problem</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -498,14 +501,14 @@ Zagrożenie
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Kiedy dane są wielokrotnie wykorzystywane do wielu zadań, zamiast ostrożnie “wydawane” ze skończonego budżetu danych, wzrasta pewne ryzyko, takie jak uwypuklenie obciążenia modelu lub potęgowania efektów wynikających z błędów metodologicznych.</p>
+<p>Kiedy dane są wielokrotnie wykorzystywane do wielu zadań, zamiast ostrożnie “wydawane” ze skończonego budżetu danych, wzrastają pewne ryzyka, takie jak uwypuklenie obciążenia modelu lub potęgowania efektów wynikających z błędów metodologicznych.</p>
 </div>
 </div>
 <p>Gdy dysponujemy ogromnym zbiorem danych, mądrą strategią jest przydzielenie określonych podzbiorów danych do różnych zadań, w przeciwieństwie do przydzielenia największej możliwej ilości (lub nawet wszystkich) tylko do estymacji parametrów modelu. Na przykład, jedną z możliwych strategii jest przeznaczenie określonego podzbioru danych do określenia, które predyktory są informacyjne, przed rozważeniem estymacji parametrów w ogóle. Jeśli początkowa pula dostępnych danych nie jest duża, będzie istniało pewne nakładanie się tego, jak i kiedy nasze dane są “wydawane” lub przydzielane, a solidna metodologia wydawania danych okaże się istotna.</p>
 <section id="podział-na-próbę-uczącą-i-testową" class="level2 page-columns page-full" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="podział-na-próbę-uczącą-i-testową">
 <span class="header-section-number">5.1</span> Podział na próbę uczącą i testową</h2>
-<p>Podstawowym podejściem w empirycznej walidacji modelu jest podział istniejącej puli danych na dwa odrębne zbiory - treningowy i testowy. Jedna część danych jest wykorzystywana do budowy i optymalizacji modelu. Ten zbiór treningowy stanowi zazwyczaj większość danych. Dane te służą dla budowy modelu, poszukiwania optymalnych parametrów modelu, czy selekcji cech istotnych z punktu widzenia predykcji.</p>
-<p>Pozostała część danych stanowi zbiór testowy. Jest on trzymany aż do momentu, gdy jeden lub dwa modele zostaną wybrane jako metody najlepiej opisujące badane zjawisko. Zestaw testowy jest wtedy używany jako ostateczny arbiter do określenia dopasowania modelu. Krytyczne jest, aby użyć zbiór testowy tylko raz; w przeciwnym razie staje się on częścią procesu modelowania.</p>
+<p>Podstawowym podejściem w empirycznej walidacji modelu jest podział istniejącej puli danych na dwa odrębne zbiory - treningowy i testowy. Jedna część danych jest wykorzystywana do budowy i optymalizacji modelu. Ten zbiór treningowy stanowi zazwyczaj większość danych. Dane te służą do budowy modelu, poszukiwania optymalnych parametrów modelu oraz selekcji cech istotnych z punktu widzenia predykcji.</p>
+<p>Pozostała część danych stanowi zbiór testowy. Powinien on być przechowywany bez użycia aż do momentu, gdy proces wyboru modelu, tuningu i selekcji cech zostanie zakończony. Zestaw testowy jest wtedy używany jako ostateczny arbiter do określenia dopasowania wyłącznie ostatecznie wybranego modelu. Krytyczne jest, aby użyć zbiór testowy tylko raz; w przeciwnym razie staje się on częścią procesu modelowania i traci charakter niezależnej oceny.</p>
 <p>Proporcje w jakich należy podzielić dane nie są wyraźnie sprecyzowane. Choć istnieją prace, jak np. <span class="citation" data-cites="josephOptimalRatioData2022">Joseph (<a href="references.html#ref-josephOptimalRatioData2022" role="doc-biblioref">2022</a>)</span>, które wskazują konkretne reguły podziału zbioru danych na uczący i testowy dla modeli regresyjnych, to nie ma co do tego powszechnej zgody, że tylko jedna proporcja jest optymalna. W przypadku wspomnianej metody próba testowa powinna stanowić</p>
 <p><span class="math display">\[\frac{1}{\sqrt{p}+1},\]</span></p>
 <p>zbioru danych, gdzie <span class="math inline">\(p\)</span> oznacza liczbę predyktorów modelu.</p>
@@ -519,15 +522,15 @@ Wskazówka
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Decydując się na wybór proporcji podziału należy pamiętać, że przy mniejszej ilości danych uczących, oszacowania parametrów mają wysoką wariancję. Z drugiej strony, mniejsza ilość danych testowych prowadzi do wysokiej wariancji w miarach dopasowania (czyli mamy duże różnice pomiędzy dopasowaniem na zbiorze uczącym i testowym).</p>
+<p>Decydując się na wybór proporcji podziału należy pamiętać, że przy mniejszej ilości danych uczących oszacowania parametrów mają wysoką wariancję. Z drugiej strony, zbyt mała liczba danych testowych prowadzi do wysokiej wariancji oszacowań miar dopasowania — wynik oceny może silnie zależeć od konkretnego podziału danych.</p>
 </div>
 </div>
-<p>W podziale zbioru danych na uczący i testowy, ważny jest jeszcze jeden aspekt. W jaki sposób podziału dokonujemy. Najpowszechniej stosowany jest podział losowy (losowanie proste). Próbkowanie losowe jest najstarszą i najbardziej popularną metodą dzielenia zbioru danych. Jak sama nazwa wskazuje, losowane są indeksy obserwacji, które będą przyporządkowane do zbioru uczącego. Pozostałe obserwacje będą należeć do zbioru testowego.</p>
-<p>Metoda ta ma jednak istotną wadę. Próbkowanie losowe działa poprawnie na zbiorach danych zbalansowanych klasowo, czyli takich, w których liczba próbek w każdej kategorii jest mniej więcej taka sama. W przypadku zbiorów danych niezbalansowanych klasowo, taka metoda podziału danych może tworzyć obciążenie modelu.</p>
+<p>W podziale zbioru danych na uczący i testowy ważny jest jeszcze jeden aspekt: w jaki sposób dokonujemy podziału. Najpowszechniej stosowany jest podział losowy (losowanie proste). Próbkowanie losowe jest najstarszą i najbardziej popularną metodą dzielenia zbioru danych. Jak sama nazwa wskazuje, losowane są indeksy obserwacji, które będą przyporządkowane do zbioru uczącego. Pozostałe obserwacje będą należeć do zbioru testowego.</p>
+<p>Metoda ta ma jednak istotną wadę. Przy silnie niezbalansowanych klasach losowanie proste może prowadzić do dużych różnic w rozkładzie klas między zbiorem uczącym i testowym, co przekłada się na niereprezentatywną ocenę modelu.</p>
 <p>Na przykład, jeśli zbiór danych zawiera 100 obrazów, z których 80 należy do kategorii “pies” i 20 należy do kategorii “kot”, a losowe próbkowanie jest stosowane do podziału danych na zbiory uczący i testowy w stosunku 80%-20% (odpowiednio), może się tak zdarzyć, że zbiór treningowy składa się tylko z obrazów psów, podczas gdy zbiór testowy składa się tylko z obrazów kotów. Nawet jeśli nie zdarzy się tak ekstremalny przypadek, to nierównowaga rozkładów w obu zbiorach może być wyraźna.</p>
-<p>Losowanie warstwowe zastosowane do podziału zbioru danych łagodzi problem próbkowania losowego w zbiorach danych z niezrównoważonym rozkładem klas. W tym przypadku, rozkład klas w każdym z zestawów treningowych i testowych jest zachowany.</p>
+<p>Losowanie warstwowe zastosowane do podziału zbioru danych łagodzi problem próbkowania losowego w zbiorach danych z niezrównoważonym rozkładem klas. W tym przypadku rozkład klas w każdym z zestawów treningowych i testowych jest zachowany w przybliżeniu.</p>
 <p>Załóżmy, że zbiór danych składa się z 100 obrazów, z których 60 to obrazy psów, a 40 to obrazy kotów. W takim przypadku próbkowanie warstwowe zapewnia, że 60% obrazów należy do kategorii “pies”, a 40% do kategorii “kot” w zbiorach uczącym i testowym. Oznacza to, że jeśli pożądany jest podział w proporcji 80%-20%, z 80 obrazów w zbiorze treningowym, 48 obrazów (60%) będzie należało do psów, a pozostałe 32 (40%) do kotów.</p>
-<p>Rozważmy inny przykład. W zadaniach wykrywania obiektów, pojedyncze obrazy mogą zawierać kilka różnych obiektów należących do różnych kategorii. W zbiorze danych niektóre obrazy mogą zawierać 10 psów, ale tylko 1 osobę, inne mogą zawierać 10 osób i 2 psy, a jeszcze inne mogą zawierać 5 kotów i 5 psów, bez ludzi. W takich przypadkach, losowy podział obrazów może zakłócić rozkład kategorii obiektów. Próbkowanie warstwowe z drugiej strony pozwala podzielić dane w taki sposób, że wynikowy rozkład kategorii obiektów jest zrównoważony.</p>
+<p>Rozważmy inny przykład. W zadaniach wykrywania obiektów, pojedyncze obrazy mogą zawierać kilka różnych obiektów należących do różnych kategorii. W zbiorze danych niektóre obrazy mogą zawierać 10 psów, ale tylko 1 osobę, inne mogą zawierać 10 osób i 2 psy, a jeszcze inne mogą zawierać 5 kotów i 5 psów, bez ludzi. W takich przypadkach losowy podział obrazów może zakłócić rozkład kategorii obiektów. Zwykłe losowanie warstwowe może być jednak niewystarczające — dla danych wieloetykietowych potrzebne są specjalne procedury podziału, uwzględniające strukturę grupową obserwacji.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -538,59 +541,59 @@ Wskazówka
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>W przypadku dużych zbiorów danych różnice pomiędzy losowaniem prostym i warstwowym się zacierają.</p>
+<p>W przypadku dużych zbiorów danych różnice pomiędzy losowaniem prostym i warstwowym zazwyczaj się zacierają. Jeśli jednak dana klasa jest bardzo rzadka, warstwowanie może pozostać istotne nawet przy dużej próbie.</p>
 </div>
 </div>
 <div id="exm-1" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 5.1</strong></span> Przykładem zastosowania obu wspomnianych technik będzie podział zbioru <code>attrition</code> pakietu <code>modeldata</code>.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="co"># proporcje zmiennej wynikowej w całym zbiorze</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">dane</span> <span class="op">&lt;-</span> <span class="va">attrition</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slice_sample</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">dane</span> <span class="op">&lt;-</span> <span class="va">attrition</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">slice_sample</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dane</span><span class="op">|&gt;</span> </span>
-<span>  <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">*</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">dane</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>  Attrition  n prop
 1        No 83   83
 2       Yes 17   17</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co"># podział losowy</span></span>
 <span><span class="va">random_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">dane</span>, prop <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="va">random_split</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">random_split</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>&lt;Training/Testing/Total&gt;
 &lt;90/10/100&gt;</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_random</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">random_split</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_random</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">random_split</span><span class="op">)</span></span>
 <span><span class="va">te_random</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">random_split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># podział warstwowy</span></span>
 <span><span class="va">strata_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">dane</span>, prop <span class="op">=</span> <span class="fl">0.9</span>, strata <span class="op">=</span> <span class="va">Attrition</span><span class="op">)</span></span>
-<span><span class="va">strata_split</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">strata_split</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>&lt;Training/Testing/Total&gt;
 &lt;89/11/100&gt;</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_strata</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">strata_split</span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_strata</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">strata_split</span><span class="op">)</span></span>
 <span><span class="va">te_strata</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">strata_split</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># proporcje zmiennej wynikowej w obu zbiorach uczących</span></span>
-<span><span class="va">tr_random</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">*</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">tr_random</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>  Attrition  n prop
 1        No 73   81
 2       Yes 17   19</code></pre>
 </div>
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_strata</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">*</span><span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tr_strata</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">count</span><span class="op">(</span><span class="va">Attrition</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>  Attrition  n prop
 1        No 74   83
@@ -598,18 +601,18 @@ Wskazówka
 </div>
 </div>
 </div>
-<p>Co ciekawe parametru <code>strata</code> w funkcji <code>initial_split</code> można też użyć do zmiennej ilościowej. Wówczas algorytm podzieli próbę z zachowaniem proporcji obserwacji w kolejnych kwartylach. Ta technika może się okazać szczególnie ważna w przypadku gdy zmienna wynikowa ma znaczącą asymetrię rozkładu.</p>
+<p>Co ciekawe, parametru <code>strata</code> w funkcji <code>initial_split</code> można też użyć do zmiennej ilościowej. Wówczas algorytm tworzy przedziały kwantylowe i dzieli próbę z zachowaniem proporcji obserwacji w kolejnych przedziałach. Ta technika może się okazać szczególnie ważna w przypadku, gdy zmienna wynikowa ma znaczącą asymetrię rozkładu.</p>
 <div id="exm-2" class="theorem example">
 <p><span class="theorem-title"><strong>Przykład 5.2</strong></span> &nbsp;</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rozkład zmiennej Sale_Price</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rozkład zmiennej Sale_Price</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
-<span><span class="va">dane</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slice_sample</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="va">dane</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_density</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Oryginał"</span><span class="op">)</span></span>
+<span><span class="va">dane</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">slice_sample</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="va">dane</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_density</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Oryginał"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># podział losowy</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
@@ -617,27 +620,31 @@ Wskazówka
 <span><span class="va">ames_train1</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span><span class="va">ames_test1</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">ames_train1</span>, <span class="va">ames_test1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, </span>
-<span>                      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_train1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_test1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_density</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">sample</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Losowanie proste"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">ames_train1</span>, <span class="va">ames_test1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_train1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_test1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_density</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">sample</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Losowanie proste"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">ames_split</span> <span class="op">&lt;-</span> <span class="fu">initial_split</span><span class="op">(</span><span class="va">dane</span>, prop <span class="op">=</span> <span class="fl">0.8</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></span>
 <span><span class="va">ames_train2</span> <span class="op">&lt;-</span> <span class="fu">training</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span><span class="va">ames_test2</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">ames_split</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">ames_train2</span>, <span class="va">ames_test2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, </span>
-<span>                      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_train1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_test1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_density</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">sample</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Losowanie warstwowe"</span><span class="op">)</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">ames_train2</span>, <span class="va">ames_test2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_train2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ames_test2</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_density</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">sample</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Losowanie warstwowe"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
-<span><span class="va">p1</span><span class="op">/</span><span class="va">p2</span><span class="op">/</span><span class="va">p3</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">p1</span> <span class="op">/</span> <span class="va">p2</span> <span class="op">/</span> <span class="va">p3</span></span></code></pre></div><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></div>
 </details><div class="cell-output-display">
 <div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -660,19 +667,22 @@ Wskazówka
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Proporcja użyta do podziału, w dużym stopniu zależy od kontekstu rozpatrywanego problemu. Zbyt mała ilość danych w zbiorze treningowym ogranicza zdolność modelu do znalezienia odpowiednich oszacowań parametrów. I odwrotnie, zbyt mała ilość danych w zbiorze testowym obniża jakość oszacowań wydajności. Niektórzy statystycy unikają zbiorów testowych w ogóle, ponieważ uważają, że wszystkie dane powinny być używane do estymacji parametrów. Chociaż argument ten jest słuszny, dobrą praktyką modelowania jest posiadanie bezstronnego zestawu obserwacji jako ostatecznego arbitra jakości modelu. Zestawu testowego należy unikać tylko wtedy, gdy dane są drastycznie małe.</p>
+<p>Proporcja użyta do podziału, w dużym stopniu zależy od kontekstu rozpatrywanego problemu. Zbyt mała ilość danych w zbiorze treningowym ogranicza zdolność modelu do znalezienia odpowiednich oszacowań parametrów. I odwrotnie, zbyt mała ilość danych w zbiorze testowym obniża jakość oszacowań wydajności. Niektórzy statystycy unikają zbiorów testowych w ogóle, ponieważ uważają, że wszystkie dane powinny być używane do estymacji parametrów. Chociaż argument ten jest słuszny, dobrą praktyką modelowania jest posiadanie bezstronnego zestawu obserwacji jako ostatecznego arbitra jakości modelu. Jedynie przy drastycznie małych danych rezygnacja z niezależnego zbioru testowego może być uzasadniona — wówczas stosuje się techniki resamplingu (np. walidację krzyżową) do oceny modelu.</p>
 </div>
 </div>
-<p>Jeszcze jedna uwaga na temat losowego podziału zbioru na uczący i testowy. W jednej sytuacji podział losowy i warstwowy nie są najlepszym rozwiązaniem - chodzi o szeregi czasowe lub dane zawierające znaczący czynnik zmienności w czasie. Wówczas stosuje się podział zbioru za pomocą funkcji <code>initial_time_split</code>, która parametrem <code>prop</code> określa jaka proporcja obserwacji z początku zbioru danych będzie wybrana do zbioru uczącego<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;zakłada się, że dane są posortowane wg czasu</p></div></div><p>Często słyszy się o zbiorach walidacyjnych jako odpowiedzi na to pytanie, szczególnie w literaturze dotyczącej sieci neuronowych i głębokiego uczenia. U początków sieci neuronowych badacze zdali sobie sprawę, że mierzenie wydajności poprzez przewidywanie na podstawie zbioru treningowego prowadziło do wyników, które były zbyt optymistyczne (nierealistycznie). Prowadziło to do modeli, które były nadmiernie dopasowane, co oznaczało, że osiągały bardzo dobre wyniki na zbiorze treningowym, ale słabe na zbiorze testowym. Aby ograniczyć ten problem, wybierano ze zbioru uczącego niewielki zbiór walidacyjny i użyto go do pomiaru wydajności podczas trenowania sieci. Gdy poziom błędu na zbiorze walidacyjnym zaczynał rosnąć, trening był wstrzymywany. Innymi słowy, zbiór walidacyjny był środkiem do uzyskania przybliżonego poczucia, jak dobrze model działał przed zbiorem testowym.</p>
+<p>Jeszcze jedna uwaga na temat losowego podziału zbioru na uczący i testowy. W jednej sytuacji podział losowy i warstwowy nie są najlepszym rozwiązaniem - chodzi o szeregi czasowe lub dane zawierające znaczący czynnik zmienności w czasie. Wówczas stosuje się podział zbioru za pomocą funkcji <code>initial_time_split</code>, która parametrem <code>prop</code> określa, jaka proporcja obserwacji z początku zbioru danych będzie wybrana do zbioru uczącego<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;zakłada się, że dane są posortowane wg czasu</p></div></div></section><section id="zbiór-walidacyjny" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="zbiór-walidacyjny">
+<span class="header-section-number">5.2</span> Zbiór walidacyjny</h2>
+<p>Często słyszy się o zbiorach walidacyjnych jako odpowiedzi na pytanie o ocenę modelu w trakcie budowy, szczególnie w literaturze dotyczącej sieci neuronowych i głębokiego uczenia. U początków sieci neuronowych badacze zdali sobie sprawę, że mierzenie wydajności poprzez przewidywanie na podstawie zbioru treningowego prowadziło do wyników, które były zbyt optymistyczne (nierealistycznie). Prowadziło to do modeli, które były nadmiernie dopasowane, co oznaczało, że osiągały bardzo dobre wyniki na zbiorze treningowym, ale słabe na zbiorze testowym. Aby ograniczyć ten problem, wybierano ze zbioru uczącego niewielki zbiór walidacyjny i używano go do pomiaru wydajności podczas trenowania sieci. Gdy poziom błędu na zbiorze walidacyjnym zaczynał rosnąć, trening był wstrzymywany. Innymi słowy, zbiór walidacyjny był środkiem do uzyskania przybliżonego poczucia, jak dobrze model działał przed zbiorem testowym.</p>
+<p>Relację między zbiorami można podsumować następująco: zbiór treningowy służy do estymacji parametrów, zbiór walidacyjny (lub resampling) do wyboru i tuningu modelu, a zbiór testowy wyłącznie do końcowej, niezależnej oceny jakości ostatecznie wybranego modelu.</p>
 <p>W przypadku danych dotyczących mieszkań w Ames, nieruchomość jest traktowana jako niezależna jednostka eksperymentalna. Można bezpiecznie założyć, że statystycznie dane z danej nieruchomości są niezależne od innych nieruchomości. W przypadku innych zastosowań nie zawsze tak jest:</p>
 <ul>
 <li>Na przykład w przypadku danych podłużnych (ang. <em>longitudinal data</em>) ta sama niezależna jednostka eksperymentalna może być mierzona w wielu punktach czasowych. Przykładem może być osoba w badaniu medycznym.</li>
 <li>Partia wyprodukowanego produktu może być również uważana za niezależną jednostkę doświadczalną. W powtarzanych pomiarach, replikowane punkty danych z partii są zbierane w wielu momentach.</li>
 <li>
-<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson i in. (<a href="references.html#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
+<span class="citation" data-cites="johnsonPolarAuxinTransport2018">Johnson et al. (<a href="references.html#ref-johnsonPolarAuxinTransport2018" role="doc-biblioref">2018</a>)</span> opisują eksperyment, w którym próbki różnych drzew były pobierane w górnej i dolnej części pnia. Tutaj drzewo jest jednostką eksperymentalną, a hierarchię danych stanowi próbka w obrębie części pnia dla każdego drzewa.</li>
 </ul>
-<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="references.html#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których dla pojedyncze obserwacje mierzone są kilkukrotnie, losowanie przypadków wśród wierszy nie zapewni niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
+<p><span class="citation" data-cites="kuhn2019">Kuhn i Johnson (<a href="references.html#ref-kuhn2019" role="doc-biblioref">2019</a>)</span> zawiera inne przykłady, w których pojedyncze jednostki eksperymentalne są mierzone kilkukrotnie; w takich sytuacjach losowanie pojedynczych wierszy nie zapewnia niezależności obserwacji. Wówczas powinno się losować całe zestawy obserwacji przyporządkowanych do jednostki eksperymentalnej. Operatem losowania powinna być lista jednostek eksperymentalnych.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -683,15 +693,15 @@ Ważne
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Problem wycieku informacji (ang. <em>data leakage</em>) występuje, gdy w procesie modelowania wykorzystywane są dane spoza zbioru treningowego</p>
+<p>Problem wycieku informacji (ang. <em>data leakage</em>) występuje, gdy w procesie modelowania wykorzystuje się informacje, które nie byłyby dostępne w momencie predykcji lub które pochodzą spoza zbioru treningowego (np. ze zbioru walidacyjnego lub testowego).</p>
 </div>
 </div>
 <p>Na przykład, w konkursach uczenia maszynowego, dane zbioru testowego mogą być dostarczone bez prawdziwych wartości zmiennej wynikowej, aby model mógł być rzetelnie oceniony. Jedną z potencjalnych metod poprawy wyniku może być dopasowanie modelu przy użyciu obserwacji zbioru treningowego, które są najbardziej podobne do wartości zbioru testowego. Chociaż zbiór testowy nie jest bezpośrednio wykorzystywany do dopasowania modelu, nadal ma duży wpływ. Ogólnie rzecz biorąc, ta technika jest wysoce problematyczna, ponieważ zmniejsza błąd generalizacji modelu w celu optymalizacji wydajności na określonym zbiorze danych. Istnieją bardziej subtelne sposoby, w jakie dane z zestawu testowego mogą być wykorzystywane podczas szkolenia. Zapisywanie danych treningowych w oddzielnej ramce danych od zbioru testowego jest jednym sposobem zapewnienia, aby wyciek informacji nie nastąpił przez przypadek.</p>
-<p>Po drugie, techniki podpróbkowania (ang. <em>subsampling</em>) zbioru treningowego mogą łagodzić pewne problemy (np. nierównowagę klas). Jest to ważna i powszechna technika, która celowo powoduje, że dane zbioru treningowego odbiegają od populacji, z której dane zostały pobrane. Ważne jest, aby zbiór testowy nadal odzwierciedlał to, co model napotkałby w środowisku naturalnym.</p>
+<p>Po drugie, techniki podpróbkowania (ang. <em>subsampling</em>) zbioru treningowego mogą łagodzić pewne problemy (np. nierównowagę klas). Jest to ważna i powszechna technika, która celowo powoduje, że dane zbioru treningowego odbiegają od populacji, z której dane zostały pobrane. Ważne jest, aby zbiór testowy nadal odzwierciedlał to, co model napotkałby w środowisku naturalnym. Należy przy tym pamiętać, że techniki takie jak downsampling, upsampling czy SMOTE powinny być stosowane wyłącznie na danych treningowych — najlepiej wewnątrz każdego folda walidacji krzyżowej — aby nie doprowadzić do wycieku informacji.</p>
 <p>Na początku tego rozdziału, ostrzegaliśmy przed używaniem tych samych danych do różnych zadań. W dalszej części tej książki omówimy metodologie wykorzystania danych, które pozwolą zmniejszyć ryzyko związane z tendencyjnością, nadmiernym dopasowaniem i innymi problemami.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-johnsonPolarAuxinTransport2018" class="csl-entry" role="listitem">
 Johnson, Dan, Phoebe Eckart, Noah Alsamadisi, Hilary Noble, Celia Martin, i Rachel Spicer. 2018. <span>„Polar Auxin Transport Is Implicated in Vessel Differentiation and Spatial Patterning During Secondary Growth in <span>Populus</span>”</span>. <em>American Journal of Botany</em> 105 (2): 186–96. <a href="https://doi.org/10.1002/ajb2.1035">https://doi.org/10.1002/ajb2.1035</a>.
 </div>
@@ -766,13 +776,14 @@ Kuhn, Max, i Kjell Johnson. 2019. <em>Feature Engineering and Selection</em>. Ch
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

@@ -5,19 +5,18 @@ bibliography: references.bib
 
 # Nierównowaga klas w zadaniu klasyfikacyjnym
 
-Próbkowanie (ang. *subsampling*) zbioru treningowego, zarówno zaniżanie (ang.
-*undersampling*), jak i zawyżanie (ang. *oversampling*) próbkowania
+Próbkowanie (ang. *subsampling*) zbioru treningowego — zarówno próbkowanie w dół
+(ang. *undersampling*), jak i próbkowanie w górę (ang. *oversampling*) —
 odpowiedniej klasy lub klas, może być pomocne w radzeniu sobie z danymi
 klasyfikacyjnymi, w których jedna lub więcej klas występuje bardzo rzadko. W
-takiej sytuacji (bez kompensacji), większość modeli będzie nadmiernie
-dopasowana do klasy większościowej i wytworzy bardzo dobre statystyki
-dopasowania dla klasy zawierającej często występujące klasy, podczas gdy klasy
-mniejszościowe będą miały słabe wyniki.
+takiej sytuacji (bez kompensacji) większość modeli będzie preferować klasę
+większościową i osiągnie bardzo dobre metryki dla często występujących klas,
+podczas gdy klasy mniejszościowe będą miały słabe wyniki.
 
 ![](http://31.media.tumblr.com/64ae47b479a51d91af792dbea9b4e997/tumblr_mthcjipiao1surx6co1_400.gif){.column-margin
 fig-align="center"}
 
-Ten rozdział opisuje podpróbkowanie stosowane w kontekście radzenia sobie z
+Ten rozdział opisuje techniki próbkowania stosowane w kontekście radzenia sobie z
 nierównowagą klas.
 
 Rozważmy problem dwuklasowy, w którym pierwsza klasa ma bardzo niską częstość
@@ -26,16 +25,16 @@ poniższego kodu:
 
 ```{r}
 library(tidymodels)
-imbal_data <- 
-  readr::read_csv("data/imbal_data.csv") |>  
-  mutate(Class = factor(Class))
+imbal_data <-
+    readr::read_csv("data/imbal_data.csv") |>
+    mutate(Class = factor(Class))
 
 dim(imbal_data)
 
 table(imbal_data$Class)
 ```
 
-Jeśli "klasa1" jest zdarzeniem będącym przedmiotem zainteresowania, jest bardzo
+Jeśli "Class1" jest zdarzeniem będącym przedmiotem zainteresowania, jest bardzo
 prawdopodobne, że model klasyfikacyjny byłby w stanie osiągnąć bardzo dobrą
 specyficzność, ponieważ prawie wszystkie dane należą do drugiej klasy. Czułość
 jednak będzie prawdopodobnie słaba, ponieważ modele będą optymalizować
@@ -50,53 +49,258 @@ lepszą wydajność.
 ## Próbkowanie danych
 
 Jednym ze sposobów na złagodzenie tego problemu jest podpróbkowanie danych.
-Istnieje wiele sposobów, aby to zrobić, ale najprostszym jest próbkowanie w dół
-(*undersample*) danych klasy większościowej, aż wystąpi ona z taką samą
-częstotliwością jak klasa mniejszościowa. Choć może się to wydawać sprzeczne z
-intuicją, wyrzucenie dużego procentu danych może być skuteczne w tworzeniu
-użytecznego modelu, który potrafi rozpoznać zarówno klasy większościowe, jak i
-mniejszościowe. W niektórych przypadkach oznacza to nawet, że ogólna wydajność
-modelu jest lepsza (np. poprawiony obszar pod krzywą ROC). Podpróbkowanie
-prawie zawsze daje modele, które są lepiej skalibrowane, co oznacza, że
-rozkłady prawdopodobieństwa klas są lepiej zachowane. W rezultacie, domyślne
-odcięcie 50% daje znacznie większe prawdopodobieństwo uzyskania lepszych
-wartości czułości i specyficzności niż w innym przypadku.
+Istnieje wiele technik, aby to zrobić. Poniżej omawiamy najczęściej stosowane.
 
-![](https://media.tenor.com/lB26Hv-TnvwAAAAd/freesample-eat.gif){.column-margin
-fig-align="center" width="400"}
+### Techniki próbkowania przy nierównowadze klas
 
-Istnieją również techniki *oversampling*, które sprowadzają klasy
-mniejszościowe do liczebności takiej samej jak klasa większościowa (lub jej
-części) poprzez odpowiednie próbkowanie istniejących obserwacji lub też (jak to
-jest w przypadku metody SMOTE) tworzy się syntetyczne obserwacje podobne do już
-istniejących w klasie mniejszościowej. W pakiecie `themis` można znaleźć różne
-techniki próbkowania w górę: `step_upsample()`, `step_smote()`,
-`step_bsmote(method = 1)`, `step_bsmote(method = 2)`, `step_adasyn()`,
-`step_rose()` oraz kilka technik próbkowania w dół: `step_downsample()`,
-`step_nearmiss()` i `step_tomek()`.
+Poniższy przegląd opisuje mechanizmy, zalety i ograniczenia kluczowych metod
+próbkowania w dół (*undersampling*) oraz w górę (*oversampling*). Każda z tych
+technik dąży do tego, aby zbiór treningowy lepiej reprezentował klasę
+mniejszościową, dzięki czemu model nie ignoruje jej podczas uczenia.
 
-Zbadajmy działanie próbkowania używając `themis::step_rose()` w przepisie dla
-symulowanych danych. Wykorzystuje ona metodę ROSE (ang. *Random Over Sampling
-Examples*) z @menardi2012. Jest to przykład strategii *oversampling*.
+#### Próbkowanie w dół (undersampling)
 
-W zakresie przepływu pracy:
+Undersampling polega na redukcji liczby obserwacji z klasy większościowej,
+aby zmniejszyć dominację tej klasy w zbiorze treningowym. Wszystkie opisane
+poniżej metody mają wspólny cel — nie chodzi o to, aby klasy były idealnie
+zrównoważone, ale o to, aby model poświęcał wystarczającą uwagę klasie
+mniejszościowej.
 
--   Niezwykle ważne jest, aby *subsampling* występował wewnątrz *resamplingu*.
-    W przeciwnym razie proces resamplingu może dać słabe oszacowania wydajności
-    modelu.
--   Proces próbkowania powinien być stosowany tylko do zbioru analiz. Zestaw
-    analiz powinien odzwierciedlać częstość zdarzeń widzianych "w naturze" i z
-    tego powodu argument `skip` w `step_downsample()` i innych krokach
-    receptury próbkowania ma domyślnie wartość `TRUE`.
+**Losowe próbkowanie w dół (random undersampling)** — najprostsza i
+najczęściej stosowana metoda. Algorytm losowo wybiera podzbiór obserwacji z
+klasy większościowej i usuwa je z danych, aż liczebności klas zostaną
+wyrównane (lub osiągną zadany stosunek, np. 2:1). Procedura:
+
+1. Określ docelową liczebność klasy większościowej (np. równą liczebności
+   klasy mniejszościowej).
+2. Wylosuj bez zwracania wymaganą liczbę obserwacji z klasy większościowej.
+3. Usuń pozostałe obserwacje tej klasy ze zbioru treningowego.
+
+**Zalety:** ekstremalnie prosta, nie wymaga żadnych parametrów poza stosunkiem
+klas, działa natychmiast. **Wady:** bezpowrotnie tracimy dane, które mogłyby
+zawierać użyteczne wzorce — zwłaszcza jeśli klasa mniejszościowa jest bardzo
+nieliczna (np. 1% danych), undersampling wyrzuca ogromną większość informacji.
+
+**Tomek links** — metoda czyszczenia granicy decyzyjnej, a nie bezpośredniego
+równoważenia klas. Para Tomka to dwie obserwacje (po jednej z każdej klasy),
+które są swoimi najbliższymi sąsiadami. Tworzą one niejednoznaczny przypadek
+przy samej granicy między klasami — model ma trudność z ich poprawnym
+rozdzieleniem. Algorytm:
+
+1. Dla każdej obserwacji znajdź jej najbliższego sąsiada.
+2. Jeśli dwie obserwacje z różnych klas są wzajemnie swoimi najbliższymi
+   sąsiadami, tworzą parę Tomeka.
+3. Usuń obserwację/zestaw z klasy większościowej z każdej takiej pary.
+
+**Zalety:** czyści szum przy granicy, nie usuwa losowo — usuwa tylko to,
+co faktycznie jest trudne do klasyfikacji. **Wady:** nie gwarantuje
+zrównoważenia liczebności klas; w skrajnym przypadku może usunąć bardzo
+niewiele obserwacji.
+
+**NearMiss** — metoda, która wybiera obserwacje klasy większościowej na
+podstawie ich odległości do klasy mniejszościowej. Zamiast losowo usuwać,
+zachowuje te obserwacje większościowe, które są "najbliżej" klasy
+mniejszościowej. Trzy główne warianty:
+
+- **NearMiss-1:** wybiera obserwacje klasy większościowej, których średnia
+  odległość do *k* najbliższych sąsiadów z klasy mniejszościowej jest
+  najmniejsza. Skupia się na obszarze bezpośrednio otaczającym klasę
+  mniejszościową.
+- **NearMiss-2:** wybiera obserwacje klasy większościowej, których średnia
+  odległość do *k* najdalszych sąsiadów z klasy mniejszościowej jest
+  najmniejsza. Obejmuje szerszy obszar wokół klasy mniejszościowej.
+- **NearMiss-3:** działa dwuetapowo — najpierw dla każdej obserwacji
+  mniejszościowej znajduje *k* najbliższych sąsiadów z klasy większościowej,
+  a następnie spośród nich wybiera te, które są najbliżej.
+
+**Zalety:** bardziej przemyślane niż losowe usuwanie, zachowuje obserwacje
+istotne z perspektywy klasy mniejszościowej. **Wady:** wybór wariantu i
+parametru *k* wymaga eksperymentowania; NearMiss-1 może nadmiernie skupić
+się tylko na bezpośrednim sąsiedztwie klasy mniejszościowej, ignorując
+resztę przestrzeni.
+
+#### Próbkowanie w górę (oversampling)
+
+Oversampling zwiększa reprezentację klasy mniejszościowej, dodając nowe
+obserwacje — albo przez kopiowanie istniejących, albo przez generowanie
+syntetycznych. W przeciwieństwie do undersamplingu nie tracimy żadnych danych,
+ale ryzykujemy przeuczeniem na powielonych lub sztucznych przykładach.
+
+**Losowe próbkowanie w górę (random oversampling)** — najprostsza metoda
+oversamplingu: losowo wybiera istniejące obserwacje klasy mniejszościowej i
+powiela je w zbiorze treningowym, aż osiągnie ona zadaną liczebność.
+Procedura:
+
+1. Określ docelową liczebność klasy mniejszościowej.
+2. Losuj ze zwracaniem obserwacje z oryginalnej klasy mniejszościowej.
+3. Dołącz wylosowane kopie do zbioru treningowego.
+
+**Zalety:** banalnie prosta. **Wady:** nie tworzy żadnej nowej informacji —
+każda „nowa" obserwacja jest identyczną kopią którejś z już istniejących.
+Przy wielokrotnym powieleniu tych samych punktów model może idealnie zapamiętać
+klasę mniejszościową, co prowadzi do przeuczenia i słabej generalizacji.
+
+**ROSE (Random Over-Sampling Examples)** [@menardi2012] — metoda, która
+zamiast kopiować istniejące obserwacje, generuje zupełnie nowe punkty przez
+losowanie z rozkładów estymowanych nieparametrycznie. Działanie:
+
+1. Dla klasy mniejszościowej (i opcjonalnie — klasy większościowej przy
+   jednoczesnym undersamplingu) estymowany jest rozkład gęstości za pomocą
+   jądrowego estymatora (kernel density estimator).
+2. Z tego wygładzonego rozkładu losowane są nowe, syntetyczne punkty, które
+   nie są prostymi kopiami istniejących obserwacji, lecz ich statystycznymi
+   wariantami.
+3. Parametr `seed` kontroluje powtarzalność losowania.
+
+**Zalety:** nowe punkty różnią się od oryginalnych — model nie zapamiętuje
+mechanicznie tych samych obserwacji. Elastyczność: można łączyć oversampling
+klasy mniejszościowej z undersamplingiem klasy większościowej. **Wady:**
+wymaga estymacji rozkładów, co przy bardzo małej liczbie obserwacji
+mniejszościowych może być niestabilne. Jądrowy estymator gęstości zakłada
+gładkość rozkładu, co nie zawsze jest prawdziwe.
+
+**SMOTE (Synthetic Minority Over-sampling Technique)** — jedna z
+najpopularniejszych metod oversamplingu, która tworzy syntetyczne obserwacje
+przez interpolację między istniejącymi punktami mniejszościowymi. Algorytm
+dla każdej nowej obserwacji działa następująco:
+
+1. Wybierz losowo obserwację $x$ z klasy mniejszościowej.
+2. Znajdź jej *k* najbliższych sąsiadów (domyślnie $k = 5$) również z klasy
+   mniejszościowej.
+3. Wylosuj jednego z tych sąsiadów — oznacz go jako $x_{nn}$.
+4. Wylosuj liczbę $\lambda$ z przedziału $[0, 1]$ z rozkładu jednostajnego.
+5. Utwórz nową obserwację $x_{new} = x + \lambda \cdot (x_{nn} - x)$.
+
+Nowy punkt leży na odcinku łączącym dwie istniejące obserwacje
+mniejszościowe — bliżej jednej lub drugiej, w zależności od
+wylosowanego $\lambda$. Dzięki temu syntetyczne punkty znajdują się wewnątrz
+obszaru zajmowanego przez klasę mniejszościową, a nie losowo w całej
+przestrzeni.
+
+**Zalety:** tworzy realistyczne, zróżnicowane punkty, które nie są zwykłymi
+kopiami. **Wady:** zakłada, że klasa mniejszościowa jest lokalnie spójna
+(interpolacja ma sens). Jeśli klasa mniejszościowa jest rozproszona w wielu
+odosobnionych skupieniach, SMOTE może tworzyć punkty w obszarach między
+skupieniami, które w rzeczywistości należą do klasy większościowej. Przy
+bardzo małej liczbie obserwacji wybór sąsiadów jest ograniczony, co
+zmniejsza zróżnicowanie generowanych punktów.
+
+**Borderline-SMOTE** — ulepszenie SMOTE, które koncentruje generowanie
+syntetycznych obserwacji na trudnych przypadkach przy granicy decyzyjnej.
+Obserwacje mniejszościowe dzielone są na trzy kategorie w zależności od
+składu ich sąsiedztwa:
+
+- **Bezpieczne (safe):** wszyscy lub prawie wszyscy sąsiedzi należą do klasy
+  mniejszościowej — te punkty są ignorowane przez Borderline-SMOTE.
+- **Graniczne (borderline):** mniej więcej połowa sąsiadów należy do klasy
+  większościowej — to są punkty krytyczne dla granicy decyzyjnej.
+- **Szum (noise):** zdecydowana większość sąsiadów należy do innej klasy —
+  te punkty są również pomijane.
+
+Następnie SMOTE jest aplikowany tylko do punktów granicznych. Dwa warianty
+różnią się tym, skąd biorą sąsiadów do interpolacji:
+
+- **Borderline-SMOTE 1:** interpoluje między punktami granicznymi a ich
+  najbliższymi sąsiadami z klasy mniejszościowej.
+- **Borderline-SMOTE 2:** interpoluje między punktami granicznymi a ich
+  najbliższymi sąsiadami bez względu na klasę — co może tworzyć punkty
+  bliżej granicy, ale też ryzykuje wejście w obszar klasy większościowej.
+
+**Zalety:** nie marnuje wysiłku obliczeniowego na łatwe, bezpieczne punkty;
+wzmacnia sygnał tam, gdzie model najbardziej go potrzebuje. **Wady:** wymaga
+parametru *k* do oceny sąsiedztwa i progu do podziału na kategorie; przy
+bardzo małej liczbie obserwacji mniejszościowych podział na bezpieczne i
+graniczne może być niestabilny.
+
+**ADASYN (Adaptive Synthetic Sampling)** — adaptacyjny wariant SMOTE,
+który przydziela różną liczbę syntetycznych obserwacji w zależności od
+lokalnych trudności klasyfikacji. Algorytm:
+
+1. Oblicz całkowitą liczbę syntetycznych obserwacji do wygenerowania
+   (tyle, ile potrzeba do zrównoważenia klas).
+2. Dla każdej obserwacji mniejszościowej zbadaj skład jej sąsiedztwa —
+   policz, ilu spośród *k* sąsiadów należy do klasy większościowej.
+3. Im więcej sąsiadów-większościowych ma dana obserwacja, tym więcej
+   syntetycznych punktów zostanie wygenerowanych w jej okolicy.
+4. Dla każdej obserwacji mniejszościowej wygeneruj przydzieloną jej
+   liczbę punktów, używając standardowego mechanizmu interpolacji SMOTE.
+
+Intuicja: tam, gdzie klasa mniejszościowa graniczy z wieloma obserwacjami
+klasy większościowej, klasyfikacja jest trudniejsza — ADASYN wzmacnia te
+właśnie rejony. W obszarach bezpiecznych, gdzie sąsiedztwo jest czysto
+mniejszościowe, generuje mniej punktów.
+
+**Zalety:** automatycznie adaptuje się do lokalnej struktury danych, nie
+wymaga ręcznego dzielenia na kategorie jak Borderline-SMOTE. **Wady:** przy
+bardzo dużym niezrównoważeniu może nadmiernie zwiększać gęstość w
+najtrudniejszych rejonach, tworząc sztuczne skupienia; wrażliwy na szum i
+obserwacje odstające w klasie mniejszościowej.
+
+#### Metody hybrydowe
+
+Istnieją również podejścia łączące oversampling klasy mniejszościowej z
+czyszczeniem granic klas. Klasyczny przykład to **SMOTE + Tomek links**:
+
+1. Zastosuj SMOTE do wygenerowania syntetycznych obserwacji klasy
+   mniejszościowej.
+2. Na wzbogaconym zbiorze znajdź pary Tomeka.
+3. Usuń obserwacje klasy większościowej z każdej pary.
+
+W rezultacie otrzymujemy nie tylko zrównoważone liczebności klas, ale także
+czystszą granicę decyzyjną — punkty, które po oversamplingu nadal tworzą
+niejednoznaczne przypadki, są usuwane. Inne popularne kombinacje to SMOTE +
+ENN (Edited Nearest Neighbors), gdzie po oversamplingu usuwa się obserwacje
+błędnie klasyfikowane przez *k*-NN.
+
+**Zalety:** łączy korzyści obu podejść — większa liczba obserwacji
+mniejszościowych **oraz** czystsza granica. **Wady:** większy koszt
+obliczeniowy, więcej parametrów do skonfigurowania.
+
+#### Implementacja w tidymodels
+
+W pakiecie `themis` dostępne są funkcje receptur odpowiadające powyższym
+metodom:
+
+- Próbkowanie w górę: `step_upsample()` (losowe), `step_smote()` (SMOTE),
+  `step_bsmote(method = 1)` (Borderline-SMOTE 1), `step_bsmote(method = 2)`
+  (Borderline-SMOTE 2), `step_adasyn()` (ADASYN), `step_rose()` (ROSE).
+- Próbkowanie w dół: `step_downsample()` (losowe), `step_nearmiss()` (NearMiss),
+  `step_tomek()` (Tomek links).
+
+Poniższy przykład wykorzystuje metodę ROSE do oversamplingu w przepisie dla
+symulowanych danych:
+
+::: callout-warning
+## Ważne zasady stosowania próbkowania
+
+-   **Próbkowanie musi odbywać się wewnątrz resamplingu.** Nie wolno najpierw
+    przekształcić całego zbioru danych (np. przez oversampling), a dopiero potem
+    podzielić go na foldy walidacji krzyżowej. Powstałby wówczas przeciek
+    informacji: syntetyczne obserwacje wygenerowane na podstawie całego zbioru
+    trafiłyby zarówno do zbiorów treningowych, jak i walidacyjnych, sztucznie
+    zawyżając ocenę wydajności modelu.
+-   **Próbkowanie stosuje się tylko do zbioru analizy (ang. *analysis set*).**
+    Zbiór oceny (*assessment set*) oraz dane testowe powinny zachować naturalny
+    rozkład klas — nie stosujemy do nich undersamplingu ani oversamplingu.
+    Dlatego argument `skip` w krokach takich jak `step_downsample()` ma domyślnie
+    wartość `TRUE`, co zapobiega ich wykonaniu na nowych danych podczas predykcji.
+-   **Uwaga na kalibrację prawdopodobieństw.** Próbkowanie zmienia częstości klas
+    w zbiorze treningowym, więc surowe prawdopodobieństwa przewidywane przez
+    model mogą być źle skalibrowane. Jeśli potrzebne są dobrze skalibrowane
+    prawdopodobieństwa, należy rozważyć korektę (np. kalibrację Platta,
+    regresję izotoniczną) na późniejszym etapie. Z drugiej strony, metryki
+    oparte na twardych decyzjach (czułość, specyficzność, indeks J)
+    zwykle zyskują na próbkowaniu, ponieważ domyślny próg 50% lepiej równoważy
+    klasy.
+:::
 
 Oto prosta recepta implementująca *oversampling*:
 
 ```{r}
 library(themis)
-imbal_rec <- 
-  recipe(Class ~ ., data = imbal_data) %>%
-  step_rose(Class, seed = 1234)
-
+imbal_rec <-
+    recipe(Class ~ ., data = imbal_data) %>%
+    step_rose(Class, seed = 1234)
 ```
 
 Jako modelu użyjmy modelu kwadratowej analizy dyskryminacyjnej (QDA). Z poziomu
@@ -104,24 +308,24 @@ pakietu `discrim`, model ten można określić za pomocą:
 
 ```{r}
 library(discrim)
-qda_mod <- 
-  discrim_regularized(frac_common_cov = 0, frac_identity = 0) %>% 
-  set_engine("klaR")
+qda_mod <-
+    discrim_regularized(frac_common_cov = 0, frac_identity = 0) %>%
+    set_engine("klaR")
 ```
 
 Aby utrzymać te obiekty związane ze sobą, połączymy je w ramach przepływu
 pracy:
 
 ```{r}
-qda_rose_wflw <- 
-  workflow() %>% 
-  add_model(qda_mod) %>% 
-  add_recipe(imbal_rec)
+qda_rose_wflw <-
+    workflow() %>%
+    add_model(qda_mod) %>%
+    add_recipe(imbal_rec)
 
 qda_rose_wflw
 ```
 
-Do oceny jakości dopasowania modelu zastosujemy 10-krotny sprawdzian krzyżowy z
+Do oceny jakości dopasowania modelu zastosujemy 10-krotną walidację krzyżową z
 powtórzeniami:
 
 ```{r}
@@ -147,9 +351,9 @@ cls_metrics <- metric_set(roc_auc, j_index)
 ```{r}
 set.seed(2180)
 qda_rose_res <- fit_resamples(
-  qda_rose_wflw, 
-  resamples = cv_folds, 
-  metrics = cls_metrics
+    qda_rose_wflw,
+    resamples = cv_folds,
+    metrics = cls_metrics
 )
 
 collect_metrics(qda_rose_res)
@@ -159,10 +363,10 @@ Jak wyglądają wyniki bez użycia ROSE? Możemy stworzyć kolejny przepływ pra
 dopasować model QDA dla tych samych foldów:
 
 ```{r}
-qda_wflw <- 
-  workflow() %>% 
-  add_model(qda_mod) %>% 
-  add_formula(Class ~ .)
+qda_wflw <-
+    workflow() %>%
+    add_model(qda_mod) %>%
+    add_formula(Class ~ .)
 
 set.seed(2180)
 qda_only_res <- fit_resamples(qda_wflw, resamples = cv_folds, metrics = cls_metrics)
@@ -182,47 +386,48 @@ poszczególne wyniki.
 ```{r}
 #| label: fig-rose1
 #| fig-cap: Porównanie dopasowania przed i po ROSE dla obu metryk
-no_sampling <- 
-  qda_only_res %>% 
-  collect_metrics(summarize = FALSE) %>% 
-  dplyr::select(-.estimator) %>% 
-  mutate(sampling = "no_sampling")
+no_sampling <-
+    qda_only_res %>%
+    collect_metrics(summarize = FALSE) %>%
+    dplyr::select(-.estimator) %>%
+    mutate(sampling = "no_sampling")
 
-with_sampling <- 
-  qda_rose_res %>% 
-  collect_metrics(summarize = FALSE) %>% 
-  dplyr::select(-.estimator) %>% 
-  mutate(sampling = "rose")
+with_sampling <-
+    qda_rose_res %>%
+    collect_metrics(summarize = FALSE) %>%
+    dplyr::select(-.estimator) %>%
+    mutate(sampling = "rose")
 
-bind_rows(no_sampling, with_sampling) %>% 
-  mutate(label = paste(id2, id)) %>%  
-  ggplot(aes(x = sampling, y = .estimate, group = label)) + 
-  geom_line(alpha = .4) + 
-  facet_wrap(~ .metric, scales = "free_y")
+bind_rows(no_sampling, with_sampling) %>%
+    mutate(label = paste(id2, id)) %>%
+    ggplot(aes(x = sampling, y = .estimate, group = label)) +
+    geom_line(alpha = .4) +
+    facet_wrap(~.metric, scales = "free_y")
 ```
 
-Jak widać na podstawie @fig-rose1 szczególnie w kontekście miar, które
-wykorzystują twardy podział (czyli zdefiniowany przez parametr odcięcia)
-nastąpiła znaczna poprawa.
+Jak widać na @fig-rose1, szczególnie w kontekście miar, które wykorzystują
+twardy podział (czyli zdefiniowany przez próg odcięcia), nastąpiła znaczna
+poprawa.
 
 ## Zagrożenia
 
-Pierwszą komplikacją związaną z próbkowaniem jest połączenie jej z
-przetwarzaniem wstępnym. Czy próbkowanie powinno mieć miejsce przed czy po
-przetwarzaniu wstępnym? Na przykład, jeśli zmniejszamy próbkę danych i używamy
-PCA do ekstrakcji cech, czy ładunki powinny być oszacowane z całego zbioru
-treningowego? Estymacja ta byłaby potencjalnie lepsza, ponieważ wykorzystywany
-byłby cały zbiór treningowy, ale może się zdarzyć, że podpróbka uchwyci
-niewielką część przestrzeni PCA. Nie ma żadnej oczywistej odpowiedzi ale zaleca
-się stosować próbkowanie przed procedurą wstępnego przetwarzania.
+Pierwszą komplikacją związaną z próbkowaniem jest jego relacja z przetwarzaniem
+wstępnym. Czy próbkowanie powinno mieć miejsce przed czy po krokach
+przygotowania danych? Przykładowo, jeśli zmniejszamy próbkę danych i używamy PCA
+do ekstrakcji cech — czy ładunki PCA powinny być oszacowane na całym zbiorze
+treningowym, czy na podpróbie? Estymacja na całym zbiorze może dać lepsze
+oszacowanie głównych kierunków zmienności, ale podpróba może uchwycić tylko
+część przestrzeni PCA. W praktyce zaleca się, aby próbkowanie występowało we
+właściwym miejscu w recepturze — zwykle po krokach niezbędnego przygotowania
+danych, ale przed dopasowaniem modelu — i zawsze wewnątrz resamplingu.
 
 Inne zagrożenia to:
 
 -   Słabo reprezentowane kategorie w zmiennych czynnikowych (predyktorach) mogą
-    przekształcić się w predyktory o zerowej wariancji lub mogą być całkowicie
-    wyrywane z modelu.
--   Jeśli używasz `grid_search()` do określenia siatki wyszukiwania, może się
-    zdarzyć, że dane, które są używane do określenia siatki po próbkowaniu, nie
+    przekształcić się w predyktory o zerowej wariancji lub zostać całkowicie
+    usunięte z modelu.
+-   Jeśli używasz funkcji takich jak `grid_regular()` lub `grid_random()` do
+    określenia siatki wyszukiwania, może się zdarzyć, że dane po próbkowaniu nie
     wypełniają pełnych zakresów zmienności hiperparametrów. W większości
     przypadków nie ma to znaczenia, ale czasami może doprowadzić do uzyskania
     nieoptymalnej siatki.

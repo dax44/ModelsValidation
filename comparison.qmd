@@ -18,12 +18,11 @@ W każdym przypadku wynikiem jest zbiór próbkowanych statystyk zbiorczych (np.
 RMSE, dokładność itp.) dla każdego modelu. W tym rozdziale zademonstrujemy
 najpierw, jak można wykorzystać zbiory przepływów pracy do dopasowania wielu
 modeli. Następnie omówimy ważne aspekty statystyki resamplingu. Na koniec
-przyjrzymy się, jak formalnie porównać modele (używając testowania hipotez lub
-podejścia bayesowskiego).
+przyjrzymy się, jak formalnie porównać modele z użyciem testowania hipotez.
 
 ## Tworzenie przepływów pracy do porównania modeli
 
-Do porównania zbudujemy trzy modele regresji liniowej ale z innymi procedurami
+Do porównania zbudujemy trzy modele regresji liniowej, ale z innymi procedurami
 przygotowania danych.
 
 ```{r}
@@ -31,7 +30,7 @@ library(tidymodels)
 tidymodels_prefer()
 
 set.seed(1001)
-ames <- ames |>mutate(Sale_Price = log10(Sale_Price))
+ames <- ames |> mutate(Sale_Price = log10(Sale_Price))
 ames_split <- initial_split(ames, prop = 0.80, strata = Sale_Price)
 ames_train <- training(ames_split)
 ames_test  <-  testing(ames_split)
@@ -61,8 +60,8 @@ lm_models <- workflow_set(preproc, list(lm = linear_reg()), cross = FALSE)
 lm_models
 ```
 
-Aby je porównać zastosujemy resampling do każdego modelu stosując funkcję
-`workflow_map` pakietu `purrr`.
+Aby je porównać, zastosujemy resampling do każdego modelu stosując funkcję
+`workflow_map()` z pakietu `workflowsets`.
 
 ```{r}
 #| cache: true
@@ -89,7 +88,7 @@ kolumna zawiera wyniki uzyskane przez `fit_resamples()`.
 
 Istnieje kilka wygodnych funkcji przeznaczonych do zestawów przepływów pracy, w
 tym `collect_metrics()` do zestawiania statystyk wydajności. Możemy też
-`filtrować()` dowolną konkretną metrykę, która nas interesuje:
+`filter()` dowolną konkretną metrykę, która nas interesuje:
 
 ```{r}
 collect_metrics(lm_models) %>% 
@@ -127,8 +126,8 @@ four_models
 ```
 
 Funkcja `autoplot()`, której wyniki przedstawiono na @fig-comp1, pokazuje
-przedziały ufności dla każdego modelu w kolejności od najlepszego do
-najgorszego. Jeśli chcemy się skupić na konkretnej mierze wybieramy
+oszacowania metryk wraz z ich niepewnością wynikającą z resamplingu, w kolejności od najlepszego do
+najgorszego (uwaga: dla RMSE lepsza jest mniejsza wartość). Jeśli chcemy się skupić na konkretnej mierze, wybieramy
 `metric = 'rsq'`, inaczej funkcja dobierze domyślną metrykę.
 
 ```{r}
@@ -144,15 +143,13 @@ Z powyższego porównania widać, że model lasu losowego najlepiej radzi sobie 
 przewidywaniem wartości wynikowej. Jednocześnie widzimy, że kolejne czynności
 preprocessingu tylko nieznacznie poprawiają dopasowanie.
 
-## Porównanie próbkowań
+## Porównanie modeli na wynikach resamplingu
 
-Stwierdzony powyżej niewielki wpływ kolejnych czynności preprocessingu jest
-określeniem niejasnym. Można to uściślić stosując test statystyczny do
-porównania analizowanych wielkości.
+Powyżej stwierdziliśmy, że kolejne kroki preprocessingu tylko nieznacznie poprawiają dopasowanie. Warto jednak sprawdzić, czy ta różnica jest istotna względem zmienności resamplingu.
 
 ::: callout-caution
 Przed dokonaniem porównań pomiędzy modelami, ważne jest, abyśmy omówili
-korelację wewnątrz-próbkową dla statystyk resamplingu. Każdy model był mierzony
+korelację wyników w obrębie tych samych foldów dla statystyk resamplingu. Każdy model był mierzony
 z tymi samymi foldami walidacji krzyżowej, a wyniki dla tej samej próby mają
 tendencję do bycia podobnymi.
 :::
@@ -162,10 +159,10 @@ inne, w których jest wysoka. W statystyce nazywa się to składnikiem zmiennoś
 "próbka do próbki".
 
 Dla zobrazowania tego problemu zbierzmy poszczególne statystyki resamplingu dla
-modeli liniowych i lasu losowego. Skupimy się na $R^2$ dla każdego modelu,
-która mierzy korelację pomiędzy obserwowanymi i przewidywanymi cenami sprzedaży
-dla każdego domu. Przefiltrujmy wyniki, aby zachować tylko statystyki $R^2$,
-przekształćmy wyniki i obliczmy jak metryki są ze sobą skorelowane.
+modeli liniowych i modelu lasu losowego. Skupimy się na $R^2$ dla każdego modelu,
+które w implementacji `yardstick::rsq()` jest kwadratem korelacji między obserwowanymi i przewidywanymi cenami sprzedaży.
+Przefiltrujmy wyniki, aby zachować tylko statystyki $R^2$,
+przekształćmy wyniki i obliczmy, jak metryki są ze sobą skorelowane.
 
 ```{r}
 rsq_indiv_estimates <- 
@@ -191,8 +188,7 @@ rsq_indiv_estimates %>%
   theme(legend.position = "none")
 ```
 
-Gdyby efektu podobieństwa pomiędzy miarami dla poszczególnych foldów by nie
-było, wówczas linie nie byłyby równoległe. Można to stwierdzić również na
+Gdyby nie było podobieństwa wyników w obrębie tych samych foldów, linie nie układałyby się tak równolegle. Można to stwierdzić również na
 podstawie testów współczynnika korelacji.
 
 ```{r}
@@ -202,11 +198,9 @@ rsq_wider %>%
   select(estimate, starts_with("conf"))
 ```
 
-Jak widać korelacje te nie są przypadkowe. Stąd wniosek, że korelacje pomiędzy
-wynikami foldów występują. Będziemy to musieli uwzględnić porównując statystyki
-$R^2$. Ponieważ nie interesuje nas efekt foldów a jedynie różnica pomiędzy
-statystykami poszczególnych modeli, to porównamy je za pomocą modelu liniowego
-(ANOVA z powtarzanymi pomiarami).
+Jak widać, korelacje te nie są przypadkowe — wyniki wskazują na silną korelację między ocenami modeli w tych samych foldach. Dlatego porównanie modeli powinno uwzględniać sparowany charakter wyników. Ponieważ nie interesuje nas efekt foldów, a jedynie różnica pomiędzy
+statystykami poszczególnych modeli, porównamy je za pomocą modelu liniowego
+(ANOVA z powtarzanymi pomiarami; warto jednak pamiętać, że metoda ta zakłada m.in. normalność reszt i sferyczność).
 
 ```{r}
 library(rstatix)
@@ -216,7 +210,7 @@ rsq_indiv_estimates |>
 ```
 
 Gdyby chcieć porównać jedynie model lasu losowego i najgorszego modelu
-liniowego, można użyć statystyki różnicy.
+liniowego, można użyć statystyki różnicy. Ponieważ dla $R^2$ większa wartość oznacza lepsze dopasowanie, jako różnicę bierzemy `random_forest - basic_lm` (dla metryk takich jak RMSE, gdzie niższa wartość jest lepsza, odejmowalibyśmy w przeciwnym kierunku).
 
 ```{r}
 compare_lm <- 

@@ -17,9 +17,9 @@ biologicznych, jednym z pierwszych zadań, przed jakimkolwiek modelowaniem, jest
 określenie, czy istnieją jakiekolwiek niepożądane trendy w danych (np. efekty
 niezwiązane z interesującym nas zagadnieniem, takie jak różnice między
 laboratoriami). Eksploracja danych jest trudna, gdy istnieją setki tysięcy
-wymiarów, a redukcja wymiarowości może być pomocą w analizie danych.
+wymiarów, a redukcja wymiarowości może być pomocna w analizie danych.
 
-Inną potencjalną konsekwencją posiadania wielu predyktorów jest model
+Inną potencjalną konsekwencją posiadania wielu predyktorów jest model z
 nadmiarową liczbą predyktorów. Najprostszym przykładem jest regresja liniowa,
 gdzie liczba predyktorów powinna być mniejsza niż liczba obserwacji użytych do
 dopasowania modelu. Innym problemem jest współliniowość, gdzie korelacje między
@@ -37,8 +37,8 @@ liczby zmiennych w zbiorze danych, ponieważ opiera się na metodach liniowych i
 jest nienadzorowana. W przypadku wielowymiarowego problemu klasyfikacji,
 początkowy wykres głównych komponentów PCA może pokazać wyraźny podział między
 klasami. Jeśli tak jest, to można bezpiecznie założyć, że klasyfikator liniowy
-może się sprawdzić w takim zadaniu. Jednak nie jest prawdą, że brak separacji
-nie oznacza, że problem jest nie do pokonania.
+może się sprawdzić w takim zadaniu. Jednak brak separacji nie oznacza, że
+problem jest nie do pokonania.
 
 Metody redukcji wymiarowości omawiane w tym rozdziale nie są na ogół metodami
 selekcji cech. Metody takie jak PCA reprezentują oryginalne predyktory za
@@ -49,7 +49,7 @@ nowych cech.
 
 ## Opis danych
 
-Do celów ilustracji, jak używać redukcji wymiarowości z przepisami wykorzystamy
+Aby zilustrować, jak używać redukcji wymiarowości z przepisami, wykorzystamy
 przykładowy zestaw danych. @koklu2020 opublikowali zestaw danych dotyczących
 wizualnych cech suszonej fasoli i opisali metody określania odmian suszonej
 fasoli na obrazie. Chociaż wymiarowość tych danych nie jest bardzo duża w
@@ -85,11 +85,11 @@ nich dotyczy granic lub regionów interesującego nas obiektu. Przykładowe cech
 obejmują:
 
 - Obszar (lub rozmiar) może być oszacowany przy użyciu liczby pikseli w
-  obiekcie lub rozmiaru wypukłego kadłuba wokół obiektu.
+  obiekcie lub rozmiaru otoczki wypukłej wokół obiektu.
 - Obwód możemy zmierzyć używając liczby pikseli w granicy, jak również
   prostokąta ograniczającego (najmniejszy prostokąt zamykający obiekt).
 - Oś główna określa ilościowo najdłuższą linię łączącą najbardziej skrajne
-  części obiektu. Mała oś jest prostopadła do osi głównej.
+  części obiektu. Oś mniejsza jest prostopadła do osi głównej.
 - Zwartość obiektu możemy mierzyć za pomocą stosunku pola powierzchni obiektu
   do pola powierzchni koła o tym samym obwodzie. Na przykład symbole $\bullet$
   i $\times$ mają bardzo różną zwartość.
@@ -201,7 +201,7 @@ bean_rec_trained
 
 Zauważ, że kroki zostały wytrenowane i że selektory nie są już ogólne (tj.
 `all_numeric_predictors()`); teraz pokazują rzeczywiste kolumny, które zostały
-wybrane. Również, `prep(bean_rec)` nie wymaga argumentu `training`. Możesz
+wybrane. Ponadto, `prep(bean_rec)` nie wymaga argumentu `training`. Możesz
 przekazać dowolne dane do tego argumentu, ale pominięcie go oznacza, że użyte
 zostaną oryginalne dane z wywołania `recipe()`. W naszym przypadku były to dane
 ze zbioru treningowego.
@@ -217,7 +217,7 @@ zestaw treningowy jest duży, może być problematyczne przechowywanie tak duże
 ilości danych w pamięci. Użyj wówczas `retain = FALSE`, aby tego uniknąć.
 
 Po dodaniu nowych kroków do oszacowanej receptury, ponowne zastosowanie
-`prep()` oszacuje tylko niewykształcone kroki. Przyda się to, gdy będziemy
+`prep()` oszacuje tylko jeszcze nieoszacowane kroki. Przyda się to, gdy będziemy
 próbować różnych metod ekstrakcji cech. Inną opcją, która może pomóc zrozumieć,
 co dzieje się w analizie, jest `log_changes`:
 
@@ -262,10 +262,10 @@ p2 <-
 p1 + p2
 ```
 
-Warto tutaj zwrócić uwagę na dwa ważne aspekty `bake().` Po pierwsze, jak
+Warto tutaj zwrócić uwagę na dwa ważne aspekty `bake()`. Po pierwsze, jak
 wcześniej wspomniano, użycie `prep(recipe, retain = TRUE)` zachowuje istniejącą
 przetworzoną wersję zbioru treningowego w recepturze. Dzięki temu użytkownik
-może użyć `bake(recipe, new_data = NULL)`, która zwraca ten zestaw danych bez
+może użyć `bake(recipe, new_data = NULL)`, które zwraca ten zestaw danych bez
 dalszych obliczeń. Na przykład:
 
 ```{r}
@@ -333,7 +333,7 @@ trudny.
 
 Przypomnijmy, że PCA jest metodą bez nadzoru. Dla tych danych okazuje się, że
 składowe PCA, które wyjaśniają największe różnice w predyktorach, są również
-predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet `learntidymodels`
+dobrymi predyktorami klas. Jakie cechy wpływają na wydajność? Pakiet `learntidymodels`
 posiada funkcje, które mogą pomóc w wizualizacji najważniejszych cech dla
 każdego komponentu. Będziemy potrzebowali przygotowanego przepisu; krok PCA
 jest dodany w poniższym kodzie wraz z wywołaniem `prep()`:
@@ -389,9 +389,9 @@ bean_rec_trained %>%
 
 ### ICA
 
-Metoda składowych niezależnych różni się nieco od PCA tym, że znajduje
+Analiza składowych niezależnych (ICA) różni się nieco od PCA tym, że znajduje
 składowe, które są tak statystycznie niezależne od siebie, jak to tylko możliwe
-(w przeciwieństwie do bycia nieskorelowanym). Można o tym myśleć jako o
+(w przeciwieństwie do samej nieskorelowaności). Można o tym myśleć jako o
 rozdzielaniu informacji zamiast kompresji informacji jak w przypadku PCA.
 Użyjmy funkcji `step_ica()` do wykonania dekompozycji (patrz @fig-ica1):
 
@@ -416,7 +416,7 @@ przestrzeni wielowymiarowej UMAP wykorzystuje opartą na odległości metodę
 najbliższych sąsiadów, aby znaleźć lokalne obszary danych, w których punkty z
 dużym prawdopodobieństwem są powiązane. Relacje między punktami danych są
 zapisywane jako model grafu skierowanego, gdzie większość punktów nie jest
-połączona. Stąd UMAP tłumaczy punkty w grafie na przestrzeń o zmniejszonym
+połączona. Następnie UMAP odwzorowuje ten graf w przestrzeń o zmniejszonym
 wymiarze. Aby to zrobić, algorytm posiada proces optymalizacji, który
 wykorzystuje entropię krzyżową do mapowania punktów danych do mniejszego
 zestawu cech, tak aby graf był dobrze przybliżony.
@@ -447,7 +447,7 @@ określenia skupień w wielowymiarowej przestrzeni, używa etykiet.
 ```{r}
 #| cache: true
 #| label: fig-umap2
-#| fig-cap: Oceny komponentów UMAP (werjsa nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas 
+#| fig-cap: Oceny komponentów UMAP (wersja nadzorowana) dla zestawu walidacyjnego fasoli, pokolorowane według klas 
 bean_rec_trained %>%
   step_umap(all_numeric_predictors(), outcome = "class", num_comp = 4) %>%
   plot_validation_results() +
@@ -461,7 +461,7 @@ wyniki dla tych danych.
 
 ## Modelowanie ze wstępną ekstrakcją cech
 
-Zarówno metoda PLS jak i UMAP są warte zbadania w połączeniu z różnymi
+Zarówno metoda PLS, jak i UMAP są warte zbadania w połączeniu z różnymi
 modelami. Zbadajmy wiele różnych modeli z tymi technikami redukcji wymiarowości
 (wraz z brakiem jakiejkolwiek transformacji): jednowarstwowa sieć neuronowa,
 *bagged trees*, elastyczna analiza dyskryminacyjna (FDA), naiwny Bayes i
@@ -530,7 +530,7 @@ umap_rec <-
   )
 ```
 
-Po raz kolejny pakiet `workflowsets` bierze reguły wstępnego przetwarzani oraz
+Po raz kolejny pakiet `workflowsets` przyjmuje reguły wstępnego przetwarzania oraz
 modele i krzyżuje je. Opcja kontrolna `parallel_over` jest ustawiona tak, aby
 przetwarzanie równoległe mogło działać jednocześnie w różnych kombinacjach
 dostrajania parametrów. Funkcja `workflow_map()` stosuje przeszukiwanie siatki
@@ -544,7 +544,7 @@ ctrl <- control_grid(parallel_over = "resamples")
 
 bean_res <- 
   workflow_set(
-    preproc = list(basic = class ~., pls = pls_rec, umap = umap_rec), 
+    preproc = list(basic = class ~ ., pls = pls_rec, umap = umap_rec), 
     models = list(bayes = bayes_spec, fda = fda_spec,
                   rda = rda_spec, bag = bagging_spec,
                   mlp = mlp_spec)
@@ -565,13 +565,13 @@ bean_res <-
 
 bean_res <- readRDS("models/bean_res.rds")
 autoplot(
-bean_res,
-rank_metric = "roc_auc",  # <- how to order models
-metric = "roc_auc",       # <- which metric to visualize
-select_best = TRUE     # <- one point per workflow
+  bean_res,
+  rank_metric = "roc_auc",  # <- how to order models
+  metric = "roc_auc",       # <- which metric to visualize
+  select_best = TRUE        # <- one point per workflow
 ) +
-geom_text(aes(y = mean - 0.02, label = wflow_id), angle = 90, hjust = 0.1) +
-lims(y = c(0.9, 1))
+  geom_text(aes(y = mean - 0.02, label = wflow_id), angle = 90, hjust = 0.1) +
+  lims(y = c(0.9, 1))
 ```
 
 Możemy uszeregować modele według ich oszacowań obszaru pod krzywą ROC w zbiorze

@@ -8,7 +8,7 @@ editor_options:
 
 > *Wszystkie modele są błędne, ale niektóre są przydatne* - George E.P. Box
 
-Ocenę jakości dopasowania modelu można dokonywać na różne sposoby:
+Oceny jakości dopasowania modelu można dokonywać na różne sposoby:
 
 -   porównując przewidywaną klasę lub wartość na podstawie modelu z obserwowaną prawdziwą klasą lub wartością;
 -   korzystając z ilustracji graficznej przedstawiając np. na osi odciętych wartości przewidywane na podstawie modelu, a na osi rzędnych wartości obserwowane w danych[^measures-1]; choć można się też spotkać z innymi wykresami, jak np. krzywe *ROC*, czy *Precision-Recall*;
@@ -45,7 +45,7 @@ $$
 \tilde{R}^2=[\operatorname{Cor}(Y, \hat{Y})]^2.
 $$ {#eq-r2cor}
 
-Miara zdefiniowana w ([-@eq-r2cor]) zapewnia nam wartości w przedziale (0,1), a klasyczna miara ([-@eq-r2trad]) nie [@kvalsethCautionaryNoteR21985]. Tradycyjna jest zdefiniowana w bibliotece `yardstick`[^measures-5] pod nazwą `rsq_trad`, natomiast miara oparta na korelacji jako `rsq`. Oczywiście interpretacja jest następująca, że jeśli wartość $\tilde{R}^2$ jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.
+Miara zdefiniowana w ([-@eq-r2cor]) przyjmuje wartości w przedziale $[0,1]$, a klasyczna miara ([-@eq-r2trad]) może być ujemna [@kvalsethCautionaryNoteR21985]. Należy jednak pamiętać, że $\tilde{R}^2$ opiera się na korelacji liniowej i nie mierzy kalibracji predykcji – model może mieć wysoką korelację, a jednocześnie systematycznie zawyżać lub zaniżać przewidywania. Tradycyjna jest zdefiniowana w bibliotece `yardstick`[^measures-5] pod nazwą `rsq_trad`, natomiast miara oparta na korelacji jako `rsq`. Oczywiście interpretacja jest następująca, że jeśli wartość $\tilde{R}^2$ jest bliska 1, to model jest dobrze dopasowany, a bliskie 0 oznacza słabe dopasowanie.
 
 [^measures-5]: będącej częścią ekosystemu `tidymodels`
 
@@ -69,7 +69,7 @@ gdzie $n$ oznacza liczebność zbioru danych na jakim dokonywana jest ocena dopa
 
 ### MAE
 
-Chcąc uniknąć (choćby w części) wrażliwości na wartości odstające stosuje się miarę średniego absolutnego błędu (ang. *Mean Absolut Error*). Definiujemy go następująco:
+Chcąc uniknąć (choćby w części) wrażliwości na wartości odstające stosuje się miarę średniego absolutnego błędu (ang. *Mean Absolute Error*). Definiujemy go następująco:
 
 $$
 MAE=\frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{n}.
@@ -94,20 +94,20 @@ Interpretujemy ten błąd podobnie jak poprzednie pomimo, że jest wyrażony w p
 Średni bezwzględny błąd skalowany (ang. *Mean Absolute Scaled Error*) jest miarą dokładności prognoz. Została zaproponowana w 2005 roku przez statystyka Roba J. Hyndmana i profesora Anne B. Koehler, którzy opisali ją jako "ogólnie stosowaną miarę dokładności prognoz bez problemów widocznych w innych miarach" [@hyndmanAnotherLookMeasures2006]. Średni bezwzględny błąd skalowany ma korzystne właściwości w porównaniu z innymi metodami obliczania błędów prognoz, takimi jak RMSE, i dlatego jest zalecany do określania dokładności prognoz w szeregach czasowych [@fransesNoteMeanAbsolute2016]. Definiujemy go następująco
 
 $$
-MASE = \frac{\sum_{i=1}^n\vert y_i-\hat{y}_i\vert}{\sum_{i=1}^n\vert y_i-\bar{y}_i\vert}.
+MASE = \frac{\frac{1}{n}\sum_{i=1}^n|y_i-\hat{y}_i|}{\frac{1}{T-1}\sum_{t=2}^{T}|y_t-y_{t-1}|},
 $$ {#eq-mase}
 
-Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej [@hyndmanAnotherLookMeasures2006; @EvaluatingForecastAccuracy]. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów. Wywołujemy go funkcją `mase`.
+gdzie $T$ jest długością szeregu treningowego, a mianownik oznacza średni błąd bezwzględny naiwnej prognozy opartej na ostatniej znanej obserwacji. Dla szeregów czasowych z sezonowością i bez sezonowości definiuje się go jeszcze nieco inaczej [@hyndmanAnotherLookMeasures2006; @EvaluatingForecastAccuracy]. Oczywiście interpretacja jest też podobna jak w przypadku innych miar błędów — wartości poniżej 1 oznaczają, że model radzi sobie lepiej niż prognoza naiwna. Wywołujemy go funkcją `mase`.
 
 ### MPE
 
-Średni błąd procentowy (ang. *Mean Percentage Error*) jest miarą błędu względnego definiowaną nastepująco
+Średni błąd procentowy (ang. *Mean Percentage Error*) jest miarą błędu względnego definiowaną następująco
 
 $$
-MPE = \frac{1}{n}\sum_{i=1}^n\frac{y_i-\hat{y}_i}{y_i}.
+MPE = \frac{1}{n}\sum_{i=1}^n\frac{y_i-\hat{y}_i}{y_i}\cdot 100\%.
 $$ {#eq-mpe}
 
-Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować. W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach. Wadą tej miary jest to, że jest ona zawsze określona, gdy pojedyncza wartość rzeczywista wynosi zero. Wywołujemy ją za pomocą `mpe`.
+Ponieważ we wzorze wykorzystywane są rzeczywiste, a nie bezwzględne wartości błędów prognozy, dodatnie i ujemne błędy prognozy mogą się wzajemnie kompensować. W rezultacie wzór ten można wykorzystać jako miarę błędu systematycznego w prognozach. Wadą tej miary jest to, że nie jest ona określona, gdy choć jedna wartość rzeczywista wynosi zero. Wywołujemy ją za pomocą `mpe`.
 
 ### MSD
 
@@ -117,7 +117,7 @@ $$
 MSD = \frac{1}{n}\sum_{i=1}^n(\hat{y}_i-y_i).
 $$ {#eq-msd}
 
-Interpretacja podobnie jak w przypadku innych błędów i mniej wynosi miara tym lepiej dopasowany model. Wywołujemy go funkcją `msd`.
+Ponieważ MSD jest miarą ze znakiem, wartości dodatnie i ujemne mogą się wzajemnie znosić. Interpretacja: im wartość MSD jest bliższa zeru, tym mniejszy średni błąd systematyczny modelu. Wywołujemy go funkcją `msd`.
 
 Istnieje cały szereg miar specjalistycznych rzadziej stosowanych w zagadnieniach regresyjnych. Wśród nich należy wymienić
 
@@ -126,17 +126,23 @@ Istnieje cały szereg miar specjalistycznych rzadziej stosowanych w zagadnieniac
 Funkcja straty Hubera (ang. *Huber loss*) jest miarą błędu nieco bardziej odporną na punkty odstające niż RMSE. Definiujemy ją następująco:
 
 $$
-L_{\delta}(y, \hat{y})= \begin{cases}
+\ell_\delta(y_i, \hat{y}_i)= \begin{cases}
   \frac12 (y_i-\hat{y}_i)^2, &\text{ jeśli }\vert y_i-\hat{y}_i\vert\leq\delta\\
-  \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta, &\text{ w przeciwnym przypadku}.
+   \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta^2, &\text{ w przeciwnym przypadku}.
 \end{cases}
 $$ {#eq-huber}
 
-W implementacji `yardstick` $\delta=1$ natomiast wyliczanie funkcji straty następuje przez uśrednienie po wszystkich obserwacjach. Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości. Wywołujemy ją przez funkcję `huber_loss`.
+Wzór definiuje stratę $\ell_\delta$ dla pojedynczej obserwacji. Dla całego zbioru danych wartość funkcji straty Hubera oblicza się jako średnią:
+
+$$
+L_\delta = \frac{1}{n}\sum_{i=1}^n \ell_\delta(y_i, \hat{y}_i).
+$$
+
+W implementacji `yardstick` $\delta=1$. Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości. Wywołujemy ją przez funkcję `huber_loss`.
 
 ### Funkcja straty Pseudo-Hubera
 
-Funkcja straty Pseudo-Hubera (ang. *Pseudo-Huber loss*) może być stosowana jako gładkie przybliżenie funkcji straty Hubera. Łączy ona najlepsze właściwości straty kwadratowej[^measures-6] i straty bezwzględnej[^measures-7], będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych . Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr $\delta$. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni . Definiujemy ją następująco :
+Funkcja straty Pseudo-Hubera (ang. *Pseudo-Huber loss*) może być stosowana jako gładkie przybliżenie funkcji straty Hubera. Łączy ona najlepsze właściwości straty kwadratowej[^measures-6] i straty bezwzględnej[^measures-7], będąc silnie wypukłą, gdy znajduje się blisko celu (minimum) i mniej stromą dla wartości ekstremalnych. Skala, przy której funkcja straty Pseudo-Hubera przechodzi od straty L2 dla wartości bliskich minimum do straty L1 może być kontrolowana przez parametr $\delta$. Funkcja straty Pseudo-Hubera zapewnia, że pochodne są ciągłe dla wszystkich stopni. Definiujemy ją następująco:
 
 [^measures-6]: inaczej w normie L2
 
@@ -144,17 +150,19 @@ Funkcja straty Pseudo-Hubera (ang. *Pseudo-Huber loss*) może być stosowana jak
 
 $$
 L_{\delta}(y-\hat{y})=\delta^2\left(\sqrt{1+((y-\hat{y})/\delta)^2}-1\right).
-$$ {#eq-huber2} Wywołujemy ją za pomocą funkcji `huber_loss_pseudo`.
+$$ {#eq-huber2}
+
+Wywołujemy ją za pomocą funkcji `huber_loss_pseudo`.
 
 ### Logarytm funkcji straty dla rozkładu Poissona
 
 Logarytm funkcji straty dla rozkładu Poissona (ang. *Mean log-loss for Poisson data*) definiowany jest w następujący sposób:
 
 $$
-\mathcal{L}=\frac1n\sum_{i=11}^n(\hat{y}_i-y_i\cdot \ln(\hat{y}_i)).
+\mathcal{L}=\frac1n\sum_{i=1}^n(\hat{y}_i-y_i\cdot \ln(\hat{y}_i)).
 $$
 
-Wywołujemy go funkcją `poisson_log_los`.
+Wywołujemy go funkcją `poisson_log_loss`.
 
 ### SMAPE
 
@@ -186,7 +194,7 @@ $$
 RPIQ = \frac{IQ}{RMSE},
 $$ {#eq-rpiq}
 
-gdzie $IQ$ oznacza rozstęp kwartylowy zmiennej zależnej. Wywołujemy go przez funkcję `rpiq.`
+gdzie $IQ$ oznacza rozstęp kwartylowy zmiennej zależnej. Wywołujemy go przez funkcję `rpiq`.
 
 ### CCC
 
@@ -217,28 +225,30 @@ glimpse(concrete)
 
 # podział danych na uczące i testowe
 set.seed(44)
-split <- initial_split(data = concrete,
-                       prop = 0.7)
+split <- initial_split(
+    data = concrete,
+    prop = 0.7
+)
 train_data <- training(split)
 test_data <- testing(split)
 
 # określenie modeli, wybrałem kNN
 knn5 <-
-  nearest_neighbor(neighbors = 5) |> 
-  set_engine('kknn') %>%
-  set_mode('regression')
+    nearest_neighbor(neighbors = 5) |>
+    set_engine("kknn") %>%
+    set_mode("regression")
 
 knn25 <-
-  nearest_neighbor(neighbors = 25) |> 
-  set_engine('kknn') %>%
-  set_mode('regression')
+    nearest_neighbor(neighbors = 25) |>
+    set_engine("kknn") %>%
+    set_mode("regression")
 
 # uczymy modele
-fit5 <- knn5 |> 
-  fit(compressive_strength~., data = train_data)
+fit5 <- knn5 |>
+    fit(compressive_strength ~ ., data = train_data)
 
-fit25 <- knn25 |> 
-  fit(compressive_strength~., data = train_data)
+fit25 <- knn25 |>
+    fit(compressive_strength ~ ., data = train_data)
 
 # obliczamy predykcję dla obu modeli na obu zbiorach
 pred_train5 <- predict(fit5, train_data)
@@ -250,51 +260,64 @@ pred_test25 <- predict(fit25, test_data)
 ```{r}
 #| label: fig-por1
 #| fig-cap: Graficzne porównanie obu modeli na obu zbiorach
-
-bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
-          pred5 = c(pred_train5$.pred, pred_test5$.pred),
-          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
-  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
-  pivot_longer(cols = c(pred5, pred25),
-               names_to = "model",
-               values_to = "pred") |> 
-  mutate(model = case_when(
-    model == "pred5" ~ "knn5",
-    model == "pred25" ~ "knn25"
-  )) |> 
-  ggplot(aes(x = obs, y = pred))+
-  geom_point(alpha = 0.1)+
-  geom_abline(intercept = 0, 
-              slope = 1)+
-  facet_grid(sample~model)+
-  coord_obs_pred()
+bind_cols(
+    obs = c(train_data$compressive_strength, test_data$compressive_strength),
+    pred5 = c(pred_train5$.pred, pred_test5$.pred),
+    pred25 = c(pred_train25$.pred, pred_test25$.pred)
+) |>
+    mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |>
+    pivot_longer(
+        cols = c(pred5, pred25),
+        names_to = "model",
+        values_to = "pred"
+    ) |>
+    mutate(model = case_when(
+        model == "pred5" ~ "knn5",
+        model == "pred25" ~ "knn25"
+    )) |>
+    ggplot(aes(x = obs, y = pred)) +
+    geom_point(alpha = 0.1) +
+    geom_abline(
+        intercept = 0,
+        slope = 1
+    ) +
+    facet_grid(sample ~ model) +
+    coord_obs_pred()
 ```
 
 ```{r}
 # podsumowanie za pomocą miary R2
-bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
-          pred5 = c(pred_train5$.pred, pred_test5$.pred),
-          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
-  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
-  pivot_longer(cols = c(pred5, pred25),
-               names_to = "model",
-               values_to = "pred") |> 
-  group_by(model, sample) |> 
-  rsq(truth = obs, estimate = pred) |> 
-  arrange(model)
+bind_cols(
+    obs = c(train_data$compressive_strength, test_data$compressive_strength),
+    pred5 = c(pred_train5$.pred, pred_test5$.pred),
+    pred25 = c(pred_train25$.pred, pred_test25$.pred)
+) |>
+    mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |>
+    pivot_longer(
+        cols = c(pred5, pred25),
+        names_to = "model",
+        values_to = "pred"
+    ) |>
+    group_by(model, sample) |>
+    rsq(truth = obs, estimate = pred) |>
+    arrange(model)
 
 # można też podsumować od razu kilkoma miarami
 # będa miary domyślne dla modelu regresyjnego
-bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
-          pred5 = c(pred_train5$.pred, pred_test5$.pred),
-          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
-  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
-  pivot_longer(cols = c(pred5, pred25),
-               names_to = "model",
-               values_to = "pred") |> 
-  group_by(model, sample) |> 
-  metrics(truth = obs, estimate = pred) |> 
-  arrange(model, .metric)
+bind_cols(
+    obs = c(train_data$compressive_strength, test_data$compressive_strength),
+    pred5 = c(pred_train5$.pred, pred_test5$.pred),
+    pred25 = c(pred_train25$.pred, pred_test25$.pred)
+) |>
+    mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |>
+    pivot_longer(
+        cols = c(pred5, pred25),
+        names_to = "model",
+        values_to = "pred"
+    ) |>
+    group_by(model, sample) |>
+    metrics(truth = obs, estimate = pred) |>
+    arrange(model, .metric)
 
 # możemy zmienić parametry niektórych miar
 huber_loss2 <- metric_tweak("huber_loss2", huber_loss, delta = 2)
@@ -303,16 +326,20 @@ huber_loss2 <- metric_tweak("huber_loss2", huber_loss, delta = 2)
 selected_metrics <- metric_set(ccc, rpd, mape, huber_loss2)
 
 
-bind_cols(obs = c(train_data$compressive_strength, test_data$compressive_strength),
-          pred5 = c(pred_train5$.pred, pred_test5$.pred),
-          pred25 = c(pred_train25$.pred, pred_test25$.pred)) |> 
-  mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |> 
-  pivot_longer(cols = c(pred5, pred25),
-               names_to = "model",
-               values_to = "pred") |> 
-  group_by(model, sample) |> 
-  selected_metrics(truth = obs, estimate = pred) |> 
-  arrange(model, sample)
+bind_cols(
+    obs = c(train_data$compressive_strength, test_data$compressive_strength),
+    pred5 = c(pred_train5$.pred, pred_test5$.pred),
+    pred25 = c(pred_train25$.pred, pred_test25$.pred)
+) |>
+    mutate(sample = rep(c("train", "test"), c(nrow(train_data), nrow(test_data)))) |>
+    pivot_longer(
+        cols = c(pred5, pred25),
+        names_to = "model",
+        values_to = "pred"
+    ) |>
+    group_by(model, sample) |>
+    selected_metrics(truth = obs, estimate = pred) |>
+    arrange(model, sample)
 ```
 :::
 
@@ -338,9 +365,9 @@ data(two_class_example)
 head(two_class_example)
 
 # confusion matrix
-two_class_example |> 
-  conf_mat(truth, predicted) |> 
-  autoplot(type = "heatmap")
+two_class_example |>
+    conf_mat(truth, predicted) |>
+    autoplot(type = "heatmap")
 ```
 
 Aby przedstawić poszczególne miary na podstawie macierzy klasyfikacji wystarczy przywołać ilustrację z [Wikipedii](https://en.wikipedia.org/wiki/Confusion_matrix), która w genialny sposób podsumowuje większość miar.
@@ -349,9 +376,9 @@ Aby przedstawić poszczególne miary na podstawie macierzy klasyfikacji wystarcz
 
 Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
 
--   *accuacy* - informuje o odsetku poprawnie zaklasyfikowanych obserwacji. Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę. Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał *accuracy* na poziomie 95%.
+-   *accuracy* - informuje o odsetku poprawnie zaklasyfikowanych obserwacji. Jest bardzo powszechnie stosowaną miarą dopasowania modelu choć ma jedną poważną wadę. Mianowicie w przypadku modeli dla danych z wyraźną dysproporcją jednej z klas (powiedzmy jedna stanowi 95% wszystkich obserwacji), może się zdarzyć sytuacja, że nawet bezsensowny model, czyli taki, który zawsze wskazuje tą właśnie wartość, będzie miał *accuracy* na poziomie 95%.
 
--   *kappa -* miara podobna miarą do *accuracy* i jest bardzo przydatna, gdy jedna lub więcej klas dominuje. Definiujemy ją następująco $\kappa = \frac{p_o-p_e}{1-p_e}$, gdzie $p_o,p_e$ są odpowiednio zgodnością obserwowaną i oczekiwaną. Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.
+-   *kappa -* miara podobna do *accuracy* i jest bardzo przydatna, gdy jedna lub więcej klas dominuje. Definiujemy ją następująco $\kappa = \frac{p_o-p_e}{1-p_e}$, gdzie $p_o,p_e$ są odpowiednio zgodnością obserwowaną i oczekiwaną. Zgodność obserwowana jest odsetkiem obserwacji poprawnie zaklasyfikowanych, a oczekiwana to zgodność wynikająca z przypadku.
 
 -   *precision* - oznaczana też czasem jako PPV (ang. *Positive Predictive Value*) oznacza stosunek poprawnie zaklasyfikowanych wartości *true positive* (TP) do wszystkich przewidywanych wartości pozytywnych (ang. *positive predictive*).
 
@@ -359,15 +386,23 @@ Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
 
 -   *specificity* - nazywane również *True Negative Rate* (TNR), wyraża się stosunkiem pozycji *true negative* do wszystkich obserwacji *negative*.
 
--   *negative predictive value* (NPV) - oznaczane czasem też jako *false omission rate* jest liczone jako stosunek *false negative* do wszystkich przewidywanych *negative* (PN).
+-   *negative predictive value* (NPV) - liczone jako stosunek *true negative* do wszystkich przewidywanych *negative* (TN+FN). Natomiast *false omission rate* jest dopełnieniem NPV, czyli $FN/(FN+TN)$.
 
 -   $F_1$ - jest miarą zdefiniowaną jako $\frac{2PPV*TPR}{PPV+TPR}$.
 
--   MCC - *Mathews Correlation Coeficient -* jest zdefiniowany jako $\sqrt{TPR*TNR*PPV*NPV}-\sqrt{FNR*FPR*NPV*FDR}$. Istnieje również odmiana tej miary dla przypadku wielostanowej zmiennej wynikowej.
+-   MCC - *Matthews Correlation Coefficient* - jest zdefiniowany jako
+
+    $$
+    MCC =
+    \frac{TP\cdot TN - FP\cdot FN}
+    {\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}.
+    $$
+
+    Istnieje również odmiana tej miary dla przypadku wielostanowej zmiennej wynikowej.
 
 -   *balanced accuracy* - liczona jako średnia *sensitivity* i *specificity*.
 
--   *detection prevalence* - zdefiniowana jako stosunek poprawnie przewidywanych obserwacji do liczby wszystkich przewidywanych wartości.
+-   *detection prevalence* - zdefiniowana jako odsetek obserwacji przewidzianych jako pozytywne, tj. $(TP+FP)/N$.
 
 -   *J index* - metryka Youden'a definiowana jako *sensitivity + specificity -1*, często jest wykorzystywana do określenia poziomu odcięcia prawdopodobieństwa zdarzenia wyróżnionego (ang. *threshold*).
 
@@ -376,8 +411,8 @@ Na podstawie tej macierzy możemy ocenić dopasowanie modelu za pomocą:
 -   średnia logarytmu funkcji straty (ang. *log loss*) - określana też w literaturze jako *binary cross-entropy* dla przypadku zmiennej wynikowej dwustanowej i *multilevel cross-entropy* albo *categorical cross-entropy* w przypadku wielostanowej klasyfikacji. Definiuje się ją następująco:
 
     $$
-        \mathcal{L} = \frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
-    $$ {#eq-crossentropy} gdzie $y_i$ jest indykatorem klasy wyróżnionej dla $i$-tej obserwacji, a $\hat{y}_i$ prawdopodobieństwem wyróżnionego stanu $i$-tej obserwacji. Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera. Entropia mierzy nieprzewidywalność czegoś. Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy. Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć "dodatkowy szum", który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet. Minimalizując entropię krzyżową, maksymalizujemy dokładność klasyfikatora. Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.
+        \mathcal{L} = -\frac1n\sum_{i=1}^n\left[y_i\log(\hat{y}_i)+(1-y_i)\log(1-\hat{y}_i)\right],
+    $$ {#eq-crossentropy} gdzie $y_i$ jest indykatorem klasy wyróżnionej dla $i$-tej obserwacji, a $\hat{y}_i$ prawdopodobieństwem wyróżnionego stanu $i$-tej obserwacji. Piękną rzeczą w tej definicji jest to, że jest ona ściśle związana z teorią informacji: log-loss jest entropią krzyżową pomiędzy rozkładem prawdziwych etykiet a przewidywaniami i jest bardzo blisko związana z tym, co jest znane jako entropia względna lub rozbieżność Kullbacka-Leiblera. Entropia mierzy nieprzewidywalność czegoś. Entropia krzyżowa zawiera entropię prawdziwego rozkładu plus dodatkową nieprzewidywalność, gdy ktoś zakłada inny rozkład niż prawdziwy. Tak więc log-loss jest miarą z teorii informacji pozwalającą zmierzyć „dodatkowy szum", który powstaje w wyniku użycia predykcji w przeciwieństwie do prawdziwych etykiet. Minimalizując entropię krzyżową, poprawiamy jakość predykcji probabilistycznych klasyfikatora. Log-loss, czyli strata logarytmiczna, wnika w najdrobniejsze szczegóły działania klasyfikatora.
 
     Prawdopodobieństwo można rozumieć jako miernik zaufania. Jeśli prawdziwa etykieta to 0, ale klasyfikator ocenia, że należy ona do klasy 1 z prawdopodobieństwem 0,51, to pomimo tego, że klasyfikator popełniłby błąd, jest to niewielki błąd, ponieważ prawdopodobieństwo jest bardzo bliskie granicy decyzji 0,5. Log-loss jest subtelną miarą dokładności.
 
@@ -394,14 +429,14 @@ Należy pamiętać, że większość wspomnianych miar opiera się na wartościa
 -   miary:
     -   AUC - *Area Under ROC Curve* - mierzy pole pod krzywą ROC. Krzywa ROC nie jest pojedynczą liczbą ale całą krzywą. Dostarcza ona szczegółowych informacji o zachowaniu klasyfikatora, ale trudno jest szybko porównać wiele krzywych ROC ze sobą. W szczególności, jeśli ktoś chciałby zastosować jakiś automatyczny mechanizm tuningowania hiperparametrów, maszyna potrzebowałaby wymiernego wyniku zamiast wykresu, który wymaga wizualnej inspekcji. AUC jest jednym ze sposobów podsumowania krzywej ROC w jedną liczbę, tak aby można było ją łatwo i automatycznie porównać. Dobra krzywa ROC ma dużo miejsca pod sobą (ponieważ prawdziwy wskaźnik pozytywny bardzo szybko wzrasta do 100%). Zła krzywa ROC obejmuje bardzo mały obszar. Tak więc wysokie AUC jest sygnałem dobrego dopasowania modelu.
 
-    -   PRAUC - *Area Under Precision-Racall Curve* - mierzy pole pod krzywą P-R.
+    -   PRAUC - *Area Under Precision-Recall Curve* - mierzy pole pod krzywą P-R.
 
-    -   Pole pod krzywą wzrosu.
+    -   Pole pod krzywą wzrostu.
 
     -   Pole pod krzywą wyniesienia.
 
 ::: {#exm-2}
-Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej. Dane pochodzą ze zbioru `attrition` pakietu `modeldata`. Naszym zadaniem będzie zbudować modeli przewidujący odejścia z pracy.
+Tym razem zbudujemy model klasyfikacyjny dla zmiennej wynikowej dwustanowej. Dane pochodzą ze zbioru `attrition` pakietu `modeldata`. Naszym zadaniem będzie zbudować model przewidujący odejścia z pracy.
 
 ```{r}
 str(attrition)
@@ -413,18 +448,17 @@ train_data <- training(split)
 test_data <- testing(split)
 
 # określam model
-lr_mod <- logistic_reg() |> 
-  set_engine("glm") |> 
-  set_mode("classification")
+lr_mod <- logistic_reg() |>
+    set_engine("glm") |>
+    set_mode("classification")
 
 # uczę model
-lr_fit <- lr_mod |> 
-  fit(Attrition ~ ., data = train_data)
+lr_fit <- lr_mod |>
+    fit(Attrition ~ ., data = train_data)
 
 # podsumowanie modelu
-lr_fit |> 
-  tidy() 
-
+lr_fit |>
+    tidy()
 ```
 
 Teraz korzystając z różnych miar podsumujemy dopasowanie modelu.
@@ -433,16 +467,16 @@ Teraz korzystając z różnych miar podsumujemy dopasowanie modelu.
 # predykcja z modelu przyjmując threshold = 0.5
 pred_class <- predict(lr_fit, new_data = test_data)
 
-# predkcja (prawdopodobieństwa klas)
+# predykcja (prawdopodobieństwa klas)
 pred_prob <- predict(lr_fit, new_data = test_data, type = "prob")
 
 # ale można też tak
-pred <- augment(lr_fit, test_data) |> 
-  select(Attrition, .pred_class, .pred_No, .pred_Yes)
+pred <- augment(lr_fit, test_data) |>
+    select(Attrition, .pred_class, .pred_No, .pred_Yes)
 
 # macierz klasyfikacji
-cm <- pred |> 
-  conf_mat(truth = Attrition, estimate = .pred_class)
+cm <- pred |>
+    conf_mat(truth = Attrition, estimate = .pred_class)
 cm
 
 summary(cm)
@@ -451,23 +485,23 @@ summary(cm)
 Możemy też narysować krzywe, które nam pokażą, czy dla innych wartości progu model też dobrze przewiduje klasy wynikowe.
 
 ```{r}
-#ROC
-pred |> 
-  roc_curve(truth = Attrition, .pred_Yes, event_level = "second") |> 
-  autoplot()
+# ROC
+pred |>
+    roc_curve(truth = Attrition, .pred_Yes, event_level = "second") |>
+    autoplot()
 
-#PRC
-pred |> 
-  pr_curve(truth = Attrition, .pred_Yes, event_level = "second") |> 
-  autoplot()
+# PRC
+pred |>
+    pr_curve(truth = Attrition, .pred_Yes, event_level = "second") |>
+    autoplot()
 
-#AUC
-pred |> 
-  roc_auc(truth = Attrition, .pred_Yes, event_level = "second") 
+# AUC
+pred |>
+    roc_auc(truth = Attrition, .pred_Yes, event_level = "second")
 
-#PRAUC
-pred |> 
-  pr_auc(truth = Attrition, .pred_Yes, event_level = "second") 
+# PRAUC
+pred |>
+    pr_auc(truth = Attrition, .pred_Yes, event_level = "second")
 ```
 
 Wybór optymalnego progu odcięcia.
@@ -476,21 +510,21 @@ Wybór optymalnego progu odcięcia.
 library(probably)
 
 # ustalam zakres threshold
-thresholds <- seq(0.01,1, by = 0.01)
+thresholds <- seq(0.01, 1, by = 0.01)
 
 # poszukuje najlepszego progu ze względu kryterium Youden'a
 pred |>
-  threshold_perf(Attrition, .pred_Yes, thresholds, event_level = "second") |>
-  pivot_wider(names_from = .metric, values_from = .estimate) |>
-  arrange(-j_index)
+    threshold_perf(Attrition, .pred_Yes, thresholds, event_level = "second") |>
+    pivot_wider(names_from = .metric, values_from = .estimate) |>
+    arrange(-j_index)
 
-# predykjca dla optymalnego progu
-pred.optim <- pred |> 
-  mutate(class = as.factor(ifelse(.pred_Yes > 0.19, "Yes", "No")))
+# predykcja dla optymalnego progu
+pred.optim <- pred |>
+    mutate(class = as.factor(ifelse(.pred_Yes > 0.19, "Yes", "No")))
 
 # macierz klasyfikacji
-cm2 <- pred.optim |> 
-  conf_mat(truth = Attrition, estimate = class)
+cm2 <- pred.optim |>
+    conf_mat(truth = Attrition, estimate = class)
 cm2
 summary(cm2)
 ```
@@ -502,7 +536,7 @@ Wspomniane zostało, że miary dedykowane dla modeli binarnych można również 
 
 #### Makro uśrednianie
 
-Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych. Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki. Jako przykład, rozważmy *precision*. W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden do jednego. Kolumny *truth* i *estimate* są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie *precision* jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest "wyróżnioną" kolumną. Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji. Wyniki są następnie uśredniane.
+Makro uśrednianie redukuje wieloklasowe predykcje do wielu zestawów przewidywań binarnych. Oblicza się odpowiednią metrykę dla każdego z przypadków binarnych, a następnie uśrednia wyniki. Jako przykład, rozważmy *precision*. W przypadku wieloklasowym, jeśli istnieją poziomy A, B, C i D, makro uśrednianie redukuje problem do wielu porównań jeden kontra reszta (*one-vs-all*). Kolumny *truth* i *estimate* są rekodowane tak, że jedynymi dwoma poziomami są A i inne, a następnie *precision* jest obliczana w oparciu o te rekodowane kolumny, przy czym A jest "wyróżnioną" kolumną. Proces ten jest powtarzany dla pozostałych 3 poziomów, aby uzyskać łącznie 4 wartości precyzji. Wyniki są następnie uśredniane.
 
 Formuła dla $k$ klas wynikowych prezentuje się następująco:
 
@@ -541,8 +575,8 @@ Przykład użycia miar dopasowania modelu dla zmiennych wynikowych wieloklasowyc
 head(hpc_cv)
 
 # macierz klasyfikacji
-cm <- hpc_cv |> 
-  conf_mat(truth = obs, estimate = pred)
+cm <- hpc_cv |>
+    conf_mat(truth = obs, estimate = pred)
 cm
 
 # poniższe miary są makro uśrednione
@@ -552,19 +586,19 @@ summary(cm)
 summary(cm, estimator = "micro")
 
 # ROC
-hpc_cv |> 
-  roc_curve(truth = obs, VF:L) |> 
-  autoplot()
+hpc_cv |>
+    roc_curve(truth = obs, VF:L) |>
+    autoplot()
 
 # AUC
-hpc_cv |> 
-  roc_auc(truth = obs, VF:L)
+hpc_cv |>
+    roc_auc(truth = obs, VF:L)
 ```
 :::
 
 ## Uwagi końcowe
 
-Stosując jedna miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na $R^2$ będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz @fig-por).
+Stosując jedną miarę dopasowania modelu (bez względu na to czy jest to model klasyfikacyjny czy regresyjny) możemy nie otrzymać optymalnego modelu. Ze względu na definicje miary dopasowania różnią się pomiędzy sobą eksponując nieco inne aspekty. To powoduje, że może się zdarzyć sytuacja, że optymalny model ze względu na $R^2$ będzie się różnił (nawet znacznie) od modelu optymalizowanego z użyciem RMSE (patrz @fig-por).
 
 ![Porównanie jakości modeli z wykorzystaniem różnych miar](images/Zrzut%20ekranu%202023-02-20%20o%2017.08.24.png){#fig-por fig-align="center"}
 
