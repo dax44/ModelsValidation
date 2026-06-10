@@ -597,14 +597,14 @@ MSD = \frac{1}{n}\sum_{i=1}^n(\hat{y}_i-y_i).
 <span class="header-section-number">4.1.9</span> Funkcja straty Hubera</h3>
 <p>Funkcja straty Hubera (ang. <em>Huber loss</em>) jest miarą błędu nieco bardziej odporną na punkty odstające niż RMSE. Definiujemy ją następująco:</p>
 <p><span id="eq-huber"><span class="math display">\[
-\ell_\delta(y, \hat{y})= \begin{cases}
+\ell_\delta(y_i, \hat{y}_i)= \begin{cases}
   \frac12 (y_i-\hat{y}_i)^2, &amp;\text{ jeśli }\vert y_i-\hat{y}_i\vert\leq\delta\\
    \delta\cdot \vert y_i-\hat{y}_i\vert-\tfrac12\delta^2, &amp;\text{ w przeciwnym przypadku}.
 \end{cases}
 \tag{4.9}\]</span></span></p>
 <p>Wzór definiuje stratę <span class="math inline">\(\ell_\delta\)</span> dla pojedynczej obserwacji. Dla całego zbioru danych wartość funkcji straty Hubera oblicza się jako średnią:</p>
 <p><span class="math display">\[
-L_\delta = \frac{1}{n}\sum_{i=1}^n \ell_\delta(y_i-\hat{y}_i).
+L_\delta = \frac{1}{n}\sum_{i=1}^n \ell_\delta(y_i, \hat{y}_i).
 \]</span></p>
 <p>W implementacji <code>yardstick</code> <span class="math inline">\(\delta=1\)</span>. Z definicji widać, że funkcja straty Hubera jest kombinacją MSE i odpowiednio przekształconej miary MAE, w zależności od tego czy predykcja znacząco odbiegają od obserwowanych wartości. Wywołujemy ją przez funkcję <code>huber_loss</code>.</p>
 </section><section id="funkcja-straty-pseudo-hubera" class="level3 page-columns page-full" data-number="4.1.10"><h3 data-number="4.1.10" class="anchored" data-anchor-id="funkcja-straty-pseudo-hubera">
