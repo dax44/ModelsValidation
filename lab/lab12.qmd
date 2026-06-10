@@ -1,0 +1,75 @@
+---
+title: "Laboratorium 12"
+subtitle: "Przesiewanie modeli i optymalizacja bayesowska"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W zadaniach ustawiaj `set.seed(2026)` przed losowaniem danych, podziałami,
+resamplingiem i generowaniem kandydatów hiperparametrów. Zadbaj o to, aby
+porównywane modele używały tych samych podziałów resamplingowych.
+:::
+
+## Zadanie 1. Przesiewanie wielu workflowów
+
+Na zbiorze `car_prices` z pakietu `modeldata` zbuduj analizę porównującą wiele
+kombinacji modeli i przetwarzania wstępnego. Zmienną wynikową jest `Price`.
+
+Przygotuj:
+
+-   podział trening-test `80/20` ze stratyfikacją względem ceny,
+-   walidację krzyżową na zbiorze treningowym,
+-   co najmniej cztery modele regresyjne reprezentujące różne rodziny metod,
+-   co najmniej cztery warianty preprocessingu:
+    wariant bez istotnej obróbki, wariant ze skalowaniem, wariant redukujący
+    redundancję predyktorów oraz wariant z inżynierią cech,
+-   zestaw workflowów powstały z połączenia wszystkich modeli ze wszystkimi
+    wariantami preprocessingu,
+-   ocenę wszystkich workflowów przez `rmse`, `mae` i `rsq`,
+-   ranking workflowów oraz wykres pokazujący zmienność wyników między foldami,
+-   formalne porównanie najlepszego workflowu z kilkoma najbliższymi
+    konkurentami na podstawie wyników z tych samych foldów,
+-   dopasowanie finalnego workflowu na całym zbiorze treningowym i ocenę na
+    zbiorze testowym.
+
+W interpretacji wyjaśnij, czy zwycięski workflow jest wyraźnie lepszy, czy
+różnice względem konkurentów są niewielkie.
+
+## Zadanie 2. Optymalizacja bayesowska
+
+Na zbiorze `ad_data` z pakietu `modeldata` przygotuj model klasyfikacyjny
+przewidujący `Class`. Ustaw klasę `"Impaired"` jako klasę pozytywną.
+
+Zbuduj workflow dla modelu boosted trees z silnikiem `xgboost`. W modelu
+dostrajaj co najmniej cztery hiperparametry. W preprocessingu uwzględnij
+zmienne nominalne, predyktory o zerowej wariancji oraz silnie skorelowane
+predyktory liczbowe.
+
+Wykonaj:
+
+-   podział trening-test `75/25` ze stratyfikacją względem `Class`,
+-   walidację krzyżową na zbiorze treningowym,
+-   zdefiniowanie przestrzeni hiperparametrów,
+-   początkową ocenę kilku konfiguracji wypełniających przestrzeń parametrów,
+-   optymalizację bayesowską na podstawie wyników początkowych,
+-   analizę przebiegu optymalizacji: pokaż wyniki kolejnych iteracji oraz
+    najlepsze konfiguracje,
+-   finalizację workflowu według `roc_auc`,
+-   ocenę modelu finalnego na zbiorze testowym przez `roc_auc`, `accuracy` oraz
+    macierz pomyłek.
+
+W podsumowaniu wyjaśnij, czy optymalizacja bayesowska znalazła konfigurację
+lepszą od konfiguracji początkowych i czy wynik testowy jest spójny z oceną
+resamplingową.

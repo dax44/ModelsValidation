@@ -1,0 +1,639 @@
+---
+title: "Rozwiązanie kolokwium poprawkowego — grupa B"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidymodels)
+library(workflowsets)
+library(modeldata)
+library(finetune)
+library(patchwork)
+library(earth)
+library(moments)
+```
+
+## 1. Przegląd danych
+
+Wczytujemy dane `Sacramento` z pakietu `modeldata`.
+
+```{r}
+#| label: wczytanie-danych
+data("Sacramento")
+```
+
+**Struktura** — wymiary i typy zmiennych:
+
+```{r}
+#| label: struktura
+cat("Liczba wierszy:", nrow(Sacramento), "\n")
+cat("Liczba kolumn:", ncol(Sacramento), "\n\n")
+str(Sacramento, give.attr = FALSE)
+```
+
+Zbiór zawiera **932 obserwacje** i **9 zmiennych**. Występują
+zarówno zmienne numeryczne (`beds`, `baths`, `sqft`, `price`,
+`latitude`, `longitude`), jak i nominalne: `city` — 37 poziomów,
+`zip` — 68 poziomów, `type` — 3 poziomy. Duża liczba poziomów
+`zip` będzie wymagać specjalnego traktowania w preprocessingu.
+
+### Braki danych i zmienne o zerowej wariancji
+
+```{r}
+#| label: braki-zv
+cat("Liczba braków w każdej kolumnie:\n")
+colSums(is.na(Sacramento))
+
+cat("\nLiczba unikalnych wartości w każdej kolumnie:\n")
+sapply(Sacramento, function(x) length(unique(x)))
+```
+
+**Komentarz:** Brak braków danych. Wszystkie zmienne mają więcej
+niż jedną unikalną wartość. `zip` z 68 poziomami to potencjalny
+problem — zostanie usunięty w recepcie A (MARS) lub zgrupowany
+w recepcie B i C.
+
+### Rozkład zmiennej wynikowej `price`
+
+```{r}
+#| label: rozklad-price
+ggplot(Sacramento, aes(x = price)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.8) +
+  labs(title = "Histogram ceny domu (price)", x = "Cena [USD]",
+       y = "Liczba")
+
+ggplot(Sacramento, aes(sample = price)) +
+  geom_qq_line(color = "red") +
+  geom_qq(alpha = 0.5) +
+  labs(title = "Wykres kwantyl-kwantyl (price)")
+```
+
+```{r}
+#| label: skewness-price
+cat("Skośność price:", skewness(Sacramento$price), "\n")
+cat("Kurtoza price:", kurtosis(Sacramento$price), "\n")
+```
+
+Rozkład `price` jest **prawostronnie skośny** — większość domów
+poniżej \$200 000, ale występują też nieruchomości powyżej
+\$400 000. **Aby zachować porównywalność metryk między
+wszystkimi workflowami, stosujemy transformację `log(price)`
+na poziomie danych przed podziałem.** Dla modeli drzewiastych
+(i MARS-a) logarytm nie zmienia struktury decyzyjnej (jest
+monotoniczny), a dla SVM jest metodologicznie niezbędny.
+
+---
+
+## 2. Analiza opisowa danych
+
+### Podstawowe statystyki opisowe
+
+```{r}
+#| label: desc-stats
+Sacramento %>%
+  select(price, beds, baths, sqft, latitude, longitude) %>%
+  skimr::skim()
+```
+
+### Wizualizacje zależności między predyktorami a `price`
+
+**Wykres 1: Macierz korelacji** zmiennych numerycznych.
+
+```{r}
+#| label: cor-plot
+Sacramento %>%
+  select(price, beds, baths, sqft, latitude, longitude) %>%
+  cor() %>%
+  round(2)
+```
+
+**Wykres 2: Powierzchnia vs cena** z kolorem wg typu nieruchomości.
+
+```{r}
+#| label: scatter-plots
+p1 <- ggplot(Sacramento, aes(x = sqft, y = price, color = type)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(title = "Cena vs powierzchnia wg typu",
+       x = "Powierzchnia [sqft]", y = "Cena [USD]")
+
+p2 <- ggplot(Sacramento, aes(x = type, y = price, fill = type)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(title = "Rozkład ceny wg typu", x = "Typ", y = "Cena [USD]") +
+  theme(legend.position = "none")
+
+p1 + p2
+```
+
+**Wykres 3: Sypialnie i łazienki vs cena.**
+
+```{r}
+#| label: scatter-plots2
+p3 <- ggplot(Sacramento, aes(x = beds, y = price)) +
+  geom_jitter(alpha = 0.4, width = 0.2) +
+  geom_smooth(method = "loess", se = TRUE, color = "red") +
+  labs(title = "Cena vs liczba sypialni", x = "Sypialnie")
+
+p4 <- ggplot(Sacramento, aes(x = baths, y = price)) +
+  geom_jitter(alpha = 0.4, width = 0.1) +
+  geom_smooth(method = "loess", se = TRUE, color = "red") +
+  labs(title = "Cena vs liczba łazienek", x = "Łazienki")
+
+p3 + p4
+```
+
+### Wnioski z analizy opisowej
+
+- **Powierzchnia (`sqft`)** — najsilniejszy pojedynczy predyktor
+  ceny (r ≈ 0.69);
+- **Liczba sypialni i łazienek** — dodatnia korelacja z ceną,
+  ale słabsza niż `sqft`;
+- **Typ nieruchomości** — wyraźnie różnicuje ceny: domy
+  jednorodzinne (`Residential`) są średnio droższe niż `Condo`;
+- **`city` i `zip`** — duża liczba poziomów, zwłaszcza dla `zip`
+  (68), co wymaga grupowania rzadkich kategorii lub usunięcia;
+- **Potencjalne problemy przy modelowaniu:**
+  - Skośny rozkład `price` — transformacja logarytmiczna.
+  - `latitude` i `longitude` — mogą być skorelowane (współliniowość).
+  - Duża liczba poziomów `zip` — grupowanie lub usunięcie.
+
+---
+
+## 3. Przygotowanie preprocessingu — trzy reguły
+
+Każda reguła zawiera usunięcie predyktorów o zerowej wariancji (`step_nzv()`).
+
+Przed definicją receptur tworzymy wersję danych z logarytmem ceny —
+jest to konieczne, aby silnik `earth` (MARS) akceptował typ zmiennej
+wynikowej zgodny z typem w danych treningowych.
+
+```{r}
+#| label: sac-data
+sac_data <- Sacramento %>%
+  mutate(price = log(price))
+```
+
+### Reguła A — MARS (silnik earth)
+
+```{r}
+#| label: recipe-a
+recipe_A <- recipe(price ~ ., data = sac_data) %>%
+  step_rm(zip) %>%
+  step_nzv(all_predictors()) %>%
+  step_other(city, threshold = 0.05) %>%
+  step_mutate(city = as.factor(city))
+```
+
+**Uzasadnienie:** MARS samodzielnie wykrywa nieliniowości i
+interakcje. `step_rm(zip)` usuwa `zip` z 68 poziomami, które
+rozsadziłyby macierz projektu. `step_nzv()` usuwa predyktory o zerowej lub prawie zerowej wariancji. `step_other(city,
+threshold = 0.05)` grupuje rzadkie poziomy `city` (poniżej 5%) w
+kategorię "other". `step_mutate(city = as.factor(city))` przywraca typ
+factor po `step_other()`, który zamienia zmienną na character — jest to
+konieczne dla silnika `earth`, wymagającego faktorów. Nie stosujemy
+standaryzacji ani kodowania dummy, ponieważ MARS obsługuje faktory
+natywnie.
+
+### Reguła B — SVM z jądrem radialnym (silnik kernlab)
+
+```{r}
+#| label: recipe-b
+recipe_B <- recipe(price ~ ., data = sac_data) %>%
+  step_log(sqft, offset = 1) %>%
+  step_nzv(all_predictors()) %>%
+  step_other(city, zip, threshold = 0.05) %>%
+  step_mutate(city = as.factor(city), zip = as.factor(zip)) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_pca(all_numeric_predictors(), threshold = 0.95)
+```
+
+**Uzasadnienie:** SVM z jądrem radialnym jest silnie wrażliwy na
+skalę i odległości. `step_log(sqft)` zmniejsza skośność predyktora
+powierzchni. `step_nzv()` usuwa predyktory o zerowej lub prawie zerowej wariancji. `step_other()` grupuje rzadkie poziomy `city`
+i `zip`. `step_mutate(as.factor(...))` przywraca typ factor po
+`step_other()`. `step_dummy()` tworzy wskaźniki binarne, `step_normalize()`
+standaryzuje predyktory dla jądra opartego na odległościach, a
+`step_pca(threshold = 0.95)` redukuje wymiarowość przy zachowaniu 95%
+wariancji.
+
+### Reguła C — las losowy (silnik ranger)
+
+```{r}
+#| label: recipe-c
+recipe_C <- recipe(price ~ ., data = sac_data) %>%
+  step_nzv(all_predictors()) %>%
+  step_other(city, zip, threshold = 0.03) %>%
+  step_mutate(city = as.factor(city), zip = as.factor(zip)) %>%
+  step_dummy(all_nominal_predictors())
+```
+
+**Uzasadnienie:** Las losowy jest modelem drzewiastym — dzieli
+przestrzeń na podstawie progów, dlatego nie wymaga standaryzacji i jest
+niewrażliwy na skalę predyktorów. `step_nzv()` usuwa predyktory o zerowej lub prawie zerowej wariancji.
+`step_other(threshold = 0.03)` grupuje bardzo rzadkie poziomy `city` i
+`zip` (poniżej 3%). `step_mutate(as.factor(...))` przywraca typ factor po
+`step_other()`. `step_dummy()` tworzy wskaźniki binarne; `ranger` może
+pracować także z faktorami, ale kodowanie dummy daje jawniejszą kontrolę
+nad postacią predyktorów.
+
+---
+
+## 4. Przygotowanie trzech modeli
+
+Wszystkie parametry ustalone na stałe — tuning zostanie wykonany
+później dla wybranego modelu.
+
+```{r}
+#| label: modele-def
+model_MARS <- mars() %>%
+  set_engine("earth") %>%
+  set_mode("regression")
+
+model_SVM <- svm_rbf() %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
+model_RF <- rand_forest() %>%
+  set_engine("ranger") %>%
+  set_mode("regression")
+```
+
+---
+
+## 5. Screening modeli i wybór najlepszego
+
+### Podział na zbiór treningowy i testowy
+
+Logarytmujemy `price` przed podziałem, aby RMSE był porównywalny
+między wszystkimi workflowami.
+
+```{r}
+#| label: split
+set.seed(2026)
+
+sac_split <- initial_split(sac_data, prop = 0.80, strata = price)
+sac_train <- training(sac_split)
+sac_test  <- testing(sac_split)
+
+cat("Trening:", nrow(sac_train), "obserwacji | Test:",
+    nrow(sac_test), "obserwacji\n")
+```
+
+### Schemat resamplingu
+
+```{r}
+#| label: resampling
+set.seed(2026)
+sac_folds <- vfold_cv(sac_train, v = 10, strata = price)
+```
+
+### Workflow set i ocena w 10-krotnej walidacji krzyżowej
+
+Dla każdego modelu tworzymy workflow w `workflow_set` i oceniamy je w
+tym samym schemacie 10-krotnej walidacji krzyżowej.
+
+```{r}
+#| label: resample-fit
+set.seed(2026)
+
+sac_workflows <- workflow_set(
+  preproc = list(A = recipe_A, B = recipe_B, C = recipe_C),
+  models = list(MARS = model_MARS, SVM = model_SVM, RF = model_RF),
+  cross = FALSE
+)
+
+sac_res <- workflow_map(sac_workflows, "fit_resamples", seed = 2026,
+  resamples = sac_folds, metrics = metric_set(rmse, mae, rsq),
+  control = control_resamples(save_pred = TRUE), verbose = FALSE)
+```
+
+### Ranking według RMSE
+
+```{r}
+#| label: ranking
+sac_metrics <- collect_metrics(sac_res)
+
+sac_ranking <- sac_metrics %>%
+  filter(.metric == "rmse") %>%
+  arrange(mean)
+
+sac_ranking %>%
+  select(wflow_id, mean, std_err, n) %>%
+  knitr::kable(digits = 4, caption = "Ranking workflowów według RMSE")
+```
+
+### Wizualizacja stabilności — wykres pudełkowy
+
+```{r}
+#| label: boxplot-res
+sac_fold_rmse <- sac_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse")
+
+sac_fold_rmse %>%
+  ggplot(aes(x = reorder(wflow_id, .estimate, median),
+             y = .estimate)) +
+  geom_boxplot(fill = "grey90") +
+  geom_point(alpha = 0.65, position = position_jitter(width = 0.08)) +
+  coord_flip() +
+  labs(
+    x = "Workflow",
+    y = "RMSE w foldach",
+    title = "Stabilność RMSE między foldami 10-fold CV"
+  )
+```
+
+### Formalne testy statystyczne
+
+Porównujemy najlepszy workflow z każdym z pozostałych. Sparowany t-test
+porównuje średnie różnice RMSE na tych samych foldach i jest testem
+głównym. Test Wilcoxona traktujemy jako analizę odpornościową, mniej
+wrażliwą na odstępstwa od normalności różnic.
+
+```{r}
+#| label: testy-stat
+best_wflow <- sac_ranking$wflow_id[1]
+competitors <- sac_ranking$wflow_id[-1]
+
+cat("Najlepszy workflow:", best_wflow, "\n")
+cat("Pozostałe:", paste(competitors, collapse = ", "), "\n\n")
+
+sac_tests <- purrr::map_dfr(competitors, function(comp_id) {
+  wide <- sac_fold_rmse %>%
+    filter(wflow_id %in% c(best_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  t_res <- t.test(
+    wide[[comp_id]],
+    wide[[best_wflow]],
+    paired = TRUE,
+    alternative = "greater"
+  )
+
+  tibble(
+    najlepszy     = best_wflow,
+    konkurent     = comp_id,
+    roznica_rmse  = mean(wide[[comp_id]] - wide[[best_wflow]]),
+    p_value       = t_res$p.value
+  )
+})
+
+sac_tests %>%
+  knitr::kable(digits = 4,
+    caption = "Porównanie sparowanym testem t-Studenta (H1: konkurent > najlepszy)")
+```
+
+```{r}
+#| label: testy-wilcoxon
+sac_tests_w <- purrr::map_dfr(competitors, function(comp_id) {
+  wide <- sac_fold_rmse %>%
+    filter(wflow_id %in% c(best_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  w_res <- wilcox.test(
+    wide[[comp_id]],
+    wide[[best_wflow]],
+    paired = TRUE,
+    alternative = "greater",
+    exact = FALSE
+  )
+
+  tibble(
+    najlepszy  = best_wflow,
+    konkurent  = comp_id,
+    p_value_wilcoxon = w_res$p.value
+  )
+})
+
+sac_tests_w %>%
+  knitr::kable(digits = 4,
+    caption = "Potwierdzenie — sparowany test Wilcoxona")
+```
+
+**Wniosek:** H0 zakłada równość średnich RMSE. H1 (jednostronna)
+mówi, że konkurent ma istotnie większy błąd. Jeżeli p-value < 0.05 —
+przewaga najlepszego modelu jest statystycznie istotna. W przeciwnym
+razie wybieramy model z najniższym średnim RMSE.
+
+```{r}
+#| label: select-best
+cat("Do tuningu — wybrany workflow:", best_wflow, "\n")
+```
+
+---
+
+## 6. Tuning hiperparametrów metodą symulowanego wyżarzania
+
+### Wybór modelu i przestrzeń hiperparametrów
+
+Najlepszym modelem w screeningu jest las losowy — dostrajamy jego
+hiperparametry: liczbę drzew (`trees`), liczbę losowanych predyktorów
+(`mtry`) oraz minimalną liczbę obserwacji w węźle (`min_n`).
+
+```{r}
+#| label: tuning-model
+rf_tune_model <- rand_forest(
+  trees = tune(), mtry = tune(), min_n = tune()
+) %>%
+  set_engine("ranger") %>%
+  set_mode("regression")
+
+rf_tune_wf <- workflow() %>%
+  add_recipe(recipe_C) %>%
+  add_model(rf_tune_model)
+```
+
+### Tuning metodą symulowanego wyżarzania (≥ 25 iteracji)
+
+```{r}
+#| label: sa-tuning
+#| cache: true
+set.seed(2026)
+sa_ctrl <- control_sim_anneal(verbose = FALSE)
+
+sa_results <- rf_tune_wf %>%
+  tune_sim_anneal(
+    resamples = sac_folds,
+    iter = 25,
+    metrics = metric_set(rmse),
+    control = sa_ctrl
+  )
+```
+
+### Najlepsze konfiguracje
+
+```{r}
+#| label: tune-best
+sa_best <- sa_results %>%
+  show_best(n = 5, metric = "rmse")
+
+sa_best %>%
+  knitr::kable(digits = 4,
+    caption = "Najlepsze konfiguracje po tuningu SA")
+```
+
+### Przebieg tuningu
+
+```{r}
+#| label: tune-plot
+sa_results %>%
+  collect_metrics() %>%
+  filter(.metric == "rmse") %>%
+  ggplot(aes(x = .iter, y = mean)) +
+  geom_point(alpha = 0.6) +
+  geom_line(alpha = 0.4) +
+  geom_smooth(method = "loess", se = TRUE, color = "red", span = 0.8) +
+  labs(
+    title = "Zmiana RMSE w kolejnych iteracjach SA",
+    x = "Iteracja", y = "RMSE (średnia z CV)"
+  )
+```
+
+**Komentarz:** Malejące wartości RMSE oznaczałyby poprawę modelu, ale
+należy porównać najlepszy wynik tuningu z wynikiem screeningu. W tym
+renderze tuning nie poprawił wyniku screeningu (około 0.3193 vs około
+0.3340), więc efekt należy interpretować jako brak poprawy, a nie
+automatyczne ulepszenie modelu.
+
+### Porównanie statystyczne: tuning vs screening
+
+```{r}
+#| label: tune-vs-screening
+best_params <- sa_results %>%
+  select_best(metric = "rmse")
+
+final_tune_wf <- rf_tune_wf %>%
+  finalize_workflow(best_params)
+
+set.seed(2026)
+tune_res <- final_tune_wf %>%
+  fit_resamples(
+    resamples = sac_folds,
+    metrics = metric_set(rmse, mae, rsq),
+    control = control_resamples(save_pred = TRUE)
+  )
+
+rmse_screening <- sac_fold_rmse %>%
+  filter(wflow_id == best_wflow) %>%
+  arrange(id) %>%
+  pull(.estimate)
+
+rmse_tuning <- tune_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse") %>%
+  arrange(id) %>%
+  pull(.estimate)
+
+cat("H0: średni RMSE po tuningu = średni RMSE ze screeningu\n")
+cat("H1: średni RMSE po tuningu < średni RMSE ze screeningu\n\n")
+
+t_test <- t.test(rmse_tuning, rmse_screening,
+                 paired = TRUE, alternative = "less")
+
+cat("Średnia RMSE po tuningu:", round(mean(rmse_tuning), 4), "\n")
+cat("Średnia RMSE ze screeningu:",
+    round(mean(rmse_screening), 4), "\n")
+rmse_improvement <- mean(rmse_screening) - mean(rmse_tuning)
+
+if (rmse_improvement > 0) {
+  cat("Poprawa:", round(rmse_improvement, 4), "\n")
+} else {
+  cat("Tuning nie przyniósł poprawy; różnica:",
+      round(rmse_improvement, 4), "\n")
+}
+cat("p-value (test sparowany, jednostronny):",
+    round(t_test$p.value, 5), "\n")
+```
+
+**Wniosek:** Jeżeli średni RMSE po tuningu jest niższy i p-value < 0.05,
+tuning przyniósł istotną statystycznie poprawę. W przeciwnym razie
+tuning nie poprawił wyniku screeningu i należy uczciwie raportować brak
+poprawy.
+
+---
+
+## 7. Ocena dopasowania na zbiorze testowym
+
+```{r}
+#| label: test-eval
+final_fit <- final_tune_wf %>%
+  last_fit(
+    sac_split,
+    metrics = metric_set(rmse, mae, rsq)
+  )
+
+final_metrics <- collect_metrics(final_fit)
+final_metrics %>%
+  knitr::kable(digits = 4, caption = "Metryki na zbiorze testowym")
+```
+
+```{r}
+#| label: test-eval-comment
+rmse_test <- final_metrics %>%
+  filter(.metric == "rmse") %>%
+  pull(.estimate)
+
+cat("RMSE testowy:", round(rmse_test, 4), "\n")
+cat("RMSE z CV (średnia po tuningu):",
+    round(mean(rmse_tuning), 4), "\n")
+cat("Różnica:", round(rmse_test - mean(rmse_tuning), 4), "\n")
+
+rsq_test <- final_metrics %>%
+  filter(.metric == "rsq") %>%
+  pull(.estimate)
+cat("R² testowy:", round(rsq_test, 4), "\n")
+
+if (rmse_test <= mean(rmse_tuning)) {
+  cat("Komentarz: RMSE testowy nie jest większy od średniego RMSE z CV,",
+      "co nie wskazuje na przetrenowanie.\n")
+} else {
+  cat("Komentarz: RMSE testowy jest większy od średniego RMSE z CV o",
+      round(rmse_test - mean(rmse_tuning), 4),
+      "co może wskazywać na słabszą generalizację na zbiorze testowym.\n")
+}
+```
+
+**Komentarz:** Wyniki są na skali `log(price)`. Interpretacja zależy od
+rzeczywistej różnicy między RMSE testowym i CV: niewielka różnica nie
+wskazuje na przetrenowanie, natomiast wyraźnie większy RMSE testowy
+oznacza słabszą generalizację. R² wskazuje, jaka część zmienności
+log(ceny) jest wyjaśniona przez model.
+
+---
+
+## 8. Graficzne porównanie wartości rzeczywistych i przewidywanych
+
+```{r}
+#| label: predicted-vs-actual
+final_fit %>%
+  collect_predictions() %>%
+  ggplot(aes(x = price, y = .pred)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "red",
+              linetype = "dashed", linewidth = 1) +
+  coord_obs_pred() +
+  labs(
+    title = "Wartości przewidywane vs rzeczywiste (zbiór testowy)",
+    subtitle = paste("Workflow:", best_wflow, "(skala logarytmiczna)"),
+    x = "log(Cena rzeczywista)", y = "log(Cena przewidywana)"
+  )
+```
+
+**Komentarz:** Linia y = x to idealna zgodność. Punkty blisko
+niej oznaczają dobre przewidywania. Większy rozrzut w górnym
+zakresie cen jest oczekiwany — mniej obserwacji i większa
+zmienność w segmencie drogich nieruchomości.

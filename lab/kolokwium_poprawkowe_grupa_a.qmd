@@ -1,0 +1,121 @@
+---
+title: "Kolokwium poprawkowe — grupa A"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(workflowsets)
+library(modeldata)
+library(finetune)
+```
+
+::: callout-important
+Kolokwium wykonaj w pliku `.qmd`. **W preambule (nagłówku YAML) ustaw opcję `embed-resources: true`** — jest to niezbędne, aby plik `.html` zawierał wszystkie zasoby (wykresy, tabele) w jednym samodzielnym pliku i otwierał się poprawnie na dowolnym komputerze.
+
+Ustaw `set.seed(2026)` we wszystkich miejscach, w których występuje losowanie: podział danych, resampling, screening modeli i tuning.
+
+Plik należy renderować do `.html`. Przez Teams przesyłamy **oba pliki**: `.qmd` oraz zrenderowany `.html`. Nazwij je według schematu `imie_nazwisko.qmd` oraz `imie_nazwisko.html`.
+
+Kompiluj plik co kilka minut, żeby pod koniec kolokwium nie pojawiły się niespodzianki techniczne. Wyniki obiektów, które długo się liczą, np. tuningu lub resamplingu, można zapisać do pliku `.rds`, a następnie wczytać w dalszej części pracy.
+
+Wszystkie kroki, wyniki, porównania i decyzje modelowe muszą być krótko skomentowane — **analiza bez komentarza nie jest zaliczana**.
+
+Maksymalnie można uzyskać **100 punktów**.
+:::
+
+## Zadanie
+
+Zbiór danych: `car_prices` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj cenę samochodu (`Price`) na podstawie jego charakterystyki technicznej i wyposażenia. Zbiór zawiera wyłącznie zmienne numeryczne, co upraszcza preprocessing, ale wymaga uwzględnienia różnych skal predyktorów i potencjalnych nieliniowości.
+
+Wykonaj:
+
+### 1. Przegląd danych (10 pkt)
+
+- Wczytaj dane `car_prices` i opisz ich podstawową strukturę: liczbę wierszy, kolumn, typy zmiennych.
+- Sprawdź, czy w danych występują braki oraz czy są zmienne o zerowej wariancji.
+- Zweryfikuj rozkład zmiennej wynikowej `Price` i skomentuj, czy wymaga ona transformacji przed modelowaniem.
+
+### 2. Analiza opisowa danych (10 pkt)
+
+- Przedstaw podstawowe statystyki opisowe dla kluczowych zmiennych numerycznych.
+- Wykonaj co najmniej dwa rodzaje wizualizacji pokazujących zależności między predyktorami a zmienną `Price` (np. wykresy rozrzutu, korelacje, boxploty).
+- Na podstawie analizy opisz krótko, które zmienne mogą mieć największy związek z ceną samochodu i jakie potencjalne problemy mogą pojawić się przy modelowaniu (np. współliniowość, rozkłady skośne).
+
+### 3. Przygotowanie preprocessingu — trzy reguły (18 pkt)
+
+Zdefiniuj trzy reguły preprocessingu w recepturze, każda dla innego modelu. **Reguła A** dla **SVM z jądrem radialnym** (silnik kernlab), **reguła B** dla **regresji liniowej z regularyzacją elastic net** (silnik glmnet), **reguła C** dla **XGBoost** (silnik xgboost).
+
+Każda reguła musi zawierać obsługę braków danych oraz usunięcie predyktorów o zerowej wariancji. Ponadto:
+
+- **Reguła A** (SVM) — model wrażliwy na skalę i odległości między obserwacjami:
+  - Transformacja logarytmiczna zmiennej wynikowej (redukcja skośności)
+  - Transformacja logarytmiczna silnie skośnych predyktorów numerycznych
+  - Standaryzacja wszystkich zmiennych numerycznych
+
+- **Reguła B** (regresja liniowa elastic net) — model z regularyzacją, wrażliwy na skalę:
+  - Inżynieria cech (np. wskaźniki złożone z istniejących zmiennych, przeliczenie jednostek)
+  - Standaryzacja wszystkich zmiennych numerycznych
+
+- **Reguła C** (XGBoost) — model drzewiasty, niewrażliwy na skalę:
+  - Inżynieria cech (np. wskaźniki złożone z istniejących zmiennych)
+  - **Bez standaryzacji** — modele drzewiaste jej nie wymagają
+
+Wyjaśnij krótko, dlaczego każda reguła jest dostosowana do wymagań konkretnego modelu.
+
+### 4. Przygotowanie trzech modeli (12 pkt)
+
+Zdefiniuj trzy modele regresyjne:
+
+- **SVM z jądrem radialnym** (silnik kernlab) — z ustalonymi na stałe wartościami parametrów kosztu i szerokości jądra na tym etapie (tuning będzie wykonany później).
+- **Regresja liniowa z regularyzacją elastic net** (silnik glmnet).
+- **XGBoost** (silnik xgboost) — z ustalonymi na stałe wartościami hiperparametrów na tym etapie (tuning będzie wykonany później).
+
+### 5. Screening modeli i wybór najlepszego (22 pkt)
+
+- Podziel dane na zbiór treningowy i testowy (proporcja `80/20`) ze stratyfikacją względem `Price`.
+- Zdefiniuj schemat resamplingu: 10-krotna walidacja krzyżowa ze stratyfikacją względem `Price`.
+- Połącz każdy model wyłącznie z odpowiadającą mu regułą preprocessingu (SVM z regułą A, regresja liniowa z regułą B, XGBoost z regułą C), tworząc trzy workflowy. **Nie krzyżuj** automatycznie każdego preprocessingu z każdym modelem.
+- Oceń wszystkie trzy workflowy w tym samym schemacie resamplingu, używając co najmniej metryk `rmse`, `mae` i `rsq`.
+- Przedstaw ranking workflowów według głównej metryki (`rmse`) oraz wizualizację pokazującą stabilność wyników między foldami (wykres pudełkowy).
+- Na podstawie wyników wybierz **jeden najlepszy model**:
+  - Przeprowadź formalne testy statystyczne (sparowany test t-Studenta lub test Wilcoxona) porównujące wyniki najlepszego workflowu z pozostałymi na tych samych foldach.
+  - Jeżeli test wskazuje istotną statystycznie różnicę — wybierz lepszy model.
+  - Jeżeli testy nie wykazują istotnych różnic — wybierz model z najlepszą statystyką punktową (najniższy średni `rmse`).
+  - Zapisz hipotezę zerową i alternatywną, podaj wartość `p-value` i sformułuj wniosek praktyczny.
+
+### 6. Tuning hiperparametrów wybranego modelu metodą symulowanego wyżarzania (15 pkt)
+
+- Dla wybranego modelu przygotuj przestrzeń hiperparametrów do strojenia. Wykorzystaj **wszystkie dostępne** hiperparametry danego modelu, jednak nie mniej niż **dwa**. Jeżeli model udostępnia ich trzy lub więcej, dostrój co najmniej trzy.
+- Przeprowadź tuning metodą symulowanego wyżarzania. Użyj co najmniej 20 iteracji.
+- Przedstaw przebieg tuningu: tabelę najlepszych konfiguracji, wykres zmian jakości w kolejnych iteracjach oraz komentarz, czy procedura znalazła lepszą konfigurację niż wartości domyślne ze screeningu i czy metoda systematycznie poprawiała wynik.
+- Porównaj formalnie (testem statystycznym) najlepszą konfigurację po tuningu z najlepszym modelem ze screeningu — oceń, czy tuning przyniósł istotną poprawę.
+
+### 7. Ocena dopasowania na zbiorze testowym (8 pkt)
+
+- Sfinalizuj wybrany model z optymalnymi hiperparametrami i oceń go na zbiorze testowym.
+- Podaj wartości co najmniej **trzech metryk** (`rmse`, `mae`, `rsq`).
+- Skomentuj, czy błąd testowy jest zbliżony do wyników z resamplingu, czy może wskazuje na przetrenowanie procedury wyboru modelu.
+
+### 8. Graficzne porównanie wartości rzeczywistych i przewidywanych (5 pkt)
+
+- Wykonaj wykres rozrzutu wartości przewidywanych względem rzeczywistych na zbiorze testowym.
+- Dodaj linię odniesienia (y = x) i skomentuj, jak dobrze model odtwarza obserwowane ceny oraz w jakim zakresie cen popełnia największe błędy.
+
+**Razem: 100 pkt**
+
+## Skala ocen
+
+0–50 pkt — 2,0; 51–60 pkt — 3,0; 61–70 pkt — 3,5; 71–80 pkt — 4,0; 81–90 pkt — 4,5; 91–100 pkt — 5,0.

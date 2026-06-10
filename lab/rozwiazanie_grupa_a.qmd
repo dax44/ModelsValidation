@@ -1,0 +1,627 @@
+---
+title: "Rozwiązanie kolokwium poprawkowego — grupa A"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidymodels)
+library(workflowsets)
+library(modeldata)
+library(finetune)
+library(patchwork)
+library(moments)
+```
+
+## 1. Przegląd danych
+
+Wczytujemy dane `car_prices` z pakietu `modeldata`.
+
+```{r}
+#| label: wczytanie-danych
+data("car_prices")
+```
+
+**Struktura** — wymiary i typy zmiennych:
+
+```{r}
+#| label: struktura
+cat("Liczba wierszy:", nrow(car_prices), "\n")
+cat("Liczba kolumn:", ncol(car_prices), "\n\n")
+str(car_prices, give.attr = FALSE)
+```
+
+Zbiór zawiera **804 obserwacje** i **18 zmiennych**, wszystkie numeryczne
+(`integer` lub `numeric`). Zmienne takie jak `Buick`, `Cadillac`, `Cruise`,
+`Leather` itp. są wskaźnikami `0/1` — nie wymagają dodatkowego kodowania.
+
+### Braki danych i zmienne o zerowej wariancji
+
+```{r}
+#| label: braki-zv
+cat("Liczba braków w każdej kolumnie:\n")
+colSums(is.na(car_prices))
+
+cat("\nLiczba unikalnych wartości w każdej kolumnie:\n")
+sapply(car_prices, function(x) length(unique(x)))
+```
+
+**Komentarz:** W danych nie występują braki. Wszystkie zmienne mają
+więcej niż jedną unikalną wartość — brak predyktorów o zerowej
+wariancji. Krok `step_nzv()` w recepturze
+pozostawiamy jako zabezpieczenie formalne.
+
+### Rozkład zmiennej wynikowej `Price`
+
+```{r}
+#| label: rozklad-price
+ggplot(car_prices, aes(x = Price)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.8) +
+  labs(title = "Histogram ceny (Price)", x = "Cena [USD]", y = "Liczba")
+
+ggplot(car_prices, aes(sample = Price)) +
+  geom_qq_line(color = "red") +
+  geom_qq(alpha = 0.5) +
+  labs(title = "Wykres kwantyl-kwantyl (Price)")
+```
+
+```{r}
+#| label: skewness-price
+cat("Skośność Price:", skewness(car_prices$Price), "\n")
+cat("Kurtoza Price:", kurtosis(car_prices$Price), "\n")
+```
+
+Rozkład `Price` jest **prawostronnie skośny** — większość samochodów
+kosztuje \$10 000 – \$40 000, ale występują też pojazdy o cenach
+\$60 000+. Transformacja logarytmiczna jest wskazana przed modelowaniem
+— szczególnie dla SVM wrażliwego na rozkład reszt. **Aby zachować
+porównywalność metryk między wszystkimi workflowami, stosujemy
+transformację `log(Price)` na poziomie danych przed podziałem**.
+
+---
+
+## 2. Analiza opisowa danych
+
+### Podstawowe statystyki opisowe
+
+```{r}
+#| label: desc-stats
+car_prices %>%
+  select(Price, Mileage, Cylinder, Doors) %>%
+  skimr::skim()
+```
+
+### Wizualizacje zależności między predyktorami a `Price`
+
+**Wykres 1: Macierz korelacji** dla wybranych zmiennych numerycznych.
+
+```{r}
+#| label: cor-plot
+cor_matrix <- car_prices %>%
+  select(Price, Mileage, Cylinder, Doors, Cruise, Sound, Leather) %>%
+  cor() %>%
+  round(2)
+
+cor_matrix
+```
+
+**Wykres 2: Wykresy rozrzutu** — przebieg i cylindry vs cena.
+
+```{r}
+#| label: scatter-plots
+p1 <- ggplot(car_prices, aes(x = Mileage, y = Price)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "loess", se = TRUE, color = "red") +
+  labs(title = "Cena vs przebieg")
+
+p2 <- ggplot(car_prices, aes(x = as.factor(Cylinder), y = Price)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.6) +
+  labs(title = "Cena vs liczba cylindrów", x = "Cylindry")
+
+p1 + p2
+```
+
+**Wykres 3: Wyposażenie** — tempomat i skórzana tapicerka vs cena.
+
+```{r}
+#| label: scatter-plots2
+p3 <- ggplot(car_prices, aes(x = as.factor(Cruise), y = Price)) +
+  geom_boxplot(fill = "coral", alpha = 0.6) +
+  labs(title = "Cena vs tempomat", x = "Tempomat (1=tak)")
+
+p4 <- ggplot(car_prices, aes(x = as.factor(Leather), y = Price)) +
+  geom_boxplot(fill = "darkgreen", alpha = 0.6) +
+  labs(title = "Cena vs skórzana tapicerka", x = "Skóra (1=tak)")
+
+p3 + p4
+```
+
+### Wnioski z analizy opisowej
+
+- **Przebieg (`Mileage`)** — ujemna korelacja z ceną (r ≈ −0.59);
+- **Liczba cylindrów** — dodatnia korelacja z ceną;
+- **Tempomat, skórzana tapicerka, system audio** — obecność tych
+  elementów dodatnio koreluje z ceną;
+- **Potencjalne problemy:** skośny rozkład `Price` i `Mileage`,
+  zmienne wskaźnikowe marek mogą wprowadzać redundancję, różne
+  skale predyktorów wymagają standaryzacji dla SVM i elastic net.
+
+---
+
+```{r}
+#| label: car-data
+car_data <- car_prices %>%
+  mutate(Price = log(Price))
+```
+
+## 3. Przygotowanie preprocessingu — trzy reguły
+
+### Reguła A — SVM z jądrem radialnym (kernlab)
+
+```{r}
+#| label: recipe-a
+recipe_A <- recipe(Price ~ ., data = car_data) %>%
+  step_log(Mileage, offset = 1) %>%
+  step_nzv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+**Uzasadnienie:** `step_log(Mileage)` redukuje skośność przebiegu,
+`step_nzv()` usuwa predyktory o wariancji bliskiej zeru.
+`step_normalize()` standaryzuje zmienne do `mean = 0` i
+`sd = 1`, ponieważ SVM z jądrem radialnym wykorzystuje odległości
+euklidesowe i jest wrażliwy na skalę predyktorów.
+
+### Reguła B — regresja liniowa elastic net (glmnet)
+
+```{r}
+#| label: recipe-b
+recipe_B <- recipe(Price ~ ., data = car_data) %>%
+  step_nzv(all_predictors()) %>%
+  step_mutate(
+    power_to_weight = Cylinder / (Mileage / 1000 + 1),
+    luxury_score = Leather + Cruise + Sound
+  ) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+**Uzasadnienie:** `step_nzv()` usuwa predyktory o wariancji bliskiej
+zeru. `step_mutate()` tworzy cechy złożone `power_to_weight` i
+`luxury_score`, które mogą pomóc regularyzacji w selekcji informacji z
+predyktorów. `step_normalize()` jest wymagane, ponieważ kary L1/L2 w
+elastic net zależą od skali predyktorów.
+
+### Reguła C — XGBoost (xgboost)
+
+```{r}
+#| label: recipe-c
+recipe_C <- recipe(Price ~ ., data = car_data) %>%
+  step_nzv(all_predictors()) %>%
+  step_mutate(
+    age_mileage_interaction = Mileage * Cylinder,
+    luxury_score = Leather + Cruise + Sound
+  )
+```
+
+**Uzasadnienie:** `step_nzv()` usuwa predyktory o wariancji bliskiej
+zeru. `step_mutate()` tworzy
+`age_mileage_interaction` oraz `luxury_score`, czyli cechy opisujące
+łączny wpływ przebiegu, cylindrów i wyposażenia. Nie stosujemy
+standaryzacji, ponieważ modele drzewiaste, takie jak XGBoost, są
+niewrażliwe na skalę predyktorów.
+
+---
+
+## 4. Przygotowanie trzech modeli
+
+Wszystkie parametry na tym etapie są **ustalone na stałe** — tuning
+zostanie wykonany później dla wybranego modelu (krok 6).
+
+```{r}
+#| label: modele-def
+model_SVM <- svm_rbf() %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
+model_GLM <- linear_reg(penalty = 0.01, mixture = 0.5) %>%
+  set_engine("glmnet") %>%
+  set_mode("regression")
+
+model_XGB <- boost_tree() %>%
+  set_engine("xgboost") %>%
+  set_mode("regression")
+```
+
+---
+
+## 5. Screening modeli i wybór najlepszego
+
+### Podział na zbiór treningowy i testowy
+
+Aby zachować porównywalność RMSE między workflowami, zmienna
+wynikowa jest logarytmowana **przed** podziałem danych — wszystkie
+modele działają na tej samej skali.
+
+```{r}
+#| label: split
+set.seed(2026)
+
+car_split <- initial_split(car_data, prop = 0.80, strata = Price)
+car_train <- training(car_split)
+car_test  <- testing(car_split)
+
+cat("Trening:", nrow(car_train), "obserwacji | Test:",
+    nrow(car_test), "obserwacji\n")
+```
+
+### Schemat resamplingu
+
+```{r}
+#| label: resampling
+set.seed(2026)
+car_folds <- vfold_cv(car_train, v = 10, strata = Price)
+```
+
+### Workflow set
+
+Łączymy każdy model wyłącznie z odpowiadającą mu regułą
+(`cross = FALSE`).
+
+```{r}
+#| label: wf-set
+car_workflows <- workflow_set(
+  preproc = list(
+    A = recipe_A,
+    B = recipe_B,
+    C = recipe_C
+  ),
+  models = list(
+    SVM = model_SVM,
+    GLM = model_GLM,
+    XGB = model_XGB
+  ),
+  cross = FALSE
+)
+
+car_workflows
+```
+
+### Ocena w 10-krotnej walidacji krzyżowej
+
+```{r}
+#| label: resample-fit
+set.seed(2026)
+
+car_res <- workflow_map(
+  car_workflows,
+  "fit_resamples",
+  seed = 2026,
+  resamples = car_folds,
+  metrics = metric_set(rmse, mae, rsq),
+  control = control_resamples(save_pred = TRUE),
+  verbose = FALSE
+)
+```
+
+### Ranking według RMSE
+
+```{r}
+#| label: ranking
+car_metrics <- collect_metrics(car_res)
+
+car_ranking <- car_metrics %>%
+  filter(.metric == "rmse") %>%
+  arrange(mean)
+
+car_ranking %>%
+  select(wflow_id, mean, std_err, n) %>%
+  knitr::kable(digits = 4, caption = "Ranking workflowów według RMSE")
+```
+
+### Wizualizacja stabilności — wykres pudełkowy
+
+```{r}
+#| label: boxplot-res
+car_fold_rmse <- car_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse")
+
+car_fold_rmse %>%
+  ggplot(aes(x = reorder(wflow_id, .estimate, median),
+             y = .estimate)) +
+  geom_boxplot(fill = "grey90") +
+  geom_point(alpha = 0.65, position = position_jitter(width = 0.08)) +
+  coord_flip() +
+  labs(
+    x = "Workflow",
+    y = "RMSE w foldach",
+    title = "Stabilność RMSE między foldami 10-fold CV"
+  )
+```
+
+### Formalne testy statystyczne
+
+Stosujemy dwa testy, ponieważ odpowiadają na to samo pytanie przy
+różnych założeniach. Sparowany test t-Studenta jest metodą podstawową,
+bo porównuje średnie różnice RMSE uzyskane na tych samych foldach.
+Sparowany test rang Wilcoxona pełni rolę kontroli odporności — jest
+mniej zależny od normalności rozkładu różnic. Decyzję modelową opieramy
+na teście t-Studenta, a test Wilcoxona traktujemy jako potwierdzenie
+stabilności wniosku.
+
+```{r}
+#| label: testy-stat
+best_wflow <- car_ranking$wflow_id[1]
+competitors <- car_ranking$wflow_id[-1]
+
+cat("Najlepszy workflow:", best_wflow, "\n")
+cat("Pozostałe:", paste(competitors, collapse = ", "), "\n\n")
+
+car_tests <- purrr::map_dfr(competitors, function(comp_id) {
+  wide <- car_fold_rmse %>%
+    filter(wflow_id %in% c(best_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  t_res <- t.test(
+    wide[[comp_id]],
+    wide[[best_wflow]],
+    paired = TRUE,
+    alternative = "greater"
+  )
+
+  tibble(
+    najlepszy     = best_wflow,
+    konkurent     = comp_id,
+    roznica_rmse  = mean(wide[[comp_id]] - wide[[best_wflow]]),
+    p_value       = t_res$p.value
+  )
+})
+
+car_tests %>%
+  knitr::kable(digits = 4,
+    caption = "Porównanie sparowanym testem t-Studenta (H1: konkurent > najlepszy)")
+```
+
+```{r}
+#| label: testy-wilcoxon
+car_tests_w <- purrr::map_dfr(competitors, function(comp_id) {
+  wide <- car_fold_rmse %>%
+    filter(wflow_id %in% c(best_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  w_res <- wilcox.test(
+    wide[[comp_id]],
+    wide[[best_wflow]],
+    paired = TRUE,
+    alternative = "greater",
+    exact = FALSE
+  )
+
+  tibble(
+    najlepszy  = best_wflow,
+    konkurent  = comp_id,
+    p_value_wilcoxon = w_res$p.value
+  )
+})
+
+car_tests_w %>%
+  knitr::kable(digits = 4,
+    caption = "Potwierdzenie — sparowany test Wilcoxona")
+```
+
+**Wniosek:** Hipoteza zerowa H0 zakłada, że średni RMSE najlepszego
+workflowu jest równy średniemu RMSE konkurenta. H1 (jednostronna) mówi,
+że konkurent ma istotnie większy RMSE. Jeżeli p-value < 0.05 —
+przewaga najlepszego modelu jest statystycznie istotna. W przeciwnym
+razie wybieramy model z najniższą średnią RMSE.
+
+```{r}
+#| label: select-best
+cat("Do tuningu — wybrany workflow:", best_wflow, "\n")
+```
+
+---
+
+## 6. Tuning hiperparametrów metodą symulowanego wyżarzania
+
+### Model XGBoost i przestrzeń hiperparametrów
+
+Najlepszym modelem po screeningu jest workflow `C_XGB`, dlatego tuning
+wykonujemy bez dodatkowych rozgałęzień tylko dla XGBoost.
+
+```{r}
+#| label: tuning-model
+xgb_tune_model <- boost_tree(
+  trees = tune(), tree_depth = tune(),
+  learn_rate = tune(), min_n = tune()
+) %>%
+  set_engine("xgboost") %>%
+  set_mode("regression")
+
+xgb_tune_wf <- workflow() %>%
+  add_recipe(recipe_C) %>%
+  add_model(xgb_tune_model)
+```
+
+### Tuning metodą symulowanego wyżarzania (≥ 25 iteracji)
+
+```{r}
+#| label: sa-tuning
+#| cache: true
+set.seed(2026)
+sa_ctrl <- control_sim_anneal(verbose = FALSE)
+
+sa_results <- xgb_tune_wf %>%
+  tune_sim_anneal(
+    resamples = car_folds,
+    iter = 25,
+    metrics = metric_set(rmse),
+    control = sa_ctrl
+  )
+```
+
+### Najlepsze konfiguracje
+
+```{r}
+#| label: tune-best
+sa_best <- sa_results %>%
+  show_best(n = 5, metric = "rmse")
+
+sa_best %>%
+  knitr::kable(digits = 4,
+    caption = "Najlepsze konfiguracje po tuningu SA")
+```
+
+### Przebieg tuningu
+
+```{r}
+#| label: tune-plot
+sa_results %>%
+  collect_metrics() %>%
+  filter(.metric == "rmse") %>%
+  ggplot(aes(x = .iter, y = mean)) +
+  geom_point(alpha = 0.6) +
+  geom_line(alpha = 0.4) +
+  geom_smooth(method = "loess", se = TRUE, color = "red", span = 0.8) +
+  labs(
+    title = "Zmiana RMSE w kolejnych iteracjach SA",
+    x = "Iteracja", y = "RMSE (średnia z CV)"
+  )
+```
+
+**Komentarz:** W wynikach grupy A tuning obniżył średni RMSE względem
+screeningu (około 0.1018 → około 0.0999), więc symulowane wyżarzanie
+znalazło korzystniejszą konfigurację XGBoost. Wykres pozwala ocenić,
+czy poprawa pojawiała się stopniowo i czy algorytm osiągnął plateau.
+
+### Porównanie statystyczne: tuning vs screening
+
+```{r}
+#| label: tune-vs-screening
+best_params <- sa_results %>%
+  select_best(metric = "rmse")
+
+final_tune_wf <- xgb_tune_wf %>%
+  finalize_workflow(best_params)
+
+set.seed(2026)
+tune_res <- final_tune_wf %>%
+  fit_resamples(
+    resamples = car_folds,
+    metrics = metric_set(rmse, mae, rsq),
+    control = control_resamples(save_pred = TRUE)
+  )
+
+rmse_screening <- car_fold_rmse %>%
+  filter(wflow_id == "C_XGB") %>%
+  arrange(id) %>%
+  pull(.estimate)
+
+rmse_tuning <- tune_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse") %>%
+  arrange(id) %>%
+  pull(.estimate)
+
+cat("H0: średni RMSE po tuningu = średni RMSE ze screeningu\n")
+cat("H1: średni RMSE po tuningu < średni RMSE ze screeningu\n\n")
+
+t_test <- t.test(rmse_tuning, rmse_screening,
+                 paired = TRUE, alternative = "less")
+
+rmse_diff <- mean(rmse_screening) - mean(rmse_tuning)
+poprawa_txt <- dplyr::if_else(
+  rmse_diff > 0,
+  paste0("Poprawa: ", round(rmse_diff, 4)),
+  paste0("Tuning nie przyniósł poprawy; różnica: ", round(rmse_diff, 4))
+)
+
+cat("Średnia RMSE po tuningu:", round(mean(rmse_tuning), 4), "\n")
+cat("Średnia RMSE ze screeningu:",
+    round(mean(rmse_screening), 4), "\n")
+cat(poprawa_txt, "\n")
+cat("p-value (test sparowany, jednostronny):",
+    round(t_test$p.value, 5), "\n")
+```
+
+**Wniosek:** Dla grupy A tuning obniżył średni RMSE względem screeningu,
+więc praktycznie poprawił wynik modelu XGBoost. Istotność tej poprawy
+oceniamy dodatkowo sparowanym testem t-Studenta; gdy p-value ≥ 0.05,
+poprawa nie jest statystycznie istotna mimo niższej średniej RMSE.
+
+---
+
+## 7. Ocena dopasowania na zbiorze testowym
+
+```{r}
+#| label: test-eval
+final_fit <- final_tune_wf %>%
+  last_fit(
+    car_split,
+    metrics = metric_set(rmse, mae, rsq)
+  )
+
+final_metrics <- collect_metrics(final_fit)
+final_metrics %>%
+  knitr::kable(digits = 4, caption = "Metryki na zbiorze testowym")
+```
+
+```{r}
+#| label: test-eval-comment
+rmse_test <- final_metrics %>%
+  filter(.metric == "rmse") %>%
+  pull(.estimate)
+
+cat("RMSE testowy:", round(rmse_test, 4), "\n")
+cat("RMSE z CV (średnia po tuningu):",
+    round(mean(rmse_tuning), 4), "\n")
+cat("Różnica:", round(rmse_test - mean(rmse_tuning), 4), "\n")
+
+close_to_cv <- abs(rmse_test - mean(rmse_tuning)) <= sd(rmse_tuning)
+cat(dplyr::if_else(
+  close_to_cv,
+  "RMSE testowy jest bliski RMSE z CV; nie widać wyraźnego przetrenowania.",
+  "RMSE testowy odbiega od RMSE z CV; wniosek o braku przetrenowania wymaga ostrożności."
+), "\n")
+```
+
+**Komentarz:** Wyniki przedstawione są na skali `log(Price)`.
+Ocena przetrenowania zależy od porównania RMSE testowego ze średnim RMSE
+z walidacji krzyżowej; tylko bliskie wartości uzasadniają wniosek o
+braku wyraźnego przetrenowania.
+
+---
+
+## 8. Graficzne porównanie wartości rzeczywistych i przewidywanych
+
+```{r}
+#| label: predicted-vs-actual
+final_fit %>%
+  collect_predictions() %>%
+  ggplot(aes(x = Price, y = .pred)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "red",
+              linetype = "dashed", linewidth = 1) +
+  coord_obs_pred() +
+  labs(
+    title = "Wartości przewidywane vs rzeczywiste (zbiór testowy)",
+    subtitle = paste("Workflow:", best_wflow, "(skala logarytmiczna)"),
+    x = "log(Cena rzeczywista)", y = "log(Cena przewidywana)"
+  )
+```
+
+**Komentarz:** Punkty blisko linii y = x oznaczają dobrą zgodność
+przewidywań. Rozrzut w górnym zakresie cen jest naturalny — mniej
+obserwacji i większa zmienność w segmencie drogich samochodów.

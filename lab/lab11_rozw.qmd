@@ -1,0 +1,403 @@
+---
+title: "Rozwiązania do zadań z lab 11"
+subtitle: "Siatki losowe, wyścigi i paralelizacja tuningu"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+```
+
+## Zadanie 1. Siatka losowa i finalizowanie modelu
+
+Przygotowujemy ograniczony zbiór danych oraz podział trening-test.
+
+```{r}
+set.seed(2026)
+
+concrete_small <- concrete %>%
+  slice_sample(n = 650)
+
+concrete_split <- initial_split(
+  concrete_small,
+  prop = 0.8,
+  strata = compressive_strength
+)
+
+concrete_train <- training(concrete_split)
+concrete_test <- testing(concrete_split)
+
+set.seed(2026)
+concrete_folds <- vfold_cv(
+  concrete_train,
+  v = 5,
+  strata = compressive_strength
+)
+```
+
+Receptura skaluje predyktory, co jest przydatne dla modeli wykorzystujących
+kombinacje zmiennych liczbowych.
+
+```{r}
+concrete_rec <- recipe(compressive_strength ~ ., data = concrete_train) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Model MARS ma trzy hiperparametry oznaczone do strojenia.
+
+```{r}
+mars_spec <- mars(
+  num_terms = tune(),
+  prod_degree = tune(),
+  prune_method = tune()
+) %>%
+  set_engine("earth") %>%
+  set_mode("regression")
+
+concrete_wf <- workflow() %>%
+  add_recipe(concrete_rec) %>%
+  add_model(mars_spec)
+```
+
+Wyodrębniamy parametry i zmieniamy ich zakresy na użyteczne dla tej skali
+danych.
+
+```{r}
+concrete_params <- concrete_wf %>%
+  extract_parameter_set_dials() %>%
+  update(
+    num_terms = num_terms(c(5L, 35L)),
+    prod_degree = prod_degree(c(1L, 2L)),
+    prune_method = prune_method(values = c("backward", "none"))
+  )
+
+concrete_params
+```
+
+Siatka losowa nie zawiera wszystkich kombinacji poziomów. Losujemy `14`
+kandydatów z podanych zakresów.
+
+```{r}
+set.seed(2026)
+
+concrete_grid <- concrete_params %>%
+  grid_random(size = 14)
+
+concrete_grid
+```
+
+Uruchamiamy strojenie na foldach walidacji krzyżowej.
+
+```{r}
+set.seed(2026)
+
+concrete_tune <- tune_grid(
+  concrete_wf,
+  resamples = concrete_folds,
+  grid = concrete_grid,
+  metrics = metric_set(rmse, rsq),
+  control = control_grid(save_pred = TRUE)
+)
+```
+
+Najlepsze konfiguracje według `rmse`:
+
+```{r}
+show_best(concrete_tune, metric = "rmse", n = 6)
+```
+
+Wybieramy najlepsze parametry i wstawiamy je do workflowu.
+
+```{r}
+best_concrete <- select_best(concrete_tune, metric = "rmse")
+best_concrete
+
+final_concrete_wf <- finalize_workflow(concrete_wf, best_concrete)
+final_concrete_wf
+```
+
+`last_fit()` dopasowuje sfinalizowany workflow na całym zbiorze treningowym i
+ocenia go na zbiorze testowym.
+
+```{r}
+set.seed(2026)
+
+concrete_last <- last_fit(
+  final_concrete_wf,
+  split = concrete_split,
+  metrics = metric_set(rmse, rsq)
+)
+
+collect_metrics(concrete_last)
+```
+
+Wynik testowy jest oceną modelu po zakończeniu procesu wyboru hiperparametrów,
+a nie częścią strojenia.
+
+## Zadanie 2. Metoda wyścigów
+
+Ładujemy pakiety potrzebne do modelu reguł C5.0 i metody wyścigów.
+
+```{r}
+library(rules)
+library(finetune)
+```
+
+Przygotowujemy dane i ustawiamy klasę `"bad"` jako pierwszy poziom zmiennej
+wynikowej.
+
+```{r}
+set.seed(2026)
+
+credit_small <- credit_data %>%
+  drop_na() %>%
+  slice_sample(n = 900) %>%
+  mutate(Status = forcats::fct_relevel(Status, "bad"))
+
+credit_split <- initial_split(credit_small, prop = 0.75, strata = Status)
+credit_train <- training(credit_split)
+credit_test <- testing(credit_split)
+
+set.seed(2026)
+credit_folds <- vfold_cv(credit_train, v = 6, strata = Status)
+```
+
+W recepturze grupujemy rzadkie poziomy predyktorów nominalnych. Nazwa poziomu
+zastępczego jest ustawiona jawnie, ponieważ w danych występuje już poziom
+`"other"`.
+
+```{r}
+credit_rec <- recipe(Status ~ ., data = credit_train) %>%
+  step_other(all_nominal_predictors(), threshold = 0.03, other = "rzadkie") %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors())
+```
+
+Specyfikujemy model reguł C5.0.
+
+```{r}
+c5_spec <- C5_rules(
+  trees = tune(),
+  min_n = tune()
+) %>%
+  set_engine("C5.0") %>%
+  set_mode("classification")
+
+credit_wf <- workflow() %>%
+  add_recipe(credit_rec) %>%
+  add_model(c5_spec)
+```
+
+Tworzymy regularną siatkę kandydatów.
+
+```{r}
+credit_params <- credit_wf %>%
+  extract_parameter_set_dials() %>%
+  update(
+    trees = trees(c(1L, 30L)),
+    min_n = min_n(c(2L, 25L))
+  )
+
+credit_grid <- credit_params %>%
+  grid_regular(levels = c(trees = 5, min_n = 4))
+
+credit_grid
+```
+
+Metoda wyścigów najpierw ocenia wszystkich kandydatów na początkowej części
+resampli, a następnie eliminuje słabe konfiguracje.
+
+```{r}
+set.seed(2026)
+
+credit_race <- tune_race_anova(
+  credit_wf,
+  resamples = credit_folds,
+  grid = credit_grid,
+  metrics = metric_set(roc_auc, accuracy),
+  control = control_race(verbose_elim = TRUE, save_pred = TRUE)
+)
+```
+
+`show_best()` pokazuje konfiguracje, które nie zostały wyeliminowane przed
+zakończeniem procedury.
+
+```{r}
+show_best(credit_race, metric = "roc_auc", n = 8)
+```
+
+Można sprawdzić liczbę resampli użytych do oceny poszczególnych konfiguracji.
+Konfiguracje odrzucone wcześniej mają mniej wyników cząstkowych.
+
+```{r}
+credit_race %>%
+  collect_metrics(summarize = FALSE) %>%
+  count(.config, .metric) %>%
+  arrange(.metric, n)
+```
+
+Finalizujemy workflow według `roc_auc`.
+
+```{r}
+best_credit <- select_best(credit_race, metric = "roc_auc")
+best_credit
+
+final_credit_wf <- finalize_workflow(credit_wf, best_credit)
+```
+
+Ocena na zbiorze testowym:
+
+```{r}
+set.seed(2026)
+
+credit_last <- last_fit(
+  final_credit_wf,
+  split = credit_split,
+  metrics = metric_set(roc_auc, accuracy)
+)
+
+collect_metrics(credit_last)
+```
+
+Metoda wyścigów zmniejsza liczbę pełnych dopasowań, gdy część kandydatów jest
+wyraźnie słabsza po początkowych resamplach.
+
+## Zadanie 3. Paralelizacja przy kosztownym preprocessingu
+
+Ładujemy pakiety używane przez model bagged MARS i backend równoległy.
+
+```{r}
+library(baguette)
+library(future)
+```
+
+Przygotowujemy ograniczoną próbę danych.
+
+```{r}
+set.seed(2026)
+
+meats_small <- meats %>%
+  slice_sample(n = 180)
+
+meats_split <- initial_split(meats_small, prop = 0.8, strata = water)
+meats_train <- training(meats_split)
+meats_test <- testing(meats_split)
+
+set.seed(2026)
+meats_folds <- vfold_cv(meats_train, v = 4, strata = water)
+```
+
+Preprocessing jest kosztowny, ponieważ dla każdego resampla obejmuje
+transformację Yeo-Johnsona, usuwanie silnie skorelowanych predyktorów i PCA.
+
+```{r}
+meats_rec <- recipe(water ~ ., data = meats_train) %>%
+  step_YeoJohnson(all_numeric_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_corr(all_numeric_predictors(), threshold = 0.95) %>%
+  step_pca(all_numeric_predictors(), num_comp = tune()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Model bagged MARS stroimy względem liczby składników i stopnia interakcji.
+
+```{r}
+bag_mars_spec <- bag_mars(
+  num_terms = tune(),
+  prod_degree = tune()
+) %>%
+  set_engine("earth") %>%
+  set_mode("regression")
+
+meats_wf <- workflow() %>%
+  add_recipe(meats_rec) %>%
+  add_model(bag_mars_spec)
+```
+
+Tworzymy niewielką siatkę regularną, aby zadanie było wykonalne czasowo.
+
+```{r}
+meats_params <- meats_wf %>%
+  extract_parameter_set_dials() %>%
+  update(
+    num_comp = num_comp(c(5L, 25L)),
+    num_terms = num_terms(c(5L, 25L)),
+    prod_degree = prod_degree(c(1L, 2L))
+  )
+
+meats_grid <- meats_params %>%
+  grid_regular(levels = c(num_comp = 2, num_terms = 3, prod_degree = 2))
+
+meats_grid
+```
+
+Ponieważ przetwarzanie wstępne jest kosztowne, wybieramy równoleglenie po
+resamplach. Wtedy receptura jest przygotowywana raz dla danego foldu, a nie
+osobno dla każdej kombinacji parametrów w tym foldzie.
+
+```{r}
+old_plan <- future::plan()
+future::plan(future::multicore, workers = 2)
+
+set.seed(2026)
+
+meats_time <- system.time(
+  meats_tune <- tune_grid(
+    meats_wf,
+    resamples = meats_folds,
+    grid = meats_grid,
+    metrics = metric_set(rmse, rsq),
+    control = control_grid(
+      save_pred = TRUE,
+      parallel_over = "resamples"
+    )
+  )
+)
+
+future::plan(old_plan)
+
+meats_time
+```
+
+Najlepsze konfiguracje według `rmse`:
+
+```{r}
+show_best(meats_tune, metric = "rmse", n = 6)
+```
+
+Finalizujemy workflow.
+
+```{r}
+best_meats <- select_best(meats_tune, metric = "rmse")
+best_meats
+
+final_meats_wf <- finalize_workflow(meats_wf, best_meats)
+```
+
+Ocena na zbiorze testowym:
+
+```{r}
+set.seed(2026)
+
+meats_last <- last_fit(
+  final_meats_wf,
+  split = meats_split,
+  metrics = metric_set(rmse, rsq)
+)
+
+collect_metrics(meats_last)
+```
+
+Dla kosztownego preprocessingu równoleglenie po resamplach ogranicza
+powtarzanie tych samych transformacji. Przy innym układzie kosztów, np. bardzo
+tanim preprocessingu i dużej liczbie kombinacji parametrów, wybór strategii
+mógłby być inny.

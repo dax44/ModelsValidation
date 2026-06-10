@@ -1,0 +1,136 @@
+---
+title: "Kolokwium"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W rozwiązaniach należy uzasadniać wybory metodyczne, interpretować wyniki oraz dbać o powtarzalność
+analiz. Polecenia opisują wymagany efekt analizy, ale nie wskazują szczegółowej
+ścieżki implementacyjnej.
+
+Prześlij skompilowany plik `.html` przez Teams. Oceniane będą zarówno poprawność merytoryczna, jak i jakość prezentacji wyników.
+
+Maksymalnie można uzyskać **100 punktów**.
+:::
+
+
+
+## Zadanie 1. Testowanie hipotez metodami bootstrapowymi i permutacyjnymi
+
+Zbiór danych: `cat_adoption` z pakietu `modeldata`.
+
+Problem badawczy: sprawdź, czy koty o czarnym umaszczeniu różnią się czasem
+oczekiwania na adopcję od pozostałych kotów. Analizę oprzyj na zmiennej `time`,
+zmiennej `black` oraz informacji o zaobserwowaniu adopcji w `event`.
+
+Wykonaj:
+
+-   Sformułuj precyzyjne pytanie badawcze, hipotezę zerową i alternatywną oraz
+    określ, jaka cecha rozkładu czasu adopcji będzie porównywana (4 pkt).
+-   Przygotuj dane do analizy, wyjaśniając sposób potraktowania obserwacji bez
+    zaobserwowanej adopcji oraz uzasadniając ewentualne filtrowanie lub
+    transformacje zmiennych (4 pkt).
+-   Wyznacz estymatę obserwowanej różnicy między grupami i przedstaw ją w
+    czytelnej postaci liczbowej oraz graficznej (4 pkt).
+-   Zbuduj bootstrapowy przedział ufności dla wybranej miary różnicy i
+    zinterpretuj go w kontekście pytania badawczego (5 pkt).
+-   Przeprowadź test permutacyjny dla tej samej hipotezy i zinterpretuj
+    otrzymaną wartość `p-value` (5 pkt).
+-   Porównaj wniosek z procedury bootstrapowej i permutacyjnej, wskazując
+    ograniczenia przyjętego podejścia (3 pkt).
+
+**Razem: 25 pkt**
+
+## Zadanie 2. Rozbudowany preprocessing, porównanie workflowów i testy jakości
+
+Zbiór danych: `hotel_rates` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj średnią cenę pokoju (`avg_price_per_room`) na
+podstawie pozostałych informacji o rezerwacji hotelowej.
+
+Wymagania ogólne:
+
+-   Porównaj **3 różne modele**: model drzewiasty (drzewo decyzyjne lub ensemble), model
+    oparty na splajnach oraz model SVM.
+-   Dla każdego modelu zastosuj **3 różne reguły preprocessingu**, prowadzące
+    do dziewięciu workflow (krosujemy każdy z każdym).
+-   Każda reguła preprocessingu ma reprezentować inny pomysł analityczny, np.
+    konserwatywne czyszczenie danych, agresywną inżynierię cech lub redukcję
+    wymiaru.
+-   Najlepsze dopasowanie ma zostać wybrane nie tylko na podstawie średniej
+    metryki, ale także z użyciem formalnego porównania wyników z resamplingu.
+
+Wykonaj:
+
+-   Zaprojektuj podział danych i schemat resamplingu odpowiedni dla problemu
+    predykcji ceny, uzasadniając sposób kontroli optymizmu oceny (4 pkt).
+-   Zdefiniuj trzy konkurencyjne reguły preprocessingu; każda musi zawierać
+    obróbkę braków danych, zmiennych nominalnych, zmiennych liczbowych,
+    predyktorów rzadkich lub problematycznych oraz co najmniej jeden krok
+    inżynierii cech (8 pkt).
+-   Zbuduj komplet dziewięciu workflowów powstałych z połączenia trzech modeli
+    i trzech reguł preprocessingu (6 pkt).
+-   Oceń wszystkie workflowy w tym samym schemacie resamplingu, wykorzystując
+    co najmniej trzy metryki jakości właściwe dla regresji (5 pkt).
+-   Przedstaw ranking workflowów oraz wizualizację pokazującą stabilność
+    wyników między resamplami (5 pkt).
+-   Przeprowadź formalne testy różnic jakości między najlepszym workflowem a
+    najważniejszymi konkurentami, uwzględniając sparowany charakter wyników z
+    resamplingu (6 pkt).
+-   Wybierz model końcowy, oceń go na danych odłożonych i opisz, czy wyniki
+    testów z resamplingu są spójne z oceną końcową (6 pkt).
+
+**Razem: 40 pkt**
+
+## Zadanie 3. Tuning, metoda wyścigów i wybór konfiguracji na podstawie testów
+
+Zbiór danych: `hepatic_injury_qsar` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj poziom uszkodzenia wątroby (`class`) na podstawie
+predyktorów z badań biologicznych. Dane mają wiele predyktorów, a klasy nie są
+równoliczne, dlatego wybór metryk i procedury walidacji musi być uzasadniony.
+
+Wymagania ogólne:
+
+-   Użyj dwóch interesujących rodzin modeli klasyfikacyjnych, z których jedna
+    będzie dostrajana przez regularną siatkę, a druga przez metodę wyścigów.
+-   W obu rodzinach modeli dostrajaj więcej niż jeden hiperparametr.
+-   Ostateczny wybór konfiguracji ma uwzględniać formalne porównanie wyników z
+    resamplingu, a nie wyłącznie najwyższą średnią metrykę.
+
+Wykonaj:
+
+-   Przygotuj dane do wieloklasowego problemu klasyfikacyjnego, uzasadniając
+    sposób potraktowania nierównowagi klas, predyktorów o małej zmienności i
+    silnie zależnych predyktorów (5 pkt).
+-   Zaprojektuj schemat resamplingu i zestaw metryk, które pozwolą ocenić
+    jakość klasyfikacji wieloklasowej w warunkach nierównych liczebności klas
+    (5 pkt).
+-   Dla pierwszej rodziny modeli przygotuj regularną siatkę hiperparametrów,
+    przeprowadź tuning i przedstaw wpływ najważniejszych hiperparametrów na
+    jakość modelu (6 pkt).
+-   Dla drugiej rodziny modeli przeprowadź tuning metodą wyścigów, pokazując,
+    które konfiguracje zostały utrzymane do końca procedury i jak zmieniała się
+    liczba kandydatów (6 pkt).
+-   Porównaj najlepsze konfiguracje z obu procedur za pomocą formalnych testów
+    na wynikach resamplingu, wskazując zwycięzcę i konfiguracje praktycznie
+    nierozróżnialne statystycznie (7 pkt).
+-   Sfinalizuj wybraną konfigurację, oceń ją na danych odłożonych i przedstaw
+    macierz pomyłek wraz z interpretacją najważniejszych błędów klasyfikacji
+    (4 pkt).
+-   Podsumuj, czy metoda wyścigów dała korzyść praktyczną względem pełnego
+    przeszukiwania siatki w tym zadaniu (2 pkt).
+
+**Razem: 35 pkt**

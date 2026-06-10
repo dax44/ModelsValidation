@@ -1,0 +1,418 @@
+---
+title: "Rozwiązania do zadań z lab 12"
+subtitle: "Przesiewanie modeli i optymalizacja bayesowska"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+library(workflowsets)
+library(rules)
+```
+
+## Zadanie 1. Przesiewanie wielu workflowów
+
+Pracujemy na danych `car_prices`. Cena jest dodatnia i prawostronnie skośna, więc
+modelujemy `log(Price)`. Taka skala ogranicza wpływ najdroższych samochodów i
+sprawia, że błąd modelu ma interpretację bliższą błędowi względnemu.
+
+```{r}
+set.seed(2026)
+
+car_data <- car_prices %>%
+  mutate(Price = log(Price))
+
+car_split <- initial_split(car_data, prop = 0.8, strata = Price)
+car_train <- training(car_split)
+car_test <- testing(car_split)
+
+set.seed(2026)
+car_folds <- vfold_cv(car_train, v = 5, strata = Price)
+```
+
+Definiujemy cztery warianty preprocessingu. Pierwszy wariant przekazuje
+predyktory prawie bez zmian, drugi skaluje predyktory, trzeci usuwa silną
+redundancję, a czwarty dodaje proste cechy inżynierskie.
+
+```{r}
+car_vars <- workflow_variables(
+  outcomes = Price,
+  predictors = everything()
+)
+
+car_rec_scaled <- recipe(Price ~ ., data = car_train) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+car_rec_corr <- recipe(Price ~ ., data = car_train) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_corr(all_numeric_predictors(), threshold = 0.90)
+
+car_rec_features <- recipe(Price ~ ., data = car_train) %>%
+  step_mutate(
+    mileage_years = Mileage / 12000,
+    luxury_score = Cruise + Sound + Leather,
+    doors_per_cylinder = Doors / Cylinder
+  ) %>%
+  step_log(Mileage, offset = 1) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Wybieramy cztery rodziny modeli: MARS, SVM z jądrem radialnym, las losowy oraz
+Cubist. Parametry ustawiamy na rozsądne wartości początkowe; celem zadania jest
+przesiewanie wielu workflowów, a nie jeszcze pełne strojenie każdego modelu.
+
+```{r}
+mars_spec <- mars(num_terms = 25, prod_degree = 2) %>%
+  set_engine("earth") %>%
+  set_mode("regression")
+
+svm_spec <- svm_rbf(cost = 1, rbf_sigma = 0.01) %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
+forest_spec <- rand_forest(trees = 200, min_n = 8) %>%
+  set_engine("ranger") %>%
+  set_mode("regression")
+
+cubist_spec <- cubist_rules(committees = 10, neighbors = 5) %>%
+  set_engine("Cubist") %>%
+  set_mode("regression")
+```
+
+Tworzymy pełny zestaw workflowów: cztery preprocessingi razy cztery modele.
+
+```{r}
+car_workflows <- workflow_set(
+  preproc = list(
+    raw = car_vars,
+    scaled = car_rec_scaled,
+    corr = car_rec_corr,
+    features = car_rec_features
+  ),
+  models = list(
+    mars = mars_spec,
+    svm = svm_spec,
+    forest = forest_spec,
+    cubist = cubist_spec
+  ),
+  cross = TRUE
+)
+
+car_workflows
+```
+
+Uruchamiamy resampling dla wszystkich workflowów na tych samych foldach.
+
+```{r}
+set.seed(2026)
+
+car_res <- workflow_map(
+  car_workflows,
+  "fit_resamples",
+  resamples = car_folds,
+  metrics = metric_set(rmse, mae, rsq),
+  control = control_resamples(save_pred = TRUE),
+  verbose = FALSE
+)
+```
+
+Ranking według `rmse`:
+
+```{r}
+car_metrics <- collect_metrics(car_res)
+
+car_ranking <- car_metrics %>%
+  filter(.metric == "rmse") %>%
+  arrange(mean)
+
+car_ranking %>%
+  select(wflow_id, mean, std_err, n)
+```
+
+Stabilność wyników między foldami:
+
+```{r}
+car_fold_rmse <- car_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse")
+
+car_fold_rmse %>%
+  ggplot(aes(x = reorder(wflow_id, .estimate, median), y = .estimate)) +
+  geom_boxplot(fill = "grey90") +
+  geom_point(alpha = 0.65, position = position_jitter(width = 0.08)) +
+  coord_flip() +
+  labs(
+    x = "Workflow",
+    y = "RMSE w foldach",
+    title = "Zmienność RMSE między foldami"
+  )
+```
+
+Porównujemy najlepszy workflow z trzema kolejnymi konkurentami. Test jest
+sparowany, ponieważ wszystkie workflowy były oceniane na tych samych foldach.
+
+```{r}
+best_car_wflow <- car_ranking$wflow_id[1]
+car_competitors <- car_ranking$wflow_id[2:4]
+
+car_tests <- purrr::map_dfr(car_competitors, function(comp_id) {
+  wide <- car_fold_rmse %>%
+    filter(wflow_id %in% c(best_car_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  test <- t.test(
+    wide[[comp_id]],
+    wide[[best_car_wflow]],
+    paired = TRUE,
+    alternative = "greater"
+  )
+
+  tibble(
+    best = best_car_wflow,
+    competitor = comp_id,
+    mean_rmse_difference = mean(wide[[comp_id]] - wide[[best_car_wflow]]),
+    p_value = test$p.value
+  )
+})
+
+car_tests
+```
+
+Dodatnia różnica oznacza, że konkurent ma większy błąd niż najlepszy workflow.
+Jeżeli `p-value` jest małe, przewaga najlepszego wariantu jest stabilna na
+foldach.
+
+Finalny workflow dopasowujemy do całego zbioru treningowego i oceniamy na
+danych testowych.
+
+```{r}
+final_car_wf <- car_workflows %>%
+  extract_workflow(best_car_wflow)
+
+final_car_fit <- fit(final_car_wf, data = car_train)
+
+car_test_pred <- car_test %>%
+  select(Price) %>%
+  bind_cols(predict(final_car_fit, new_data = car_test))
+
+metric_set(rmse, mae, rsq)(
+  car_test_pred,
+  truth = Price,
+  estimate = .pred
+)
+```
+
+```{r}
+car_test_pred %>%
+  ggplot(aes(x = Price, y = .pred)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(lty = 2, color = "red") +
+  labs(
+    x = "Obserwowane log(Price)",
+    y = "Predykcja",
+    title = paste("Ocena testowa workflowu:", best_car_wflow)
+  )
+```
+
+Jeżeli wyniki testowe są zbliżone do wyników z resamplingu, przesiewanie
+workflowów nie doprowadziło do wyraźnego przeuczenia procedury wyboru.
+
+## Zadanie 2. Optymalizacja bayesowska
+
+```{r}
+library(finetune)
+```
+
+Przygotowujemy dane `ad_data`. Klasa `"Impaired"` zostaje ustawiona jako klasa
+pozytywna, aby `roc_auc` dotyczyło rozpoznawania przypadków zaburzenia.
+
+```{r}
+set.seed(2026)
+
+ad_model_data <- ad_data %>%
+  drop_na() %>%
+  mutate(Class = forcats::fct_relevel(Class, "Impaired"))
+
+ad_model_data %>%
+  count(Class)
+```
+
+```{r}
+ad_split <- initial_split(ad_model_data, prop = 0.75, strata = Class)
+ad_train <- training(ad_split)
+ad_test <- testing(ad_split)
+
+set.seed(2026)
+ad_folds <- vfold_cv(ad_train, v = 5, strata = Class)
+```
+
+Preprocessing koduje zmienną `Genotype`, usuwa predyktory bez zmienności oraz
+ogranicza nadmiar silnie skorelowanych markerów.
+
+```{r}
+ad_rec <- recipe(Class ~ ., data = ad_train) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_corr(all_numeric_predictors(), threshold = 0.90)
+```
+
+Definiujemy model boosted trees z czterema hiperparametrami do optymalizacji.
+
+```{r}
+xgb_spec <- boost_tree(
+  trees = tune(),
+  tree_depth = tune(),
+  learn_rate = tune(),
+  min_n = tune(),
+  loss_reduction = 0,
+  sample_size = 0.8
+) %>%
+  set_engine("xgboost", nthread = 1) %>%
+  set_mode("classification")
+
+ad_wf <- workflow() %>%
+  add_recipe(ad_rec) %>%
+  add_model(xgb_spec)
+```
+
+Ustalamy zakresy parametrów. `learn_rate` jest przeszukiwany w skali
+logarytmicznej.
+
+```{r}
+ad_params <- ad_wf %>%
+  extract_parameter_set_dials() %>%
+  update(
+    trees = trees(c(50L, 150L)),
+    tree_depth = tree_depth(c(2L, 6L)),
+    learn_rate = learn_rate(c(-3, -1)),
+    min_n = min_n(c(2L, 20L))
+  )
+
+ad_params
+```
+
+Najpierw tworzymy niewielki plan wypełniający przestrzeń i oceniamy go przez
+resampling. Te wyniki będą punktem startowym dla modelu procesu gaussowskiego
+używanego przez optymalizację bayesowską.
+
+```{r}
+set.seed(2026)
+
+ad_initial_grid <- grid_space_filling(ad_params, size = 8)
+ad_initial_grid
+```
+
+```{r}
+set.seed(2026)
+
+ad_initial <- tune_grid(
+  ad_wf,
+  resamples = ad_folds,
+  grid = ad_initial_grid,
+  metrics = metric_set(roc_auc, accuracy),
+  control = control_grid(save_pred = TRUE)
+)
+
+show_best(ad_initial, metric = "roc_auc", n = 5)
+```
+
+Optymalizacja bayesowska używa wyników początkowych, aby wskazywać kolejne
+kombinacje hiperparametrów z dobrym kompromisem między eksploracją i
+eksploatacją.
+
+```{r}
+set.seed(2026)
+
+ad_bayes <- tune_bayes(
+  ad_wf,
+  resamples = ad_folds,
+  initial = ad_initial,
+  iter = 6,
+  param_info = ad_params,
+  metrics = metric_set(roc_auc, accuracy),
+  control = control_bayes(verbose = FALSE, no_improve = 5)
+)
+```
+
+Najlepsze konfiguracje po optymalizacji:
+
+```{r}
+show_best(ad_bayes, metric = "roc_auc", n = 8)
+```
+
+Przebieg optymalizacji:
+
+```{r}
+autoplot(ad_bayes, type = "performance")
+```
+
+```{r}
+autoplot(ad_bayes, type = "parameters")
+```
+
+Sprawdzamy, czy najlepszy wynik z optymalizacji bayesowskiej poprawił najlepszy
+wynik startowy.
+
+```{r}
+bind_rows(
+  show_best(ad_initial, metric = "roc_auc", n = 1) %>%
+    mutate(stage = "initial"),
+  show_best(ad_bayes, metric = "roc_auc", n = 1) %>%
+    mutate(stage = "bayes")
+) %>%
+  select(stage, trees, tree_depth, learn_rate, min_n, mean, std_err)
+```
+
+Finalizujemy workflow według `roc_auc`.
+
+```{r}
+best_ad <- select_best(ad_bayes, metric = "roc_auc")
+best_ad
+
+final_ad_wf <- finalize_workflow(ad_wf, best_ad)
+```
+
+Ocena testowa:
+
+```{r}
+set.seed(2026)
+
+ad_last <- last_fit(
+  final_ad_wf,
+  split = ad_split,
+  metrics = metric_set(roc_auc, accuracy)
+)
+
+collect_metrics(ad_last)
+```
+
+Macierz pomyłek:
+
+```{r}
+ad_test_pred <- collect_predictions(ad_last)
+
+ad_conf_mat <- conf_mat(ad_test_pred, truth = Class, estimate = .pred_class)
+ad_conf_mat
+```
+
+```{r}
+autoplot(ad_conf_mat, type = "heatmap")
+```
+
+Jeżeli najlepsza konfiguracja po optymalizacji bayesowskiej ma wyższe średnie
+`roc_auc` niż najlepszy punkt startowy, iteracyjne wyszukiwanie realnie
+poprawiło wynik. Wynik testowy należy traktować jako kontrolę, czy poprawa z
+resamplingu przeniosła się na dane nieużywane w procesie optymalizacji.

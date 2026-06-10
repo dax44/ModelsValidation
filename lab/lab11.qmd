@@ -1,0 +1,100 @@
+---
+title: "Laboratorium 11"
+subtitle: "Siatki losowe, wyścigi i paralelizacja tuningu"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W zadaniach ustawiaj `set.seed(2026)` przed losowaniem danych, podziałami,
+resamplingiem i generowaniem siatek. Korzystaj z ograniczonych wersji danych,
+tak aby obliczenia były możliwe do wykonania podczas laboratorium.
+:::
+
+## Zadanie 1. Siatka losowa i finalizowanie modelu
+
+Na zbiorze `concrete` z pakietu `modeldata` wylosuj `650` obserwacji. Przewiduj
+wytrzymałość betonu na ściskanie (`compressive_strength`) na podstawie
+pozostałych zmiennych.
+
+Zbuduj workflow:
+
+-   receptura normalizująca wszystkie predyktory liczbowe,
+-   model MARS `mars()` z silnikiem `earth`,
+-   do strojenia oznacz parametry `num_terms`, `prod_degree` i `prune_method`.
+
+Wykonaj:
+
+-   podział `80/20` ze stratyfikacją względem `compressive_strength`,
+-   `5`-krotną walidację krzyżową na zbiorze treningowym,
+-   wyodrębnienie parametrów przez `extract_parameter_set_dials()`,
+-   aktualizację zakresów: `num_terms` od `5` do `35`, `prod_degree` od `1` do
+    `2`, `prune_method` z wartościami `"backward"` i `"none"`,
+-   losową siatkę `14` kombinacji przez `grid_random()`,
+-   strojenie przez `tune_grid()` z metrykami `rmse` i `rsq`,
+-   wybór najlepszego zestawu parametrów według `rmse`,
+-   finalizację workflowu przez `finalize_workflow()`,
+-   ocenę modelu końcowego na zbiorze testowym przez `last_fit()`.
+
+## Zadanie 2. Metoda wyścigów
+
+Na zbiorze `credit_data` z pakietu `modeldata` usuń obserwacje z brakami danych,
+wylosuj `900` obserwacji i przewiduj status klienta (`Status`). Ustaw poziom
+`"bad"` jako pierwszy poziom zmiennej wynikowej.
+
+Zbuduj workflow:
+
+-   receptura grupująca rzadkie kategorie predyktorów nominalnych przez
+    `step_other()` i kodująca je przez `step_dummy()`,
+-   model reguł C5.0 `C5_rules()` z silnikiem `C5.0`,
+-   do strojenia oznacz parametry `trees` i `min_n`.
+
+Wykonaj:
+
+-   podział `75/25` ze stratyfikacją względem `Status`,
+-   `6`-krotną walidację krzyżową na zbiorze treningowym,
+-   regularną siatkę kandydatów dla `trees` od `1` do `30` i `min_n` od `2` do
+    `25`,
+-   strojenie przez `tune_race_anova()` z pakietu `finetune`,
+-   użyj metryk `roc_auc` i `accuracy`,
+-   włącz komunikaty o eliminacji kandydatów,
+-   pokaż najlepsze niewyeliminowane konfiguracje,
+-   sfinalizuj workflow według `roc_auc` i oceń go na zbiorze testowym.
+
+## Zadanie 3. Paralelizacja przy kosztownym preprocessingu
+
+Na zbiorze `meats` z pakietu `modeldata` wylosuj `180` obserwacji. Przewiduj
+zawartość wody (`water`) na podstawie zmiennych spektralnych `x_001`--`x_100`
+oraz pozostałych zmiennych chemicznych.
+
+Zbuduj workflow:
+
+-   receptura z krokami:
+    `step_YeoJohnson()`, `step_normalize()`, `step_corr()`, `step_pca()` oraz
+    ponowne `step_normalize()`,
+-   w `step_pca()` oznacz `num_comp` jako parametr do strojenia,
+-   model bagged MARS `bag_mars()` z silnikiem `earth`,
+-   w modelu oznacz do strojenia `num_terms` i `prod_degree`.
+
+Wykonaj:
+
+-   podział `80/20` ze stratyfikacją względem `water`,
+-   `4`-krotną walidację krzyżową na zbiorze treningowym,
+-   regularną siatkę dla `num_comp`, `num_terms` i `prod_degree`,
+-   uruchom strojenie równolegle z użyciem pakietu `future`,
+-   samodzielnie wybierz ustawienie argumentu `parallel_over` w
+    `control_grid()` i uzasadnij ten wybór,
+-   zmierz czas wykonania strojenia przez `system.time()`,
+-   pokaż najlepsze konfiguracje według `rmse`,
+-   sfinalizuj workflow i oceń model na zbiorze testowym przez `last_fit()`.

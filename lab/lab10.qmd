@@ -1,0 +1,129 @@
+---
+title: "Laboratorium 10"
+subtitle: "Porównywanie modeli i strojenie na siatkach regularnych"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(modeldata)
+```
+
+::: callout-important
+W zadaniach ustawiaj `set.seed(2026)` przed losowaniem danych, podziałami i
+resamplingiem. Korzystaj z ograniczonych wersji zbiorów danych wskazanych w
+poleceniach.
+:::
+
+## Zadanie 1. Porównanie wariantów workflowu
+
+Na zbiorze `biomass` wylosuj `220` obserwacji. Przewiduj `HHV` na podstawie
+zmiennych: `carbon`, `hydrogen`, `oxygen`, `nitrogen`, `sulfur`.
+
+Porównaj trzy warianty przepływu pracy z tym samym modelem `linear_reg()` z
+silnikiem `lm`:
+
+- model z formułą bez receptury,
+- model z recepturą normalizującą wszystkie predyktory,
+- model z recepturą normalizującą predyktory i redukującą je do `3` składowych
+  głównych PCA.
+
+Wykonaj:
+
+- utwórz `5`-krotną walidację krzyżową ze stratyfikacją względem `HHV`,
+- zbuduj zbiór workflowów przez `workflow_set()`,
+- oceń workflowy funkcją `workflow_map()` z metrykami `rmse` i `rsq`,
+- porównaj średnie metryk przez `collect_metrics()`,
+- pobierz wyniki dla pojedynczych foldów z
+  `collect_metrics(..., summarize = FALSE)`,
+- wykonaj sparowany test t dla wartości `rmse` między workflowem z PCA a
+  workflowem z formułą bez receptury,
+- przygotuj wykres pokazujący wartości `rmse` w kolejnych foldach dla każdego
+  workflowu.
+
+## Zadanie 2. Strojenie kNN na regularnej siatce
+
+Na zbiorze `penguins` z pakietu `palmerpenguins` usuń obserwacje z brakami
+danych w zmiennych: `species`, `bill_length_mm`, `bill_depth_mm`,
+`flipper_length_mm`, `body_mass_g`, `island`, `sex`. Przewiduj gatunek pingwina
+(`species`).
+
+Zbuduj workflow:
+
+- receptura: `step_dummy(all_nominal_predictors())`, `step_zv()` oraz
+  `step_normalize()`,
+- model: `nearest_neighbor()` z silnikiem `kknn` i trybem klasyfikacji,
+- do strojenia oznacz parametry `neighbors`, `weight_func` i `dist_power`.
+
+Wykonaj:
+
+- podział `75/25` ze stratyfikacją względem `species`,
+- `4`-krotną walidację krzyżową na zbiorze treningowym,
+- wyodrębnij zestaw parametrów przez `extract_parameter_set_dials()`,
+- utwórz regularną siatkę przez `grid_regular()`: `neighbors` od `3` do `17`,
+  `weight_func` z wartościami `"rectangular"` i `"triangular"`, `dist_power` od
+  `1` do `2`,
+- wykonaj `tune_grid()` z metrykami `accuracy` i `roc_auc`,
+- wskaż najlepszą konfigurację według `accuracy`,
+- sfinalizuj workflow i oceń go na zbiorze testowym.
+
+## Zadanie 3. Ta sama siatka, różne metryki wyboru
+
+Na zbiorze `two_class_dat` z pakietu `modeldata` wylosuj `500` obserwacji.
+Przewiduj zmienną `Class` za pomocą drzewa klasyfikacyjnego.
+
+Zbuduj workflow:
+
+- receptura: `step_zv(all_predictors())`,
+- model: `decision_tree()` z silnikiem `rpart`,
+- do strojenia oznacz parametry `cost_complexity`, `tree_depth` i `min_n`.
+
+Wykonaj:
+
+- podział `75/25` ze stratyfikacją względem `Class`,
+- `5`-krotną walidację krzyżową na zbiorze treningowym,
+- regularną siatkę z `grid_regular()`: `cost_complexity` w zakresie od `10^-4`
+  do `10^-1`, `tree_depth` od `2` do `8`, `min_n` od `5` do `25`,
+- strojenie przez `tune_grid()` z metrykami `roc_auc`, `accuracy`, `sens` i
+  `specificity`,
+- wybierz najlepsze parametry osobno według `roc_auc` i według `accuracy`,
+- porównaj, czy obie metryki wskazały ten sam zestaw hiperparametrów,
+- dopasuj dwa modele końcowe i porównaj ich wyniki na zbiorze testowym.
+
+## Zadanie 4. Strojenie parametrów modelu i receptury
+
+Na zbiorze `Sacramento` z pakietu `modeldata` usuń obserwacje z `sqft <= 0`,
+`beds <= 0` lub `baths <= 0`, a następnie wylosuj `420` obserwacji. Przewiduj
+cenę nieruchomości (`price`).
+
+Zbuduj workflow:
+
+- receptura z predyktorami `city`, `zip`, `beds`, `baths`, `sqft`, `type`,
+  `latitude`, `longitude`,
+- `step_log()` dla `sqft` i `price`,
+- `step_other()` dla `city` z parametrem `threshold` oznaczonym do strojenia,
+- `step_other()` dla `zip` z osobnym parametrem progowym oznaczonym do
+  strojenia,
+- `step_dummy()`, `step_zv()` i `step_normalize()`,
+- model `linear_reg()` z silnikiem `glmnet`, w którym dostrajane są `penalty` i
+  `mixture`.
+
+Wykonaj:
+
+- podział `80/20` ze stratyfikacją względem `price`,
+- `4`-krotną walidację krzyżową na zbiorze treningowym,
+- wyodrębnij parametry workflowu przez `extract_parameter_set_dials()`,
+- zaktualizuj zakresy: oba progi `threshold` od `0.01` do `0.08`, a `penalty`
+  od `10^-4` do `10^-1`,
+- utwórz regularną siatkę przez `grid_regular()` dla parametrów receptury i
+  modelu,
+- wykonaj `tune_grid()` z metrykami `rmse` i `rsq`,
+- wskaż najlepszą konfigurację według `rmse`,
+- sfinalizuj workflow i oceń go na zbiorze testowym przez `last_fit()`.

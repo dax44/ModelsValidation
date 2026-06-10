@@ -1,0 +1,140 @@
+---
+title: "Kolokwium - grupa A"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(workflowsets)
+library(modeldata)
+```
+
+::: callout-important
+Kolokwium wykonaj w pliku `.qmd`. Ustaw `set.seed(2026)` we wszystkich miejscach,
+w których występuje losowanie: podział danych, resampling, screening modeli i tuning.
+
+Plik należy renderować do `.html` albo `.pdf`. Przez Teams przesyłamy **tylko
+plik zrenderowany**, nazwany według schematu `imie_nazwisko.html` albo
+`imie_nazwisko.pdf`. Nie wysyłaj pliku `.qmd`.
+
+Kompiluj plik co kilka minut, żeby pod koniec kolokwium nie pojawiły się
+niespodzianki techniczne. Wyniki obiektów, które długo się liczą, np. tuningu
+lub resamplingu, można zapisać do pliku `.rds` albo `.rda`, a następnie wczytać
+w dalszej części pracy. Wszystkie kroki, wyniki, porównania i decyzje modelowe
+muszą być krótko skomentowane.
+
+Maksymalnie można uzyskać **100 punktów**.
+:::
+
+## Skala ocen
+
+| Punkty | Ocena |
+|---:|:---|
+| 0-50 | 2,0 |
+| 51-60 | 3,0 |
+| 61-70 | 3,5 |
+| 71-80 | 4,0 |
+| 81-90 | 4,5 |
+| 91-100 | 5,0 |
+
+## Zadanie 1
+
+Zbiór danych: `concrete` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj wytrzymałość betonu na ściskanie
+`compressive_strength` na podstawie składu mieszanki i wieku próbki. Zbiór jest
+umiarkowanie mały, dlatego nadaje się do porównania kilku workflowów bez
+długiego czasu obliczeń.
+
+Wykonaj:
+
+- Przygotuj dane do modelowania: sprawdź typy zmiennych, oceń obecność braków
+  danych i zmiennych o zerowej wariancji, wykonaj podział `80/20` ze
+  stratyfikacją względem `compressive_strength` oraz zdefiniuj dokładnie taki
+  resampling: `vfold_cv(train, v = 5, repeats = 2, strata = compressive_strength)`
+  na zbiorze treningowym (6 pkt).
+- Przygotuj trzy konkretne modele regresyjne: `linear_reg()` z regularyzacją
+  elastic net i silnikiem `glmnet`, `nearest_neighbor()` z silnikiem `kknn` oraz
+  `rand_forest()` z silnikiem `ranger`. Na tym etapie ustaw rozsądne wartości
+  domyślne lub niewielkie stałe wartości hiperparametrów; rozbudowany tuning nie
+  jest częścią tego zadania (6 pkt).
+- Dla każdego modelu zbuduj osobny, uzasadniony preprocessing w `recipe()`.
+  Model elastic net powinien dostać predyktory po imputacji, usunięciu zmiennych
+  bez zmienności i normalizacji. Model kNN powinien dostać preprocessing
+  wrażliwy na skalę, np. imputację, normalizację oraz ewentualnie PCA albo
+  transformację skośnych predyktorów. Las losowy powinien dostać preprocessing
+  ograniczony do operacji potrzebnych temu modelowi, np. imputacji i usunięcia
+  predyktorów problematycznych, bez nieuzasadnionej normalizacji. Wyjaśnij, czemu
+  preprocessing różni się między modelami (12 pkt).
+- Połącz każdy model tylko z właściwą dla niego recepturą, tworząc trzy
+  workflowy. Nie krzyżuj automatycznie każdego preprocessingu z każdym modelem.
+  Oceń workflowy w tym samym schemacie resamplingu, używając co najmniej `rmse`,
+  `mae` i `rsq` (6 pkt).
+- Przedstaw ranking workflowów oraz wykres pokazujący stabilność wyników między
+  foldami. Skomentuj, czy ranking jest jednoznaczny, czy zależy od wybranej
+  metryki (6 pkt).
+- Porównaj najlepszy workflow z dwoma najważniejszymi konkurentami za pomocą
+  testów statystycznych na wynikach z resamplingu. Uwzględnij sparowany charakter
+  wyników, np. przez test t dla prób zależnych albo test Wilcoxona na różnicach
+  metryki w tych samych foldach (8 pkt).
+- Sfinalizuj wybrany workflow, oceń go na zbiorze testowym i napisz krótki
+  wniosek o spodziewanej jakości predykcji oraz ograniczeniach otrzymanej oceny
+  (6 pkt).
+
+**Razem: 50 pkt**
+
+## Zadanie 2
+
+Zbiór danych: `cells` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj klasę komórki `class` na podstawie zmiennych
+opisujących obraz. Pracuj na całym zbiorze albo, jeśli komputer działa wolno,
+na losowej próbie co najmniej 1000 obserwacji.
+
+Wykonaj:
+
+- Przygotuj dane do klasyfikacji: usuń identyfikatory, sprawdź strukturę
+  zmiennej `class`, wykonaj podział `75/25` ze stratyfikacją oraz zdefiniuj
+  dokładnie taki resampling:
+  `vfold_cv(train, v = 5, repeats = 2, strata = class)` na zbiorze treningowym
+  (5 pkt).
+- Wykonaj screening czterech konkretnych modeli: `logistic_reg()` z silnikiem
+  `glmnet`, `nearest_neighbor()` z silnikiem `kknn`, `svm_rbf()` z silnikiem
+  `kernlab` oraz `rand_forest()` z silnikiem `ranger`. Użyj tych samych resampli
+  i porównaj modele za pomocą co najmniej `roc_auc`, `accuracy`, `sens` i `spec`
+  (7 pkt).
+- Dla każdego modelu dobierz właściwy preprocessing. Regresja logistyczna
+  z regularyzacją, kNN i SVM powinny mieć przynajmniej imputację, usunięcie
+  predyktorów bez zmienności i normalizację; dla kNN albo SVM rozważ dodatkowo
+  redukcję wymiarowości lub selekcję skorelowanych predyktorów. Las losowy nie
+  wymaga normalizacji, więc jego receptura powinna być prostsza. Uzasadnij te
+  decyzje i nie stosuj mechanicznie tej samej receptury do wszystkich modeli
+  (9 pkt).
+- Na podstawie wyników screeningu wybierz jedną rodzinę modeli do tuningu
+  metodą optymalizacji bayesowskiej. Wybór musi wynikać z rankingu, stabilności
+  wyników między foldami oraz sensowności dalszego dostrajania. Dostrajaj co
+  najmniej dwa hiperparametry właściwe dla wybranego modelu. Użyj niewielkiej
+  liczby punktów startowych i iteracji, np. 5 punktów startowych oraz 10-15
+  iteracji bayesowskich, aby obliczenia były wykonalne w czasie kolokwium
+  (8 pkt).
+- Przedstaw przebieg optymalizacji bayesowskiej: tabelę najlepszych konfiguracji,
+  wykres jakości w kolejnych iteracjach oraz komentarz, czy procedura poprawiła
+  wynik względem screeningu (7 pkt).
+- Porównaj najlepszą konfigurację po tuningu z najlepszym modelem ze screeningu
+  za pomocą formalnego testu statystycznego na wynikach z resamplingu. Zapisz
+  hipotezę zerową, hipotezę alternatywną, wybraną metrykę oraz wniosek z
+  `p-value` (7 pkt).
+- Sfinalizuj najlepszy model, oceń go na zbiorze testowym, pokaż macierz
+  klasyfikacji oraz skomentuj najważniejsze typy błędów (7 pkt).
+
+**Razem: 50 pkt**

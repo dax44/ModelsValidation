@@ -1,0 +1,758 @@
+---
+title: "Rozwiązania do kolokwium"
+subtitle: "Walidacja modeli statystycznych"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+library(infer)
+library(workflowsets)
+```
+
+## Zadanie 1. Testowanie hipotez metodami bootstrapowymi i permutacyjnymi
+
+### Pytanie badawcze, hipotezy i miara różnicy
+
+Badamy, czy czarne koty różnią się czasem oczekiwania na adopcję od pozostałych
+kotów. Porównujemy medianę logarytmu czasu adopcji, ponieważ zmienna `time` ma
+rozkład prawostronnie skośny, a mediana jest mniej wrażliwa na obserwacje
+skrajne.
+
+Hipotezy:
+
+- $H_0$: mediana czasu adopcji czarnych kotów jest taka sama jak mediana czasu
+  adopcji pozostałych kotów.
+- $H_1$: mediany czasu adopcji w obu grupach różnią się.
+
+Statystyka testowa:
+
+$$\Delta = \operatorname{Me}(log(1 + time)\mid black) -
+\operatorname{Me}(log(1 + time)\mid other).$$
+
+### Przygotowanie danych
+
+Do analizy porównawczej czasu adopcji używamy wyłącznie obserwacji z
+zaobserwowaną adopcją (`event == 1`). Obserwacje z `event == 0` są cenzorowane:
+wiemy, że adopcja nie nastąpiła w czasie obserwacji, ale nie znamy ostatecznego
+czasu adopcji. Proste włączenie ich do porównania median zaniżałoby lub
+zniekształcało czas adopcji.
+
+```{r}
+set.seed(2026)
+
+cat_data <- cat_adoption %>%
+  filter(event == 1, !is.na(time), !is.na(black)) %>%
+  mutate(
+    black_group = if_else(black == 1, "black", "other"),
+    black_group = factor(black_group, levels = c("black", "other")),
+    log_time = log1p(time)
+  )
+
+cat_data %>%
+  count(black_group)
+```
+
+Logarytm `log1p(time)` zachowuje kolejność obserwacji i ogranicza wpływ bardzo
+długich czasów oczekiwania. Dla mediany transformacja ściśle rosnąca nie
+zmienia prawdziwości hipotezy o równości median, ponieważ:
+
+$$\operatorname{median}(log(1 + time)) =
+log(1 + \operatorname{median}(time)).$$
+
+Oznacza to, że hipoteza o równości median czasu adopcji na skali oryginalnej
+jest równoważna hipotezie o równości median po transformacji `log1p()`. Zmienia
+się skala raportowanego efektu, ale nie sama prawdziwość hipotezy o medianach.
+
+### Estymata obserwowanej różnicy i wizualizacja
+
+```{r}
+cat_summary <- cat_data %>%
+  group_by(black_group) %>%
+  summarise(
+    n = n(),
+    median_time = median(time),
+    median_log_time = median(log_time),
+    mean_time = mean(time),
+    .groups = "drop"
+  )
+
+cat_summary
+```
+
+```{r}
+observed_diff <- cat_data %>%
+  specify(log_time ~ black_group) %>%
+  calculate(stat = "diff in medians", order = c("black", "other"))
+
+observed_diff
+```
+
+```{r}
+cat_data %>%
+  ggplot(aes(x = black_group, y = log_time, fill = black_group)) +
+  geom_boxplot(alpha = 0.65, outlier.alpha = 0.25) +
+  geom_jitter(width = 0.12, alpha = 0.12) +
+  labs(
+    x = "Grupa",
+    y = "log(1 + czas adopcji)",
+    fill = "Grupa"
+  ) +
+  theme(legend.position = "none")
+```
+
+Dodatnia wartość statystyki oznacza dłuższy typowy czas adopcji w grupie
+czarnych kotów.
+
+### Bootstrapowy przedział ufności
+
+```{r}
+set.seed(2026)
+
+bootstrap_dist <- cat_data %>%
+  specify(log_time ~ black_group) %>%
+  generate(reps = 2000, type = "bootstrap") %>%
+  calculate(stat = "diff in medians", order = c("black", "other"))
+
+bootstrap_ci <- bootstrap_dist %>%
+  get_ci(level = 0.95, type = "percentile")
+
+bootstrap_ci
+```
+
+```{r}
+visualize(bootstrap_dist) +
+  shade_confidence_interval(bootstrap_ci)
+```
+
+Jeżeli przedział ufności obejmuje zero, dane nie dają mocnej podstawy do
+wniosku o różnicy median. Jeżeli cały przedział leży po jednej stronie zera,
+wniosek wskazuje odpowiednio dłuższy lub krótszy czas adopcji czarnych kotów.
+
+### Test permutacyjny
+
+```{r}
+set.seed(2026)
+
+permutation_null <- cat_data %>%
+  specify(log_time ~ black_group) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 2000, type = "permute") %>%
+  calculate(stat = "diff in medians", order = c("black", "other"))
+
+perm_p_value <- permutation_null %>%
+  get_p_value(obs_stat = observed_diff, direction = "two-sided")
+
+perm_p_value
+```
+
+```{r}
+visualize(permutation_null) +
+  shade_p_value(obs_stat = observed_diff, direction = "two-sided")
+```
+
+Wartość `p-value` mówi, jak często przy braku związku między umaszczeniem a
+czasem adopcji otrzymalibyśmy różnicę median co najmniej tak ekstremalną jak
+obserwowana.
+
+### Porównanie wniosków i ograniczenia
+
+```{r}
+tibble(
+  metoda = c("bootstrap CI", "permutation test"),
+  wynik = c(
+    paste0(
+      "[",
+      round(bootstrap_ci$lower_ci, 3),
+      ", ",
+      round(bootstrap_ci$upper_ci, 3),
+      "]"
+    ),
+    paste0("p-value = ", round(perm_p_value$p_value, 4))
+  )
+)
+```
+
+Obie procedury odpowiadają na spójne, ale nieidentyczne pytania. Bootstrapowy
+przedział ufności opisuje niepewność estymacji różnicy median, a test
+permutacyjny ocenia zgodność danych z hipotezą niezależności. Ograniczeniem
+analizy jest pominięcie obserwacji cenzorowanych (`event == 0`); pełniejsza
+analiza czasu do adopcji wymagałaby metod analizy przeżycia.
+
+## Zadanie 2. Rozbudowany preprocessing, porównanie workflowów i testy jakości
+
+### Podział danych i schemat resamplingu
+
+Używamy odłożonego zbioru testowego do końcowej oceny oraz walidacji krzyżowej
+na zbiorze treningowym do porównania workflowów. Dla skrócenia czasu obliczeń
+pracujemy na losowej próbie danych, zachowując powtarzalność. Zmienną wynikową
+`avg_price_per_room` przekształcamy przez `log()`, ponieważ ceny pokoi są
+dodatnie i mają zwykle rozkład prawostronnie skośny. Transformacja ogranicza
+wpływ bardzo drogich rezerwacji i sprawia, że błąd modelu jest bliższy błędowi
+względnemu niż bezwzględnej różnicy cen. Wszystkie porównania modeli w tym
+zadaniu dotyczą więc predykcji `log(avg_price_per_room)`.
+
+```{r}
+set.seed(2026)
+
+hotel_data <- hotel_rates %>%
+  slice_sample(n = 900) %>%
+  mutate(avg_price_per_room = log(avg_price_per_room))
+
+hotel_split <- initial_split(
+  hotel_data,
+  prop = 0.8,
+  strata = avg_price_per_room
+)
+
+hotel_train <- training(hotel_split)
+hotel_test <- testing(hotel_split)
+
+set.seed(2026)
+hotel_folds <- vfold_cv(
+  hotel_train,
+  v = 10,
+  strata = avg_price_per_room
+)
+```
+
+Stratyfikacja względem ceny ogranicza ryzyko, że w którymś foldzie zabraknie
+obserwacji z niskich lub wysokich segmentów cenowych. Wyniki z resamplingu są
+używane do wyboru workflowu; dane testowe pozostają odłożone do końca.
+
+### Trzy reguły preprocessingu
+
+Pierwsza reguła jest konserwatywna: usuwa datę jako obiekt kalendarzowy,
+uzupełnia braki, grupuje rzadkie poziomy i koduje zmienne nominalne.
+
+```{r}
+hotel_rec_base <- recipe(avg_price_per_room ~ ., data = hotel_train) %>%
+  step_rm(arrival_date) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_other(all_nominal_predictors(), threshold = 0.03, other = "rzadkie") %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Druga reguła dodaje inżynierię cech opisujących długość pobytu, liczbę gości,
+wcześniejszą aktywność klienta i oczekiwanie.
+
+```{r}
+hotel_rec_engineered <- recipe(avg_price_per_room ~ ., data = hotel_train) %>%
+  step_rm(arrival_date) %>%
+  step_mutate(
+    total_nights = stays_in_weekend_nights + stays_in_week_nights,
+    total_guests = adults + children + babies,
+    has_previous_activity =
+      as.numeric(previous_cancellations + previous_bookings_not_canceled > 0),
+    long_wait = as.numeric(days_in_waiting_list > 0)
+  ) %>%
+  step_rm(lead_time) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_other(all_nominal_predictors(), threshold = 0.02, other = "rzadkie") %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Trzecia reguła jest ukierunkowana na redukcję wymiaru po kodowaniu zmiennych
+nominalnych.
+
+```{r}
+hotel_rec_pca <- recipe(avg_price_per_room ~ ., data = hotel_train) %>%
+  step_rm(arrival_date) %>%
+  step_impute_median(all_numeric_predictors()) %>%
+  step_impute_mode(all_nominal_predictors()) %>%
+  step_other(all_nominal_predictors(), threshold = 0.02, other = "rzadkie") %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_pca(all_numeric_predictors(), num_comp = 12)
+```
+
+Każda reguła obejmuje braki danych, predyktory nominalne, predyktory liczbowe,
+rzadkie lub problematyczne poziomy oraz dodatkowy pomysł przetwarzania.
+
+### Dziewięć workflowów
+
+Modele odpowiadają wymaganym rodzinom: ensemble drzewiasty, model splajnowy
+MARS oraz SVM z jądrem radialnym.
+
+```{r}
+forest_spec <- rand_forest(trees = 80, min_n = 10) %>%
+  set_engine("ranger") %>%
+  set_mode("regression")
+
+mars_spec <- mars(num_terms = 20, prod_degree = 2) %>%
+  set_engine("earth") %>%
+  set_mode("regression")
+
+svm_spec <- svm_rbf(cost = 0.5, rbf_sigma = 0.01) %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
+hotel_workflows <- workflow_set(
+  preproc = list(
+    base = hotel_rec_base,
+    engineered = hotel_rec_engineered,
+    pca = hotel_rec_pca
+  ),
+  models = list(
+    forest = forest_spec,
+    mars = mars_spec,
+    svm = svm_spec
+  ),
+  cross = TRUE
+)
+
+hotel_workflows
+```
+
+### Ocena workflowów w tym samym resamplingu
+
+```{r}
+set.seed(2026)
+
+hotel_res <- workflow_map(
+  hotel_workflows,
+  "fit_resamples",
+  resamples = hotel_folds,
+  metrics = metric_set(rmse, mae, rsq),
+  control = control_resamples(save_pred = TRUE),
+  verbose = FALSE
+)
+```
+
+```{r}
+hotel_metrics <- collect_metrics(hotel_res)
+
+hotel_metrics %>%
+  filter(.metric == "rmse") %>%
+  arrange(mean) %>%
+  select(wflow_id, mean, std_err, n)
+```
+
+### Ranking i stabilność wyników
+
+```{r}
+hotel_ranking <- hotel_metrics %>%
+  filter(.metric == "rmse") %>%
+  arrange(mean)
+
+hotel_ranking
+```
+
+```{r}
+hotel_fold_rmse <- hotel_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse")
+
+hotel_fold_rmse %>%
+  ggplot(aes(x = reorder(wflow_id, .estimate, median), y = .estimate)) +
+  geom_boxplot(fill = "grey90") +
+  geom_point(alpha = 0.65, position = position_jitter(width = 0.08)) +
+  coord_flip() +
+  labs(
+    x = "Workflow",
+    y = "RMSE w foldach",
+    title = "Stabilność wyników między resamplami"
+  )
+```
+
+### Formalne testy różnic jakości
+
+Porównujemy najlepszy workflow z trzema kolejnymi konkurentami. Test jest
+sparowany, ponieważ każdy workflow był oceniany na tych samych foldach.
+
+```{r}
+best_hotel_wflow <- hotel_ranking$wflow_id[1]
+hotel_competitors <- hotel_ranking$wflow_id[2:4]
+
+hotel_tests <- purrr::map_dfr(hotel_competitors, function(comp_id) {
+  wide <- hotel_fold_rmse %>%
+    filter(wflow_id %in% c(best_hotel_wflow, comp_id)) %>%
+    select(id, wflow_id, .estimate) %>%
+    pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+  test <- t.test(
+    wide[[comp_id]],
+    wide[[best_hotel_wflow]],
+    paired = TRUE,
+    alternative = "greater"
+  )
+
+  tibble(
+    best = best_hotel_wflow,
+    competitor = comp_id,
+    mean_rmse_difference = mean(wide[[comp_id]] - wide[[best_hotel_wflow]]),
+    p_value = test$p.value
+  )
+})
+
+hotel_tests
+```
+
+Dodatnia różnica oznacza przewagę najlepszego workflowu, bo konkurent ma
+większy `rmse`. Małe wartości `p-value` wskazują, że przewaga jest stabilna w
+foldach, a nie wynika tylko z pojedynczego podziału.
+
+### Model końcowy i ocena na danych odłożonych
+
+```{r}
+final_hotel_wf <- hotel_workflows %>%
+  extract_workflow(best_hotel_wflow)
+
+final_hotel_fit <- fit(final_hotel_wf, data = hotel_train)
+
+hotel_test_pred <- hotel_test %>%
+  select(avg_price_per_room) %>%
+  bind_cols(predict(final_hotel_fit, new_data = hotel_test))
+
+hotel_test_metrics <- metric_set(rmse, mae, rsq)(
+  hotel_test_pred,
+  truth = avg_price_per_room,
+  estimate = .pred
+)
+
+hotel_test_metrics
+```
+
+```{r}
+hotel_test_pred %>%
+  ggplot(aes(x = avg_price_per_room, y = .pred)) +
+  geom_point(alpha = 0.55) +
+  geom_abline(lty = 2, color = "red") +
+  labs(
+    x = "Cena obserwowana: log(avg_price_per_room)",
+    y = "Predykcja",
+    title = paste("Ocena testowa workflowu:", best_hotel_wflow)
+  )
+```
+
+Jeżeli metryka testowa jest zbliżona do średniej z resamplingu, ocena
+walidacyjna była spójna z oceną na danych odłożonych. Duża rozbieżność
+wskazywałaby na niestabilność wyboru lub niedoszacowanie błędu generalizacji.
+
+## Zadanie 3. Tuning, metoda wyścigów i wybór konfiguracji na podstawie testów
+
+```{r}
+library(rules)
+library(finetune)
+library(themis)
+```
+
+### Przygotowanie danych
+
+Dane mają wiele predyktorów numerycznych oraz nierównoliczne klasy. Dlatego
+preprocessing musi jednocześnie ograniczać problemy jakości predyktorów i
+kontrolować wpływ dominujących klas na dopasowanie modelu.
+
+```{r}
+set.seed(2026)
+
+hepatic_data <- hepatic_injury_qsar %>%
+  mutate(class = factor(class))
+
+hepatic_data %>%
+  count(class) %>%
+  mutate(prop = n / sum(n))
+```
+
+Klasa `severe` jest wyraźnie mniej liczna niż pozostałe klasy, więc model
+optymalizowany bez korekty może uzyskiwać akceptowalną trafność głównie przez
+lepsze rozpoznawanie klas częstszych. Z tego powodu w recepturze stosujemy
+nadpróbkowanie klasy mniejszościowej. Nie traktujemy go jako sposobu
+"tworzenia informacji", lecz jako mechanizm zmiany wag obserwacji widzianych
+przez algorytm w trakcie uczenia.
+
+```{r}
+hepatic_split <- initial_split(hepatic_data, prop = 0.8, strata = class)
+hepatic_train <- training(hepatic_split)
+hepatic_test <- testing(hepatic_split)
+
+set.seed(2026)
+hepatic_folds <- vfold_cv(hepatic_train, v = 10, strata = class)
+```
+
+```{r}
+hepatic_rec <- recipe(class ~ ., data = hepatic_train) %>%
+  step_zv(all_predictors()) %>%
+  step_corr(all_numeric_predictors(), threshold = 0.90) %>%
+  step_upsample(class, over_ratio = 0.7, skip = TRUE)
+```
+
+Uzasadnienie kroków:
+
+-   `step_zv()` usuwa predyktory o zerowej wariancji, które nie rozróżniają klas
+    i mogą powodować problemy numeryczne lub zbędnie zwiększać wymiar danych.
+-   `step_corr()` ogranicza grupy silnie współliniowych predyktorów. W danych
+    QSAR wiele zmiennych opisuje podobne sygnały biologiczne, więc redukcja
+    korelacji zmniejsza redundancję i ryzyko niestabilnego dopasowania.
+-   `step_upsample()` zwiększa reprezentację klas mniejszościowych w częściach
+    treningowych resamplingu. Dzięki temu model jest mniej zachęcany do
+    ignorowania klasy `severe`.
+-   `skip = TRUE` zabezpiecza przed sztucznym zmienianiem rozkładu klas w
+    danych walidacyjnych i testowych. Ocena ma być wykonana na naturalnym
+    rozkładzie klas, a nie na danych zmodyfikowanych przez nadpróbkowanie.
+
+### Schemat resamplingu i metryki
+
+Używamy tych samych foldów dla obu rodzin modeli, aby późniejsze porównanie
+było sparowane. W wieloklasowym i niezbalansowanym problemie zwykła `accuracy`
+nie jest dobrą metryką wyboru, ponieważ model może uzyskać pozornie dobry wynik
+przez poprawne klasyfikowanie głównie klas liczniejszych. Metryką wyboru jest
+więc `bal_accuracy`, czyli średnia czułość liczona po klasach. Każda klasa ma w
+niej podobną wagę, również klasa `severe`. Jako metryki uzupełniające
+wykorzystujemy `kap`, która koryguje trafność o zgodność losową, oraz
+`mn_log_loss`, która ocenia jakość prawdopodobieństw predykcyjnych.
+
+```{r}
+hepatic_metrics <- metric_set(bal_accuracy, kap, mn_log_loss)
+```
+
+### Regularna siatka hiperparametrów
+
+Pierwszą rodziną modeli jest boosting drzew. Stroimy liczbę drzew, głębokość
+drzew, tempo uczenia i minimalną liczebność liścia.
+
+```{r}
+xgb_spec <- boost_tree(
+  trees = tune(),
+  tree_depth = tune(),
+  learn_rate = tune(),
+  min_n = tune(),
+  loss_reduction = 0,
+  sample_size = 0.8
+) %>%
+  set_engine("xgboost", nthread = 1) %>%
+  set_mode("classification")
+
+xgb_wf <- workflow() %>%
+  add_recipe(hepatic_rec) %>%
+  add_model(xgb_spec)
+```
+
+```{r}
+xgb_grid <- grid_regular(
+  trees(c(50L, 100L)),
+  tree_depth(c(2L, 5L)),
+  learn_rate(c(-2, -1)),
+  min_n(c(5L, 15L)),
+  levels = c(2, 2, 2, 2)
+)
+
+xgb_grid
+```
+
+```{r}
+set.seed(2026)
+
+xgb_res <- tune_grid(
+  xgb_wf,
+  resamples = hepatic_folds,
+  grid = xgb_grid,
+  metrics = hepatic_metrics,
+  control = control_grid(save_pred = TRUE)
+)
+```
+
+```{r}
+show_best(xgb_res, metric = "bal_accuracy", n = 8)
+```
+
+```{r}
+autoplot(xgb_res) +
+  labs(title = "Wpływ hiperparametrów boostingu na metryki jakości")
+```
+
+### Metoda wyścigów
+
+Drugą rodziną modeli są reguły C5.0. Procedura wyścigowa eliminuje słabe
+konfiguracje po części resampli.
+
+```{r}
+c5_spec <- C5_rules(
+  trees = tune(),
+  min_n = tune()
+) %>%
+  set_engine("C5.0") %>%
+  set_mode("classification")
+
+c5_wf <- workflow() %>%
+  add_recipe(hepatic_rec) %>%
+  add_model(c5_spec)
+```
+
+```{r}
+c5_grid <- grid_regular(
+  trees(c(1L, 20L)),
+  min_n(c(2L, 20L)),
+  levels = c(4, 3)
+)
+
+c5_grid
+```
+
+```{r}
+set.seed(2026)
+
+c5_race <- tune_race_anova(
+  c5_wf,
+  resamples = hepatic_folds,
+  grid = c5_grid,
+  metrics = hepatic_metrics,
+  control = control_race(verbose_elim = TRUE)
+)
+```
+
+```{r}
+show_best(c5_race, metric = "bal_accuracy", n = 8)
+```
+
+Liczba ocen dla konfiguracji pokazuje, które kandydatury odpadły wcześniej.
+
+```{r}
+c5_race %>%
+  collect_metrics(summarize = FALSE) %>%
+  count(.config, .metric) %>%
+  arrange(.metric, n)
+```
+
+### Porównanie najlepszych konfiguracji testem sparowanym
+
+Wybieramy najlepsze konfiguracje według `bal_accuracy`, a następnie porównujemy
+ich wyniki fold po foldzie. To porównanie jest bardziej adekwatne niż test
+zwykłej trafności, bo ocenia, czy modele podobnie radzą sobie ze wszystkimi
+klasami, a nie tylko z klasami dominującymi.
+
+```{r}
+best_xgb <- select_best(xgb_res, metric = "bal_accuracy")
+best_c5 <- select_best(c5_race, metric = "bal_accuracy")
+
+best_xgb
+best_c5
+```
+
+```{r}
+xgb_best_fold <- xgb_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "bal_accuracy", .config == best_xgb$.config) %>%
+  transmute(id, model = "xgboost", bal_accuracy = .estimate)
+
+c5_best_fold <- c5_race %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "bal_accuracy", .config == best_c5$.config) %>%
+  transmute(id, model = "c5_rules", bal_accuracy = .estimate)
+
+best_fold_wide <- bind_rows(xgb_best_fold, c5_best_fold) %>%
+  pivot_wider(names_from = model, values_from = bal_accuracy)
+
+best_fold_wide
+```
+
+```{r}
+balanced_accuracy_test <- t.test(
+  best_fold_wide$xgboost,
+  best_fold_wide$c5_rules,
+  paired = TRUE
+)
+
+balanced_accuracy_test
+```
+
+```{r}
+mean_bal_accuracy_diff <- mean(best_fold_wide$xgboost - best_fold_wide$c5_rules)
+
+chosen_model <- if (
+  balanced_accuracy_test$p.value < 0.05 && mean_bal_accuracy_diff > 0
+) {
+  "xgboost"
+} else if (
+  balanced_accuracy_test$p.value < 0.05 && mean_bal_accuracy_diff < 0
+) {
+  "c5_rules"
+} else if (mean_bal_accuracy_diff >= 0) {
+  "xgboost"
+} else {
+  "c5_rules"
+}
+
+chosen_model
+```
+
+Jeżeli test nie wskazuje istotnej różnicy, konfiguracje można uznać za
+praktycznie nierozróżnialne statystycznie w tym schemacie resamplingu. W takim
+przypadku wybór można oprzeć na średniej jakości, prostocie lub koszcie
+obliczeniowym.
+
+### Finalizacja, ocena testowa i macierz pomyłek
+
+```{r}
+if (chosen_model == "xgboost") {
+  final_hepatic_wf <- finalize_workflow(xgb_wf, best_xgb)
+} else {
+  final_hepatic_wf <- finalize_workflow(c5_wf, best_c5)
+}
+
+final_hepatic_fit <- fit(final_hepatic_wf, data = hepatic_train)
+
+hepatic_test_pred <- hepatic_test %>%
+  select(class) %>%
+  bind_cols(predict(final_hepatic_fit, new_data = hepatic_test)) %>%
+  bind_cols(predict(final_hepatic_fit, new_data = hepatic_test, type = "prob"))
+```
+
+```{r}
+prob_cols <- paste0(".pred_", levels(hepatic_test_pred$class))
+
+hepatic_metrics(
+  hepatic_test_pred,
+  truth = class,
+  estimate = .pred_class,
+  !!!rlang::syms(prob_cols)
+)
+```
+
+```{r}
+hepatic_conf_mat <- conf_mat(hepatic_test_pred, truth = class, estimate = .pred_class)
+hepatic_conf_mat
+```
+
+```{r}
+autoplot(hepatic_conf_mat, type = "heatmap")
+```
+
+Najważniejsze błędy interpretujemy przez klasy, w których model najczęściej
+myli poziomy uszkodzenia. Przy niezbalansowanych danych szczególną uwagę należy
+zwrócić na klasę najmniej liczną, ponieważ wysoka ogólna trafność może ukrywać
+słabą rozpoznawalność tej klasy.
+
+### Korzyść praktyczna metody wyścigów
+
+```{r}
+tibble(
+  procedura = c("regular grid: xgboost", "racing: C5.0 rules"),
+  liczba_kandydatow = c(nrow(xgb_grid), nrow(c5_grid)),
+  najlepsza_bal_accuracy = c(
+    show_best(xgb_res, metric = "bal_accuracy", n = 1)$mean,
+    show_best(c5_race, metric = "bal_accuracy", n = 1)$mean
+  )
+)
+```
+
+Metoda wyścigów daje korzyść praktyczną, gdy eliminuje część słabych kandydatów
+bez pogorszenia jakości najlepszego modelu. W tym zadaniu należy ocenić tę
+korzyść razem z wynikiem testu sparowanego i liczbą konfiguracji, które nie
+musiały być oceniane do końca. Należy jednak pamiętać, że to porównanie odbywało się na różnych modelach więc nie do końca można traktować je jako wiarygodne.

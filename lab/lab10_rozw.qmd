@@ -1,0 +1,509 @@
+---
+title: "Rozwiązania do zadań z lab 10"
+subtitle: "Porównywanie modeli i strojenie na siatkach regularnych"
+author: "Dariusz Majerek"
+date: today
+format: html
+execute:
+  warning: false
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidymodels)
+library(modeldata)
+```
+
+## Zadanie 1. Porównanie wariantów workflowu
+
+Przygotowujemy ograniczony zbiór danych i obiekt resamplingu.
+
+```{r}
+set.seed(2026)
+
+biomass_small <- biomass %>%
+  select(HHV, carbon, hydrogen, oxygen, nitrogen, sulfur) %>%
+  slice_sample(n = 220)
+
+set.seed(2026)
+biomass_folds <- vfold_cv(biomass_small, v = 5, strata = HHV)
+```
+
+Definiujemy trzy warianty preprocessingu. W pierwszym wariancie preprocessing
+jest zwykłą formułą, w kolejnych dwóch używamy receptur.
+
+```{r}
+raw_formula <- HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur
+
+norm_rec <- recipe(raw_formula, data = biomass_small) %>%
+  step_normalize(all_predictors())
+
+pca_rec <- recipe(raw_formula, data = biomass_small) %>%
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), num_comp = 3)
+
+lm_spec <- linear_reg() %>%
+  set_engine("lm")
+```
+
+Zestaw workflowów pozwala uruchomić te same resample dla wszystkich wariantów.
+
+```{r}
+biomass_set <- workflow_set(
+  preproc = list(
+    raw = raw_formula,
+    norm = norm_rec,
+    pca = pca_rec
+  ),
+  models = list(lm = lm_spec),
+  cross = FALSE
+)
+
+biomass_set
+```
+
+Uruchamiamy ocenę workflowów.
+
+```{r}
+set.seed(2026)
+
+biomass_res <- workflow_map(
+  biomass_set,
+  "fit_resamples",
+  seed = 2026,
+  resamples = biomass_folds,
+  metrics = metric_set(rmse, rsq),
+  control = control_resamples(save_pred = TRUE, save_workflow = TRUE),
+  verbose = FALSE
+)
+```
+
+Średnie metryk pokazują różnice między wariantami preprocessingu.
+
+```{r}
+collect_metrics(biomass_res)
+```
+
+Do porównania sparowanego potrzebne są wyniki z pojedynczych foldów.
+
+```{r}
+fold_rmse <- biomass_res %>%
+  collect_metrics(summarize = FALSE) %>%
+  filter(.metric == "rmse") %>%
+  select(wflow_id, id, .estimate)
+
+fold_rmse
+```
+
+Przekształcamy wyniki do szerokiej postaci, tak aby w jednym wierszu znajdowały
+się wyniki z tego samego foldu.
+
+```{r}
+fold_rmse_wide <- fold_rmse %>%
+  pivot_wider(names_from = wflow_id, values_from = .estimate)
+
+fold_rmse_wide
+```
+
+Sparowany test t porównuje różnice `rmse` w tych samych foldach.
+
+```{r}
+t.test(fold_rmse_wide$pca_lm, fold_rmse_wide$raw_lm, paired = TRUE)
+```
+
+Wykres foldów ułatwia sprawdzenie, czy różnica jest systematyczna, czy wynika z
+pojedynczego podziału.
+
+```{r}
+fold_rmse %>%
+  ggplot(aes(x = id, y = .estimate, color = wflow_id, group = wflow_id)) +
+  geom_point(size = 2) +
+  geom_line() +
+  labs(
+    x = "Fold",
+    y = "RMSE",
+    color = "Workflow"
+  )
+```
+
+## Zadanie 2. Strojenie kNN na regularnej siatce
+
+Przygotowujemy dane i podział trening-test.
+
+```{r}
+library(palmerpenguins)
+
+set.seed(2026)
+
+penguins_clean <- penguins %>%
+  drop_na(
+    species,
+    bill_length_mm,
+    bill_depth_mm,
+    flipper_length_mm,
+    body_mass_g,
+    island,
+    sex
+  ) %>%
+  mutate(species = factor(species))
+
+penguins_split <- initial_split(penguins_clean, prop = 0.75, strata = species)
+penguins_train <- training(penguins_split)
+penguins_test <- testing(penguins_split)
+
+set.seed(2026)
+penguins_folds <- vfold_cv(penguins_train, v = 4, strata = species)
+```
+
+Receptura koduje predyktory nominalne i skaluje zmienne liczbowe.
+
+```{r}
+penguins_rec <- recipe(
+  species ~ bill_length_mm + bill_depth_mm + flipper_length_mm +
+    body_mass_g + island + sex,
+  data = penguins_train
+) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+W modelu kNN oznaczamy trzy hiperparametry do strojenia.
+
+```{r}
+knn_spec <- nearest_neighbor(
+  neighbors = tune(),
+  weight_func = tune(),
+  dist_power = tune()
+) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+penguins_wf <- workflow() %>%
+  add_recipe(penguins_rec) %>%
+  add_model(knn_spec)
+```
+
+Wyodrębnienie parametrów pozwala sprawdzić ich typy i domyślne zakresy.
+
+```{r}
+penguins_params <- extract_parameter_set_dials(penguins_wf)
+penguins_params
+```
+
+Budujemy regularną siatkę. Liczba wierszy siatki jest iloczynem liczby poziomów
+dla kolejnych parametrów.
+
+```{r}
+penguins_grid <- grid_regular(
+  neighbors(range = c(3L, 17L)),
+  weight_func(values = c("rectangular", "triangular")),
+  dist_power(range = c(1, 2)),
+  levels = c(5, 2, 2)
+)
+
+penguins_grid
+```
+
+Uruchamiamy strojenie.
+
+```{r}
+set.seed(2026)
+
+penguins_tune <- tune_grid(
+  penguins_wf,
+  resamples = penguins_folds,
+  grid = penguins_grid,
+  metrics = metric_set(accuracy, roc_auc),
+  control = control_grid(save_pred = TRUE)
+)
+```
+
+Najlepsze konfiguracje według `accuracy`:
+
+```{r}
+show_best(penguins_tune, metric = "accuracy", n = 8)
+```
+
+Wybieramy najlepszą konfigurację i finalizujemy workflow.
+
+```{r}
+best_penguins <- select_best(penguins_tune, metric = "accuracy")
+best_penguins
+
+final_penguins_wf <- finalize_workflow(penguins_wf, best_penguins)
+final_penguins_fit <- fit(final_penguins_wf, data = penguins_train)
+```
+
+Ocena na zbiorze testowym:
+
+```{r}
+penguins_test_pred <- penguins_test %>%
+  select(species) %>%
+  bind_cols(predict(final_penguins_fit, new_data = penguins_test)) %>%
+  bind_cols(predict(final_penguins_fit, new_data = penguins_test, type = "prob"))
+
+accuracy(penguins_test_pred, truth = species, estimate = .pred_class)
+roc_auc(
+  penguins_test_pred,
+  truth = species,
+  .pred_Adelie,
+  .pred_Chinstrap,
+  .pred_Gentoo
+)
+```
+
+## Zadanie 3. Ta sama siatka, różne metryki wyboru
+
+Przygotowujemy ograniczoną próbę i podział trening-test.
+
+```{r}
+set.seed(2026)
+
+two_class_small <- two_class_dat %>%
+  slice_sample(n = 500)
+
+two_class_split <- initial_split(two_class_small, prop = 0.75, strata = Class)
+two_class_train <- training(two_class_split)
+two_class_test <- testing(two_class_split)
+
+set.seed(2026)
+two_class_folds <- vfold_cv(two_class_train, v = 5, strata = Class)
+```
+
+Definiujemy workflow drzewa klasyfikacyjnego.
+
+```{r}
+tree_rec <- recipe(Class ~ ., data = two_class_train) %>%
+  step_zv(all_predictors())
+
+tree_spec <- decision_tree(
+  cost_complexity = tune(),
+  tree_depth = tune(),
+  min_n = tune()
+) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+tree_wf <- workflow() %>%
+  add_recipe(tree_rec) %>%
+  add_model(tree_spec)
+```
+
+Regularna siatka obejmuje trzy hiperparametry drzewa.
+
+```{r}
+tree_grid <- grid_regular(
+  cost_complexity(range = c(-4, -1)),
+  tree_depth(range = c(2L, 8L)),
+  min_n(range = c(5L, 25L)),
+  levels = c(4, 4, 3)
+)
+
+tree_grid
+```
+
+Stroimy model na tej samej siatce dla kilku metryk.
+
+```{r}
+set.seed(2026)
+
+tree_tune <- tune_grid(
+  tree_wf,
+  resamples = two_class_folds,
+  grid = tree_grid,
+  metrics = metric_set(roc_auc, accuracy, sens, specificity),
+  control = control_grid(save_pred = TRUE)
+)
+```
+
+Najlepsze konfiguracje według `roc_auc`:
+
+```{r}
+show_best(tree_tune, metric = "roc_auc", n = 5)
+```
+
+Najlepsze konfiguracje według `accuracy`:
+
+```{r}
+show_best(tree_tune, metric = "accuracy", n = 5)
+```
+
+Wybieramy dwa zestawy parametrów.
+
+```{r}
+best_tree_auc <- select_best(tree_tune, metric = "roc_auc")
+best_tree_acc <- select_best(tree_tune, metric = "accuracy")
+
+best_tree_auc
+best_tree_acc
+```
+
+Porównanie wskazuje, czy różne metryki prowadzą do tego samego modelu.
+
+```{r}
+bind_rows(
+  best_tree_auc %>% mutate(selection_metric = "roc_auc"),
+  best_tree_acc %>% mutate(selection_metric = "accuracy")
+) %>%
+  select(selection_metric, everything())
+```
+
+Dopasowujemy modele końcowe.
+
+```{r}
+final_tree_auc <- finalize_workflow(tree_wf, best_tree_auc) %>%
+  fit(two_class_train)
+
+final_tree_acc <- finalize_workflow(tree_wf, best_tree_acc) %>%
+  fit(two_class_train)
+```
+
+Funkcja pomocnicza liczy metryki na zbiorze testowym.
+
+```{r}
+evaluate_tree <- function(model_fit, data, model_name) {
+  pred <- data %>%
+    select(Class) %>%
+    bind_cols(predict(model_fit, new_data = data)) %>%
+    bind_cols(predict(model_fit, new_data = data, type = "prob"))
+
+  bind_rows(
+    roc_auc(pred, truth = Class, .pred_Class1),
+    accuracy(pred, truth = Class, estimate = .pred_class)
+  ) %>%
+    mutate(model = model_name)
+}
+
+bind_rows(
+  evaluate_tree(final_tree_auc, two_class_test, "wybór według roc_auc"),
+  evaluate_tree(final_tree_acc, two_class_test, "wybór według accuracy")
+) %>%
+  select(model, .metric, .estimate)
+```
+
+## Zadanie 4. Strojenie parametrów modelu i receptury
+
+Przygotowujemy ograniczoną próbę danych.
+
+```{r}
+set.seed(2026)
+
+sacramento_small <- Sacramento %>%
+  filter(sqft > 0, beds > 0, baths > 0) %>%
+  slice_sample(n = 420)
+
+sacramento_split <- initial_split(sacramento_small, prop = 0.8, strata = price)
+sacramento_train <- training(sacramento_split)
+sacramento_test <- testing(sacramento_split)
+
+set.seed(2026)
+sacramento_folds <- vfold_cv(sacramento_train, v = 4, strata = price)
+```
+
+W recepturze stroimy dwa progi grupowania rzadkich kategorii. Drugi próg
+otrzymuje własną nazwę, aby w siatce można było odróżnić go od progu dla
+`city`.
+
+```{r}
+sacramento_rec <- recipe(
+  price ~ city + zip + beds + baths + sqft + type + latitude + longitude,
+  data = sacramento_train
+) %>%
+  step_log(sqft, price, offset = 1) %>%
+  step_other(city, threshold = tune()) %>%
+  step_other(zip, threshold = tune("zip_threshold")) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Model `glmnet` ma dwa strojonie parametry: siłę kary i udział kary LASSO.
+
+```{r}
+glmnet_spec <- linear_reg(
+  penalty = tune(),
+  mixture = tune()
+) %>%
+  set_engine("glmnet")
+
+sacramento_wf <- workflow() %>%
+  add_recipe(sacramento_rec) %>%
+  add_model(glmnet_spec)
+```
+
+Wyodrębniamy parametry i aktualizujemy zakresy.
+
+```{r}
+sacramento_params <- sacramento_wf %>%
+  extract_parameter_set_dials() %>%
+  update(
+    threshold = threshold(c(0.01, 0.08)),
+    zip_threshold = threshold(c(0.01, 0.08)),
+    penalty = penalty(c(-4, -1))
+  )
+
+sacramento_params
+```
+
+Regularna siatka łączy poziomy parametrów receptury i modelu.
+
+```{r}
+sacramento_grid <- sacramento_params %>%
+  grid_regular(
+    levels = c(
+      threshold = 2,
+      zip_threshold = 2,
+      penalty = 4,
+      mixture = 3
+    )
+  )
+
+sacramento_grid
+```
+
+Uruchamiamy strojenie.
+
+```{r}
+set.seed(2026)
+
+sacramento_tune <- tune_grid(
+  sacramento_wf,
+  resamples = sacramento_folds,
+  grid = sacramento_grid,
+  metrics = metric_set(rmse, rsq),
+  control = control_grid(save_pred = TRUE)
+)
+```
+
+Najlepsze konfiguracje według `rmse`:
+
+```{r}
+show_best(sacramento_tune, metric = "rmse", n = 8)
+```
+
+Wybieramy najlepszy zestaw parametrów i finalizujemy workflow.
+
+```{r}
+best_sacramento <- select_best(sacramento_tune, metric = "rmse")
+best_sacramento
+
+final_sacramento_wf <- finalize_workflow(sacramento_wf, best_sacramento)
+```
+
+Ocena końcowa na zbiorze testowym:
+
+```{r}
+set.seed(2026)
+
+sacramento_last <- last_fit(
+  final_sacramento_wf,
+  split = sacramento_split,
+  metrics = metric_set(rmse, rsq)
+)
+
+collect_metrics(sacramento_last)
+```

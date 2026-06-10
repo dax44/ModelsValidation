@@ -1,0 +1,140 @@
+---
+title: "Kolokwium - grupa B"
+author: "Dariusz Majerek"
+date: today
+format: html
+embed-resources: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| include: false
+library(tidymodels)
+library(workflowsets)
+library(modeldata)
+```
+
+::: callout-important
+Kolokwium wykonaj w pliku `.qmd`. Ustaw `set.seed(2026)` we wszystkich miejscach,
+w których występuje losowanie: podział danych, resampling, screening modeli i tuning.
+
+Plik należy renderować do `.html` albo `.pdf`. Przez Teams przesyłamy **tylko
+plik zrenderowany**, nazwany według schematu `imie_nazwisko.html` albo
+`imie_nazwisko.pdf`. Nie wysyłaj pliku `.qmd`.
+
+Kompiluj plik co kilka minut, żeby pod koniec kolokwium nie pojawiły się
+niespodzianki techniczne. Wyniki obiektów, które długo się liczą, np. tuningu
+lub resamplingu, można zapisać do pliku `.rds` albo `.rda`, a następnie wczytać
+w dalszej części pracy. Wszystkie kroki, wyniki, porównania i decyzje modelowe
+muszą być krótko skomentowane.
+
+Maksymalnie można uzyskać **100 punktów**.
+:::
+
+## Skala ocen
+
+| Punkty | Ocena |
+|---:|:---|
+| 0-50 | 2,0 |
+| 51-60 | 3,0 |
+| 61-70 | 3,5 |
+| 71-80 | 4,0 |
+| 81-90 | 4,5 |
+| 91-100 | 5,0 |
+
+## Zadanie 1
+
+Zbiór danych: `biomass` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj wartość opałową `HHV` na podstawie składu
+chemicznego biomasy. Zbiór jest niewielki, dlatego nadaje się do pełnego
+porównania wielu wariantów bez długiego czasu obliczeń.
+
+Wykonaj:
+
+- Przygotuj dane do modelowania: sprawdź typy zmiennych, usuń lub przekształć
+  zmienne niemające roli predyktorów, wykonaj podział `80/20` ze stratyfikacją
+  względem `HHV` oraz przygotuj dokładnie taki resampling:
+  `vfold_cv(train, v = 5, repeats = 3, strata = HHV)` na danych treningowych
+  (6 pkt).
+- Przygotuj cztery konkretne modele regresyjne: `linear_reg()` z silnikiem `lm`,
+  `mars()` z silnikiem `earth`, `svm_rbf()` z silnikiem `kernlab` oraz
+  `rand_forest()` z silnikiem `ranger`. Wykonaj screening tych modeli w jednym
+  schemacie resamplingu (8 pkt).
+- Dla każdego modelu dobierz właściwy preprocessing w `recipe()`. Regresja
+  liniowa powinna mieć preprocessing wspierający interpretowalność i poprawność
+  założeń, np. imputację, transformację silnie skośnych predyktorów i
+  normalizację. MARS może korzystać z prostszego preprocessingu, ale nadal
+  powinien mieć obsługę braków i predyktorów problematycznych. SVM powinien mieć
+  preprocessing wrażliwy na skalę, np. imputację, normalizację i ewentualnie
+  PCA. Las losowy powinien mieć preprocessing ograniczony do operacji
+  koniecznych, bez nieuzasadnionej normalizacji. Nie krzyżuj automatycznie
+  każdego preprocessingu z każdym modelem (10 pkt).
+- Oceń workflowy za pomocą `rmse`, `mae` i `rsq`. Przedstaw tabelę wyników oraz
+  wykres porównujący modele i preprocessory. Wskaż, czy bardziej różnicują
+  wyniki modele, czy preprocessing (7 pkt).
+- Dla trzech najlepszych workflowów pobierz wyniki dla pojedynczych foldów i
+  przeprowadź testy statystyczne różnic jakości względem najlepszego workflowu.
+  Uzasadnij wybór testu oraz opisz, co oznacza brak istotności statystycznej
+  mimo różnic w średnich metrykach (8 pkt).
+- Sfinalizuj najlepszy workflow, oceń go na zbiorze testowym i przygotuj wykres
+  wartości obserwowanych względem przewidywanych. Skomentuj, czy błąd testowy
+  jest zgodny z wynikiem z resamplingu (6 pkt).
+- Napisz krótkie podsumowanie ograniczeń analizy: mała próba, liczba
+  porównywanych workflowów, możliwy optymizm selekcji i interpretowalność
+  najlepszego modelu (5 pkt).
+
+**Razem: 50 pkt**
+
+## Zadanie 2
+
+Zbiór danych: `hotel_rates` z pakietu `modeldata`.
+
+Problem modelowania: przewiduj `avg_price_per_room` na podstawie informacji
+o rezerwacji hotelowej. Aby zachować rozsądny czas obliczeń, wylosuj maksymalnie
+1500 obserwacji po usunięciu braków w zmiennej wynikowej.
+
+Wykonaj:
+
+- Przygotuj dane: sprawdź zmienną wynikową, wykonaj podział `75/25` ze
+  stratyfikacją względem `avg_price_per_room` oraz zdefiniuj dokładnie taki
+  resampling: `vfold_cv(train, v = 5, repeats = 2, strata = avg_price_per_room)`
+  na zbiorze treningowym (5 pkt).
+- Wykonaj szybki screening trzech konkretnych modeli regresyjnych:
+  `linear_reg()` z silnikiem `glmnet`, `rand_forest()` z silnikiem `ranger` oraz
+  `boost_tree()` z silnikiem `xgboost`. Każdy model połącz z recepturą dobraną
+  do jego wymagań, a nie z uniwersalnym preprocessingiem dla wszystkich modeli
+  (7 pkt).
+- Dla modelu `glmnet` przygotuj recepturę z imputacją, obsługą nowych i rzadkich
+  poziomów zmiennych nominalnych, kodowaniem zero-jedynkowym oraz normalizacją.
+  Dla lasu losowego przygotuj recepturę prostszą, bez normalizacji, ale z
+  obsługą braków i problematycznych poziomów kategorii. Dla `xgboost` przygotuj
+  recepturę z kodowaniem zmiennych jakościowych, imputacją oraz ewentualną
+  inżynierią cech, która może pomóc modelowi drzewiastemu. Uzasadnij dobór tych
+  trzech receptur (10 pkt).
+- Na podstawie wyników screeningu wybierz jedną rodzinę modeli do tuningu
+  metodą symulowanego wyżarzania. Wybór musi wynikać z rankingu, stabilności
+  wyników między foldami oraz sensowności dalszego dostrajania. Przygotuj
+  przestrzeń co najmniej trzech hiperparametrów właściwych dla wybranego modelu
+  i przeprowadź tuning, np. z użyciem `finetune::tune_sim_anneal()`. Ogranicz
+  liczbę iteracji tak, aby obliczenia były wykonalne w czasie kolokwium, np.
+  15-25 iteracji (9 pkt).
+- Porównaj wynik symulowanego wyżarzania z prostym punktem odniesienia:
+  modelem domyślnym albo małą losową siatką. Porównanie oprzyj na tej samej
+  metryce głównej, np. `rmse`, oraz na tych samych foldach (6 pkt).
+- Przedstaw przebieg tuningu: tabelę najlepszych konfiguracji, wykres zmian
+  jakości w kolejnych iteracjach i komentarz, czy metoda eksplorowała sensowny
+  obszar hiperparametrów (5 pkt).
+- Przeprowadź formalny test statystyczny porównujący najlepszy model po
+  symulowanym wyżarzaniu z punktem odniesienia. Zapisz hipotezy, wybór metryki,
+  wynik testu oraz wniosek praktyczny (5 pkt).
+- Sfinalizuj najlepszy model, oceń go na zbiorze testowym i skomentuj wyniki
+  w kontekście ryzyka przeuczenia oraz różnicy między screeningiem, tuningiem
+  i oceną końcową (3 pkt).
+
+**Razem: 50 pkt**
